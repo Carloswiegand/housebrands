@@ -501,27 +501,14 @@ function parseNum(v) {
   if(v===null||v===undefined||v==='') return 0;
   if(typeof v==='number') return v;
   let s = String(v).trim();
-  // Remove currency symbol and spaces
+  if(s==='') return 0;
+  // Remove currency symbols and spaces
   s = s.replace(/[$\s]/g,'');
-  // Sheets es-CL format: dots as thousands, comma as decimal
-  // e.g. "20.626.400" or "69,05"
-  // Count dots and commas to determine format
-  const dots = (s.match(/\./g)||[]).length;
-  const commas = (s.match(/,/g)||[]).length;
-  if(dots>1) {
-    // Multiple dots = thousands separators, remove them
-    s = s.replace(/\./g,'');
-  } else if(dots===1 && commas===1) {
-    // Both present: dot=thousands, comma=decimal
-    s = s.replace('.','').replace(',','.');
-  } else if(dots===0 && commas===1) {
-    // Only comma: it's decimal separator
+  // The CSV from Sheets exports numbers as plain values: 29990, 75.92, etc.
+  // No thousands separators — just parse directly
+  // Only replace comma with dot if comma is used as decimal separator
+  if(s.includes(',') && !s.includes('.')) {
     s = s.replace(',','.');
-  } else if(dots===1 && commas===0) {
-    // Only one dot: could be decimal, keep as is
-    // but if >3 digits after dot, it's thousands
-    const parts = s.split('.');
-    if(parts[1]&&parts[1].length===3) s = s.replace('.','');
   }
   return parseFloat(s)||0;
 }
