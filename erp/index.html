@@ -372,7 +372,7 @@ const PASSWORD = 'Cwl040916#';
 // Usando la URL de exportación directa como CSV
 const SHEET_ID  = '1a9Hv9ceZ_1Wfg2Gp6gRuZ5mgk0eRHgYyBhklulQAbyU';
 const SHEET_GID = '573947071'; // GID de Libro_Ventas
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
+const CSV_URL   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
 
 // ── AUTH ──────────────────────────────────────────────────────
 function checkLogin() {
@@ -498,17 +498,41 @@ function splitCSVLine(line) {
 }
 
 function parseNum(v) {
-  if(!v||v==='') return 0;
-  // Handle Sheets number format: may have $ and . as thousands separator
-  const s = String(v).replace(/[$\s]/g,'').replace(/\./g,'').replace(',','.');
+  if(v===null||v===undefined||v==='') return 0;
+  if(typeof v==='number') return v;
+  let s = String(v).trim();
+  // Remove currency symbol and spaces
+  s = s.replace(/[$\s]/g,'');
+  // Sheets es-CL format: dots as thousands, comma as decimal
+  // e.g. "20.626.400" or "69,05"
+  // Count dots and commas to determine format
+  const dots = (s.match(/\./g)||[]).length;
+  const commas = (s.match(/,/g)||[]).length;
+  if(dots>1) {
+    // Multiple dots = thousands separators, remove them
+    s = s.replace(/\./g,'');
+  } else if(dots===1 && commas===1) {
+    // Both present: dot=thousands, comma=decimal
+    s = s.replace('.','').replace(',','.');
+  } else if(dots===0 && commas===1) {
+    // Only comma: it's decimal separator
+    s = s.replace(',','.');
+  } else if(dots===1 && commas===0) {
+    // Only one dot: could be decimal, keep as is
+    // but if >3 digits after dot, it's thousands
+    const parts = s.split('.');
+    if(parts[1]&&parts[1].length===3) s = s.replace('.','');
+  }
   return parseFloat(s)||0;
 }
 
 // ── RENDER ────────────────────────────────────────────────────
 const clp = n => '$'+Math.round(n).toLocaleString('es-CL');
 const pct = n => (n*100).toFixed(1)+'%';
-const mColor = p => p>=0.65?'var(--green)':p>=0.45?'var(--gold)':'var(--red)';
-const mBg    = p => p>=0.65?'var(--green-light)':p>=0.45?'var(--gold-light)':'var(--red-light)';
+// mrg is stored as percentage points (e.g. 69.05 means 69.05%)
+// mColor expects 0-1 range so divide by 100
+const mColor = p => p>=65?'var(--green)':p>=45?'var(--gold)':'var(--red)';
+const mBg    = p => p>=65?'var(--green-light)':p>=45?'var(--gold-light)':'var(--red-light)';
 
 function render() {
   const d = filtered();
@@ -527,7 +551,7 @@ function renderKPIs(d) {
   const un  = d.reduce((s,r)=>s+r.qty,0);
   const cnt = d.length;
   const tk  = un>0?vb/un:0;
-  const mrg = vb>0?mb/vb:0;
+  const mrg = vb>0?mb/vb:0; // 0-1 range for KPI display
 
   // Meta mensual
   const META = 14969250;
@@ -600,9 +624,10 @@ function renderCanal(d) {
   document.getElementById('canal-margin').innerHTML='<div style="font-family:var(--mono);font-size:9px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Margen por canal</div>'+
     Object.entries(ch).map(([k,v])=>{
       const p=v.vb>0?v.mb/v.vb:0;
+      const pp_pct = p*100;
       return `<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-bottom:4px">
         <span style="color:var(--ink-light)">${k}</span>
-        <span style="color:${mColor(p)};font-weight:500">${pct(p)}</span>
+        <span style="color:${mColor(pp_pct)};font-weight:500">${pct(p)}</span>
       </div>`;
     }).join('');
 }
@@ -650,7 +675,7 @@ function renderRecentTx(d) {
   const sorted=[...d].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,15);
   document.getElementById('tx-count').textContent=d.length+' ventas';
   document.getElementById('recent-tx').innerHTML=sorted.map(r=>{
-    const p=r.mrg/100, mc=mColor(p);
+    const mc=mColor(r.mrg);
     return `<tr>
       <td>${r.fecha.slice(5)}</td>
       <td><span class="bdg ${r.marca==='MemoKoala'?'b-mk':'b-mt'}">${r.marca==='MemoKoala'?'MK':'MT'}</span></td>
@@ -658,7 +683,7 @@ function renderRecentTx(d) {
       <td>${(r.prod||'').slice(0,22)}</td>
       <td>${clp(r.vb)}</td>
       <td><div class="mrg-bar"><span style="color:${mc};font-weight:500">${r.mrg.toFixed(1)}%</span>
-        <div class="mrg-mini"><div class="mrg-fill" style="width:${Math.min(100,p*100).toFixed(0)}%;background:${mc}"></div></div>
+        <div class="mrg-mini"><div class="mrg-fill" style="width:${Math.min(100,r.mrg).toFixed(0)}%;background:${mc}"></div></div>
       </div></td>
     </tr>`;
   }).join('');
@@ -672,7 +697,8 @@ function renderSkuTable(d) {
   });
   const sorted=Object.values(s).sort((a,b)=>b.vb-a.vb);
   document.getElementById('sku-table').innerHTML=sorted.map(r=>{
-    const p=r.vb>0?r.mb/r.vb:0, mc=mColor(p);
+    const mrg_pct = r.vb>0?(r.mb/r.vb)*100:0;
+    const mc=mColor(mrg_pct);
     return `<tr>
       <td style="font-weight:500;color:var(--ink)">${r.nom||'—'}</td>
       <td><span class="bdg ${r.marca==='MemoKoala'?'b-mk':'b-mt'}">${r.marca==='MemoKoala'?'🐨 MK':'🔪 MT'}</span></td>
@@ -680,8 +706,8 @@ function renderSkuTable(d) {
       <td>${clp(r.vb)}</td>
       <td>${clp(r.costo)}</td>
       <td>${clp(r.mb)}</td>
-      <td><div class="mrg-bar"><span style="color:${mc};font-weight:500">${pct(p)}</span>
-        <div class="mrg-mini"><div class="mrg-fill" style="width:${Math.min(100,p*100).toFixed(0)}%;background:${mc}"></div></div>
+      <td><div class="mrg-bar"><span style="color:${mc};font-weight:500">${mrg_pct.toFixed(1)}%</span>
+        <div class="mrg-mini"><div class="mrg-fill" style="width:${Math.min(100,mrg_pct).toFixed(0)}%;background:${mc}"></div></div>
       </div></td>
     </tr>`;
   }).join('');
