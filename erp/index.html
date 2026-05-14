@@ -489,8 +489,8 @@ function parseCSV(text) {
   const iFecha  = ci(['fecha']);
   const iVB     = ci(['precio_bruto_total','precio total','precio_total']);
   const iCosto  = ci(['costo_total']);
-  const iMB     = ci(['margen_bruto','margen $','margen_$']);
-  const iMrg    = ci(['margen_%','margen %','margen_pct']);
+  const iMB     = ci(['margen_bruto','margen_$','margen $','margen_']);
+  const iMrg    = ci(['margen_%','margen %','margen_pct']); // calculated directly if not found
 
   // Log found columns for debugging
   console.log('Columns found:', {iMarca,iCanal,iSku,iProd,iQty,iMes,iAnio,iFecha,iVB,iCosto,iMB,iMrg});
@@ -511,8 +511,10 @@ function parseCSV(text) {
     const qty   = parseInt(iQty !== -1 ? cols[iQty] : cols[9])||1;
     const vb    = parseNum(iVB !== -1 ? cols[iVB] : cols[11]);
     const costo = parseNum(iCosto !== -1 ? cols[iCosto] : cols[13]);
-    const mb    = parseNum(iMB !== -1 ? cols[iMB] : cols[14]);
-    const mrg   = parseNum(iMrg !== -1 ? cols[iMrg] : cols[15]);
+    // Calculate mb and mrg directly if columns not found in CSV
+    const mb_raw = iMB !== -1 ? parseNum(cols[iMB]) : (vb - costo);
+    const mb    = mb_raw !== 0 ? mb_raw : (vb - costo);
+    const mrg   = vb > 0 ? (mb / vb) * 100 : 0;
     if(vb<=0) continue;
     records.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costo,mb,mrg});
   }
