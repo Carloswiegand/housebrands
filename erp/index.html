@@ -366,7 +366,7 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
 <script>
 // ── CONFIG ────────────────────────────────────────────────────
 // Contraseña — cámbiala aquí
-const PASSWORD = 'Cwl040916#';
+const PASSWORD = '200487';
 
 // URL pública CSV de Google Sheets (Libro_Ventas)
 // Usando la URL de exportación directa como CSV
@@ -462,63 +462,99 @@ function parseCSV(text) {
   const lines = text.split('\n').filter(l=>l.trim());
   if(lines.length < 2) return [];
 
-  // Read headers to find column positions dynamically
-  const headers = splitCSVLine(lines[0]).map(h =>
-    h.trim().toLowerCase()
-      .replace(/[^a-z0-9]/g,'_')
-      .replace(/_+/g,'_')
-  );
-
-  // Map column names to indices
-  const ci = (names) => {
-    for(const n of names) {
-      const idx = headers.findIndex(h => h.includes(n));
-      if(idx !== -1) return idx;
-    }
-    return -1;
-  };
-
-  const iMarca  = ci(['marca']);
-  const iCanal  = ci(['canal']);
-  const iSku    = ci(['sku']);
-  const iProd   = ci(['producto']);
-  const iQty    = ci(['cantidad']);
-  const iMes    = ci(['mes_n','mes n']);
-  const iMesNom = ci(['mes','month']);
-  const iAnio   = ci(['a_o','año','anio','year']);
-  const iFecha  = ci(['fecha']);
-  const iVB     = ci(['precio_bruto_total','precio total','precio_total']);
-  const iCosto  = ci(['costo_total']);
-  const iMB     = ci(['margen_bruto','margen_$','margen $','margen_']);
-  const iMrg    = ci(['margen_%','margen %','margen_pct']); // calculated directly if not found
-
-  // Log found columns for debugging
-  console.log('Columns found:', {iMarca,iCanal,iSku,iProd,iQty,iMes,iAnio,iFecha,iVB,iCosto,iMB,iMrg});
-  console.log('Headers:', headers.slice(0,20));
+  // Fixed column indices based on confirmed CSV structure:
+  // 0=Fecha, 1=MesN, 2=Mes, 3=Año, 4=Marca, 5=Canal, 6=Orden
+  // 7=SKU, 8=Producto, 9=Cantidad, 10=PrecioUnit, 11=PrecioTotal
+  // 12=Envío, 13=CargoMP, 14=CodDesc, 15=Descuento$, 16=IngresoNeto
+  // 17=CostoUnit, 18=CostoTotal, 19=Margen$, 20=Margen%, 21=Ciudad
+  // 22=Región, 23=País, 24=FechaIngreso, 25=Origen
 
   const records = [];
   for(let i=1; i<lines.length; i++) {
     const cols = splitCSVLine(lines[i]);
-    if(cols.length < 10) continue;
-    const fecha = iFecha !== -1 ? cols[iFecha]?.trim() : cols[0]?.trim();
-    if(!fecha || fecha.length < 4) continue;
-    const mes   = parseInt(iMes !== -1 ? cols[iMes] : cols[1])||0;
-    const anio  = parseInt(iAnio !== -1 ? cols[iAnio] : cols[3])||0;
-    const marca = (iMarca !== -1 ? cols[iMarca] : cols[4])?.trim()||'';
-    const canal = (iCanal !== -1 ? cols[iCanal] : cols[5])?.trim()||'';
-    const sku   = (iSku !== -1 ? cols[iSku] : cols[7])?.trim()||'';
-    const prod  = (iProd !== -1 ? cols[iProd] : cols[8])?.trim()||'';
-    const qty   = parseInt(iQty !== -1 ? cols[iQty] : cols[9])||1;
-    const vb    = parseNum(iVB !== -1 ? cols[iVB] : cols[11]);
-    const costo = parseNum(iCosto !== -1 ? cols[iCosto] : cols[13]);
-    // Calculate mb and mrg directly if columns not found in CSV
-    const mb_raw = iMB !== -1 ? parseNum(cols[iMB]) : (vb - costo);
-    const mb    = mb_raw !== 0 ? mb_raw : (vb - costo);
-    const mrg   = vb > 0 ? (mb / vb) * 100 : 0;
+    if(cols.length < 20) continue;
+
+    const marca = cols[4]?.trim()||'';
+    const canal = cols[5]?.trim()||'';
+    if(!marca) continue;
+
+    const mes   = parseInt(cols[1])||0;
+    const anio  = parseInt(cols[3])||0;
+    const sku   = cols[7]?.trim()||'';
+    const prod  = cols[8]?.trim()||'';
+    const qty   = parseInt(cols[9])||1;
+    const vb    = parseNum(cols[11]);  // Precio Total
+    const costo = parseNum(cols[18]);  // Costo Total
+    const mb    = parseNum(cols[19]);  // Margen $
+    const mrg   = parseNum(cols[20]);  // Margen %
+
     if(vb<=0) continue;
-    records.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costo,mb,mrg});
+
+    // If margen columns are empty, calculate directly
+    const mb_final  = mb !== 0 ? mb  : (vb - costo);
+    const mrg_final = mrg !== 0 ? mrg : (vb > 0 ? (mb_final/vb)*100 : 0);
+
+    const fecha = cols[0]?.trim()||'';
+
+    records.push({fecha, mes, anio, marca, canal, sku, prod, qty,
+                  vb, costo, mb: mb_final, mrg: mrg_final});
   }
+  console.log('Records loaded:', records.length,
+    '| Sample vb:', records[0]?.vb,
+    '| Sample mrg:', records[0]?.mrg?.toFixed(1)+'%');
   return records;
+}
+
+function splitCSVLine(line) {
+  const res=[]; let f='', inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){if(inQ&&line[i+1]==='"'){f+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){res.push(f.trim());f='';}
+    else f+=c;
+  }
+  res.push(f.trim());
+  return res;
+}
+
+function parseNum(v) {
+  if(v===null||v===undefined||v==='') return 0;
+  if(typeof v==='number') return v;
+  let s = String(v).trim();
+  if(s==='') return 0;
+  s = s.replace(/[$\s%]/g,'');
+  if(s==='') return 0;
+
+  // Detect format:
+  // "49.990" → thousands separator (es-CL) → remove dot → 49990
+  // "75.92"  → decimal → keep as is
+  // "49.990,50" → es-CL with decimals → 49990.50
+  // "49990"  → plain integer → keep as is
+
+  const dots   = (s.match(/\./g)||[]).length;
+  const commas = (s.match(/,/g)||[]).length;
+
+  if(commas===1 && dots>=1) {
+    // Format: 1.234,56 → European → remove dots, replace comma with dot
+    s = s.replace(/\./g,'').replace(',','.');
+  } else if(commas===0 && dots===1) {
+    // Could be decimal (75.92) or thousands (49.990)
+    const afterDot = s.split('.')[1];
+    if(afterDot && afterDot.length===3) {
+      // 3 digits after dot = thousands separator (49.990 → 49990)
+      s = s.replace('.','');
+    }
+    // else: real decimal like 75.92 → keep as is
+  } else if(commas===0 && dots>1) {
+    // Multiple dots = thousands separators: 1.234.567 → 1234567
+    s = s.replace(/\./g,'');
+  } else if(commas===1 && dots===0) {
+    // Only comma: decimal separator → replace with dot
+    s = s.replace(',','.');
+  }
+  // commas===0 && dots===0 → plain integer, keep as is
+
+  return parseFloat(s)||0;
 }
 
 function splitCSVLine(line) {
