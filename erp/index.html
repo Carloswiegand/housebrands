@@ -366,7 +366,7 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
 <script>
 // ── CONFIG ────────────────────────────────────────────────────
 // Contraseña — cámbiala aquí
-const PASSWORD = '200487';
+const PASSWORD = 'housebrands2026';
 
 // URL pública CSV de Google Sheets (Libro_Ventas)
 // Usando la URL de exportación directa como CSV
@@ -569,21 +569,7 @@ function splitCSVLine(line) {
   return res;
 }
 
-function parseNum(v) {
-  if(v===null||v===undefined||v==='') return 0;
-  if(typeof v==='number') return v;
-  let s = String(v).trim();
-  if(s==='') return 0;
-  // Remove currency symbols and spaces
-  s = s.replace(/[$\s]/g,'');
-  // The CSV from Sheets exports numbers as plain values: 29990, 75.92, etc.
-  // No thousands separators — just parse directly
-  // Only replace comma with dot if comma is used as decimal separator
-  if(s.includes(',') && !s.includes('.')) {
-    s = s.replace(',','.');
-  }
-  return parseFloat(s)||0;
-}
+
 
 // ── RENDER ────────────────────────────────────────────────────
 const clp = n => '$'+Math.round(n).toLocaleString('es-CL');
