@@ -461,24 +461,58 @@ async function loadData() {
 function parseCSV(text) {
   const lines = text.split('\n').filter(l=>l.trim());
   if(lines.length < 2) return [];
-  // Skip header row (row 0)
+
+  // Read headers to find column positions dynamically
+  const headers = splitCSVLine(lines[0]).map(h =>
+    h.trim().toLowerCase()
+      .replace(/[^a-z0-9]/g,'_')
+      .replace(/_+/g,'_')
+  );
+
+  // Map column names to indices
+  const ci = (names) => {
+    for(const n of names) {
+      const idx = headers.findIndex(h => h.includes(n));
+      if(idx !== -1) return idx;
+    }
+    return -1;
+  };
+
+  const iMarca  = ci(['marca']);
+  const iCanal  = ci(['canal']);
+  const iSku    = ci(['sku']);
+  const iProd   = ci(['producto']);
+  const iQty    = ci(['cantidad']);
+  const iMes    = ci(['mes_n','mes n']);
+  const iMesNom = ci(['mes','month']);
+  const iAnio   = ci(['a_o','año','anio','year']);
+  const iFecha  = ci(['fecha']);
+  const iVB     = ci(['precio_bruto_total','precio total','precio_total']);
+  const iCosto  = ci(['costo_total']);
+  const iMB     = ci(['margen_bruto','margen $','margen_$']);
+  const iMrg    = ci(['margen_%','margen %','margen_pct']);
+
+  // Log found columns for debugging
+  console.log('Columns found:', {iMarca,iCanal,iSku,iProd,iQty,iMes,iAnio,iFecha,iVB,iCosto,iMB,iMrg});
+  console.log('Headers:', headers.slice(0,20));
+
   const records = [];
   for(let i=1; i<lines.length; i++) {
     const cols = splitCSVLine(lines[i]);
-    if(cols.length < 16) continue;
-    const fecha = cols[0]?.trim();
+    if(cols.length < 10) continue;
+    const fecha = iFecha !== -1 ? cols[iFecha]?.trim() : cols[0]?.trim();
     if(!fecha || fecha.length < 4) continue;
-    const mes   = parseInt(cols[1])||0;
-    const anio  = parseInt(cols[3])||0;
-    const marca = cols[4]?.trim()||'';
-    const canal = cols[5]?.trim()||'';
-    const sku   = cols[7]?.trim()||'';
-    const prod  = cols[8]?.trim()||'';
-    const qty   = parseInt(cols[9])||1;
-    const vb    = parseNum(cols[11]);
-    const costo = parseNum(cols[13]);
-    const mb    = parseNum(cols[14]);
-    const mrg   = parseNum(cols[15]);
+    const mes   = parseInt(iMes !== -1 ? cols[iMes] : cols[1])||0;
+    const anio  = parseInt(iAnio !== -1 ? cols[iAnio] : cols[3])||0;
+    const marca = (iMarca !== -1 ? cols[iMarca] : cols[4])?.trim()||'';
+    const canal = (iCanal !== -1 ? cols[iCanal] : cols[5])?.trim()||'';
+    const sku   = (iSku !== -1 ? cols[iSku] : cols[7])?.trim()||'';
+    const prod  = (iProd !== -1 ? cols[iProd] : cols[8])?.trim()||'';
+    const qty   = parseInt(iQty !== -1 ? cols[iQty] : cols[9])||1;
+    const vb    = parseNum(iVB !== -1 ? cols[iVB] : cols[11]);
+    const costo = parseNum(iCosto !== -1 ? cols[iCosto] : cols[13]);
+    const mb    = parseNum(iMB !== -1 ? cols[iMB] : cols[14]);
+    const mrg   = parseNum(iMrg !== -1 ? cols[iMrg] : cols[15]);
     if(vb<=0) continue;
     records.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costo,mb,mrg});
   }
