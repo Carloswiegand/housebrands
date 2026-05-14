@@ -264,6 +264,7 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
     </div>
     <div class="header-right">
       <div class="header-updated" id="updated-label">Cargando...</div>
+      <button class="header-logout" onclick="showChecklist()" style="color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.2)">☑ Checklist</button>
       <button class="header-logout" onclick="logout()">Salir</button>
     </div>
   </div>
@@ -367,6 +368,72 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
 
     </div><!-- /dash-content -->
   </div><!-- /main -->
+
+<!-- ── CHECKLIST MODAL ─────────────────────────────────────── -->
+<div id="checklist-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(26,23,20,.7);overflow-y:auto;padding:40px 20px">
+  <div style="max-width:620px;margin:0 auto;background:var(--cream);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="background:var(--ink);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:var(--serif);font-size:20px;color:#fff">Actualización de Ventas</div>
+      <button onclick="hideChecklist()" style="background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;font-family:var(--mono);font-size:12px">✕ Cerrar</button>
+    </div>
+    <div style="padding:24px">
+
+      <div style="height:5px;background:var(--cream-dark);border-radius:3px;margin-bottom:20px;overflow:hidden">
+        <div id="cl-prog" style="height:100%;background:var(--mk);border-radius:3px;transition:width .3s;width:0%"></div>
+      </div>
+
+      <!-- MemoKoala -->
+      <div style="margin-bottom:20px">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mk);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🐨 Shopify MemoKoala</div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Entra al admin de MemoKoala</div><div class="cl-sub">memokoala.myshopify.com/admin → Pedidos</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Exportar CSV sin formato</div><div class="cl-sub">Exportar → Todos los pedidos → Archivo CSV sin formato</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Importar en CSV_SHOPIFY</div><div class="cl-sub">Sheets → Archivo → Importar → Subir CSV → Reemplazar hoja → CSV_SHOPIFY → Separador: Coma → NO convertir fechas</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Procesar</div><div class="cl-sub">🏪 Housebrands → ▶ Procesar CSV Shopify</div></div></div>
+      </div>
+
+      <!-- Montana -->
+      <div style="margin-bottom:20px">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mt);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🔪 Shopify Montana</div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Entra al admin de Montana</div><div class="cl-sub">montanagrills.myshopify.com/admin → Pedidos</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Exportar CSV sin formato</div><div class="cl-sub">Exportar → Todos los pedidos → Archivo CSV sin formato</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Limpiar CSV_SHOPIFY</div><div class="cl-sub">🏪 Housebrands → 🗑 Limpiar CSV_SHOPIFY</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Importar CSV de Montana en CSV_SHOPIFY</div><div class="cl-sub">Archivo → Importar → Subir CSV Montana → Reemplazar hoja → CSV_SHOPIFY → Separador: Coma → NO convertir fechas</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Procesar</div><div class="cl-sub">🏪 Housebrands → ▶ Procesar CSV Shopify</div></div></div>
+      </div>
+
+      <!-- MercadoLibre -->
+      <div style="margin-bottom:20px">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">📦 MercadoLibre</div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Descarga el reporte de ventas</div><div class="cl-sub">vendedores.mercadolibre.cl → Mis ventas → Descargar reporte (.xlsx)</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Abre el Excel y copia todo</div><div class="cl-sub">Doble click en .xlsx → Ctrl+A → Ctrl+C</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Pega en hoja CSV_ML</div><div class="cl-sub">Sheets → pestaña CSV_ML → celda A1 → Ctrl+V</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Procesar</div><div class="cl-sub">🏪 Housebrands → ▶ Procesar Excel MercadoLibre</div></div></div>
+      </div>
+
+      <!-- Verificación -->
+      <div style="margin-bottom:20px">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink-light);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">✅ Verificación Final</div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Actualizar Dashboard de Sheets</div><div class="cl-sub">🏪 Housebrands → 📈 Actualizar Dashboard</div></div></div>
+        <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Verificar números en este dashboard</div><div class="cl-sub">Confirmar que coinciden con Google Sheets</div></div></div>
+      </div>
+
+      <button onclick="clReset()" style="font-family:var(--mono);font-size:11px;background:var(--cream-dark);border:1px solid var(--border);border-radius:8px;padding:8px 16px;cursor:pointer;color:var(--ink-mid)">↺ Reiniciar checklist</button>
+
+    </div>
+  </div>
+</div>
+
+<style>
+.cl-item{display:flex;gap:12px;align-items:flex-start;padding:9px 10px;border-radius:8px;cursor:pointer;transition:background .1s;margin-bottom:3px}
+.cl-item:hover{background:var(--cream-dark)}
+.cl-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cl-item.done .cl-cb{background:var(--mk);border-color:var(--mk)}
+.cl-item.done .cl-cb::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+.cl-item.done .cl-label{text-decoration:line-through;color:var(--ink-light)}
+.cl-label{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.cl-sub{font-size:11px;color:var(--ink-light);font-family:var(--mono);line-height:1.5}
+</style>
+
 </div><!-- /app -->
 
 <script>
@@ -763,6 +830,32 @@ function renderSkuTable(d) {
     </tr>`;
   }).join('');
 }
+
+// ── CHECKLIST ─────────────────────────────────────────────
+function showChecklist() {
+  document.getElementById('checklist-modal').style.display='block';
+  document.body.style.overflow='hidden';
+}
+function hideChecklist() {
+  document.getElementById('checklist-modal').style.display='none';
+  document.body.style.overflow='';
+}
+function clToggle(el) {
+  el.classList.toggle('done');
+  clUpdateProgress();
+}
+function clUpdateProgress() {
+  const total = document.querySelectorAll('.cl-item').length;
+  const done  = document.querySelectorAll('.cl-item.done').length;
+  const pct   = total>0?(done/total*100).toFixed(0):0;
+  document.getElementById('cl-prog').style.width = pct+'%';
+}
+function clReset() {
+  document.querySelectorAll('.cl-item').forEach(el=>el.classList.remove('done'));
+  clUpdateProgress();
+}
+// Cerrar con Escape
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') hideChecklist(); });
 </script>
 </body>
 </html>
