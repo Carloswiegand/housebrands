@@ -282,12 +282,18 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
     <button class="pill"    id="fy26" onclick="sf('y',2026,this)">2026</button>
     <div class="filter-sep"></div>
     <button class="pill on" id="fma" onclick="sf('me',0,this)">Todo</button>
-    <button class="pill"    id="fm1" onclick="sf('me',1,this)">Ene</button>
-    <button class="pill"    id="fm2" onclick="sf('me',2,this)">Feb</button>
-    <button class="pill"    id="fm3" onclick="sf('me',3,this)">Mar</button>
-    <button class="pill"    id="fm4" onclick="sf('me',4,this)">Abr</button>
-    <button class="pill"    id="fm5" onclick="sf('me',5,this)">May</button>
-    <button class="pill"    id="fm12" onclick="sf('me',12,this)">Dic</button>
+    <button class="pill" id="fm1"  onclick="sf('me',1,this)">Ene</button>
+    <button class="pill" id="fm2"  onclick="sf('me',2,this)">Feb</button>
+    <button class="pill" id="fm3"  onclick="sf('me',3,this)">Mar</button>
+    <button class="pill" id="fm4"  onclick="sf('me',4,this)">Abr</button>
+    <button class="pill" id="fm5"  onclick="sf('me',5,this)">May</button>
+    <button class="pill" id="fm6"  onclick="sf('me',6,this)">Jun</button>
+    <button class="pill" id="fm7"  onclick="sf('me',7,this)">Jul</button>
+    <button class="pill" id="fm8"  onclick="sf('me',8,this)">Ago</button>
+    <button class="pill" id="fm9"  onclick="sf('me',9,this)">Sep</button>
+    <button class="pill" id="fm10" onclick="sf('me',10,this)">Oct</button>
+    <button class="pill" id="fm11" onclick="sf('me',11,this)">Nov</button>
+    <button class="pill" id="fm12" onclick="sf('me',12,this)">Dic</button>
   </div>
 
   <div class="main">
@@ -413,7 +419,7 @@ function sf(type, val, el) {
     m:  ['fa','fmk','fmt'],
     c:  ['fca','fsh','fml'],
     y:  ['fya','fy25','fy26'],
-    me: ['fma','fm1','fm2','fm3','fm4','fm5','fm12']
+    me: ['fma','fm1','fm2','fm3','fm4','fm5','fm6','fm7','fm8','fm9','fm10','fm11','fm12']
   };
   groups[type].forEach(id => {
     const e = document.getElementById(id);
