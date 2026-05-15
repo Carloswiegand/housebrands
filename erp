@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HouseBrands · ERP</title>
+<title>Housebrands · ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -277,6 +277,7 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
     <button class="pill on" id="fca" onclick="sf('c','Todos',this)">Todos canales</button>
     <button class="pill"    id="fsh" onclick="sf('c','Shopify',this)">Shopify</button>
     <button class="pill"    id="fml" onclick="sf('c','ML',this)">MercadoLibre</button>
+    <button class="pill"    id="fvd" onclick="sf('c','Venta Directa',this)">Venta Directa</button>
     <div class="filter-sep"></div>
     <button class="pill on" id="fya" onclick="sf('y',0,this)">Todos los años</button>
     <button class="pill"    id="fy25" onclick="sf('y',2025,this)">2025</button>
@@ -484,7 +485,7 @@ function sf(type, val, el) {
   filters[type] = val;
   const groups = {
     m:  ['fa','fmk','fmt'],
-    c:  ['fca','fsh','fml'],
+    c:  ['fca','fsh','fml','fvd'],
     y:  ['fya','fy25','fy26'],
     me: ['fma','fm1','fm2','fm3','fm4','fm5','fm6','fm7','fm8','fm9','fm10','fm11','fm12']
   };
@@ -567,7 +568,11 @@ function parseCSV(text) {
     const mb_final  = mb !== 0 ? mb  : (vb - costo);
     const mrg_final = mrg !== 0 ? mrg : (vb > 0 ? (mb_final/vb)*100 : 0);
 
-    const fecha = cols[0]?.trim()||'';
+    // Normalize fecha to yyyy-mm-dd regardless of input format
+    let fecha = cols[0]?.trim()||'';
+    // Handle DD-MM-YYYY or DD/MM/YYYY → convert to YYYY-MM-DD
+    const dmyMatch = fecha.match(/^(\d{2})[\-\/](\d{2})[\-\/](\d{4})$/);
+    if(dmyMatch) fecha = dmyMatch[3]+'-'+dmyMatch[2]+'-'+dmyMatch[1];
 
     records.push({fecha, mes, anio, marca, canal, sku, prod, qty,
                   vb, costo, mb: mb_final, mrg: mrg_final});
@@ -714,8 +719,8 @@ function renderMonthBars(d) {
     const hmk=tot>0?(v.mk/tot)*h:h/2, hmt=h-hmk;
     return `<div class="mbar-col">
       <div class="mbar-wrap" style="flex-direction:column;justify-content:flex-end">
-        <div class="mbar" style="height:${hmt}px;background:var(--mt-mid);opacity:.8" data-tip="${v.lbl} Montana: ${clp(v.mt)}"></div>
-        <div class="mbar" style="height:${hmk}px;background:var(--mk)" data-tip="${v.lbl} MemoKoala: ${clp(v.mk)}"></div>
+        <div class="mbar" style="height:${hmt}px;background:var(--mt-mid);opacity:.8" data-tip="${v.lbl}: ${clp(tot)}"></div>
+        <div class="mbar" style="height:${hmk}px;background:var(--mk)" data-tip="${v.lbl}: ${clp(tot)}"></div>
       </div>
       <div class="mbar-lbl">${v.lbl}</div>
     </div>`;
