@@ -412,7 +412,7 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
 // ── CONFIG ────────────────────────────────────────────────
 const PASSWORD   = '200487';
 const CSV_VENTAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
-const CSV_PNL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1129827764&single=true&output=csv';
+const CSV_PNL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1550913517&single=true&output=csv';
 
 // ── AUTH ──────────────────────────────────────────────────
 function checkLogin(){
