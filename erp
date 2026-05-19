@@ -141,12 +141,12 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
 .pnl-wrap{overflow-x:auto;width:100%}
 .pnl-table{border-collapse:collapse;width:100%;min-width:900px}
 .pnl-table th{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-light);padding:7px 10px;text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;background:#fff;position:sticky;top:0}
-.pnl-table th:first-child{text-align:left;min-width:200px;position:sticky;left:0;z-index:2;background:#fff}
-.pnl-table th:nth-child(2){text-align:left;min-width:80px;background:#fff}
+.pnl-table th:first-child{text-align:left;min-width:170px;position:sticky;left:0;z-index:2;background:#fff}
+.pnl-table th:nth-child(2){text-align:left;min-width:65px;background:#fff}
 .pnl-table th.th-total{background:var(--cream-dark);font-weight:700;color:var(--ink)}
 .pnl-table td{font-family:var(--mono);font-size:10px;padding:6px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--cream-dark)}
 .pnl-table td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1;min-width:200px}
-.pnl-table td:nth-child(2){text-align:left;color:var(--ink-dim);font-size:9px;min-width:80px}
+.pnl-table td:nth-child(2){text-align:left;color:var(--ink-dim);font-size:9px;min-width:65px}
 .pnl-table td.td-total{background:var(--cream-dark);font-weight:700}
 .pnl-table tr:hover td{background:var(--cream)}
 .pnl-table tr:hover td:first-child{background:var(--cream)}
@@ -412,7 +412,7 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
 // ── CONFIG ────────────────────────────────────────────────
 const PASSWORD   = '200487';
 const CSV_VENTAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
-const CSV_PNL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1550913517&single=true&output=csv';
+const CSV_PNL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1843070423&single=true&output=csv';
 
 // ── AUTH ──────────────────────────────────────────────────
 function checkLogin(){
