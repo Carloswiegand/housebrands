@@ -142,11 +142,11 @@ tbody td:first-child{text-align:left;color:var(--ink-mid)}
 .pnl-table{border-collapse:collapse;width:100%;min-width:900px}
 .pnl-table th{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-light);padding:7px 10px;text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;background:#fff;position:sticky;top:0}
 .pnl-table th:first-child{text-align:left;min-width:200px;position:sticky;left:0;z-index:2;background:#fff}
-.pnl-table th:nth-child(2){text-align:left;min-width:140px;background:#fff}
+.pnl-table th:nth-child(2){text-align:left;min-width:80px;background:#fff}
 .pnl-table th.th-total{background:var(--cream-dark);font-weight:700;color:var(--ink)}
 .pnl-table td{font-family:var(--mono);font-size:10px;padding:6px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--cream-dark)}
 .pnl-table td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1;min-width:200px}
-.pnl-table td:nth-child(2){text-align:left;color:var(--ink-dim);font-size:9px;min-width:140px}
+.pnl-table td:nth-child(2){text-align:left;color:var(--ink-dim);font-size:9px;min-width:80px}
 .pnl-table td.td-total{background:var(--cream-dark);font-weight:700}
 .pnl-table tr:hover td{background:var(--cream)}
 .pnl-table tr:hover td:first-child{background:var(--cream)}
@@ -715,7 +715,12 @@ function renderPnL(){
 
   // Margen × Canal — ahora los valores ya vienen como % correctos
   const renderCanalMrg=(shConcepto,mlConcepto,containerId)=>{
-    const shRow=findRow(shConcepto),mlRow=findRow(mlConcepto);
+    // Búsqueda flexible: acepta × o x como separador
+    const findFlex=term=>{
+      const t=term.toLowerCase().replace(/[×x]/g,'.');
+      return rows.find(r=>r.concepto.toLowerCase().replace(/[×x]/g,'.').includes(t));
+    };
+    const shRow=findFlex(shConcepto),mlRow=findFlex(mlConcepto);
     const channels=[
       {label:'Shopify',row:shRow,color:'var(--green)',cls:'b-sh'},
       {label:'MercadoLibre',row:mlRow,color:'var(--gold)',cls:'b-ml'},
@@ -737,8 +742,8 @@ function renderPnL(){
       </div>`;
     }).join('');
   };
-  renderCanalMrg('MemoKoala × Shopify','MemoKoala × MercadoLibre','pnl-mk-canal');
-  renderCanalMrg('Montana × Shopify','Montana × MercadoLibre','pnl-mt-canal');
+  renderCanalMrg('% Margen MemoKoala × Shopify','% Margen MemoKoala × MercadoLibre','pnl-mk-canal');
+  renderCanalMrg('% Margen Montana × Shopify','% Margen Montana × MercadoLibre','pnl-mt-canal');
 
   // Tabla completa
   renderPnLTable(idxs,labels,false);
