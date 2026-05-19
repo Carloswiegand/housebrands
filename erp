@@ -443,7 +443,7 @@ function switchTab(tab){
     document.getElementById('tab-'+t).className='tab'+(t===tab?' active':'');
   });
   if(tab==='pnl'&&!pnlLoaded) loadPnL();
-  if(tab==='historico') renderHistorico();
+  if(tab==='historico') renderHistorico(); // handles auto-load internally
 }
 
 // ── VENTAS ────────────────────────────────────────────────
@@ -599,22 +599,23 @@ function getPeriodMeses(){
   if(!meses.length) return{idxs:[],labels:[]};
 
   if(pnlPeriod==='corrido'){
-    // Last 12 months (excluding TOTAL)
-    const last12=meses.slice(-12);
-    const idxs=last12.map((_,i)=>meses.length-last12.length+i);
-    return{idxs,labels:last12};
+    // Sort meses chronologically, take last 12
+    const ord=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    const indexed=meses.map((m,i)=>({m,i})).sort((a,b)=>{
+      const ya=parseInt('20'+a.m.slice(-2)),yb=parseInt('20'+b.m.slice(-2));
+      if(ya!==yb) return ya-yb;
+      return ord.indexOf(a.m.slice(0,3).toLowerCase())-ord.indexOf(b.m.slice(0,3).toLowerCase());
+    });
+    const last12=indexed.slice(-12);
+    return{idxs:last12.map(x=>x.i),labels:last12.map(x=>x.m)};
   }
-  if(pnlPeriod==='2026'){
-    const idxs=[],labels=[];
-    meses.forEach((m,i)=>{if(m.toLowerCase().includes('-26')){idxs.push(i);labels.push(m);}});
-    return{idxs,labels};
-  }
-  if(pnlPeriod==='2025'){
-    const idxs=[],labels=[];
-    meses.forEach((m,i)=>{if(m.toLowerCase().includes('-25')){idxs.push(i);labels.push(m);}});
-    return{idxs,labels};
-  }
-  return{idxs:[],labels:[]};
+  // Year filter
+  const idxs=[],labels=[];
+  const yrSuffix=pnlPeriod.slice(2); // '25' or '26'
+  meses.forEach((m,i)=>{
+    if(m.slice(-2)===yrSuffix){idxs.push(i);labels.push(m);}
+  });
+  return{idxs,labels};
 }
 
 function buildPeriodPills(){
@@ -824,10 +825,14 @@ function renderPnLTable(idxs,labels,compact){
 }
 
 // ── HISTÓRICO ─────────────────────────────────────────────
-function renderHistorico(){
+async function renderHistorico(){
+  if(!pnlLoaded){
+    document.getElementById('hist-content').innerHTML='<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div><div style="margin-top:12px;font-family:var(--mono);font-size:11px">Cargando P&L...</div></div>';
+    await loadPnL();
+  }
   const {meses,rows}=PNL_RAW;
   if(!meses.length){
-    document.getElementById('hist-content').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:var(--ink-light)">Carga el P&L primero desde la pestaña P&L.</div>';
+    document.getElementById('hist-content').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:var(--ink-light)">No hay datos de P&L disponibles.</div>';
     return;
   }
   const years=[...new Set(meses.map(m=>'20'+m.slice(-2)))].sort();
