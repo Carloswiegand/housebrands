@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contabilidad — HouseBrands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root {
+  --black: #1C2B3A;
+  --white: #F7F6F3;
+  --off: #EEECE8;
+  --mid: #2C3E4C;
+  --gray: #7A8F9E;
+  --line: rgba(28,43,58,0.1);
+  --accent: #4A6274;
+  --accent-light: #8AA4B4;
+  --green: #2d7a3a;
+  --green-light: #f0faf1;
+  --orange: #c47c1a;
+  --orange-light: #fff8ee;
+  --red: #c0392b;
+  --font-d: 'Instrument Sans', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-b); background: var(--white); color: var(--black); min-height: 100vh; }
+
+/* LOGIN */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mid);
+  padding: 2rem;
+}
+.login-box {
+  background: var(--white);
+  border-radius: 4px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 380px;
+}
+.login-logo {
+  margin-bottom: 2.5rem;
+}
+.login-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.login-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-b);
+  font-size: 0.9rem;
+  color: var(--black);
+  background: var(--off);
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 1rem;
+}
+.login-input:focus { border-color: var(--accent); background: var(--white); }
+.login-btn {
+  width: 100%;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  border-radius: 2px;
+  padding: 0.85rem;
+  font-family: var(--font-d);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.login-btn:hover { background: var(--accent); }
+.login-error {
+  font-size: 0.8rem;
+  color: var(--red);
+  margin-top: 0.75rem;
+  display: none;
+  text-align: center;
+}
+
+/* APP */
+#app { display: none; }
+
+/* NAV */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2.5rem;
+  background: rgba(247,246,243,0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-logo { text-decoration: none; line-height: 0; }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.nav-month {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.month-btn {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  width: 26px; height: 26px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--gray);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+.month-btn:hover { border-color: var(--accent); color: var(--black); }
+.month-label {
+  font-family: var(--font-d);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--black);
+  min-width: 140px;
+  text-align: center;
+}
+.nav-logout {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-family: var(--font-b);
+  transition: color 0.2s, border-color 0.2s;
+}
+.nav-logout:hover { color: var(--red); border-color: var(--red); }
+
+/* MAIN */
+main { max-width: 800px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+/* PROGRESS */
+.progress-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+}
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+.progress-title {
+  font-family: var(--font-d);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.progress-pct {
+  font-family: var(--font-d);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--black);
+}
+.progress-bar-bg {
+  background: var(--off);
+  border-radius: 4px;
+  height: 5px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--orange);
+  transition: width 0.4s ease, background 0.4s ease;
+}
+.progress-status {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+.progress-status .done { font-weight: 500; }
+
+/* DEADLINES */
+.deadlines {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.deadline-item {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.875rem 0.75rem;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.deadline-item.today {
+  border-color: var(--orange);
+  background: var(--orange-light);
+}
+.deadline-item.past {
+  background: var(--off);
+  opacity: 0.5;
+}
+.deadline-item.upcoming {
+  border-color: var(--accent-light);
+}
+.deadline-day {
+  font-family: var(--font-d);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--black);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.deadline-item.today .deadline-day { color: var(--orange); }
+.deadline-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--gray);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+.deadline-item.today .deadline-label { color: var(--orange); font-weight: 600; }
+
+/* GROUP */
+.group { margin-bottom: 1.75rem; }
+.group-header {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.group-count {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--accent-light);
+  font-family: var(--font-d);
+}
+
+/* ITEM */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.875rem 0.75rem;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.15s;
+  border-left: 2px solid transparent;
+  margin-bottom: 2px;
+  user-select: none;
+}
+.checklist-item:hover { background: var(--off); }
+.checklist-item.done {
+  background: var(--green-light);
+  border-left-color: var(--green);
+}
+.checkbox {
+  width: 17px; height: 17px;
+  border-radius: 3px;
+  border: 1.5px solid var(--line);
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  background: var(--white);
+}
+.checklist-item.done .checkbox {
+  background: var(--green);
+  border-color: var(--green);
+}
+.checkbox svg { width: 10px; height: 10px; stroke: white; display: none; }
+.checklist-item.done .checkbox svg { display: block; }
+.item-required .checkbox { border-color: var(--orange); }
+.item-content { flex: 1; }
+.item-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: var(--font-b);
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.3;
+  margin-bottom: 0.2rem;
+}
+.checklist-item.done .item-label {
+  color: var(--gray);
+  text-decoration: line-through;
+}
+.badge-req {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--orange-light);
+  color: var(--orange);
+  padding: 1px 5px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.item-desc {
+  font-size: 0.775rem;
+  color: var(--gray);
+  line-height: 1.4;
+  font-weight: 300;
+}
+.checklist-item.done .item-desc { color: #bbb; }
+
+/* EMAIL DRAFT */
+.email-section {
+  margin-top: 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.email-header {
+  padding: 1rem 1.5rem;
+  background: var(--off);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.email-title {
+  font-family: var(--font-d);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.email-actions { display: flex; gap: 0.5rem; }
+.email-btn {
+  font-size: 0.7rem;
+  font-weight: 500;
+  font-family: var(--font-b);
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 2px;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--black);
+  transition: all 0.2s;
+}
+.email-btn:hover { border-color: var(--accent); }
+.email-btn.primary {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+.email-btn.primary:hover { background: var(--accent); border-color: var(--accent); }
+.email-body {
+  padding: 1.5rem;
+  background: var(--white);
+}
+.email-meta {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 0.3rem 0.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.8rem;
+}
+.email-meta-label {
+  font-weight: 600;
+  color: var(--gray);
+  text-align: right;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  padding-top: 1px;
+}
+.email-meta-value { color: var(--black); }
+.email-textarea {
+  width: 100%;
+  min-height: 320px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 1rem;
+  font-family: var(--font-b);
+  font-size: 0.825rem;
+  line-height: 1.7;
+  color: var(--black);
+  background: var(--off);
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.email-textarea:focus { border-color: var(--accent); background: var(--white); }
+
+/* RESET */
+.reset-btn {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.7rem;
+  font-family: var(--font-b);
+  color: var(--gray);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  letter-spacing: 0.05em;
+}
+.reset-btn:hover { color: var(--red); border-color: var(--red); }
+
+/* SAVED */
+.save-status {
+  font-size: 0.7rem;
+  color: var(--gray);
+  transition: color 0.3s;
+  letter-spacing: 0.03em;
+}
+.save-status.saved { color: var(--green); }
+
+/* ALL DONE */
+.all-done {
+  display: none;
+  background: var(--green-light);
+  border: 1px solid #b6debb;
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.all-done.visible { display: block; }
+.all-done-title {
+  font-family: var(--font-d);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 0.25rem;
+}
+.all-done-sub { font-size: 0.8rem; color: #5a9a66; }
+
+/* FOOTER */
+footer {
+  background: var(--mid);
+  padding: 1.5rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.05em;
+}
+footer a { color: inherit; text-decoration: none; }
+
+@media (max-width: 640px) {
+  nav { padding: 0.875rem 1rem; }
+  main { padding: 1.5rem 1rem 3rem; }
+  .deadlines { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+  .deadlines .deadline-item:nth-child(4),
+  .deadlines .deadline-item:nth-child(5) { display: none; }
+  .email-meta { grid-template-columns: 50px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="160" height="28" viewBox="0 0 192 32" fill="none">
+        <polygon points="0,0 13,0 13,13" fill="#2C3E4C"/>
+        <polygon points="13,0 28,0 28,13 13,13" fill="#4A6274"/>
+        <polygon points="0,15 13,15 13,28 0,28" fill="#8AA4B4"/>
+        <polygon points="13,15 28,28 13,28" fill="#2C3E4C"/>
+        <text x="36" y="22" font-family="Instrument Sans, sans-serif" font-size="16" font-weight="600" letter-spacing="-0.02em" fill="#1C2B3A">House<tspan fill="#4A6274">Brands</tspan></text>
+      </svg>
+    </div>
+    <label class="login-label" for="pwd">Contabilidad — Acceso interno</label>
+    <input type="password" id="pwd" class="login-input" placeholder="Contraseña" autocomplete="current-password">
+    <button class="login-btn" onclick="checkLogin()">Entrar</button>
+    <div class="login-error" id="login-error">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">
+      <svg width="140" height="24" viewBox="0 0 192 32" fill="none">
+        <polygon points="0,0 13,0 13,13" fill="#2C3E4C"/>
+        <polygon points="13,0 28,0 28,13 13,13" fill="#4A6274"/>
+        <polygon points="0,15 13,15 13,28 0,28" fill="#8AA4B4"/>
+        <polygon points="13,15 28,28 13,28" fill="#2C3E4C"/>
+        <text x="36" y="22" font-family="Instrument Sans, sans-serif" font-size="16" font-weight="600" letter-spacing="-0.02em" fill="#1C2B3A">House<tspan fill="#4A6274">Brands</tspan></text>
+      </svg>
+    </a>
+    <div class="nav-right">
+      <div class="nav-month">
+        <button class="month-btn" onclick="changeMonth(-1)">‹</button>
+        <div class="month-label" id="month-label">—</div>
+        <button class="month-btn" onclick="changeMonth(1)">›</button>
+      </div>
+      <button class="reset-btn" onclick="resetMonth()">Reiniciar mes</button>
+      <span class="save-status" id="save-status">Se guarda automáticamente</span>
+      <button class="nav-logout" onclick="logout()">Salir</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- PROGRESS -->
+    <div class="progress-card">
+      <div class="progress-top">
+        <span class="progress-title">Documentos → Sandra / BP Consulting</span>
+        <span class="progress-pct" id="prog-pct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-status">
+        <span id="prog-count">0 de 0 completados</span>
+        <span id="prog-req" class="done"></span>
+      </div>
+    </div>
+
+    <!-- DEADLINES -->
+    <div class="deadlines" id="deadlines"></div>
+
+    <!-- ALL DONE -->
+    <div class="all-done" id="all-done">
+      <div class="all-done-title">✓ Todos los obligatorios enviados</div>
+      <div class="all-done-sub" id="all-done-sub"></div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div id="checklist-container"></div>
+
+    <!-- EMAIL DRAFT -->
+    <div class="email-section">
+      <div class="email-header">
+        <span class="email-title">Borrador email → Sandra</span>
+        <div class="email-actions">
+          <button class="email-btn" onclick="regenerateEmail()">Regenerar</button>
+          <button class="email-btn primary" onclick="copyEmail()">Copiar todo</button>
+        </div>
+      </div>
+      <div class="email-body">
+        <div class="email-meta">
+          <span class="email-meta-label">Para:</span>
+          <span class="email-meta-value">sandra@bp-consulting.cl; aboul@bp-consulting.cl</span>
+          <span class="email-meta-label">Asunto:</span>
+          <span class="email-meta-value" id="email-subject">—</span>
+        </div>
+        <textarea class="email-textarea" id="email-body" spellcheck="true"></textarea>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>Housebrands Commerce SpA — RUT 77.993.029-7</span>
+    <span>Uso interno · <a href="/">housebrands.cl</a></span>
+  </footer>
+
+</div>
+
+<script>
+// ─── AUTH ────────────────────────────────────────────────────────
+const HASH = "cb98b77a5f6462e8153227ada622e61cc0a0fe8306b6c0ccd72f72aa0acfda5f";
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function checkLogin() {
+  const val = document.getElementById("pwd").value;
+  const h = await sha256(val);
+  if (h === HASH) {
+    sessionStorage.setItem("hb-auth", "1");
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    init();
+  } else {
+    document.getElementById("login-error").style.display = "block";
+    document.getElementById("pwd").value = "";
+  }
+}
+
+document.getElementById("pwd").addEventListener("keydown", e => {
+  if (e.key === "Enter") checkLogin();
+});
+
+function logout() {
+  sessionStorage.removeItem("hb-auth");
+  location.reload();
+}
+
+// ─── DATA ────────────────────────────────────────────────────────
+const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
+                "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+const DEADLINES = [
+  { day: 12, label: "Previred\n~$680.000" },
+  { day: 15, label: "Docs\na Sandra" },
+  { day: 17, label: "Factura\nShopify MK" },
+  { day: 19, label: "F29 SII\n~$89.000" },
+  { day: 21, label: "Factura\nShopify MG" },
+];
+
+const GROUPS = [
+  {
+    id: "banco",
+    label: "Banco BCI / Mach",
+    items: [
+      { id:"banco_excel",  req:true,  label:"Cartola mensual Excel",         desc:"Descargar desde banca empresa BCI — cuenta Housebrands Commerce SpA (32630786)" },
+      { id:"banco_nac",    req:true,  label:"Estado de cuenta nacional PDF",  desc:"PDF estado cuenta nacional del período" },
+      { id:"banco_int",    req:true,  label:"Estado de cuenta internacional PDF", desc:"PDF estado cuenta internacional del período" },
+    ]
+  },
+  {
+    id: "meli",
+    label: "MercadoLibre",
+    items: [
+      { id:"meli_pdf_pub",  req:true,  label:"PDF Servicio publicación y ventas",  desc:"Descargar desde panel vendedor MeLi — facturación del período" },
+      { id:"meli_pdf_nc",   req:false, label:"PDF Notas de crédito",               desc:"Bonificaciones, FLEX, devoluciones — solo si hubo en el período" },
+      { id:"meli_pdf_nd",   req:false, label:"PDF Notas de débito",                desc:"Anulaciones y cargos — solo si hubo en el período" },
+      { id:"meli_xls_fac",  req:true,  label:"Excel Reporte Facturación MeLi",     desc:"Reporte Excel completo de facturación del período" },
+      { id:"meli_xls_nc",   req:false, label:"Excel Reporte Notas de crédito",     desc:"Solo cuando corresponda" },
+      { id:"meli_xls_nd",   req:false, label:"Excel Reporte Notas de débito",      desc:"Solo cuando corresponda" },
+      { id:"meli_xls_pag",  req:true,  label:"Excel Reporte Pagos Facturas",       desc:"Reporte de pagos del período" },
+    ]
+  },
+  {
+    id: "mp",
+    label: "MercadoPago",
+    items: [
+      { id:"mp_pdf_cargo",  req:true,  label:"PDF Cargo por uso del sitio",         desc:"Comisión por ventas en Shopify vía MercadoPago" },
+      { id:"mp_xls_fac",    req:true,  label:"Excel Reporte Facturación MP",        desc:"Reporte Excel de facturación MercadoPago del período" },
+      { id:"mp_estado",     req:true,  label:"Estado de cuenta MercadoPago",        desc:"Incluye todas las transacciones: MP, ML, bonificaciones, anulaciones, créditos y débitos" },
+    ]
+  },
+  {
+    id: "shopify",
+    label: "Shopify",
+    items: [
+      { id:"shopify_mk",  req:true,  label:"Factura Shopify MemoKoala",      desc:"Llega ~día 17 de billing@shopify.com — reenviar a Sandra" },
+      { id:"shopify_mg",  req:true,  label:"Factura Shopify Montana Grills", desc:"Llega ~día 21 de billing@shopify.com — reenviar a Sandra" },
+    ]
+  },
+  {
+    id: "proveedores",
+    label: "Facturas proveedores",
+    items: [
+      { id:"fee_thelinkit", req:true,  label:"Factura THE LINK IT",           desc:"Fee agencia — llega primeros días del mes de pagos@thelinkit.com" },
+      { id:"fee_bpc",       req:true,  label:"Factura BP Consulting",         desc:"Llega fin de mes / inicio siguiente de aboul@bp-consulting.cl" },
+      { id:"fulfillment",   req:false, label:"Facturas fulfillment 3PL",      desc:"Abee Chile — con desglose: envíos + comisión % sobre venta (cuando aplique)" },
+      { id:"google_ads",    req:false, label:"Factura Google Ads",            desc:"Descargar desde panel de facturación Google Ads (cuando aplique)" },
+      { id:"tc",            req:false, label:"Estado TC nacional e internacional", desc:"Cuando haya gastos operacionales en tarjeta de crédito" },
+      { id:"importacion",   req:false, label:"Facturas importación",          desc:"Factura proveedor + DUS + conocimiento de embarque (cuando hubo compra)" },
+    ]
+  },
+  {
+    id: "remu",
+    label: "Remuneraciones",
+    items: [
+      { id:"remuneraciones", req:false, label:"Cambios en remuneraciones",    desc:"Solo avisar si hay cambios de sueldo, nuevas contrataciones o finiquitos" },
+    ]
+  }
+];
+
+// ─── STATE ───────────────────────────────────────────────────────
+const STORAGE_KEY = "hb-checklist-v2";
+let state = {};
+let curYear, curMonth;
+
+function monthKey(y, m) { return `${y}-${String(m+1).padStart(2,"0")}`; }
+
+function loadState() {
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch { state = {}; }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  const s = document.getElementById("save-status");
+  s.textContent = "✓ Guardado";
+  s.classList.add("saved");
+  setTimeout(() => { s.textContent = "Se guarda automáticamente"; s.classList.remove("saved"); }, 1500);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────
+function init() {
+  loadState();
+  const now = new Date();
+  curYear = now.getFullYear();
+  curMonth = now.getMonth();
+  render();
+}
+
+function changeMonth(dir) {
+  curMonth += dir;
+  if (curMonth < 0) { curMonth = 11; curYear--; }
+  if (curMonth > 11) { curMonth = 0; curYear++; }
+  render();
+}
+
+function resetMonth() {
+  if (!confirm(`¿Reiniciar el checklist de ${MONTHS[curMonth]} ${curYear}?`)) return;
+  const key = monthKey(curYear, curMonth);
+  state[key] = {};
+  saveState();
+  render();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────
+function render() {
+  const key = monthKey(curYear, curMonth);
+  const checked = state[key] || {};
+
+  document.getElementById("month-label").textContent = `${MONTHS[curMonth]} ${curYear}`;
+
+  // All items flat
+  const allItems = GROUPS.flatMap(g => g.items);
+  const reqItems = allItems.filter(i => i.req);
+  const totalDone = allItems.filter(i => checked[i.id]).length;
+  const reqDone = reqItems.filter(i => checked[i.id]).length;
+  const pct = allItems.length ? Math.round((totalDone / allItems.length) * 100) : 0;
+  const allReqDone = reqDone === reqItems.length;
+
+  // Progress
+  document.getElementById("prog-pct").textContent = pct + "%";
+  const bar = document.getElementById("prog-bar");
+  bar.style.width = pct + "%";
+  bar.style.background = allReqDone ? "var(--green)" : "var(--orange)";
+  document.getElementById("prog-count").textContent = `${totalDone} de ${allItems.length} completados`;
+  const reqEl = document.getElementById("prog-req");
+  reqEl.textContent = allReqDone ? "✓ Obligatorios listos" : `${reqDone}/${reqItems.length} obligatorios`;
+  reqEl.style.color = allReqDone ? "var(--green)" : "var(--orange)";
+
+  // All done banner
+  const adEl = document.getElementById("all-done");
+  document.getElementById("all-done-sub").textContent = `Sandra tiene todo lo necesario para el cierre de ${MONTHS[curMonth]} ${curYear}`;
+  adEl.classList.toggle("visible", allReqDone && reqDone > 0);
+
+  // Deadlines
+  renderDeadlines();
+
+  // Checklist
+  const container = document.getElementById("checklist-container");
+  container.innerHTML = "";
+  GROUPS.forEach(group => {
+    const groupDone = group.items.filter(i => checked[i.id]).length;
+    const div = document.createElement("div");
+    div.className = "group";
+    div.innerHTML = `
+      <div class="group-header">
+        <span>${group.label}</span>
+        <span class="group-count">${groupDone}/${group.items.length}</span>
+      </div>
+    `;
+    group.items.forEach(item => {
+      const done = !!checked[item.id];
+      const row = document.createElement("div");
+      row.className = `checklist-item${done ? " done" : ""}${item.req ? " item-required" : ""}`;
+      row.innerHTML = `
+        <div class="checkbox">
+          <svg viewBox="0 0 12 10" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1,5 4,8 11,1"/>
+          </svg>
+        </div>
+        <div class="item-content">
+          <div class="item-label">
+            ${item.label}
+            ${item.req && !done ? '<span class="badge-req">Obligatorio</span>' : ""}
+          </div>
+          <div class="item-desc">${item.desc}</div>
+        </div>
+      `;
+      row.addEventListener("click", () => toggle(item.id));
+      div.appendChild(row);
+    });
+    container.appendChild(div);
+  });
+
+  // Email
+  renderEmail(checked);
+}
+
+function toggle(id) {
+  const key = monthKey(curYear, curMonth);
+  if (!state[key]) state[key] = {};
+  state[key][id] = !state[key][id];
+  saveState();
+  render();
+}
+
+// ─── DEADLINES ───────────────────────────────────────────────────
+function renderDeadlines() {
+  const today = new Date().getDate();
+  const isCurrentMonth = curYear === new Date().getFullYear() && curMonth === new Date().getMonth();
+  const container = document.getElementById("deadlines");
+  container.innerHTML = "";
+  DEADLINES.forEach(d => {
+    const div = document.createElement("div");
+    div.className = "deadline-item";
+    if (isCurrentMonth) {
+      if (d.day === today) div.classList.add("today");
+      else if (d.day < today) div.classList.add("past");
+      else if (d.day - today <= 5) div.classList.add("upcoming");
+    }
+    div.innerHTML = `
+      <div class="deadline-day">${d.day}</div>
+      <div class="deadline-label">${d.label.replace(/\n/g,"<br>")}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// ─── EMAIL ───────────────────────────────────────────────────────
+function renderEmail(checked) {
+  const mes = MONTHS[curMonth];
+  const año = curYear;
+
+  const subject = `Documentos contables ${mes} ${año} — Housebrands Commerce SpA`;
+  document.getElementById("email-subject").textContent = subject;
+
+  const doneLabels = GROUPS.flatMap(g =>
+    g.items.filter(i => checked[i.id]).map(i => `- ${i.label}`)
+  );
+  const pendingReq = GROUPS.flatMap(g =>
+    g.items.filter(i => i.req && !checked[i.id]).map(i => `- ${i.label} (pendiente)`)
+  );
+
+  let body = `Hola Sandra,\n\nTe envío los documentos contables correspondientes al período ${mes} ${año} para Housebrands Commerce SpA (RUT 77.993.029-7).\n\n`;
+
+  if (doneLabels.length > 0) {
+    body += `Documentos adjuntos en este correo:\n${doneLabels.join("\n")}\n`;
+  }
+
+  if (pendingReq.length > 0) {
+    body += `\nDocumentos obligatorios aún pendientes de llegar:\n${pendingReq.join("\n")}\n`;
+    body += `\nLos enviaré en cuanto los tenga disponibles.\n`;
+  }
+
+  body += `\nQuedo atento ante cualquier consulta.\n\nSaludos,\nCarlos Wiegand\nHousebrands Commerce SpA`;
+
+  document.getElementById("email-body").value = body;
+}
+
+function regenerateEmail() {
+  const key = monthKey(curYear, curMonth);
+  const checked = state[key] || {};
+  renderEmail(checked);
+}
+
+function copyEmail() {
+  const subject = document.getElementById("email-subject").textContent;
+  const body = document.getElementById("email-body").value;
+  const full = `Asunto: ${subject}\n\n${body}`;
+  navigator.clipboard.writeText(full).then(() => {
+    const btn = document.querySelector(".email-btn.primary");
+    btn.textContent = "✓ Copiado";
+    setTimeout(() => btn.textContent = "Copiar todo", 1800);
+  });
+}
+
+// ─── AUTO-LOGIN ──────────────────────────────────────────────────
+if (sessionStorage.getItem("hb-auth") === "1") {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  init();
+}
+</script>
+</body>
+</html>
