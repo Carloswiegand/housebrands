@@ -325,7 +325,7 @@ tbody td:first-child{text-align:left;color:var(--slate-mid);}
         <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
         <polygon points="17,19 36,36 17,36" fill="#4A6274"/>
       </svg>
-      House<span>Brands</span>&nbsp;<span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.3);letter-spacing:0.1em;">ERP</span>
+      House<span style="color:var(--slate-light);">Brands</span><span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.3);letter-spacing:0.1em;margin-left:10px;">ERP</span>
     </div>
     <div class="header-right">
       <div class="header-updated" id="updated-label">Cargando...</div>
