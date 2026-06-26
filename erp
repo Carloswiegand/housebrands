@@ -509,12 +509,12 @@ tbody td:first-child{text-align:left;color:var(--slate-mid);}
         <div style="margin-bottom:20px">
           <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mk);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🐨 Shopify MemoKoala</div>
           <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Exportar CSV sin formato</div><div class="cl-sub">memokoala.myshopify.com → Pedidos → Exportar → CSV sin formato</div></div></div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Importar en CSV_SHOPIFY y procesar</div><div class="cl-sub">Sheets → Importar → Reemplazar CSV_SHOPIFY → 🏪 Procesar CSV Shopify</div></div></div>
+          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Importar en CSV_SHOPIFY y procesar</div><div class="cl-sub">Sheets → Importar → Reemplazar CSV_SHOPIFY → ⚠️ desactivar "Convertir texto en números, fechas y fórmulas" → 🏪 Procesar CSV Shopify</div></div></div>
         </div>
         <div style="margin-bottom:20px">
           <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mt);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🔪 Shopify Montana</div>
           <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Exportar CSV sin formato</div><div class="cl-sub">montanagrills.myshopify.com → Pedidos → Exportar → CSV sin formato</div></div></div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Limpiar CSV_SHOPIFY, importar Montana y procesar</div><div class="cl-sub">🏪 Limpiar CSV_SHOPIFY → Importar CSV Montana → 🏪 Procesar CSV Shopify</div></div></div>
+          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Limpiar CSV_SHOPIFY, importar Montana y procesar</div><div class="cl-sub">🏪 Limpiar CSV_SHOPIFY → Importar CSV Montana → ⚠️ desactivar "Convertir texto en números, fechas y fórmulas" → 🏪 Procesar CSV Shopify</div></div></div>
         </div>
         <div style="margin-bottom:20px">
           <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">📦 MercadoLibre</div>
