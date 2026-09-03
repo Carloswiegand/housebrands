@@ -5,529 +5,406 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HouseBrands · ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  /* ── HouseBrands Brand System ── */
-  --slate-night:#1C2B3A;
-  --slate-dark:#2C3E4C;
-  --slate-mid:#4A6274;
-  --slate-light:#8AA4B4;
-  --slate-pale:#D6E4EC;
-  --cream:#F7F6F3;
-  --off:#EEECE8;
-  --gray:#7A8F9E;
-  --line:rgba(28,43,58,0.1);
-  --fd:'Instrument Sans',sans-serif;
-  --fb:'DM Sans',sans-serif;
-  --mono:'DM Mono',monospace;
-  /* ── functional ── */
-  --mk:#3d7a62;--mk-light:#eaf4ef;--mk-mid:#a8d0bc;
-  --mt:#b85a2a;--mt-light:#f7ede6;--mt-mid:#e0a882;
-  --gold:#c9a227;--gold-light:#fdf6e3;
-  --red:#c0392b;--red-light:#fdecea;
-  --green:#27a05a;--green-light:#e8f8ee;
-  --border:rgba(28,43,58,0.12);
-  --shadow:0 1px 3px rgba(28,43,58,0.06),0 4px 16px rgba(28,43,58,0.04);
+  --bg:#0d0f14;
+  --bg1:#13161e;
+  --bg2:#181c26;
+  --bg3:#1e2330;
+  --line:#ffffff0f;
+  --line2:#ffffff18;
+  --txt:#e8eaf0;
+  --txt2:#8892a4;
+  --txt3:#4a5568;
+  --mk:#3ecf8e;
+  --mk-dim:#1a3d2e;
+  --mt:#f4a261;
+  --mt-dim:#3d2410;
+  --sh:#4a9eff;
+  --sh-dim:#0f2a4a;
+  --ml:#f5c842;
+  --ml-dim:#3a2e08;
+  --pos:#3ecf8e;
+  --pos-dim:#0d2a1e;
+  --neg:#f87171;
+  --neg-dim:#2a0f0f;
+  --warn:#f5c842;
+  --warn-dim:#2a2408;
+  --f:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
 }
 html{scroll-behavior:smooth}
-body{background:var(--cream);color:var(--slate-night);font-family:var(--fb);font-size:14px;min-height:100vh}
+body{background:var(--bg);color:var(--txt);font-family:var(--f);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased}
 
 /* ── LOGIN ── */
-#login-screen{
-  position:fixed;inset:0;z-index:1000;
-  background:var(--slate-night);
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:0;
-}
-.login-card{
-  background:var(--cream);
-  border-radius:4px;
-  padding:2.5rem 2rem;
-  width:320px;
-  display:flex;flex-direction:column;gap:1.5rem;
-}
-.login-logo{
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:0.25rem;
-}
-.login-wordmark{
-  font-family:var(--fd);font-size:16px;font-weight:600;
-  letter-spacing:-0.025em;color:var(--slate-night);
-}
-.login-wordmark span{color:var(--slate-mid);}
-.login-label{
-  font-family:var(--mono);font-size:9px;
-  letter-spacing:0.18em;text-transform:uppercase;
-  color:var(--gray);
-  margin-bottom:0.5rem;
-}
-.login-field{display:flex;flex-direction:column;gap:6px;}
-.login-input{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:2px;
-  padding:10px 14px;
-  color:var(--slate-night);
-  font-family:var(--mono);font-size:13px;
-  outline:none;width:100%;
-  transition:border-color .2s;
-}
-.login-input:focus{border-color:var(--slate-mid);}
-.login-btn{
-  background:var(--slate-dark);
-  color:var(--cream);
-  border:none;border-radius:2px;
-  padding:11px;
-  font-family:var(--fd);font-size:13px;font-weight:600;
-  letter-spacing:-0.01em;
-  cursor:pointer;
-  transition:background .2s;
-}
-.login-btn:hover{background:var(--slate-night);}
-.login-err{
-  font-family:var(--mono);font-size:11px;
-  color:var(--red);text-align:center;display:none;
-}
+#login{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lbox{width:320px;display:flex;flex-direction:column;gap:24px}
+.llogo{display:flex;align-items:center;gap:10px}
+.lmark{font-size:15px;font-weight:600;letter-spacing:-0.02em;color:#fff}
+.lmark b{color:var(--txt3);font-weight:400}
+.ltag{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.1em}
+.linput{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:6px;padding:10px 14px;color:var(--txt);font-family:var(--mono);font-size:13px;outline:none;transition:border .2s}
+.linput:focus{border-color:var(--sh)}
+.lbtn{width:100%;background:var(--bg3);border:1px solid var(--line2);border-radius:6px;padding:11px;color:var(--txt);font-family:var(--f);font-size:13px;font-weight:500;cursor:pointer;transition:background .2s}
+.lbtn:hover{background:var(--bg2);border-color:var(--line2)}
+.lerr{font-family:var(--mono);font-size:11px;color:var(--neg);text-align:center;display:none}
 
 /* ── APP ── */
 #app{display:none}
-.header{
-  background:var(--slate-night);
-  padding:0 2rem;height:56px;
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--bg1);
+  border-bottom:1px solid var(--line);
+  height:48px;padding:0 20px;
   display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:100;
-  border-bottom:1px solid rgba(255,255,255,0.06);
 }
-.header-logo{
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--fd);font-size:15px;font-weight:600;
-  letter-spacing:-0.02em;color:var(--cream);
-}
-.header-logo span{color:var(--slate-light);}
-.header-right{display:flex;align-items:center;gap:12px;}
-.header-updated{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3);}
-.header-btn{
-  font-family:var(--mono);font-size:10px;
-  color:rgba(255,255,255,0.4);cursor:pointer;
-  padding:4px 10px;border:1px solid rgba(255,255,255,0.1);
-  border-radius:2px;background:transparent;
-  transition:color .2s,border-color .2s;
-}
-.header-btn:hover{color:var(--cream);border-color:rgba(255,255,255,0.3);}
+.tmark{font-size:13px;font-weight:600;letter-spacing:-0.02em;color:#fff}
+.tmark b{color:var(--txt3);font-weight:400}
+.tright{display:flex;align-items:center;gap:8px}
+.tchip{font-family:var(--mono);font-size:10px;color:var(--txt3);background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:3px 8px}
+.tbtn{font-family:var(--mono);font-size:10px;color:var(--txt3);background:transparent;border:1px solid var(--line);border-radius:4px;padding:3px 10px;cursor:pointer;transition:all .15s}
+.tbtn:hover{color:var(--txt);border-color:var(--line2)}
 
 /* ── TABS ── */
-.tabs{
-  background:var(--slate-night);
-  border-bottom:1px solid rgba(255,255,255,0.08);
-  padding:0 2rem;display:flex;gap:0;
-}
-.tab{
-  font-family:var(--mono);font-size:11px;
-  color:rgba(255,255,255,0.4);
-  padding:10px 20px;cursor:pointer;
-  border-bottom:2px solid transparent;
-  transition:all .2s;letter-spacing:.5px;text-transform:uppercase;
-}
-.tab:hover{color:rgba(255,255,255,0.7);}
-.tab.active{color:var(--cream);border-bottom-color:var(--slate-light);}
+.tabbar{background:var(--bg1);border-bottom:1px solid var(--line);padding:0 20px;display:flex}
+.tab{font-family:var(--mono);font-size:10px;color:var(--txt3);padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;letter-spacing:0.04em;transition:all .15s}
+.tab:hover{color:var(--txt2)}
+.tab.on{color:#fff;border-bottom-color:var(--sh)}
 
-/* ── FILTERS ── */
-.filters{
-  background:#fff;border-bottom:1px solid var(--border);
-  padding:12px 2rem;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
-}
-.filter-sep{width:1px;height:18px;background:var(--border);margin:0 4px;}
-.pill{
-  font-family:var(--mono);font-size:10px;
-  padding:4px 12px;border-radius:20px;
-  border:1px solid var(--border);background:transparent;
-  color:var(--gray);cursor:pointer;transition:all .15s;
-}
-.pill:hover{border-color:var(--slate-light);color:var(--slate-night);}
-.pill.on{background:var(--slate-dark);border-color:var(--slate-dark);color:var(--cream);}
-.pill.mk{background:var(--mk-light);border-color:var(--mk-mid);color:var(--mk);}
-.pill.mt{background:var(--mt-light);border-color:var(--mt-mid);color:var(--mt);}
+/* ── FILTROS ── */
+.fbar{background:var(--bg1);border-bottom:1px solid var(--line);padding:8px 20px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.flbl{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em;margin-right:2px}
+.fsel{background:var(--bg2);border:1px solid var(--line2);border-radius:5px;color:var(--txt2);font-family:var(--mono);font-size:10px;padding:4px 8px;height:26px;outline:none;cursor:pointer}
+.fpill{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--txt3);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fpill:hover{border-color:var(--line2);color:var(--txt2)}
+.fpill.on{background:var(--bg3);border-color:var(--line2);color:#fff}
+.fpill.mk{background:var(--mk-dim);border-color:#2a6e50;color:var(--mk)}
+.fpill.mt{background:var(--mt-dim);border-color:#6e4020;color:var(--mt)}
+.fsep{width:1px;height:14px;background:var(--line);margin:0 2px;flex-shrink:0}
 
-/* ── MAIN ── */
-.main{padding:24px 2rem;max-width:1480px;margin:0 auto;}
+/* ── GRID KPI ── */
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.kblock{background:var(--bg1);padding:20px 22px;position:relative;overflow:hidden}
+.klbl{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em;margin-bottom:10px}
+.knum{font-size:32px;font-weight:500;letter-spacing:-0.04em;line-height:1;color:#fff;margin-bottom:6px}
+.knum.pos{color:var(--pos)}
+.knum.warn{color:var(--warn)}
+.knum.neg{color:var(--neg)}
+.ksub{font-family:var(--mono);font-size:10px;color:var(--txt3);margin-bottom:8px}
+.kdelta{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+.d-pos{background:var(--pos-dim);color:var(--pos)}
+.d-neg{background:var(--neg-dim);color:var(--neg)}
+.d-neu{background:var(--bg3);color:var(--txt3)}
+.kspark{display:flex;align-items:flex-end;gap:2px;height:22px;margin-top:10px}
+.ksbar{flex:1;border-radius:1px 1px 0 0;min-height:2px;opacity:0.5;transition:opacity .15s}
+.kblock:hover .ksbar{opacity:0.8}
 
-/* ── LOADING ── */
-.loading{text-align:center;padding:80px 0;font-family:var(--mono);font-size:12px;color:var(--gray);}
-.loading-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--slate-mid);margin:0 3px;animation:pulse 1.2s ease-in-out infinite;}
-.loading-dot:nth-child(2){animation-delay:.2s;}
-.loading-dot:nth-child(3){animation-delay:.4s;}
-@keyframes pulse{0%,80%,100%{transform:scale(0);opacity:.3}40%{transform:scale(1);opacity:1}}
+/* ── BODY GRID ── */
+.body{padding:0}
+.row2{display:grid;grid-template-columns:1.6fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.panel{background:var(--bg1);padding:18px 20px}
+.ptitle{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em;margin-bottom:14px}
 
-/* ── KPI ── */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px;}
-.kpi{
-  background:#fff;border:1px solid var(--border);
-  border-radius:3px;padding:16px 18px;
-  box-shadow:var(--shadow);transition:transform .2s;
-  position:relative;overflow:hidden;
-}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,var(--border));}
-.kpi:hover{transform:translateY(-2px);}
-.kpi-label{font-family:var(--mono);font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
-.kpi-val{font-family:var(--fd);font-size:22px;font-weight:700;letter-spacing:-0.03em;color:var(--slate-night);line-height:1;margin-bottom:4px;}
-.kpi-sub{font-family:var(--mono);font-size:10px;color:var(--gray);}
-.kpi-tag{display:inline-block;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:10px;margin-top:6px;}
-.tag-up{background:var(--green-light);color:var(--green);}
-.tag-dn{background:var(--red-light);color:var(--red);}
-.tag-n{background:var(--off);color:var(--gray);}
+/* ── BARRAS MENSUALES ── */
+.mbars{display:flex;align-items:flex-end;gap:3px;height:100px}
+.mbc{flex:1;display:flex;flex-direction:column;align-items:center;gap:0}
+.mbw{flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%}
+.mbs{width:100%;min-height:2px;cursor:pointer;position:relative}
+.mbs:first-child{border-radius:2px 2px 0 0}
+.mbl{font-family:var(--mono);font-size:7px;color:var(--txt3);margin-top:4px;text-align:center}
+.leg{display:flex;gap:10px;margin-top:10px}
+.legi{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--txt3)}
+.legd{width:8px;height:8px;border-radius:1px}
 
-/* ── GRIDS ── */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.g3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px;}
-.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+/* ── CANAL ── */
+.canal-row{margin-bottom:16px}
+.canal-row:last-of-type{margin-bottom:0}
+.canal-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.canal-name{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.06em}
+.canal-num{font-size:28px;font-weight:500;letter-spacing:-0.04em;color:#fff}
+.canal-track{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:3px}
+.canal-fill{height:100%;border-radius:2px}
+.canal-sub{font-family:var(--mono);font-size:9px;color:var(--txt3)}
 
-/* ── CARD ── */
-.card{background:#fff;border:1px solid var(--border);border-radius:3px;box-shadow:var(--shadow);overflow:hidden;}
-.card-head{padding:14px 18px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gray);}
-.card-body{padding:16px 18px;}
+/* ── KPI ENVÍO ── */
+.envio-num{font-size:40px;font-weight:500;letter-spacing:-0.05em;color:var(--warn);line-height:1;margin-bottom:6px}
+.envio-sub{font-family:var(--mono);font-size:9px;color:var(--txt3);line-height:1.6}
 
-/* ── BARS ── */
-.month-bars{display:flex;align-items:flex-end;gap:4px;height:110px;}
-.mbar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.mbar-wrap{flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%;}
-.mbar{border-radius:3px 3px 0 0;width:100%;min-height:2px;cursor:pointer;position:relative;transition:opacity .15s;}
-.mbar:hover{opacity:.8;}
-.mbar:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--slate-night);color:var(--cream);padding:4px 8px;border-radius:3px;font-family:var(--mono);font-size:10px;white-space:nowrap;z-index:10;pointer-events:none;}
-.mbar-lbl{font-family:var(--mono);font-size:7px;color:var(--slate-pale);text-align:center;}
-.hbar-chart{display:flex;flex-direction:column;gap:9px;}
-.hbar-row{display:flex;align-items:center;gap:10px;}
-.hbar-lbl{font-family:var(--mono);font-size:10px;color:var(--gray);width:130px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.hbar-track{flex:1;height:6px;background:var(--off);border-radius:3px;overflow:hidden;}
-.hbar-fill{height:100%;border-radius:3px;transition:width .7s cubic-bezier(.34,1.56,.64,1);}
-.hbar-val{font-family:var(--mono);font-size:10px;color:var(--slate-night);width:90px;text-align:right;flex-shrink:0;}
-.split-bar{height:8px;border-radius:4px;overflow:hidden;display:flex;margin-bottom:12px;}
+/* ── TABLA SKU ── */
+.tpanel{background:var(--bg1);border-top:1px solid var(--line)}
+.thead-row{padding:10px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.thtitle{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em}
+.thmeta{font-family:var(--mono);font-size:9px;color:var(--txt3)}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{padding:7px 14px;text-align:right;font-family:var(--mono);font-size:8px;color:var(--txt3);font-weight:400;letter-spacing:0.06em;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg1)}
+th:first-child,th:nth-child(2){text-align:left}
+td{padding:9px 14px;text-align:right;color:var(--txt2);border-bottom:1px solid var(--line)}
+td:first-child{text-align:left;color:#fff;font-weight:500}
+td:nth-child(2){text-align:left;color:var(--txt2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg2)}
+.bdg{display:inline-block;font-family:var(--mono);font-size:9px;padding:1px 7px;border-radius:3px}
+.b-mk{background:var(--mk-dim);color:var(--mk)}
+.b-mt{background:var(--mt-dim);color:var(--mt)}
+.b-sh{background:var(--sh-dim);color:var(--sh)}
+.b-ml{background:var(--ml-dim);color:var(--ml)}
+.mrg-cell{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.mbar{width:36px;height:2px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.mfill{height:100%;border-radius:2px}
+.neg-val{color:var(--neg)}
+.pos-val{color:var(--pos);font-weight:500}
 
-/* ── TABLE ── */
-.tbl-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;}
-thead th{padding:8px 12px;text-align:right;font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--gray);border-bottom:1px solid var(--border);white-space:nowrap;}
-thead th:first-child{text-align:left;}
-tbody tr{border-bottom:1px solid var(--off);transition:background .1s;}
-tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--cream);}
-tbody td{padding:8px 12px;text-align:right;font-family:var(--mono);font-size:11px;color:var(--slate-night);}
-tbody td:first-child{text-align:left;color:var(--slate-mid);}
-.bdg{display:inline-block;font-size:9px;padding:1px 6px;border-radius:8px;font-family:var(--mono);}
-.b-mk{background:var(--mk-light);color:var(--mk);}
-.b-mt{background:var(--mt-light);color:var(--mt);}
-.b-sh{background:var(--green-light);color:var(--green);}
-.b-ml{background:var(--gold-light);color:var(--gold);}
-.mrg-bar{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
-.mrg-mini{width:32px;height:3px;background:var(--off);border-radius:2px;overflow:hidden;}
-.mrg-fill{height:100%;border-radius:2px;}
+/* ── P&L ── */
+.pnl-period{background:var(--bg1);border-bottom:1px solid var(--line);padding:8px 20px;display:flex;gap:6px;align-items:center}
+.ppill{font-family:var(--mono);font-size:10px;padding:3px 12px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--txt3);cursor:pointer;transition:all .15s}
+.ppill:hover{border-color:var(--line2);color:var(--txt2)}
+.ppill.on{background:var(--bg3);border-color:var(--line2);color:#fff}
+.pnl-table{border-collapse:collapse;width:100%;min-width:900px;font-size:10px}
+.pnl-table th{font-family:var(--mono);font-size:8px;color:var(--txt3);padding:6px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg1);font-weight:400;letter-spacing:0.06em;position:sticky;top:0}
+.pnl-table th:first-child{text-align:left;min-width:180px;position:sticky;left:0;z-index:2}
+.pnl-table th:nth-child(2){text-align:left;min-width:80px}
+.pnl-table th.th-tot{background:var(--bg2);color:#fff;font-weight:500}
+.pnl-table td{font-family:var(--mono);font-size:10px;padding:5px 10px;text-align:right;border-bottom:1px solid var(--line);color:var(--txt2)}
+.pnl-table td:first-child{text-align:left;position:sticky;left:0;background:var(--bg1);z-index:1;color:var(--txt)}
+.pnl-table td:nth-child(2){text-align:left;color:var(--txt3);font-size:9px}
+.pnl-table td.td-tot{background:var(--bg2);color:#fff;font-weight:500}
+.pnl-table tr:hover td{background:var(--bg2)}
+.pnl-table tr:hover td:first-child{background:var(--bg2)}
+.pnl-table tr.bold td{color:#fff;font-weight:500}
+.pnl-table tr.shdr td{font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:0.1em;padding:4px 10px;border:none;color:rgba(255,255,255,0.7)}
+.pnl-table tr.shdr td:first-child{position:sticky;left:0;z-index:1}
 
-/* ── LEGEND ── */
-.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;}
-.leg{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--gray);}
-.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
-
-/* ── PNL TABLE ── */
-.pnl-wrap{overflow-x:auto;width:100%;}
-.pnl-table{border-collapse:collapse;width:100%;min-width:900px;}
-.pnl-table th{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--gray);padding:7px 10px;text-align:right;border-bottom:2px solid var(--border);white-space:nowrap;background:#fff;position:sticky;top:0;}
-.pnl-table th:first-child{text-align:left;min-width:170px;position:sticky;left:0;z-index:2;background:#fff;}
-.pnl-table th:nth-child(2){text-align:left;min-width:65px;background:#fff;}
-.pnl-table th.th-total{background:var(--off);font-weight:700;color:var(--slate-night);}
-.pnl-table td{font-family:var(--mono);font-size:10px;padding:6px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--off);}
-.pnl-table td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1;min-width:200px;}
-.pnl-table td:nth-child(2){text-align:left;color:var(--gray);font-size:9px;min-width:65px;}
-.pnl-table td.td-total{background:var(--off);font-weight:700;}
-.pnl-table tr:hover td{background:var(--cream);}
-.pnl-table tr:hover td:first-child{background:var(--cream);}
-.pnl-table tr.bold td{font-weight:700;color:var(--slate-night);}
-.pnl-table tr.subhdr td{color:#fff;font-weight:700;font-size:9px;letter-spacing:.8px;text-transform:uppercase;padding:5px 10px;border:none;}
-.pnl-table tr.subhdr td:first-child{position:sticky;left:0;z-index:1;}
-.pos{color:var(--green)!important;font-weight:700!important;}
-.neg{color:var(--red)!important;font-weight:700!important;}
-
-/* ── CANAL MARCA ── */
-.canal-marca-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-
-/* ── PERIOD ── */
-.period-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 2rem;display:flex;gap:8px;align-items:center;}
-.period-label{font-family:var(--mono);font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
-.period-pill{font-family:var(--mono);font-size:10px;padding:4px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;transition:all .15s;}
-.period-pill.on{background:var(--slate-dark);border-color:var(--slate-dark);color:var(--cream);}
-.period-pill:hover{border-color:var(--slate-light);color:var(--slate-night);}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .5s ease forwards;opacity:0;}
-.fade-up:nth-child(1){animation-delay:.05s}.fade-up:nth-child(2){animation-delay:.1s}
-.fade-up:nth-child(3){animation-delay:.15s}.fade-up:nth-child(4){animation-delay:.2s}
-.fade-up:nth-child(5){animation-delay:.25s}.fade-up:nth-child(6){animation-delay:.3s}
+/* ── HISTÓRICO ── */
+.hbtn{font-family:var(--mono);font-size:11px;padding:7px 18px;border-radius:4px;border:1px solid var(--line);background:transparent;color:var(--txt3);cursor:pointer;transition:all .15s}
+.hbtn:hover{border-color:var(--line2);color:var(--txt2)}
+.hbtn.on{background:var(--bg3);border-color:var(--line2);color:#fff}
 
 /* ── CHECKLIST MODAL ── */
-.cl-item{display:flex;gap:12px;align-items:flex-start;padding:9px 10px;border-radius:3px;cursor:pointer;transition:background .1s;margin-bottom:3px;}
-.cl-item:hover{background:var(--off);}
-.cl-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
-.cl-item.done .cl-cb{background:var(--slate-dark);border-color:var(--slate-dark);}
-.cl-item.done .cl-cb::after{content:'✓';color:var(--cream);font-size:10px;font-weight:700;}
-.cl-item.done .cl-label{text-decoration:line-through;color:var(--gray);}
-.cl-label{font-size:13px;font-weight:500;color:var(--slate-night);margin-bottom:2px;}
-.cl-sub{font-size:11px;color:var(--gray);font-family:var(--mono);line-height:1.5;}
+#cl-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);overflow-y:auto;padding:40px 20px}
+.cl-box{max-width:580px;margin:0 auto;background:var(--bg1);border:1px solid var(--line2);border-radius:8px;overflow:hidden}
+.cl-head{background:var(--bg2);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.cl-htitle{font-size:13px;font-weight:500;color:#fff}
+.cl-close{background:transparent;border:1px solid var(--line);color:var(--txt3);border-radius:4px;padding:4px 12px;cursor:pointer;font-family:var(--mono);font-size:11px}
+.cl-prog-wrap{height:2px;background:var(--bg3);margin:0}
+.cl-prog{height:100%;background:var(--sh);transition:width .3s}
+.cl-body{padding:20px}
+.cl-section{margin-bottom:20px}
+.cl-stitle{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.1em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.cl-item{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:4px;cursor:pointer;transition:background .1s;margin-bottom:2px}
+.cl-item:hover{background:var(--bg2)}
+.cl-cb{width:16px;height:16px;border:1.5px solid var(--line2);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cl-item.done .cl-cb{background:var(--sh);border-color:var(--sh)}
+.cl-item.done .cl-cb::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+.cl-item.done .cl-lbl{text-decoration:line-through;color:var(--txt3)}
+.cl-lbl{font-size:12px;font-weight:500;color:var(--txt);margin-bottom:2px}
+.cl-sub{font-family:var(--mono);font-size:10px;color:var(--txt3);line-height:1.5}
+.cl-warn{font-family:var(--mono);font-size:10px;color:var(--warn);margin-top:3px}
+.cl-reset{font-family:var(--mono);font-size:10px;background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:6px 14px;cursor:pointer;color:var(--txt3)}
 
+/* ── LOADING ── */
+.spin{text-align:center;padding:60px 0;font-family:var(--mono);font-size:11px;color:var(--txt3)}
+.dots{display:inline-flex;gap:5px;margin-bottom:12px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--txt3);animation:blink 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+
+/* ── RESPONSIVE ── */
 @media(max-width:900px){
-  .g2,.g3,.g4,.canal-marca-grid{grid-template-columns:1fr;}
-  .main,.filters,.header,.tabs,.period-bar{padding-left:1rem;padding-right:1rem;}
-  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .kgrid{grid-template-columns:1fr 1fr}
+  .row2,.row3{grid-template-columns:1fr}
+  .topbar,.fbar,.tabbar{padding-left:12px;padding-right:12px}
 }
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="login-screen">
-  <div style="background:var(--cream);border-radius:4px;padding:2.5rem 2rem;width:320px;display:flex;flex-direction:column;gap:1.5rem;">
-    <!-- Logo -->
-    <div style="display:flex;align-items:center;gap:10px;">
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <polygon points="0,0 17,0 17,17" fill="#2C3E4C"/>
-        <polygon points="17,0 36,0 36,17 17,17" fill="#4A6274"/>
-        <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
-        <polygon points="17,19 36,36 17,36" fill="#2C3E4C"/>
-      </svg>
-      <span style="font-family:'Instrument Sans',sans-serif;font-size:16px;font-weight:600;letter-spacing:-0.025em;color:#1C2B3A;">House<span style="color:#4A6274;">Brands</span></span>
+<div id="login">
+  <div class="lbox">
+    <div>
+      <div class="llogo">
+        <svg width="24" height="24" viewBox="0 0 36 36" fill="none">
+          <polygon points="0,0 17,0 17,17" fill="#fff"/>
+          <polygon points="17,0 36,0 36,17 17,17" fill="#4a5568"/>
+          <polygon points="0,19 17,19 17,36 0,36" fill="#4a5568"/>
+          <polygon points="17,19 36,36 17,36" fill="#2d3748"/>
+        </svg>
+        <span class="lmark">House<b>Brands</b></span>
+      </div>
+      <div class="ltag" style="margin-top:8px">ERP — Acceso interno</div>
     </div>
-    <!-- Label -->
-    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#7A8F9E;">ERP — Acceso interno</div>
-    <!-- Field -->
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <label style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#7A8F9E;">Contraseña</label>
-      <input type="password" id="pwd-input" placeholder="••••••••" autocomplete="current-password"
-        style="background:#fff;border:1px solid rgba(28,43,58,0.12);border-radius:2px;padding:10px 14px;color:#1C2B3A;font-family:'DM Mono',monospace;font-size:13px;outline:none;width:100%;transition:border-color .2s;"
-        onfocus="this.style.borderColor='#4A6274'" onblur="this.style.borderColor='rgba(28,43,58,0.12)'">
+    <div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--txt3);margin-bottom:6px;letter-spacing:0.08em">Contraseña</div>
+      <input type="password" id="pwd" class="linput" placeholder="••••••••" autocomplete="current-password">
     </div>
-    <button onclick="checkLogin()"
-      style="background:#2C3E4C;color:#F7F6F3;border:none;border-radius:2px;padding:11px;font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:-0.01em;cursor:pointer;transition:background .2s;"
-      onmouseover="this.style.background='#1C2B3A'" onmouseout="this.style.background='#2C3E4C'">
-      ENTRAR
-    </button>
-    <div style="font-family:'DM Mono',monospace;font-size:11px;color:#c0392b;text-align:center;display:none;" id="login-err">Contraseña incorrecta</div>
+    <button class="lbtn" onclick="doLogin()">Entrar</button>
+    <div class="lerr" id="lerr">Contraseña incorrecta</div>
   </div>
 </div>
 
 <!-- APP -->
 <div id="app">
-  <div class="header">
-    <div class="header-logo">
-      <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
-        <polygon points="0,0 17,0 17,17" fill="#F7F6F3"/>
-        <polygon points="17,0 36,0 36,17 17,17" fill="#8AA4B4"/>
-        <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
-        <polygon points="17,19 36,36 17,36" fill="#4A6274"/>
-      </svg>
-      House<span style="color:var(--slate-light);">Brands</span><span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.3);letter-spacing:0.1em;margin-left:10px;">ERP</span>
-    </div>
-    <div class="header-right">
-      <div class="header-updated" id="updated-label">Cargando...</div>
-      <button class="header-btn" onclick="showChecklist()">☑ Checklist</button>
-      <button class="header-btn" onclick="logout()">Salir</button>
+  <div class="topbar">
+    <div class="tmark">House<b>Brands</b> <span style="color:var(--txt3);font-size:10px;margin-left:8px;font-weight:300">ERP</span></div>
+    <div class="tright">
+      <span class="tchip" id="tc-usd">USD —</span>
+      <span class="tchip" id="tc-uf">UF —</span>
+      <span class="tchip" id="tc-act" style="color:var(--txt3)">—</span>
+      <button class="tbtn" onclick="showCL()">☑ Checklist</button>
+      <button class="tbtn" onclick="doLogout()">Salir</button>
     </div>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" id="tab-ventas" onclick="switchTab('ventas')">📊 Ventas</div>
-    <div class="tab" id="tab-pnl" onclick="switchTab('pnl')">💰 P&amp;L</div>
-    <div class="tab" id="tab-historico" onclick="switchTab('historico')">📁 Histórico</div>
+  <div class="tabbar">
+    <div class="tab on" id="tab-ventas" onclick="goTab('ventas')">Ventas</div>
+    <div class="tab" id="tab-pnl" onclick="goTab('pnl')">P&amp;L</div>
+    <div class="tab" id="tab-hist" onclick="goTab('hist')">Histórico</div>
   </div>
 
-  <!-- TAB VENTAS -->
+  <!-- ── TAB VENTAS ── -->
   <div id="view-ventas">
-    <div class="filters">
-      <button class="pill on" id="fa"   onclick="sf('m','Todas',this)">Todas</button>
-      <button class="pill"    id="fmk"  onclick="sf('m','MemoKoala',this)">🐨 MemoKoala</button>
-      <button class="pill"    id="fmt"  onclick="sf('m','Montana',this)">🔪 Montana</button>
-      <div class="filter-sep"></div>
-      <button class="pill on" id="fca"  onclick="sf('c','Todos',this)">Todos canales</button>
-      <button class="pill"    id="fsh"  onclick="sf('c','Shopify',this)">Shopify</button>
-      <button class="pill"    id="fml"  onclick="sf('c','ML',this)">MercadoLibre</button>
-      <div class="filter-sep"></div>
-      <button class="pill on" id="fya"  onclick="sf('y',0,this)">Todos</button>
-      <button class="pill"    id="fy25" onclick="sf('y',2025,this)">2025</button>
-      <button class="pill"    id="fy26" onclick="sf('y',2026,this)">2026</button>
-      <div class="filter-sep"></div>
-      <button class="pill on" id="fma"  onclick="sf('me',0,this)">Todo</button>
-      <button class="pill" id="fm1"  onclick="sf('me',1,this)">Ene</button>
-      <button class="pill" id="fm2"  onclick="sf('me',2,this)">Feb</button>
-      <button class="pill" id="fm3"  onclick="sf('me',3,this)">Mar</button>
-      <button class="pill" id="fm4"  onclick="sf('me',4,this)">Abr</button>
-      <button class="pill" id="fm5"  onclick="sf('me',5,this)">May</button>
-      <button class="pill" id="fm6"  onclick="sf('me',6,this)">Jun</button>
-      <button class="pill" id="fm7"  onclick="sf('me',7,this)">Jul</button>
-      <button class="pill" id="fm8"  onclick="sf('me',8,this)">Ago</button>
-      <button class="pill" id="fm9"  onclick="sf('me',9,this)">Sep</button>
-      <button class="pill" id="fm10" onclick="sf('me',10,this)">Oct</button>
-      <button class="pill" id="fm11" onclick="sf('me',11,this)">Nov</button>
-      <button class="pill" id="fm12" onclick="sf('me',12,this)">Dic</button>
+    <div class="fbar">
+      <span class="flbl">Período</span>
+      <select class="fsel" id="f-anio" onchange="render()"><option value="0">Todo</option></select>
+      <select class="fsel" id="f-mes" onchange="render()">
+        <option value="0">Todos los meses</option>
+        <option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option>
+        <option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option>
+        <option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option>
+        <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option>
+      </select>
+      <div class="fsep"></div>
+      <span class="flbl">Marca</span>
+      <button class="fpill on" id="fm-t" onclick="sfm('Todas',this)">Todas</button>
+      <button class="fpill" id="fm-mk" onclick="sfm('MemoKoala',this)">MemoKoala</button>
+      <button class="fpill" id="fm-mt" onclick="sfm('Montana',this)">Montana</button>
+      <div class="fsep"></div>
+      <span class="flbl">Canal</span>
+      <button class="fpill on" id="fc-t" onclick="sfc('Todos',this)">Todos</button>
+      <button class="fpill" id="fc-sh" onclick="sfc('Shopify',this)">Shopify</button>
+      <button class="fpill" id="fc-ml" onclick="sfc('ML',this)">MercadoLibre</button>
     </div>
-    <div class="main">
-      <div id="loading-ventas" class="loading">
-        <div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>
-        <div style="margin-top:16px">Cargando ventas...</div>
+
+    <div id="v-loading" class="spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div>Cargando ventas...</div></div>
+    <div id="v-dash" style="display:none">
+      <!-- KPIs -->
+      <div class="kgrid" id="kgrid"></div>
+
+      <!-- Charts row -->
+      <div class="row2">
+        <div class="panel">
+          <div class="ptitle">Venta bruta mensual</div>
+          <div class="mbars" id="mbars"></div>
+          <div class="leg" id="mleg"></div>
+        </div>
+        <div class="panel">
+          <div class="ptitle">Canal y margen</div>
+          <div id="canal-content"></div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+            <div class="ptitle" style="margin-bottom:10px">Subsidio despacho RM</div>
+            <div class="envio-num" id="envio-pct">—</div>
+            <div class="envio-sub">% costo envío neto / venta bruta<br><span id="envio-detalle" style="color:var(--txt3)"></span></div>
+          </div>
+        </div>
       </div>
-      <div id="dash-ventas" style="display:none">
-        <div class="kpi-grid" id="kpi-grid"></div>
-        <div class="g3">
-          <div class="card">
-            <div class="card-head"><span class="card-title">Venta Bruta Mensual</span></div>
-            <div class="card-body">
-              <div class="month-bars" id="month-bars"></div>
-              <div class="legend" id="month-legend"></div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><span class="card-title">Canal de Venta</span></div>
-            <div class="card-body">
-              <div class="split-bar" id="canal-split"></div>
-              <div id="canal-detail" style="display:flex;flex-direction:column;gap:8px"></div>
-              <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--off)" id="canal-margin"></div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><span class="card-title">Margen por Marca</span></div>
-            <div class="card-body" id="marca-margen"></div>
-          </div>
+
+      <!-- Tabla SKU -->
+      <div class="tpanel">
+        <div class="thead-row">
+          <span class="thtitle">Rentabilidad por SKU</span>
+          <span class="thmeta" id="sku-meta"></span>
         </div>
-        <div class="g2">
-          <div class="card">
-            <div class="card-head"><span class="card-title">Top Productos</span></div>
-            <div class="card-body"><div class="hbar-chart" id="prod-bars"></div></div>
-          </div>
-          <div class="card">
-            <div class="card-head">
-              <span class="card-title">Últimas Ventas</span>
-              <span style="font-family:var(--mono);font-size:9px;color:var(--gray)" id="tx-count"></span>
-            </div>
-            <div class="tbl-wrap">
-              <table><thead><tr>
-                <th>Fecha</th><th>Marca</th><th>Canal</th><th>Producto</th><th>Bruto</th><th>Mrg%</th>
-              </tr></thead><tbody id="recent-tx"></tbody></table>
-            </div>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-head"><span class="card-title">Resumen por SKU</span></div>
-          <div class="tbl-wrap">
-            <table><thead><tr>
-              <th>SKU</th><th>Producto</th><th>Marca</th><th>Und.</th>
-              <th>Venta Bruta</th><th>Costo Total</th><th>Margen $</th><th>Margen %</th>
-            </tr></thead><tbody id="sku-table"></tbody></table>
-          </div>
+        <div class="tscroll">
+          <table>
+            <thead><tr>
+              <th>SKU</th><th>Producto</th><th>Marca</th><th>Canal</th>
+              <th>Uds</th><th>Venta bruta</th><th>Comisión</th>
+              <th>Ingreso neto</th><th>COGS</th><th>Margen $</th><th>Margen %</th>
+            </tr></thead>
+            <tbody id="sku-tbody"></tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- TAB P&L -->
+  <!-- ── TAB P&L ── -->
   <div id="view-pnl" style="display:none">
-    <div class="period-bar">
-      <span class="period-label">Período:</span>
-      <div id="period-pills"></div>
-    </div>
-    <div class="main">
-      <div id="loading-pnl" class="loading">
-        <div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div>
-        <div style="margin-top:16px">Cargando P&L...</div>
+    <div class="pnl-period" id="pnl-periods"></div>
+    <div id="pnl-loading" class="spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div>Cargando P&L...</div></div>
+    <div id="pnl-dash" style="display:none">
+      <div class="kgrid" id="pnl-kgrid"></div>
+      <div class="row2">
+        <div class="panel">
+          <div class="ptitle">Resultado neto mensual</div>
+          <div class="mbars" id="pnl-bars" style="height:100px"></div>
+          <div class="leg"><div class="legi"><div class="legd" style="background:var(--pos)"></div>Positivo</div><div class="legi"><div class="legd" style="background:var(--neg)"></div>Negativo</div></div>
+        </div>
+        <div class="panel">
+          <div class="ptitle">Breakdown gastos</div>
+          <div id="gasto-bars"></div>
+        </div>
       </div>
-      <div id="dash-pnl" style="display:none">
-        <div class="kpi-grid" id="pnl-kpi-grid"></div>
-        <div class="g2" style="margin-bottom:16px">
-          <div class="card">
-            <div class="card-head"><span class="card-title">Resultado Neto Mensual</span></div>
-            <div class="card-body">
-              <div class="month-bars" id="pnl-result-bars" style="height:120px"></div>
-              <div class="legend" style="margin-top:10px">
-                <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>Positivo</div>
-                <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Negativo</div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><span class="card-title">Breakdown de Gastos</span></div>
-            <div class="card-body"><div class="hbar-chart" id="gasto-bars"></div></div>
-          </div>
-        </div>
-        <div class="canal-marca-grid">
-          <div class="card">
-            <div class="card-head"><span class="card-title">Margen % · MemoKoala por Canal</span></div>
-            <div class="card-body" id="pnl-mk-canal"></div>
-          </div>
-          <div class="card">
-            <div class="card-head"><span class="card-title">Margen % · Montana por Canal</span></div>
-            <div class="card-body" id="pnl-mt-canal"></div>
-          </div>
-        </div>
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-head"><span class="card-title">Estado de Resultados Completo</span></div>
-          <div class="pnl-wrap" id="pnl-table-wrap"></div>
-        </div>
+      <div class="row3">
+        <div class="panel"><div class="ptitle">Margen % · MemoKoala</div><div id="pnl-mk-canal"></div></div>
+        <div class="panel"><div class="ptitle">Margen % · Montana</div><div id="pnl-mt-canal"></div></div>
+        <div class="panel"><div class="ptitle">Mix canal · Venta bruta</div><div id="pnl-mix"></div></div>
+      </div>
+      <div class="tpanel">
+        <div class="thead-row"><span class="thtitle">Estado de resultados completo</span></div>
+        <div class="tscroll" id="pnl-table-wrap"></div>
       </div>
     </div>
   </div>
 
-  <!-- TAB HISTÓRICO -->
-  <div id="view-historico" style="display:none">
-    <div class="main">
-      <div id="dash-historico">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--gray);margin-bottom:20px">
-          Selecciona un período para ver el estado de resultados de ese año.
-        </div>
-        <div style="display:flex;gap:12px;margin-bottom:24px" id="hist-period-btns"></div>
-        <div id="hist-content"></div>
-      </div>
+  <!-- ── TAB HISTÓRICO ── -->
+  <div id="view-hist" style="display:none">
+    <div style="padding:20px">
+      <div style="display:flex;gap:8px;margin-bottom:20px" id="hist-btns"></div>
+      <div id="hist-content"></div>
     </div>
   </div>
 
-  <!-- CHECKLIST MODAL -->
-  <div id="checklist-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(28,43,58,0.7);overflow-y:auto;padding:40px 20px">
-    <div style="max-width:620px;margin:0 auto;background:var(--cream);border-radius:4px;overflow:hidden;box-shadow:0 20px 60px rgba(28,43,58,0.3)">
-      <div style="background:var(--slate-night);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <svg width="20" height="20" viewBox="0 0 36 36" fill="none">
-            <polygon points="0,0 17,0 17,17" fill="#F7F6F3"/>
-            <polygon points="17,0 36,0 36,17 17,17" fill="#8AA4B4"/>
-            <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
-            <polygon points="17,19 36,36 17,36" fill="#4A6274"/>
-          </svg>
-          <span style="font-family:var(--fd);font-size:15px;font-weight:600;color:var(--cream);letter-spacing:-0.02em;">Actualización de Ventas</span>
-        </div>
-        <button onclick="hideChecklist()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:var(--cream);border-radius:2px;padding:6px 14px;cursor:pointer;font-family:var(--mono);font-size:12px;">✕</button>
+  <!-- CHECKLIST -->
+  <div id="cl-modal">
+    <div class="cl-box">
+      <div class="cl-head">
+        <span class="cl-htitle">Actualización de ventas</span>
+        <button class="cl-close" onclick="hideCL()">✕ Cerrar</button>
       </div>
-      <div style="padding:24px">
-        <div style="height:4px;background:var(--off);border-radius:2px;margin-bottom:20px;overflow:hidden">
-          <div id="cl-prog" style="height:100%;background:var(--slate-dark);border-radius:2px;transition:width .3s;width:0%"></div>
+      <div class="cl-prog-wrap"><div class="cl-prog" id="cl-prog" style="width:0%"></div></div>
+      <div class="cl-body">
+        <div class="cl-section">
+          <div class="cl-stitle" style="color:var(--mk)">Shopify MemoKoala</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Exportar CSV sin formato</div><div class="cl-sub">memokoala.myshopify.com → Pedidos → Exportar → CSV sin formato</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Importar en CSV_SHOPIFY</div><div class="cl-sub">Sheets → Importar → Reemplazar hoja CSV_SHOPIFY</div><div class="cl-warn">⚠ Desactivar "Convertir texto en números, fechas y fórmulas"</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Procesar CSV Shopify</div><div class="cl-sub">🏪 Housebrands → Procesar CSV Shopify</div></div></div>
         </div>
-        <div style="margin-bottom:20px">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mk);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🐨 Shopify MemoKoala</div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Exportar CSV sin formato</div><div class="cl-sub">memokoala.myshopify.com → Pedidos → Exportar → CSV sin formato</div></div></div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Importar en CSV_SHOPIFY y procesar</div><div class="cl-sub">Sheets → Importar → Reemplazar CSV_SHOPIFY → ⚠️ desactivar "Convertir texto en números, fechas y fórmulas" → 🏪 Procesar CSV Shopify</div></div></div>
+        <div class="cl-section">
+          <div class="cl-stitle" style="color:var(--mt)">Shopify Montana</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Exportar CSV sin formato</div><div class="cl-sub">montanagrills.myshopify.com → Pedidos → Exportar → CSV sin formato</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Limpiar CSV_SHOPIFY e importar Montana</div><div class="cl-sub">🏪 Limpiar CSV_SHOPIFY → Importar CSV Montana</div><div class="cl-warn">⚠ Desactivar "Convertir texto en números, fechas y fórmulas"</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Procesar CSV Shopify</div><div class="cl-sub">🏪 Housebrands → Procesar CSV Shopify</div></div></div>
         </div>
-        <div style="margin-bottom:20px">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mt);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">🔪 Shopify Montana</div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Exportar CSV sin formato</div><div class="cl-sub">montanagrills.myshopify.com → Pedidos → Exportar → CSV sin formato</div></div></div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Limpiar CSV_SHOPIFY, importar Montana y procesar</div><div class="cl-sub">🏪 Limpiar CSV_SHOPIFY → Importar CSV Montana → ⚠️ desactivar "Convertir texto en números, fechas y fórmulas" → 🏪 Procesar CSV Shopify</div></div></div>
+        <div class="cl-section">
+          <div class="cl-stitle" style="color:var(--ml)">MercadoLibre</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Descargar reporte Excel de ML</div><div class="cl-sub">vendedores.mercadolibre.cl → Mis ventas → Descargar .xlsx</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Pegar en CSV_ML y procesar</div><div class="cl-sub">Excel → Ctrl+A → Ctrl+C → Sheets CSV_ML A1 → Ctrl+V → 🏪 Procesar ML</div></div></div>
         </div>
-        <div style="margin-bottom:20px">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">📦 MercadoLibre</div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Descargar reporte Excel de ML</div><div class="cl-sub">vendedores.mercadolibre.cl → Mis ventas → Descargar .xlsx</div></div></div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Pegar en CSV_ML y procesar</div><div class="cl-sub">Excel → Ctrl+A → Ctrl+C → Sheets CSV_ML A1 → Ctrl+V → 🏪 Procesar ML</div></div></div>
+        <div class="cl-section">
+          <div class="cl-stitle">Cierre de mes</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Actualizar inventario</div><div class="cl-sub">🏪 Housebrands → Actualizar Inventario</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Ingresar gastos variables</div><div class="cl-sub">Meta Ads, Google Ads, ML Ads, ABEE Fulfillment, ABEE Envíos, Remuneraciones</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Generar P&L</div><div class="cl-sub">🏪 Housebrands → Generar P&L → verificar resultado neto</div></div></div>
         </div>
-        <div style="margin-bottom:20px">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)">✅ Cierre de Mes</div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Ingresar gastos variables en Gastos_Variables</div><div class="cl-sub">Meta Ads, Google Ads, ML Ads, ABEE Fulfillment, ABEE Envíos, SENDU</div></div></div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Generar P&L actualizado</div><div class="cl-sub">🏪 Housebrands → 💰 Generar P&L</div></div></div>
-          <div class="cl-item" onclick="clToggle(this)"><div class="cl-cb"></div><div><div class="cl-label">Verificar resultado neto en dashboard P&L</div><div class="cl-sub">Pestaña P&L → confirmar números</div></div></div>
-        </div>
-        <button onclick="clReset()" style="font-family:var(--mono);font-size:11px;background:var(--off);border:1px solid var(--border);border-radius:2px;padding:8px 16px;cursor:pointer;color:var(--gray);">↺ Reiniciar</button>
+        <button class="cl-reset" onclick="clReset()">↺ Reiniciar checklist</button>
       </div>
     </div>
   </div>
@@ -535,481 +412,576 @@ tbody td:first-child{text-align:left;color:var(--slate-mid);}
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────
-const PASSWORD   = '200487';
-const CSV_VENTAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
-const CSV_PNL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1843070423&single=true&output=csv';
+const PWD      = '200487';
+const CSV_V    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
+const CSV_PNL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1843070423&single=true&output=csv';
+const IVA      = 1.19;
+const META_MES = 14969250;
 
-// ── AUTH ──────────────────────────────────────────────────
-function checkLogin(){
-  if(document.getElementById('pwd-input').value===PASSWORD){
-    sessionStorage.setItem('hb_auth','1');
-    document.getElementById('login-screen').style.display='none';
+// ── AUTH ─────────────────────────────────────────────────
+function doLogin(){
+  if(document.getElementById('pwd').value===PWD){
+    sessionStorage.setItem('hb','1');
+    document.getElementById('login').style.display='none';
     document.getElementById('app').style.display='block';
-    loadVentas();
+    initApp();
   } else {
-    document.getElementById('login-err').style.display='block';
-    document.getElementById('pwd-input').value='';
-    document.getElementById('pwd-input').focus();
+    document.getElementById('lerr').style.display='block';
+    document.getElementById('pwd').value='';
+    document.getElementById('pwd').focus();
   }
 }
-function logout(){sessionStorage.removeItem('hb_auth');location.reload();}
-document.getElementById('pwd-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkLogin();});
-if(sessionStorage.getItem('hb_auth')==='1'){
-  document.getElementById('login-screen').style.display='none';
+function doLogout(){sessionStorage.removeItem('hb');location.reload();}
+document.getElementById('pwd').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+if(sessionStorage.getItem('hb')==='1'){
+  document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='block';
+  initApp();
+}
+
+// ── TABS ─────────────────────────────────────────────────
+let pnlLoaded=false;
+function goTab(t){
+  ['ventas','pnl','hist'].forEach(x=>{
+    document.getElementById('view-'+x).style.display=x===t?'block':'none';
+    document.getElementById('tab-'+x).className='tab'+(x===t?' on':'');
+  });
+  if(t==='pnl'&&!pnlLoaded) loadPnL();
+  if(t==='hist') renderHist();
+}
+
+// ── DATOS ────────────────────────────────────────────────
+let DATA=[], PNL={meses:[],rows:[]};
+let fMarca='Todas', fCanal='Todos';
+
+function initApp(){
+  fetchTC();
   loadVentas();
 }
 
-// ── TABS ──────────────────────────────────────────────────
-let pnlLoaded=false;
-function switchTab(tab){
-  ['ventas','pnl','historico'].forEach(t=>{
-    document.getElementById('view-'+t).style.display=t===tab?'block':'none';
-    document.getElementById('tab-'+t).className='tab'+(t===tab?' active':'');
-  });
-  if(tab==='pnl'&&!pnlLoaded) loadPnL();
-  if(tab==='historico') renderHistorico();
+async function fetchTC(){
+  // TC desde mindicador.cl
+  try{
+    const hoy=new Date(),d=hoy.getDate(),m=hoy.getMonth()+1,a=hoy.getFullYear();
+    const ds=d+'-'+String(m).padStart(2,'0')+'-'+a;
+    const [ru,rf]=await Promise.all([
+      fetch('https://mindicador.cl/api/dolar/'+ds).then(r=>r.json()).catch(()=>null),
+      fetch('https://mindicador.cl/api/uf/'+ds).then(r=>r.json()).catch(()=>null)
+    ]);
+    const usd=ru?.serie?.[0]?.valor||null;
+    const uf=rf?.serie?.[0]?.valor||null;
+    if(usd) document.getElementById('tc-usd').textContent='USD $'+Math.round(usd).toLocaleString('es-CL');
+    if(uf)  document.getElementById('tc-uf').textContent='UF $'+Math.round(uf).toLocaleString('es-CL');
+  }catch(e){}
+  document.getElementById('tc-act').textContent='act. '+new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
 }
-
-// ── VENTAS ────────────────────────────────────────────────
-let DATA=[];
-let filters={m:'Todas',c:'Todos',y:0,me:0};
 
 async function loadVentas(){
   try{
-    const r=await fetch(CSV_VENTAS);
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    DATA=parseVentasCSV(await r.text());
-    document.getElementById('loading-ventas').style.display='none';
-    document.getElementById('dash-ventas').style.display='block';
-    document.getElementById('updated-label').textContent='Actualizado: '+new Date().toLocaleTimeString('es-CL');
+    const r=await fetch(CSV_V);
+    const txt=await r.text();
+    DATA=parseVentas(txt);
+    // Popular select años
+    const years=[...new Set(DATA.map(r=>r.anio))].sort();
+    const sel=document.getElementById('f-anio');
+    years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;sel.appendChild(o);});
+    document.getElementById('v-loading').style.display='none';
+    document.getElementById('v-dash').style.display='block';
     render();
   }catch(e){
-    document.getElementById('loading-ventas').innerHTML='<div style="color:#c0392b;font-family:var(--mono);font-size:12px">Error cargando datos.<br><button onclick="loadVentas()" style="background:var(--slate-dark);color:var(--cream);border:none;padding:8px 16px;border-radius:2px;cursor:pointer;font-family:var(--mono);margin-top:12px">Reintentar</button></div>';
+    document.getElementById('v-loading').innerHTML='<div style="color:var(--neg);font-family:var(--mono);font-size:11px">Error cargando datos.<br><button onclick="loadVentas()" style="margin-top:10px;padding:6px 14px;background:var(--bg2);border:1px solid var(--line2);color:var(--txt);border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px">Reintentar</button></div>';
   }
 }
 
-function parseVentasCSV(text){
-  const lines=text.split('\n').filter(l=>l.trim());
+function parseVentas(txt){
+  const lines=txt.split('\n').filter(l=>l.trim());
   if(lines.length<2) return [];
-  const records=[];
+  const rows=[];
   for(let i=1;i<lines.length;i++){
-    const cols=splitCSV(lines[i]);
-    if(cols.length<20) continue;
-    const marca=cols[4]?.trim()||'';
+    const c=scsv(lines[i]);
+    if(c.length<20) continue;
+    const marca=c[4]?.trim()||'';
     if(!marca) continue;
-    const canal=cols[5]?.trim()||'';
-    const mes=parseInt(cols[1])||0;
-    const anio=parseInt(cols[3])||0;
-    const sku=cols[7]?.trim()||'';
-    const prod=cols[8]?.trim()||'';
-    const qty=parseInt(cols[9])||1;
-    const vb=parseNum(cols[11]);
-    const costo=parseNum(cols[18]);
-    const mb=parseNum(cols[19]);
-    const mrg=parseNum(cols[20]);
+    const canal=c[5]?.trim()||'';
+    const mes=parseInt(c[1])||0;
+    const anio=parseInt(c[3])||0;
+    const sku=c[7]?.trim()||'';
+    const prod=c[8]?.trim()||'';
+    const qty=parseInt(c[9])||1;
+    const vb=pn(c[11]);
+    const costoUnit=pn(c[17]);
+    const costoTotal=pn(c[18]);
+    const mb=pn(c[19]);
+    const mrg=pn(c[20]);
+    const envio=pn(c[12]);
+    const cargoMP=pn(c[13]);
+    const descto=pn(c[15]);
     if(vb<=0) continue;
-    const mb_f=mb!==0?mb:(vb-costo);
-    const mrg_f=mrg!==0?mrg:(vb>0?(mb_f/vb)*100:0);
-    let fecha=cols[0]?.trim()||'';
+    // ICN: venta bruta - comision pasarela
+    const comision = canal==='Shopify' ? cargoMP : (canal==='ML'?cargoMP:0);
+    const icn = vb - comision;
+    let fecha=c[0]?.trim()||'';
     const dmy=fecha.match(/^(\d{2})[\-\/](\d{2})[\-\/](\d{4})$/);
     if(dmy) fecha=dmy[3]+'-'+dmy[2]+'-'+dmy[1];
-    records.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costo,mb:mb_f,mrg:mrg_f});
+    rows.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costoUnit,costoTotal,mb,mrg,envio,cargoMP,descto,comision,icn});
   }
-  return records;
+  return rows;
 }
 
-// ── PNL ───────────────────────────────────────────────────
-let PNL_RAW={meses:[],rows:[]};
-let pnlPeriod='corrido';
+// ── FILTROS ──────────────────────────────────────────────
+function sfm(v,el){
+  fMarca=v;
+  ['fm-t','fm-mk','fm-mt'].forEach(id=>document.getElementById(id).className='fpill');
+  el.className=v==='MemoKoala'?'fpill mk':v==='Montana'?'fpill mt':'fpill on';
+  render();
+}
+function sfc(v,el){
+  fCanal=v;
+  ['fc-t','fc-sh','fc-ml'].forEach(id=>document.getElementById(id).className='fpill');
+  el.className='fpill on'; render();
+}
 
+function fd(){
+  const anio=parseInt(document.getElementById('f-anio').value)||0;
+  const mes=parseInt(document.getElementById('f-mes').value)||0;
+  return DATA.filter(r=>{
+    if(fMarca!=='Todas'&&r.marca!==fMarca) return false;
+    if(fCanal!=='Todos'&&r.canal!==fCanal) return false;
+    if(anio&&r.anio!==anio) return false;
+    if(mes&&r.mes!==mes) return false;
+    return true;
+  });
+}
+
+function render(){
+  const d=fd();
+  rKPIs(d); rBars(d); rCanal(d); rSKU(d);
+}
+
+// ── KPIs ─────────────────────────────────────────────────
+function rKPIs(d){
+  const vb=sum(d,'vb'), mb=sum(d,'mb'), icn=sum(d,'icn');
+  const comision=sum(d,'comision');
+  const un=d.reduce((s,r)=>s+r.qty,0), cnt=d.length;
+  const tk=un>0?vb/un:0, mrg=vb>0?mb/vb:0;
+  const meses=[...new Set(d.map(r=>r.anio+'-'+r.mes))].length||1;
+  const avg=vb/meses, gap=avg/META_MES-1;
+  const mrgCls=mrg>=.65?'pos':mrg>=.45?'warn':'neg';
+
+  // Sparkline por mes (últimos 8 meses en los datos filtrados)
+  const byM={};
+  d.forEach(r=>{const k=r.anio+'-'+String(r.mes).padStart(2,'0');byM[k]=(byM[k]||0)+r.vb;});
+  const spk=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0])).slice(-8).map(([,v])=>v);
+  const spkMax=Math.max(...spk,1);
+  const spark=(color)=>spk.map(v=>`<div class="ksbar" style="height:${Math.max(8,(v/spkMax)*100)}%;background:${color}"></div>`).join('');
+
+  document.getElementById('kgrid').innerHTML=[
+    {lbl:'VENTA BRUTA', num:clp(vb), sub:cnt+' órdenes · '+un+' uds',
+     delta:gap>=0?{cls:'d-pos',txt:'↑ +'+Math.abs(gap*100).toFixed(1)+'% vs meta'}:{cls:'d-neg',txt:'↓ '+Math.abs(gap*100).toFixed(1)+'% vs meta'},
+     spk:'var(--sh)'},
+    {lbl:'INGRESO NETO COM.', num:clp(icn), sub:'venta − comisión pasarela',
+     delta:{cls:'d-neu',txt:(vb>0?(comision/vb*100).toFixed(1):0)+'% de comisiones'},
+     spk:'var(--txt3)'},
+    {lbl:'MARGEN BRUTO', num:(mrg*100).toFixed(1)+'%', numCls:mrgCls, sub:clp(mb)+' · pvp − costo×1.19',
+     delta:mrg>=.65?{cls:'d-pos',txt:'Saludable'}:mrg>=.45?{cls:'d-neu',txt:'OK'}:{cls:'d-neg',txt:'Revisar'},
+     spk:'var(--pos)'},
+    {lbl:'TICKET PROMEDIO', num:clp(tk), sub:'por unidad vendida',
+     delta:{cls:'d-neu',txt:meses+' mes'+(meses>1?'es':'')},
+     spk:'var(--txt3)'},
+  ].map(k=>`
+    <div class="kblock">
+      <div class="klbl">${k.lbl}</div>
+      <div class="knum${k.numCls?' '+k.numCls:''}">${k.num}</div>
+      <div class="ksub">${k.sub}</div>
+      <div class="kdelta ${k.delta.cls}">${k.delta.txt}</div>
+      <div class="kspark">${spark(k.spk)}</div>
+    </div>`).join('');
+}
+
+// ── BARRAS ───────────────────────────────────────────────
+function rBars(d){
+  const byM={};
+  d.forEach(r=>{
+    const k=r.anio+'-'+String(r.mes).padStart(2,'0');
+    if(!byM[k])byM[k]={lbl:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][r.mes-1]+' '+String(r.anio).slice(2),mk:0,mt:0};
+    byM[k][r.marca==='MemoKoala'?'mk':'mt']+=r.vb;
+  });
+  const sorted=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0]));
+  const maxV=Math.max(...sorted.map(([,v])=>v.mk+v.mt),1);
+  document.getElementById('mbars').innerHTML=sorted.map(([,v])=>{
+    const tot=v.mk+v.mt,h=Math.max(3,(tot/maxV)*100);
+    const hmk=tot>0?(v.mk/tot)*h:h/2,hmt=h-hmk;
+    return `<div class="mbc"><div class="mbw">
+      <div class="mbs" style="height:${hmt}px;background:var(--mt);opacity:0.6;border-radius:2px 2px 0 0" title="${v.lbl}: ${clp(tot)}"></div>
+      <div class="mbs" style="height:${hmk}px;background:var(--mk)" title="${v.lbl}: ${clp(tot)}"></div>
+    </div><div class="mbl">${v.lbl}</div></div>`;
+  }).join('');
+  document.getElementById('mleg').innerHTML=`
+    <div class="legi"><div class="legd" style="background:var(--mk)"></div>MemoKoala</div>
+    <div class="legi"><div class="legd" style="background:var(--mt);opacity:0.6"></div>Montana</div>`;
+}
+
+// ── CANAL ────────────────────────────────────────────────
+function rCanal(d){
+  const ch={};
+  d.forEach(r=>{
+    if(!ch[r.canal])ch[r.canal]={vb:0,mb:0,comision:0,envio:0,descto:0};
+    ch[r.canal].vb+=r.vb;ch[r.canal].mb+=r.mb;
+    ch[r.canal].comision+=r.comision;
+    ch[r.canal].envio+=r.envio;
+    ch[r.canal].descto+=r.descto;
+  });
+  const tot=Object.values(ch).reduce((s,v)=>s+v.vb,0)||1;
+  const cc={Shopify:'var(--sh)',ML:'var(--ml)'};
+  const cc2={Shopify:'b-sh',ML:'b-ml'};
+  document.getElementById('canal-content').innerHTML=Object.entries(ch).map(([k,v])=>{
+    const mrg=v.vb>0?v.mb/v.vb:0;
+    const mc=mrg>=.65?'var(--pos)':mrg>=.45?'var(--warn)':'var(--neg)';
+    return `<div class="canal-row">
+      <div class="canal-top">
+        <span class="canal-name"><span class="bdg ${cc2[k]||''}">${k}</span></span>
+        <span class="canal-num" style="color:${mc}">${(mrg*100).toFixed(1)}%</span>
+      </div>
+      <div class="canal-track"><div class="canal-fill" style="width:${Math.min(100,mrg*100).toFixed(1)}%;background:${cc[k]||'var(--txt3)'}"></div></div>
+      <div class="canal-sub">${clp(v.vb)} bruto · ${(v.vb/tot*100).toFixed(0)}% del total</div>
+    </div>`;
+  }).join('');
+
+  // Envío cobrado vs costo (solo Shopify)
+  const envCobrado=sum(d.filter(r=>r.canal==='Shopify'),'envio');
+  // No tenemos ABEE en tiempo real — mostramos recupero como % de venta
+  const vbTotal=sum(d,'vb');
+  if(envCobrado>0&&vbTotal>0){
+    const pct=(envCobrado/vbTotal*100).toFixed(1);
+    document.getElementById('envio-pct').textContent=pct+'%';
+    document.getElementById('envio-detalle').textContent='Envío cobrado a clientes: '+clp(envCobrado);
+  } else {
+    document.getElementById('envio-pct').textContent='—';
+    document.getElementById('envio-detalle').textContent='Sin dato de envío en período';
+  }
+}
+
+// ── TABLA SKU ────────────────────────────────────────────
+function rSKU(d){
+  const s={};
+  d.forEach(r=>{
+    const key=r.sku+'|'+r.canal;
+    if(!s[key])s[key]={sku:r.sku,nom:r.prod,marca:r.marca,canal:r.canal,un:0,vb:0,comision:0,icn:0,costo:0,mb:0};
+    s[key].un+=r.qty;s[key].vb+=r.vb;s[key].comision+=r.comision;
+    s[key].icn+=r.icn;s[key].costo+=r.costoTotal*IVA;s[key].mb+=r.mb;
+  });
+  const rows=Object.values(s).sort((a,b)=>b.mb-a.mb);
+  document.getElementById('sku-meta').textContent=rows.length+' combinaciones SKU×canal';
+  document.getElementById('sku-tbody').innerHTML=rows.map(r=>{
+    const mp=r.vb>0?(r.mb/r.vb)*100:0;
+    const mc=mp>=65?'var(--pos)':mp>=45?'var(--warn)':'var(--neg)';
+    return `<tr>
+      <td>${r.sku||'—'}</td>
+      <td>${(r.nom||'—').slice(0,28)}</td>
+      <td><span class="bdg ${r.marca==='MemoKoala'?'b-mk':'b-mt'}">${r.marca==='MemoKoala'?'MK':'MT'}</span></td>
+      <td><span class="bdg ${r.canal==='Shopify'?'b-sh':'b-ml'}">${r.canal}</span></td>
+      <td>${r.un}</td>
+      <td>${clp(r.vb)}</td>
+      <td class="neg-val">${r.comision>0?'−'+clp(r.comision):'—'}</td>
+      <td>${clp(r.icn)}</td>
+      <td style="color:var(--txt3)">${clp(r.costo)}</td>
+      <td style="color:#fff;font-weight:500">${clp(r.mb)}</td>
+      <td><div class="mrg-cell"><span style="color:${mc};font-weight:500">${mp.toFixed(1)}%</span>
+        <div class="mbar"><div class="mfill" style="width:${Math.min(100,mp).toFixed(0)}%;background:${mc}"></div></div>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── P&L ──────────────────────────────────────────────────
+let pnlPeriod='corrido';
 async function loadPnL(){
   try{
     const r=await fetch(CSV_PNL);
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    PNL_RAW=parsePnLCSV(await r.text());
+    PNL=parsePnL(await r.text());
     pnlLoaded=true;
-    document.getElementById('loading-pnl').style.display='none';
-    document.getElementById('dash-pnl').style.display='block';
-    buildPeriodPills();
+    buildPeriods();
+    document.getElementById('pnl-loading').style.display='none';
+    document.getElementById('pnl-dash').style.display='block';
     renderPnL();
   }catch(e){
-    document.getElementById('loading-pnl').innerHTML='<div style="color:#c0392b;font-family:var(--mono);font-size:12px">Error cargando P&L.<br><button onclick="loadPnL()" style="background:var(--slate-dark);color:var(--cream);border:none;padding:8px 16px;border-radius:2px;cursor:pointer;font-family:var(--mono);margin-top:12px">Reintentar</button></div>';
+    document.getElementById('pnl-loading').innerHTML='<div style="color:var(--neg);font-family:var(--mono);font-size:11px">Error cargando P&L.<br><button onclick="loadPnL()" style="margin-top:10px;padding:6px 14px;background:var(--bg2);border:1px solid var(--line2);color:var(--txt);border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px">Reintentar</button></div>';
   }
 }
 
-function parsePnLCSV(text){
-  const lines=text.split('\n').filter(l=>l.trim());
-  if(lines.length<3) return {meses:[],rows:[]};
-  let hdrIdx=-1;
-  for(let i=0;i<Math.min(lines.length,6);i++){
-    if(lines[i].toUpperCase().includes('CONCEPTO')){hdrIdx=i;break;}
-  }
-  if(hdrIdx===-1) hdrIdx=2;
-  const hdrCols=splitCSV(lines[hdrIdx]);
-  const allCols=hdrCols.slice(2).map(m=>m.trim()).filter(m=>m);
-  const meses=allCols.slice(0,-1);
+function parsePnL(txt){
+  const lines=txt.split('\n').filter(l=>l.trim());
+  if(lines.length<3) return{meses:[],rows:[]};
+  let hi=-1;
+  for(let i=0;i<Math.min(lines.length,6);i++){if(lines[i].toUpperCase().includes('CONCEPTO')){hi=i;break;}}
+  if(hi===-1)hi=2;
+  const hc=scsv(lines[hi]).slice(2).map(m=>m.trim()).filter(m=>m);
+  const meses=hc.slice(0,-1);
   const rows=[];
-  for(let i=hdrIdx+1;i<lines.length;i++){
-    const cols=splitCSV(lines[i]);
-    if(cols.length<3) continue;
-    const concepto=fixEncoding(cols[0]?.trim()||'');
-    const categoria=fixEncoding(cols[1]?.trim()||'');
-    if(!concepto) continue;
-    const allVals=cols.slice(2);
-    const mesVals=allVals.slice(0,-1).map(v=>parsePnLNum(v));
-    const totalVal=parsePnLNum(allVals[allVals.length-1]||'0');
-    while(mesVals.length<meses.length) mesVals.push(0);
-    rows.push({concepto,categoria,mesVals,totalVal});
+  for(let i=hi+1;i<lines.length;i++){
+    const c=scsv(lines[i]);
+    if(c.length<3)continue;
+    const concepto=fenc(c[0]?.trim()||'');
+    const cat=fenc(c[1]?.trim()||'');
+    if(!concepto)continue;
+    const av=c.slice(2);
+    const mv=av.slice(0,-1).map(v=>ppnl(v));
+    const tv=ppnl(av[av.length-1]||'0');
+    while(mv.length<meses.length)mv.push(0);
+    rows.push({concepto,cat,mv,tv});
   }
   return{meses,rows};
 }
 
-function fixEncoding(s){
+function fenc(s){
   return s.replace(/â–¶/g,'▶').replace(/â€"/g,'—').replace(/Ã©/g,'é')
     .replace(/Ã³/g,'ó').replace(/Ã­/g,'í').replace(/Ã¡/g,'á')
-    .replace(/Ã±/g,'ñ').replace(/Ã—/g,'×').replace(/Ã"/g,'Ó')
-    .replace(/Ã‰/g,'É').replace(/â€œ/g,'"').replace(/â€/g,'"')
-    .replace(/Ã"/g,'Ú').replace(/Ã¼/g,'ü');
+    .replace(/Ã±/g,'ñ').replace(/Ã"/g,'Ó').replace(/Ã‰/g,'É');
 }
-
-function parsePnLNum(v){
-  if(v===null||v===undefined||v==='') return 0;
+function ppnl(v){
+  if(v===null||v===undefined||v==='')return 0;
   const s=String(v).trim();
-  if(s.endsWith('%')) return parseFloat(s.replace('%','').replace(',','.'))||0;
+  if(s.endsWith('%'))return parseFloat(s.replace('%','').replace(',','.'))||0;
   let n=s.replace(/[$\s"]/g,'');
-  if(n==='') return 0;
+  if(!n)return 0;
   const dots=(n.match(/\./g)||[]).length,commas=(n.match(/,/g)||[]).length;
-  if(commas>=1&&dots===0) n=n.replace(/,/g,'');
-  else if(commas===1&&dots===1) n=n.replace(',','');
-  else if(commas===0&&dots>1) n=n.replace(/\./g,'');
+  if(commas>=1&&dots===0)n=n.replace(/,/g,'');
+  else if(commas===1&&dots===1)n=n.replace(',','');
+  else if(commas===0&&dots>1)n=n.replace(/\./g,'');
   return parseFloat(n)||0;
 }
 
-function getPeriodMeses(){
-  const {meses}=PNL_RAW;
-  if(!meses.length) return{idxs:[],labels:[]};
+function getPeriodIdx(){
+  const{meses}=PNL;if(!meses.length)return{idxs:[],labels:[]};
+  const ord=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   if(pnlPeriod==='corrido'){
-    const ord=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-    const indexed=meses.map((m,i)=>({m,i})).sort((a,b)=>{
+    const idx=meses.map((m,i)=>({m,i})).sort((a,b)=>{
       const ya=parseInt('20'+a.m.slice(-2)),yb=parseInt('20'+b.m.slice(-2));
-      if(ya!==yb) return ya-yb;
+      if(ya!==yb)return ya-yb;
       return ord.indexOf(a.m.slice(0,3).toLowerCase())-ord.indexOf(b.m.slice(0,3).toLowerCase());
-    });
-    const last12=indexed.slice(-12);
-    return{idxs:last12.map(x=>x.i),labels:last12.map(x=>x.m)};
+    }).slice(-12);
+    return{idxs:idx.map(x=>x.i),labels:idx.map(x=>x.m)};
   }
-  const idxs=[],labels=[],yrSuffix=pnlPeriod.slice(2);
-  meses.forEach((m,i)=>{if(m.slice(-2)===yrSuffix){idxs.push(i);labels.push(m);}});
+  const idxs=[],labels=[],ys=pnlPeriod.slice(2);
+  meses.forEach((m,i)=>{if(m.slice(-2)===ys){idxs.push(i);labels.push(m);}});
   return{idxs,labels};
 }
 
-function buildPeriodPills(){
-  const {meses}=PNL_RAW;
-  const years=[...new Set(meses.map(m=>m.slice(-2)))].sort();
-  const pills=[{id:'corrido',label:'Año corrido (12m)'},...years.map(y=>({id:'20'+y,label:'20'+y}))];
-  document.getElementById('period-pills').innerHTML=pills.map(p=>
-    `<button class="period-pill${p.id===pnlPeriod?' on':''}" onclick="setPeriod('${p.id}',this)">${p.label}</button>`
-  ).join('');
+function buildPeriods(){
+  const years=[...new Set(PNL.meses.map(m=>m.slice(-2)))].sort();
+  const opts=[{id:'corrido',lbl:'Últimos 12 meses'},...years.map(y=>({id:'20'+y,lbl:'20'+y}))];
+  document.getElementById('pnl-periods').innerHTML='<span class="flbl">Período</span>'+
+    opts.map(p=>`<button class="ppill${p.id===pnlPeriod?' on':''}" onclick="setPer('${p.id}',this)">${p.lbl}</button>`).join('');
 }
 
-function setPeriod(id,el){
+function setPer(id,el){
   pnlPeriod=id;
-  document.querySelectorAll('.period-pill').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ppill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');renderPnL();
 }
 
 function renderPnL(){
-  const {rows}=PNL_RAW;
-  if(!rows.length) return;
-  const {idxs,labels}=getPeriodMeses();
-  const findRow=term=>rows.find(r=>r.concepto.toUpperCase().includes(term.toUpperCase()));
-  const periodSum=row=>{if(!row) return 0;return idxs.reduce((s,i)=>s+(row.mesVals[i]||0),0);};
-  const periodVals=row=>{if(!row) return idxs.map(()=>0);return idxs.map(i=>row.mesVals[i]||0);};
-  const vbTot=findRow('VENTA BRUTA TOTAL'),mbTot=findRow('MARGEN BRUTO TOTAL');
-  const logNeto=findRow('TOTAL LOG'),mktTot=findRow('TOTAL MARKETING');
-  const techTot=findRow('TOTAL TECH'),admTot=findRow('TOTAL ADMINISTRACI');
-  const resultado=findRow('RESULTADO NETO');
-  const vbS=periodSum(vbTot),mbS=periodSum(mbTot),resS=periodSum(resultado);
+  const{rows}=PNL;if(!rows.length)return;
+  const{idxs,labels}=getPeriodIdx();
+  const fr=term=>rows.find(r=>r.concepto.toUpperCase().includes(term.toUpperCase()));
+  const ps=row=>{if(!row)return 0;return idxs.reduce((s,i)=>s+(row.mv[i]||0),0);};
+  const pv=row=>{if(!row)return idxs.map(()=>0);return idxs.map(i=>row.mv[i]||0);};
+  const vbT=fr('VENTA BRUTA TOTAL'),mbT=fr('MARGEN BRUTO TOTAL');
+  const logN=fr('TOTAL LOG'),mktT=fr('TOTAL MARKETING');
+  const techT=fr('TOTAL TECH'),admT=fr('TOTAL ADMINISTRACI');
+  const res=fr('RESULTADO NETO');
+  const vbS=ps(vbT),mbS=ps(mbT),resS=ps(res);
   const mrgP=vbS>0?mbS/vbS:0;
-  const gastosS=periodSum(logNeto)+periodSum(mktTot)+periodSum(techTot)+periodSum(admTot);
-  const mesesPos=resultado?periodVals(resultado).filter(v=>v>0).length:0;
-  document.getElementById('pnl-kpi-grid').innerHTML=[
-    {lbl:'Venta Bruta',val:clp(vbS),sub:labels.length+' meses',accent:'var(--slate-mid)',tag:'',cls:''},
-    {lbl:'Margen Bruto',val:clp(mbS),sub:(mrgP*100).toFixed(1)+'% sobre venta',accent:'var(--gold)',tag:mrgP>=.65?'Saludable':'Revisar',cls:mrgP>=.65?'tag-up':'tag-dn'},
-    {lbl:'Resultado Neto',val:clp(resS),sub:'período',accent:resS>=0?'var(--green)':'var(--red)',tag:resS>=0?'Positivo':'Negativo',cls:resS>=0?'tag-up':'tag-dn'},
-    {lbl:'Meses Positivos',val:mesesPos+'/'+labels.length,sub:'con resultado >0',accent:'var(--slate-dark)',tag:'',cls:''},
-    {lbl:'Total Gastos Op.',val:clp(gastosS),sub:'log+mkt+tech+admin',accent:'var(--mt)',tag:'',cls:''},
-    {lbl:'% Gasto / Venta',val:vbS>0?(gastosS/vbS*100).toFixed(1)+'%':'0%',sub:'sobre venta bruta',accent:'var(--slate-light)',tag:'',cls:''},
-  ].map(k=>`<div class="kpi fade-up" style="--accent:${k.accent}">
-    <div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div>
-    ${k.tag?`<div class="kpi-tag ${k.cls}">${k.tag}</div>`:''}
-    <div class="kpi-sub">${k.sub}</div></div>`).join('');
-  if(resultado){
-    const vals=periodVals(resultado),maxAbs=Math.max(...vals.map(v=>Math.abs(v)),1);
-    document.getElementById('pnl-result-bars').innerHTML=vals.map((v,i)=>{
-      const h=Math.max(3,(Math.abs(v)/maxAbs)*110);
-      return `<div class="mbar-col"><div class="mbar-wrap">
-        <div class="mbar" style="height:${h}px;background:${v>=0?'var(--green)':'var(--red)'};opacity:.85" data-tip="${labels[i]}: ${clp(v)}"></div>
-      </div><div class="mbar-lbl">${(labels[i]||'').slice(0,6)}</div></div>`;
+  const gastS=ps(logN)+ps(mktT)+ps(techT)+ps(admT);
+  const mPos=res?pv(res).filter(v=>v>0).length:0;
+
+  document.getElementById('pnl-kgrid').innerHTML=[
+    {lbl:'VENTA BRUTA',num:clp(vbS),sub:labels.length+' meses',spk:'var(--sh)',delta:{cls:'d-neu',txt:labels.length+' meses'}},
+    {lbl:'MARGEN BRUTO',num:(mrgP*100).toFixed(1)+'%',numCls:mrgP>=.65?'pos':mrgP>=.45?'warn':'neg',sub:clp(mbS),spk:'var(--pos)',delta:mrgP>=.65?{cls:'d-pos',txt:'Saludable'}:{cls:'d-neg',txt:'Revisar'}},
+    {lbl:'RESULTADO NETO',num:clp(resS),numCls:resS>=0?'pos':'neg',sub:'período completo',spk:resS>=0?'var(--pos)':'var(--neg)',delta:resS>=0?{cls:'d-pos',txt:'Positivo'}:{cls:'d-neg',txt:'Negativo'}},
+    {lbl:'MESES POSITIVOS',num:mPos+'/'+labels.length,sub:'con resultado >0',spk:'var(--txt3)',delta:{cls:'d-neu',txt:'vs meta período'}},
+  ].map(k=>{
+    const spkd=pv(res||vbT);
+    const spkMax=Math.max(...spkd.map(v=>Math.abs(v)),1);
+    const sc=spkd.map(v=>`<div class="ksbar" style="height:${Math.max(8,(Math.abs(v)/spkMax)*100)}%;background:${k.spk}"></div>`).join('');
+    return `<div class="kblock">
+      <div class="klbl">${k.lbl}</div>
+      <div class="knum${k.numCls?' '+k.numCls:''}">${k.num}</div>
+      <div class="ksub">${k.sub}</div>
+      <div class="kdelta ${k.delta.cls}">${k.delta.txt}</div>
+      <div class="kspark">${sc}</div>
+    </div>`;
+  }).join('');
+
+  // Barras resultado neto
+  if(res){
+    const vals=pv(res),ma=Math.max(...vals.map(v=>Math.abs(v)),1);
+    document.getElementById('pnl-bars').innerHTML=vals.map((v,i)=>{
+      const h=Math.max(3,(Math.abs(v)/ma)*90);
+      return `<div class="mbc"><div class="mbw">
+        <div class="mbs" style="height:${h}px;background:${v>=0?'var(--pos)':'var(--neg)'};opacity:.8;border-radius:2px 2px 0 0" title="${labels[i]}: ${clp(v)}"></div>
+      </div><div class="mbl">${(labels[i]||'').slice(0,6)}</div></div>`;
     }).join('');
   }
-  const gastoRows=[
-    {label:'Logístico Neto',row:logNeto,color:'var(--mt)'},
-    {label:'Marketing',row:mktTot,color:'var(--slate-mid)'},
-    {label:'Tech & Software',row:techTot,color:'var(--slate-dark)'},
-    {label:'Administración',row:admTot,color:'var(--slate-night)'},
+
+  // Breakdown gastos
+  const gRows=[
+    {lbl:'Logístico neto',row:logN,c:'var(--mt)'},
+    {lbl:'Marketing',row:mktT,c:'var(--sh)'},
+    {lbl:'Tech & Software',row:techT,c:'var(--txt2)'},
+    {lbl:'Administración',row:admT,c:'var(--txt3)'},
   ];
-  const maxG=Math.max(...gastoRows.map(g=>periodSum(g.row)),1);
-  document.getElementById('gasto-bars').innerHTML=gastoRows.map(g=>`
-    <div class="hbar-row">
-      <div class="hbar-lbl">${g.label}</div>
-      <div class="hbar-track"><div class="hbar-fill" style="width:${(periodSum(g.row)/maxG*100).toFixed(1)}%;background:${g.color}"></div></div>
-      <div class="hbar-val">${clp(periodSum(g.row))}</div>
+  const maxG=Math.max(...gRows.map(g=>ps(g.row)),1);
+  document.getElementById('gasto-bars').innerHTML=gRows.map(g=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--txt3);width:120px;text-align:right;flex-shrink:0">${g.lbl}</div>
+      <div style="flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${(ps(g.row)/maxG*100).toFixed(1)}%;background:${g.c};border-radius:2px"></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--txt);width:90px;text-align:right;flex-shrink:0">${clp(ps(g.row))}</div>
     </div>`).join('');
-  const renderCanalMrg=(shConcepto,mlConcepto,containerId)=>{
-    const findFlex=term=>{const t=term.toLowerCase().replace(/[×x]/g,'.');return rows.find(r=>r.concepto.toLowerCase().replace(/[×x]/g,'.').includes(t));};
-    const shRow=findFlex(shConcepto),mlRow=findFlex(mlConcepto);
-    const channels=[{label:'Shopify',row:shRow,color:'var(--green)',cls:'b-sh'},{label:'MercadoLibre',row:mlRow,color:'var(--gold)',cls:'b-ml'}];
-    document.getElementById(containerId).innerHTML=channels.map(ch=>{
-      if(!ch.row) return '';
-      const vals=periodVals(ch.row).filter(v=>v!==0);
+
+  // Canal por marca
+  const rCM=(shT,mlT,cid)=>{
+    const ff=t=>{const tl=t.toLowerCase().replace(/[×x]/g,'.');return rows.find(r=>r.concepto.toLowerCase().replace(/[×x]/g,'.').includes(tl));};
+    const channels=[{lbl:'Shopify',row:ff(shT),c:'var(--sh)'},{lbl:'ML',row:ff(mlT),c:'var(--ml)'}];
+    document.getElementById(cid).innerHTML=channels.map(ch=>{
+      if(!ch.row)return'';
+      const vals=pv(ch.row).filter(v=>v!==0);
       const avg=vals.length?vals.reduce((s,v)=>s+v,0)/vals.length:0;
-      const mc=mColor(avg);
+      const mc=avg>=65?'var(--pos)':avg>=45?'var(--warn)':'var(--neg)';
       return `<div style="margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <span class="bdg ${ch.cls}">${ch.label}</span>
-          <span style="font-family:var(--fd);font-size:20px;font-weight:700;letter-spacing:-0.03em;color:${mc}">${avg.toFixed(1)}%</span>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+          <span class="bdg ${ch.lbl==='Shopify'?'b-sh':'b-ml'}">${ch.lbl}</span>
+          <span style="font-size:28px;font-weight:500;letter-spacing:-0.04em;color:${mc}">${avg.toFixed(1)}%</span>
         </div>
-        <div style="height:5px;background:var(--off);border-radius:2px;overflow:hidden">
-          <div style="height:100%;width:${Math.min(100,avg).toFixed(1)}%;background:${ch.color};border-radius:2px"></div>
+        <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden">
+          <div style="height:100%;width:${Math.min(100,avg).toFixed(1)}%;background:${ch.c};border-radius:2px"></div>
         </div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--gray);margin-top:5px">promedio de ${vals.length} mes${vals.length!==1?'es':''} con venta</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--txt3);margin-top:4px">prom. ${vals.length} mes${vals.length!==1?'es':''}</div>
       </div>`;
     }).join('');
   };
-  renderCanalMrg('% Margen MemoKoala × Shopify','% Margen MemoKoala × MercadoLibre','pnl-mk-canal');
-  renderCanalMrg('% Margen Montana × Shopify','% Margen Montana × MercadoLibre','pnl-mt-canal');
+  rCM('% Margen MemoKoala × Shopify','% Margen MemoKoala × MercadoLibre','pnl-mk-canal');
+  rCM('% Margen Montana × Shopify','% Margen Montana × MercadoLibre','pnl-mt-canal');
+
+  // Mix canal
+  const vbMK=fr('Venta MemoKoala × Shopify'),vbML=fr('Venta MemoKoala × MercadoLibre');
+  const mtSH=fr('Venta Montana × Shopify'),mtML=fr('Venta Montana × MercadoLibre');
+  const mixRows=[
+    {lbl:'MK × Shopify',v:ps(vbMK),c:'var(--mk)'},
+    {lbl:'MK × ML',v:ps(vbML),c:'var(--mk)',op:'0.5'},
+    {lbl:'MT × Shopify',v:ps(mtSH),c:'var(--mt)'},
+    {lbl:'MT × ML',v:ps(mtML),c:'var(--mt)',op:'0.5'},
+  ];
+  const mixTot=mixRows.reduce((s,r)=>s+r.v,0)||1;
+  const mixMax=Math.max(...mixRows.map(r=>r.v),1);
+  document.getElementById('pnl-mix').innerHTML=mixRows.map(r=>`
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-family:var(--mono);font-size:9px;color:var(--txt3)">${r.lbl}</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--txt2)">${(r.v/mixTot*100).toFixed(0)}%</span>
+      </div>
+      <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${(r.v/mixMax*100).toFixed(1)}%;background:${r.c};opacity:${r.op||'1'};border-radius:2px"></div>
+      </div>
+    </div>`).join('');
+
   renderPnLTable(idxs,labels);
 }
 
 function renderPnLTable(idxs,labels){
-  const {rows}=PNL_RAW;
-  const SECTION_COLORS={'INGRESOS':'#2E7D32','MARGEN':'#1b5e20','LOG':'#E65100','MARKETING':'#4A148C','TECH':'#1565C0','ADMINISTR':'#4E342E','RESULTADO':'#1C2B3A','METRICAS':'#37474F','MARCA':'#263238'};
-  const getSectionColor=concepto=>{const u=concepto.toUpperCase();for(const[k,v] of Object.entries(SECTION_COLORS)){if(u.includes(k))return v;}return '#2C3E4C';};
-  const isSubhdr=row=>row.concepto.includes('▶')||row.concepto.startsWith('â–¶');
-  const isBold=row=>row.concepto.startsWith('TOTAL')||row.concepto.startsWith('VENTA BRUTA TOTAL')||row.concepto.startsWith('MARGEN BRUTO TOTAL')||row.concepto.startsWith('RESULTADO NETO');
-  const isResultado=row=>row.concepto.includes('RESULTADO NETO');
-  const isPct=row=>row.concepto.startsWith('%');
-  const fmtVal=(v,isPctRow)=>isPctRow?v.toFixed(1)+'%':clp(v);
-  const cellColor=(v,isRes)=>isRes?(v>=0?'color:var(--green);font-weight:700':'color:var(--red);font-weight:700'):'';
-  const periodSum=vals=>idxs.reduce((s,i)=>s+(vals[i]||0),0);
-  const avgForPct=vals=>{const nz=idxs.map(i=>vals[i]||0).filter(v=>v!==0);return nz.length?nz.reduce((s,v)=>s+v,0)/nz.length:0;};
-  const thCells=labels.map(m=>`<th>${m.toUpperCase()}</th>`).join('');
-  let html=`<table class="pnl-table"><thead><tr><th>Concepto</th><th>Categoría</th>${thCells}<th class="th-total">Total / Prom.</th></tr></thead><tbody>`;
+  const{rows}=PNL;
+  const SC={'INGRESOS':'#2E7D32','MARGEN':'#1b5e20','LOG':'#E65100','MARKETING':'#4A148C','TECH':'#1565C0','ADMINISTR':'#4E342E','RESULTADO':'#111','METRICAS':'#37474F','MARCA':'#263238'};
+  const getSC=c=>{const u=c.toUpperCase();for(const[k,v]of Object.entries(SC)){if(u.includes(k))return v;}return'#1e2330';};
+  const isShdr=r=>r.concepto.includes('▶')||r.concepto.startsWith('â–¶');
+  const isBold=r=>r.concepto.startsWith('TOTAL')||r.concepto.startsWith('VENTA BRUTA TOTAL')||r.concepto.startsWith('MARGEN BRUTO TOTAL')||r.concepto.startsWith('RESULTADO NETO');
+  const isRes=r=>r.concepto.includes('RESULTADO NETO');
+  const isPct=r=>r.concepto.startsWith('%');
+  const fv=(v,p)=>p?v.toFixed(1)+'%':clp(v);
+  const cc=(v,r)=>r?(v>=0?'color:var(--pos);font-weight:500':'color:var(--neg);font-weight:500'):'';
+  const psum=mv=>idxs.reduce((s,i)=>s+(mv[i]||0),0);
+  const pavg=mv=>{const nz=idxs.map(i=>mv[i]||0).filter(v=>v!==0);return nz.length?nz.reduce((s,v)=>s+v,0)/nz.length:0;};
+  const ths=labels.map(m=>`<th>${m.toUpperCase()}</th>`).join('');
+  let html=`<table class="pnl-table"><thead><tr><th>Concepto</th><th>Categoría</th>${ths}<th class="th-tot">Total/Prom</th></tr></thead><tbody>`;
   rows.forEach(row=>{
-    if(isSubhdr(row)){
-      const bg=getSectionColor(row.concepto);
-      html+=`<tr class="subhdr"><td style="background:${bg};color:#fff">${row.concepto.replace('â–¶','▶')}</td><td style="background:${bg}"></td>${labels.map(()=>`<td style="background:${bg}"></td>`).join('')}<td class="td-total" style="background:${bg}"></td></tr>`;
+    if(isShdr(row)){
+      const bg=getSC(row.concepto);
+      html+=`<tr class="shdr"><td style="background:${bg}">${row.concepto.replace('â–¶','▶')}</td><td style="background:${bg}"></td>${labels.map(()=>`<td style="background:${bg}"></td>`).join('')}<td class="td-tot" style="background:${bg}"></td></tr>`;
       return;
     }
-    const pctRow=isPct(row),boldRow=isBold(row),resRow=isResultado(row);
-    const tdCells=idxs.map(i=>{const v=row.mesVals[i]||0;return `<td style="${cellColor(v,resRow)}">${fmtVal(v,pctRow)}</td>`;}).join('');
-    const totalV=pctRow?avgForPct(row.mesVals):periodSum(row.mesVals);
-    html+=`<tr class="${boldRow?'bold':''}"><td>${row.concepto}</td><td>${row.categoria}</td>${tdCells}<td class="td-total" style="${cellColor(totalV,resRow)}">${fmtVal(totalV,pctRow)}</td></tr>`;
+    const pRow=isPct(row),bRow=isBold(row),rRow=isRes(row);
+    const tds=idxs.map(i=>{const v=row.mv[i]||0;return`<td style="${cc(v,rRow)}">${fv(v,pRow)}</td>`;}).join('');
+    const totV=pRow?pavg(row.mv):psum(row.mv);
+    html+=`<tr class="${bRow?'bold':''}"><td>${row.concepto}</td><td>${row.cat}</td>${tds}<td class="td-tot" style="${cc(totV,rRow)}">${fv(totV,pRow)}</td></tr>`;
   });
   html+='</tbody></table>';
   document.getElementById('pnl-table-wrap').innerHTML=html;
 }
 
-// ── HISTÓRICO ─────────────────────────────────────────────
-async function renderHistorico(){
-  if(!pnlLoaded){
-    document.getElementById('hist-content').innerHTML='<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
-    await loadPnL();
-  }
-  const {meses}=PNL_RAW;
-  if(!meses.length) return;
+// ── HISTÓRICO ────────────────────────────────────────────
+async function renderHist(){
+  if(!pnlLoaded){await loadPnL();}
+  const{meses}=PNL;if(!meses.length)return;
   const years=[...new Set(meses.map(m=>'20'+m.slice(-2)))].sort();
-  document.getElementById('hist-period-btns').innerHTML=years.map((y,i)=>
-    `<button onclick="showHistYear('${y}')" style="font-family:var(--mono);font-size:11px;padding:8px 20px;border-radius:2px;border:1px solid var(--border);background:${i===years.length-1?'var(--slate-dark)':'#fff'};color:${i===years.length-1?'var(--cream)':'var(--slate-mid)'};cursor:pointer">${y}</button>`
+  document.getElementById('hist-btns').innerHTML=years.map((y,i)=>
+    `<button class="hbtn${i===years.length-1?' on':''}" onclick="showHY('${y}',this)">${y}</button>`
   ).join('');
-  showHistYear(years[years.length-1]);
+  showHY(years[years.length-1],document.querySelector('.hbtn.on'));
 }
 
-function showHistYear(year){
-  const {meses,rows}=PNL_RAW;
+function showHY(year,el){
+  document.querySelectorAll('.hbtn').forEach(b=>b.classList.remove('on'));
+  if(el)el.classList.add('on');
+  const{meses,rows}=PNL;
   const idxs=[],labels=[];
-  meses.forEach((m,i)=>{if(m.slice(-2)===''+year.slice(2)){idxs.push(i);labels.push(m);}});
-  const isPct=row=>row.concepto.startsWith('%');
-  const isSubhdr=row=>row.concepto.includes('▶')||row.concepto.startsWith('â–¶');
-  const isBold=row=>row.concepto.startsWith('TOTAL')||row.concepto.startsWith('VENTA BRUTA TOTAL')||row.concepto.startsWith('MARGEN BRUTO TOTAL')||row.concepto.startsWith('RESULTADO');
-  const isRes=row=>row.concepto.includes('RESULTADO NETO');
-  const fmtV=(v,p)=>p?v.toFixed(1)+'%':clp(v);
-  const SCOLORS={'INGRESOS':'#2E7D32','MARGEN':'#1b5e20','LOG':'#E65100','MARKETING':'#4A148C','TECH':'#1565C0','ADMINISTR':'#4E342E','RESULTADO':'#1C2B3A','METRICAS':'#37474F','MARCA':'#263238'};
-  const getC=c=>{const u=c.toUpperCase();for(const[k,v] of Object.entries(SCOLORS)){if(u.includes(k))return v;}return '#2C3E4C';};
-  const periodSum=vals=>idxs.reduce((s,i)=>s+(vals[i]||0),0);
-  const avgPct=vals=>{const nz=idxs.map(i=>vals[i]||0).filter(v=>v!==0);return nz.length?nz.reduce((s,v)=>s+v,0)/nz.length:0;};
-  const thCells=labels.map(m=>`<th>${m.toUpperCase()}</th>`).join('');
-  let html=`<div class="card"><div class="card-head"><span class="card-title">Estado de Resultados · ${year}</span></div>
-  <div class="pnl-wrap"><table class="pnl-table"><thead><tr><th>Concepto</th><th>Categoría</th>${thCells}<th class="th-total">Total</th></tr></thead><tbody>`;
+  meses.forEach((m,i)=>{if(m.slice(-2)===year.slice(2)){idxs.push(i);labels.push(m);}});
+  const isPct=r=>r.concepto.startsWith('%');
+  const isShdr=r=>r.concepto.includes('▶')||r.concepto.startsWith('â–¶');
+  const isBold=r=>r.concepto.startsWith('TOTAL')||r.concepto.startsWith('VENTA BRUTA TOTAL')||r.concepto.startsWith('MARGEN BRUTO TOTAL')||r.concepto.startsWith('RESULTADO');
+  const isRes=r=>r.concepto.includes('RESULTADO NETO');
+  const fv=(v,p)=>p?v.toFixed(1)+'%':clp(v);
+  const SC={'INGRESOS':'#2E7D32','MARGEN':'#1b5e20','LOG':'#E65100','MARKETING':'#4A148C','TECH':'#1565C0','ADMINISTR':'#4E342E','RESULTADO':'#111','METRICAS':'#37474F','MARCA':'#263238'};
+  const getSC=c=>{const u=c.toUpperCase();for(const[k,v]of Object.entries(SC)){if(u.includes(k))return v;}return'#1e2330';};
+  const psum=mv=>idxs.reduce((s,i)=>s+(mv[i]||0),0);
+  const pavg=mv=>{const nz=idxs.map(i=>mv[i]||0).filter(v=>v!==0);return nz.length?nz.reduce((s,v)=>s+v,0)/nz.length:0;};
+  const ths=labels.map(m=>`<th>${m.toUpperCase()}</th>`).join('');
+  let html=`<div class="tpanel"><div class="thead-row"><span class="thtitle">Estado de resultados · ${year}</span></div><div class="tscroll"><table class="pnl-table"><thead><tr><th>Concepto</th><th>Categoría</th>${ths}<th class="th-tot">Total</th></tr></thead><tbody>`;
   rows.forEach(row=>{
-    if(isSubhdr(row)){const bg=getC(row.concepto);html+=`<tr class="subhdr"><td style="background:${bg};color:#fff">${row.concepto.replace('â–¶','▶')}</td><td style="background:${bg}"></td>${labels.map(()=>`<td style="background:${bg}"></td>`).join('')}<td class="td-total" style="background:${bg}"></td></tr>`;return;}
+    if(isShdr(row)){const bg=getSC(row.concepto);html+=`<tr class="shdr"><td style="background:${bg}">${row.concepto.replace('â–¶','▶')}</td><td style="background:${bg}"></td>${labels.map(()=>`<td style="background:${bg}"></td>`).join('')}<td class="td-tot" style="background:${bg}"></td></tr>`;return;}
     const pRow=isPct(row),bRow=isBold(row),rRow=isRes(row);
-    const tds=idxs.map(i=>{const v=row.mesVals[i]||0;const s=rRow?(v>=0?'color:var(--green);font-weight:700':'color:var(--red);font-weight:700'):'';return`<td style="${s}">${fmtV(v,pRow)}</td>`;}).join('');
-    const tot=pRow?avgPct(row.mesVals):periodSum(row.mesVals);
-    const ts=rRow?(tot>=0?'color:var(--green);font-weight:700':'color:var(--red);font-weight:700'):'';
-    html+=`<tr class="${bRow?'bold':''}"><td>${row.concepto}</td><td>${row.categoria}</td>${tds}<td class="td-total" style="${ts}">${fmtV(tot,pRow)}</td></tr>`;
+    const tds=idxs.map(i=>{const v=row.mv[i]||0;const s=rRow?(v>=0?'color:var(--pos);font-weight:500':'color:var(--neg);font-weight:500'):'';return`<td style="${s}">${fv(v,pRow)}</td>`;}).join('');
+    const totV=pRow?pavg(row.mv):psum(row.mv);
+    const ts=rRow?(totV>=0?'color:var(--pos);font-weight:500':'color:var(--neg);font-weight:500'):'';
+    html+=`<tr class="${bRow?'bold':''}"><td>${row.concepto}</td><td>${row.cat}</td>${tds}<td class="td-tot" style="${ts}">${fv(totV,pRow)}</td></tr>`;
   });
   html+='</tbody></table></div></div>';
   document.getElementById('hist-content').innerHTML=html;
 }
 
-// ── VENTAS RENDER ─────────────────────────────────────────
+// ── CHECKLIST ────────────────────────────────────────────
+function showCL(){document.getElementById('cl-modal').style.display='block';document.body.style.overflow='hidden';}
+function hideCL(){document.getElementById('cl-modal').style.display='none';document.body.style.overflow='';}
+function clTog(el){el.classList.toggle('done');clProg();}
+function clProg(){const t=document.querySelectorAll('.cl-item').length,d=document.querySelectorAll('.cl-item.done').length;document.getElementById('cl-prog').style.width=(t>0?d/t*100:0)+'%';}
+function clReset(){document.querySelectorAll('.cl-item').forEach(e=>e.classList.remove('done'));clProg();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')hideCL();});
+
+// ── UTILS ────────────────────────────────────────────────
 const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
-const pct=n=>(n*100).toFixed(1)+'%';
-const mColor=p=>p>=65?'var(--green)':p>=45?'var(--gold)':'var(--red)';
-
-function sf(type,val,el){
-  filters[type]=val;
-  const groups={m:['fa','fmk','fmt'],c:['fca','fsh','fml'],y:['fya','fy25','fy26'],me:['fma','fm1','fm2','fm3','fm4','fm5','fm6','fm7','fm8','fm9','fm10','fm11','fm12']};
-  groups[type].forEach(id=>{const e=document.getElementById(id);if(e)e.className='pill';});
-  el.className=val==='MemoKoala'?'pill mk':val==='Montana'?'pill mt':'pill on';render();
+const sum=(arr,k)=>arr.reduce((s,r)=>s+(r[k]||0),0);
+function pn(v){
+  if(v===null||v===undefined||v==='')return 0;
+  if(typeof v==='number')return v;
+  let s=String(v).trim().replace(/[$\s%]/g,'');
+  if(!s)return 0;
+  const dots=(s.match(/\./g)||[]).length,commas=(s.match(/,/g)||[]).length;
+  if(commas>=1&&dots===0)s=s.replace(/,/g,'');
+  else if(commas===1&&dots===1)s=s.replace(',','');
+  else if(commas===0&&dots>1)s=s.replace(/\./g,'');
+  return parseFloat(s)||0;
 }
-function filtered(){return DATA.filter(r=>{
-  if(filters.m!=='Todas'&&r.marca!==filters.m) return false;
-  if(filters.c!=='Todos'&&r.canal!==filters.c) return false;
-  if(filters.y!==0&&r.anio!==filters.y) return false;
-  if(filters.me!==0&&r.mes!==filters.me) return false;
-  return true;
-});}
-function render(){const d=filtered();renderKPIs(d);renderMonthBars(d);renderCanal(d);renderMarca(d);renderProdBars(d);renderRecentTx(d);renderSkuTable(d);}
-
-function renderKPIs(d){
-  const vb=d.reduce((s,r)=>s+r.vb,0),mb=d.reduce((s,r)=>s+r.mb,0);
-  const un=d.reduce((s,r)=>s+r.qty,0),cnt=d.length;
-  const tk=un>0?vb/un:0,mrg=vb>0?mb/vb:0;
-  const META=14969250,meses=[...new Set(d.map(r=>r.anio+'-'+r.mes))].length||1;
-  const avg=vb/meses,gap=avg/META-1;
-  const kpis=[
-    {lbl:'Venta Bruta',val:clp(vb),sub:cnt+' trans · '+un+' uds',tag:gap>=0?'↑ +'+Math.abs(gap*100).toFixed(1)+'% meta':'↓ '+Math.abs(gap*100).toFixed(1)+'% meta',cls:gap>=0?'tag-up':'tag-dn',accent:'var(--slate-mid)'},
-    {lbl:'Margen Bruto $',val:clp(mb),sub:pct(mrg)+' sobre venta',tag:mrg>=.65?'Saludable':mrg>=.45?'OK':'Revisar',cls:mrg>=.65?'tag-up':mrg>=.45?'tag-n':'tag-dn',accent:'var(--gold)'},
-    {lbl:'Ticket Promedio',val:clp(tk),sub:'por unidad',tag:'',cls:'',accent:'var(--slate-dark)'},
-    {lbl:'Unidades',val:un.toLocaleString('es-CL'),sub:meses+' mes'+(meses>1?'es':''),tag:'',cls:'',accent:'var(--mt)'},
-    {lbl:'Prom. Mensual',val:clp(avg),sub:'meta: '+clp(META),tag:gap>=0?'↑ Sobre meta':'↓ Bajo meta',cls:gap>=0?'tag-up':'tag-dn',accent:'var(--slate-night)'},
-    {lbl:'Costo Total',val:clp(d.reduce((s,r)=>s+r.costo,0)),sub:'importación',tag:'',cls:'',accent:'var(--slate-light)'},
-  ];
-  document.getElementById('kpi-grid').innerHTML=kpis.map(k=>`
-    <div class="kpi fade-up" style="--accent:${k.accent}">
-      <div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div>
-      ${k.tag?`<div class="kpi-tag ${k.cls}">${k.tag}</div>`:''}
-      <div class="kpi-sub">${k.sub}</div></div>`).join('');
-}
-
-function renderMonthBars(d){
-  const byM={};
-  d.forEach(r=>{const k=r.anio+'-'+String(r.mes).padStart(2,'0');
-    if(!byM[k])byM[k]={lbl:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][r.mes-1]+' '+String(r.anio).slice(2),mk:0,mt:0};
-    byM[k][r.marca==='MemoKoala'?'mk':'mt']+=r.vb;});
-  const sorted=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0]));
-  const maxV=Math.max(...sorted.map(([,v])=>v.mk+v.mt),1);
-  document.getElementById('month-bars').innerHTML=sorted.map(([,v])=>{
-    const tot=v.mk+v.mt,h=Math.max(3,(tot/maxV)*100);
-    const hmk=tot>0?(v.mk/tot)*h:h/2,hmt=h-hmk;
-    return `<div class="mbar-col"><div class="mbar-wrap">
-      <div class="mbar" style="height:${hmt}px;background:var(--mt-mid);opacity:.8" data-tip="${v.lbl}: ${clp(tot)}"></div>
-      <div class="mbar" style="height:${hmk}px;background:var(--mk)" data-tip="${v.lbl}: ${clp(tot)}"></div>
-    </div><div class="mbar-lbl">${v.lbl}</div></div>`;
-  }).join('');
-  document.getElementById('month-legend').innerHTML=`
-    <div class="leg"><div class="leg-dot" style="background:var(--mk)"></div>MemoKoala</div>
-    <div class="leg"><div class="leg-dot" style="background:var(--mt-mid)"></div>Montana</div>`;
-}
-
-function renderCanal(d){
-  const ch={};
-  d.forEach(r=>{ch[r.canal]=(ch[r.canal]||{vb:0,mb:0,cnt:0});ch[r.canal].vb+=r.vb;ch[r.canal].mb+=r.mb;ch[r.canal].cnt++;});
-  const tot=Object.values(ch).reduce((s,v)=>s+v.vb,0)||1;
-  const cc={Shopify:'var(--green)',ML:'var(--gold)'};
-  document.getElementById('canal-split').innerHTML=Object.entries(ch).map(([k,v])=>`<div style="flex:${v.vb};background:${cc[k]||'#ccc'}"></div>`).join('');
-  document.getElementById('canal-detail').innerHTML=Object.entries(ch).map(([k,v])=>`
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div class="leg"><div class="leg-dot" style="background:${cc[k]||'#ccc'}"></div>
-      <span class="bdg ${k==='Shopify'?'b-sh':'b-ml'}">${k}</span></div>
-      <span style="font-family:var(--mono);font-size:11px">${clp(v.vb)} <span style="color:var(--gray)">${pct(v.vb/tot)}</span></span>
-    </div>`).join('');
-  document.getElementById('canal-margin').innerHTML='<div style="font-family:var(--mono);font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Margen por canal</div>'+
-    Object.entries(ch).map(([k,v])=>{const p=v.vb>0?v.mb/v.vb:0;return`<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-bottom:4px"><span style="color:var(--gray)">${k}</span><span style="color:${mColor(p*100)};font-weight:500">${pct(p)}</span></div>`;}).join('');
-}
-
-function renderMarca(d){
-  const bm={};
-  d.forEach(r=>{bm[r.marca]=(bm[r.marca]||{vb:0,mb:0});bm[r.marca].vb+=r.vb;bm[r.marca].mb+=r.mb;});
-  const bc={MemoKoala:'var(--mk)',Montana:'var(--mt)'};
-  document.getElementById('marca-margen').innerHTML=Object.entries(bm).map(([m,v])=>{
-    const p=v.vb>0?v.mb/v.vb:0;
-    return `<div style="margin-bottom:16px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-        <span class="bdg ${m==='MemoKoala'?'b-mk':'b-mt'}">${m==='MemoKoala'?'🐨':'🔪'} ${m}</span>
-        <span style="font-family:var(--fd);font-size:18px;font-weight:700;letter-spacing:-0.03em;color:${bc[m]}">${pct(p)}</span>
-      </div>
-      <div style="height:5px;background:var(--off);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${Math.min(100,p*100).toFixed(1)}%;background:${bc[m]};border-radius:2px"></div>
-      </div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--gray);margin-top:5px">${clp(v.vb)} bruto · ${clp(v.mb)} margen</div>
-    </div>`;
-  }).join('');
-}
-
-function renderProdBars(d){
-  const p={};
-  d.forEach(r=>{if(!p[r.sku])p[r.sku]={nom:r.prod,vb:0,marca:r.marca};p[r.sku].vb+=r.vb;});
-  const sorted=Object.entries(p).sort((a,b)=>b[1].vb-a[1].vb).slice(0,9);
-  const mx=sorted[0]?.[1]?.vb||1;
-  document.getElementById('prod-bars').innerHTML=sorted.map(([sku,v])=>`
-    <div class="hbar-row">
-      <div class="hbar-lbl" title="${v.nom}">${v.nom||sku}</div>
-      <div class="hbar-track"><div class="hbar-fill" style="width:${(v.vb/mx*100).toFixed(1)}%;background:${v.marca==='MemoKoala'?'var(--mk)':'var(--mt)'}"></div></div>
-      <div class="hbar-val">${clp(v.vb)}</div>
-    </div>`).join('');
-}
-
-function renderRecentTx(d){
-  const sorted=[...d].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,15);
-  document.getElementById('tx-count').textContent=d.length+' ventas';
-  document.getElementById('recent-tx').innerHTML=sorted.map(r=>{
-    const mc=mColor(r.mrg);
-    return `<tr>
-      <td>${r.fecha.slice(5)}</td>
-      <td><span class="bdg ${r.marca==='MemoKoala'?'b-mk':'b-mt'}">${r.marca==='MemoKoala'?'MK':'MT'}</span></td>
-      <td><span class="bdg ${r.canal==='Shopify'?'b-sh':'b-ml'}">${r.canal}</span></td>
-      <td>${(r.prod||'').slice(0,22)}</td>
-      <td>${clp(r.vb)}</td>
-      <td><div class="mrg-bar"><span style="color:${mc};font-weight:500">${r.mrg.toFixed(1)}%</span>
-        <div class="mrg-mini"><div class="mrg-fill" style="width:${Math.min(100,r.mrg).toFixed(0)}%;background:${mc}"></div></div>
-      </div></td></tr>`;
-  }).join('');
-}
-
-function renderSkuTable(d){
-  const s={};
-  d.forEach(r=>{if(!s[r.sku])s[r.sku]={nom:r.prod,marca:r.marca,un:0,vb:0,costo:0,mb:0};
-    s[r.sku].un+=r.qty;s[r.sku].vb+=r.vb;s[r.sku].costo+=r.costo;s[r.sku].mb+=r.mb;});
-  document.getElementById('sku-table').innerHTML=Object.values(s).sort((a,b)=>b.vb-a.vb).map(r=>{
-    const mp=r.vb>0?(r.mb/r.vb)*100:0,mc=mColor(mp);
-    return `<tr>
-      <td style="font-weight:500;color:var(--slate-night)">${r.sku||'—'}</td>
-      <td>${r.nom||'—'}</td>
-      <td><span class="bdg ${r.marca==='MemoKoala'?'b-mk':'b-mt'}">${r.marca==='MemoKoala'?'🐨 MK':'🔪 MT'}</span></td>
-      <td>${r.un}</td><td>${clp(r.vb)}</td><td>${clp(r.costo)}</td><td>${clp(r.mb)}</td>
-      <td><div class="mrg-bar"><span style="color:${mc};font-weight:500">${mp.toFixed(1)}%</span>
-        <div class="mrg-mini"><div class="mrg-fill" style="width:${Math.min(100,mp).toFixed(0)}%;background:${mc}"></div></div>
-      </div></td></tr>`;
-  }).join('');
-}
-
-// ── UTILS ─────────────────────────────────────────────────
-function splitCSV(line){
+function scsv(line){
   const res=[];let f='',inQ=false;
   for(let i=0;i<line.length;i++){
     const c=line[i];
@@ -1019,25 +991,6 @@ function splitCSV(line){
   }
   res.push(f.trim());return res;
 }
-function parseNum(v){
-  if(v===null||v===undefined||v==='') return 0;
-  if(typeof v==='number') return v;
-  let s=String(v).trim().replace(/[$\s%]/g,'');
-  if(s==='') return 0;
-  const dots=(s.match(/\./g)||[]).length,commas=(s.match(/,/g)||[]).length;
-  if(commas>=1&&dots===0) s=s.replace(/,/g,'');
-  else if(commas===1&&dots===1) s=s.replace(',','');
-  else if(commas===0&&dots>1) s=s.replace(/\./g,'');
-  return parseFloat(s)||0;
-}
-
-// ── CHECKLIST ─────────────────────────────────────────────
-function showChecklist(){document.getElementById('checklist-modal').style.display='block';document.body.style.overflow='hidden';}
-function hideChecklist(){document.getElementById('checklist-modal').style.display='none';document.body.style.overflow='';}
-function clToggle(el){el.classList.toggle('done');clUpdateProgress();}
-function clUpdateProgress(){const t=document.querySelectorAll('.cl-item').length,d=document.querySelectorAll('.cl-item.done').length;document.getElementById('cl-prog').style.width=(t>0?(d/t*100).toFixed(0):0)+'%';}
-function clReset(){document.querySelectorAll('.cl-item').forEach(el=>el.classList.remove('done'));clUpdateProgress();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')hideChecklist();});
 </script>
 </body>
 </html>
