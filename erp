@@ -5,243 +5,273 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HouseBrands · ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0d0f14;
-  --bg1:#13161e;
-  --bg2:#181c26;
-  --bg3:#1e2330;
-  --line:#ffffff0f;
-  --line2:#ffffff18;
-  --txt:#e8eaf0;
-  --txt2:#8892a4;
-  --txt3:#4a5568;
-  --mk:#3ecf8e;
-  --mk-dim:#1a3d2e;
-  --mt:#f4a261;
-  --mt-dim:#3d2410;
-  --sh:#4a9eff;
-  --sh-dim:#0f2a4a;
-  --ml:#f5c842;
-  --ml-dim:#3a2e08;
-  --pos:#3ecf8e;
-  --pos-dim:#0d2a1e;
-  --neg:#f87171;
-  --neg-dim:#2a0f0f;
-  --warn:#f5c842;
-  --warn-dim:#2a2408;
+  --night:#1C2B3A;
+  --dark:#2C3E4C;
+  --mid:#4A6274;
+  --light:#8AA4B4;
+  --pale:#D6E4EC;
+  --bg:#EEF3F7;
+  --surface:#FFFFFF;
+  --off:#F5F8FA;
+  --border:#D6E4EC;
+  --border2:#C2D4DF;
+  --mk:#3d7a62;
+  --mk-bg:#EAF4EF;
+  --mk-border:#A8D0BC;
+  --mt:#b85a2a;
+  --mt-bg:#F7EDE6;
+  --mt-border:#E0A882;
+  --pos:#1a7a45;
+  --pos-bg:#E8F8EE;
+  --neg:#c0392b;
+  --neg-bg:#FDECEA;
+  --warn:#b07d10;
+  --warn-bg:#FDF6E3;
+  --sh:#2563a8;
+  --sh-bg:#EBF2FA;
+  --ml:#9a6f00;
+  --ml-bg:#FDF6E3;
   --f:'Inter',sans-serif;
   --mono:'JetBrains Mono',monospace;
+  --r:8px;
+  --r2:5px;
+  --shadow:0 1px 3px rgba(28,43,58,0.08),0 4px 12px rgba(28,43,58,0.05);
+  --shadow2:0 2px 8px rgba(28,43,58,0.12);
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);font-family:var(--f);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased}
 
 /* ── LOGIN ── */
-#login{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.lbox{width:320px;display:flex;flex-direction:column;gap:24px}
+#login{position:fixed;inset:0;z-index:999;background:var(--night);display:flex;align-items:center;justify-content:center}
+.lbox{width:340px;background:var(--surface);border-radius:12px;padding:36px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:24px}
 .llogo{display:flex;align-items:center;gap:10px}
-.lmark{font-size:15px;font-weight:600;letter-spacing:-0.02em;color:#fff}
-.lmark b{color:var(--txt3);font-weight:400}
-.ltag{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.1em}
-.linput{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:6px;padding:10px 14px;color:var(--txt);font-family:var(--mono);font-size:13px;outline:none;transition:border .2s}
-.linput:focus{border-color:var(--sh)}
-.lbtn{width:100%;background:var(--bg3);border:1px solid var(--line2);border-radius:6px;padding:11px;color:var(--txt);font-family:var(--f);font-size:13px;font-weight:500;cursor:pointer;transition:background .2s}
-.lbtn:hover{background:var(--bg2);border-color:var(--line2)}
+.lmark{font-size:18px;font-weight:600;letter-spacing:-0.03em;color:var(--night)}
+.lmark b{color:var(--mid);font-weight:400}
+.ltag{font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:0.12em;margin-top:4px}
+.lfield label{font-family:var(--mono);font-size:9px;color:var(--mid);letter-spacing:0.1em;display:block;margin-bottom:6px}
+.linput{width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:var(--r2);padding:10px 14px;color:var(--night);font-family:var(--mono);font-size:13px;outline:none;transition:border .2s}
+.linput:focus{border-color:var(--mid);background:#fff}
+.lbtn{width:100%;background:var(--night);border:none;border-radius:var(--r2);padding:12px;color:#fff;font-family:var(--f);font-size:13px;font-weight:500;cursor:pointer;transition:background .2s}
+.lbtn:hover{background:var(--dark)}
 .lerr{font-family:var(--mono);font-size:11px;color:var(--neg);text-align:center;display:none}
 
 /* ── APP ── */
-#app{display:none}
+#app{display:none;min-height:100vh}
 
 /* ── TOPBAR ── */
-.topbar{
-  background:var(--bg1);
-  border-bottom:1px solid var(--line);
-  height:48px;padding:0 20px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
-}
-.tmark{font-size:13px;font-weight:600;letter-spacing:-0.02em;color:#fff}
-.tmark b{color:var(--txt3);font-weight:400}
+.topbar{background:var(--night);height:52px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,0.06)}
+.tmark{font-size:15px;font-weight:600;letter-spacing:-0.025em;color:#fff}
+.tmark b{color:var(--light);font-weight:400}
+.terp{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.3);margin-left:10px;letter-spacing:0.1em}
 .tright{display:flex;align-items:center;gap:8px}
-.tchip{font-family:var(--mono);font-size:10px;color:var(--txt3);background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:3px 8px}
-.tbtn{font-family:var(--mono);font-size:10px;color:var(--txt3);background:transparent;border:1px solid var(--line);border-radius:4px;padding:3px 10px;cursor:pointer;transition:all .15s}
-.tbtn:hover{color:var(--txt);border-color:var(--line2)}
+.tchip{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 9px}
+.tbtn{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.45);background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:4px 12px;cursor:pointer;transition:all .15s}
+.tbtn:hover{color:#fff;border-color:rgba(255,255,255,0.3)}
 
 /* ── TABS ── */
-.tabbar{background:var(--bg1);border-bottom:1px solid var(--line);padding:0 20px;display:flex}
-.tab{font-family:var(--mono);font-size:10px;color:var(--txt3);padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;letter-spacing:0.04em;transition:all .15s}
-.tab:hover{color:var(--txt2)}
-.tab.on{color:#fff;border-bottom-color:var(--sh)}
+.tabbar{background:var(--night);border-bottom:1px solid rgba(255,255,255,0.08);padding:0 24px;display:flex;gap:0}
+.tab{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4);padding:12px 18px;cursor:pointer;border-bottom:2px solid transparent;letter-spacing:0.05em;transition:all .15s}
+.tab:hover{color:rgba(255,255,255,0.7)}
+.tab.on{color:#fff;border-bottom-color:var(--pale)}
 
 /* ── FILTROS ── */
-.fbar{background:var(--bg1);border-bottom:1px solid var(--line);padding:8px 20px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.flbl{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em;margin-right:2px}
-.fsel{background:var(--bg2);border:1px solid var(--line2);border-radius:5px;color:var(--txt2);font-family:var(--mono);font-size:10px;padding:4px 8px;height:26px;outline:none;cursor:pointer}
-.fpill{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--txt3);cursor:pointer;transition:all .15s;white-space:nowrap}
-.fpill:hover{border-color:var(--line2);color:var(--txt2)}
-.fpill.on{background:var(--bg3);border-color:var(--line2);color:#fff}
-.fpill.mk{background:var(--mk-dim);border-color:#2a6e50;color:var(--mk)}
-.fpill.mt{background:var(--mt-dim);border-color:#6e4020;color:var(--mt)}
-.fsep{width:1px;height:14px;background:var(--line);margin:0 2px;flex-shrink:0}
+.fbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;box-shadow:0 1px 3px rgba(28,43,58,0.04)}
+.flbl{font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:0.08em;flex-shrink:0}
+.fsel{background:var(--off);border:1.5px solid var(--border);border-radius:var(--r2);color:var(--dark);font-family:var(--mono);font-size:10px;padding:5px 10px;height:28px;outline:none;cursor:pointer;transition:border .15s}
+.fsel:focus{border-color:var(--mid)}
+.fpill{font-family:var(--mono);font-size:10px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--mid);cursor:pointer;transition:all .15s}
+.fpill:hover{border-color:var(--light);color:var(--dark)}
+.fpill.on{background:var(--night);border-color:var(--night);color:#fff}
+.fpill.mk{background:var(--mk-bg);border-color:var(--mk-border);color:var(--mk)}
+.fpill.mt{background:var(--mt-bg);border-color:var(--mt-border);color:var(--mt)}
+.fsep{width:1px;height:16px;background:var(--border);margin:0 4px;flex-shrink:0}
 
-/* ── GRID KPI ── */
-.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
-.kblock{background:var(--bg1);padding:20px 22px;position:relative;overflow:hidden}
-.klbl{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em;margin-bottom:10px}
-.knum{font-size:32px;font-weight:500;letter-spacing:-0.04em;line-height:1;color:#fff;margin-bottom:6px}
-.knum.pos{color:var(--pos)}
-.knum.warn{color:var(--warn)}
-.knum.neg{color:var(--neg)}
-.ksub{font-family:var(--mono);font-size:10px;color:var(--txt3);margin-bottom:8px}
-.kdelta{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
-.d-pos{background:var(--pos-dim);color:var(--pos)}
-.d-neg{background:var(--neg-dim);color:var(--neg)}
-.d-neu{background:var(--bg3);color:var(--txt3)}
-.kspark{display:flex;align-items:flex-end;gap:2px;height:22px;margin-top:10px}
-.ksbar{flex:1;border-radius:1px 1px 0 0;min-height:2px;opacity:0.5;transition:opacity .15s}
-.kblock:hover .ksbar{opacity:0.8}
+/* ── PAGE ── */
+.page{padding:20px 24px;max-width:1600px;margin:0 auto}
 
-/* ── BODY GRID ── */
-.body{padding:0}
-.row2{display:grid;grid-template-columns:1.6fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
-.panel{background:var(--bg1);padding:18px 20px}
-.ptitle{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em;margin-bottom:14px}
+/* ── KPI GRID ── */
+.krow{display:grid;gap:12px;margin-bottom:12px}
+.krow-4{grid-template-columns:repeat(4,1fr)}
+.krow-5{grid-template-columns:repeat(5,1fr)}
 
-/* ── BARRAS MENSUALES ── */
-.mbars{display:flex;align-items:flex-end;gap:3px;height:100px}
-.mbc{flex:1;display:flex;flex-direction:column;align-items:center;gap:0}
-.mbw{flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%}
-.mbs{width:100%;min-height:2px;cursor:pointer;position:relative}
-.mbs:first-child{border-radius:2px 2px 0 0}
-.mbl{font-family:var(--mono);font-size:7px;color:var(--txt3);margin-top:4px;text-align:center}
-.leg{display:flex;gap:10px;margin-top:10px}
-.legi{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--txt3)}
-.legd{width:8px;height:8px;border-radius:1px}
+/* ── KPI CARD ── */
+.kcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:box-shadow .2s}
+.kcard:hover{box-shadow:var(--shadow2)}
+.kcard-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.kcard-label{font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:0.1em;margin-bottom:8px}
+.kcard-num{font-size:26px;font-weight:600;letter-spacing:-0.04em;line-height:1;color:var(--night);margin-bottom:4px}
+.kcard-num.pos{color:var(--pos)}
+.kcard-num.neg{color:var(--neg)}
+.kcard-num.warn{color:var(--warn)}
+.kcard-num.mid{color:var(--mid)}
+.kcard-sub{font-size:11px;color:var(--light);margin-bottom:8px;line-height:1.3}
+.kcard-delta{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+.d-pos{background:var(--pos-bg);color:var(--pos)}
+.d-neg{background:var(--neg-bg);color:var(--neg)}
+.d-neu{background:var(--off);color:var(--mid);border:1px solid var(--border)}
+.d-warn{background:var(--warn-bg);color:var(--warn)}
+.kcard-spark{display:flex;align-items:flex-end;gap:2px;height:24px;margin-top:10px}
+.ksbar{flex:1;border-radius:2px 2px 0 0;min-height:2px}
 
-/* ── CANAL ── */
-.canal-row{margin-bottom:16px}
-.canal-row:last-of-type{margin-bottom:0}
-.canal-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
-.canal-name{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.06em}
-.canal-num{font-size:28px;font-weight:500;letter-spacing:-0.04em;color:#fff}
-.canal-track{height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:3px}
-.canal-fill{height:100%;border-radius:2px}
-.canal-sub{font-family:var(--mono);font-size:9px;color:var(--txt3)}
+/* ── KPI GASTO (pequeño) ── */
+.gcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
+.gcard-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.gcard-body{flex:1;min-width:0}
+.gcard-label{font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:0.08em;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcard-num{font-size:20px;font-weight:600;letter-spacing:-0.03em;color:var(--night);line-height:1}
+.gcard-sub{font-family:var(--mono);font-size:9px;color:var(--light);margin-top:2px}
 
-/* ── KPI ENVÍO ── */
-.envio-num{font-size:40px;font-weight:500;letter-spacing:-0.05em;color:var(--warn);line-height:1;margin-bottom:6px}
-.envio-sub{font-family:var(--mono);font-size:9px;color:var(--txt3);line-height:1.6}
+/* ── GRID 2/3 ── */
+.g2{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.g23{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
 
-/* ── TABLA SKU ── */
-.tpanel{background:var(--bg1);border-top:1px solid var(--line)}
-.thead-row{padding:10px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-.thtitle{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.08em}
-.thmeta{font-family:var(--mono);font-size:9px;color:var(--txt3)}
-.tscroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:11px}
-th{padding:7px 14px;text-align:right;font-family:var(--mono);font-size:8px;color:var(--txt3);font-weight:400;letter-spacing:0.06em;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg1)}
-th:first-child,th:nth-child(2){text-align:left}
-td{padding:9px 14px;text-align:right;color:var(--txt2);border-bottom:1px solid var(--line)}
-td:first-child{text-align:left;color:#fff;font-weight:500}
-td:nth-child(2){text-align:left;color:var(--txt2)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--bg2)}
-.bdg{display:inline-block;font-family:var(--mono);font-size:9px;padding:1px 7px;border-radius:3px}
-.b-mk{background:var(--mk-dim);color:var(--mk)}
-.b-mt{background:var(--mt-dim);color:var(--mt)}
-.b-sh{background:var(--sh-dim);color:var(--sh)}
-.b-ml{background:var(--ml-dim);color:var(--ml)}
+/* ── CARD ── */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:var(--mono);font-size:9px;color:var(--mid);letter-spacing:0.1em}
+.card-meta{font-family:var(--mono);font-size:9px;color:var(--light)}
+.card-body{padding:16px}
+
+/* ── CANAL WIDGET ── */
+.canal-item{margin-bottom:14px}
+.canal-item:last-child{margin-bottom:0}
+.canal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.canal-lbl{display:flex;align-items:center;gap:6px}
+.canal-num{font-size:22px;font-weight:600;letter-spacing:-0.04em;color:var(--night)}
+.canal-track{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:3px}
+.canal-fill{height:100%;border-radius:3px}
+.canal-sub{font-family:var(--mono);font-size:9px;color:var(--light)}
+
+/* ── TREND MINI ── */
+.trend{display:flex;align-items:flex-end;gap:2px;height:32px}
+.tbar{flex:1;border-radius:2px 2px 0 0;min-height:2px;transition:opacity .15s}
+.tbar:hover{opacity:0.7}
+
+/* ── TABLA ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{padding:8px 12px;text-align:right;font-family:var(--mono);font-size:8px;color:var(--light);font-weight:500;letter-spacing:0.08em;border-bottom:1.5px solid var(--border);white-space:nowrap;background:var(--off)}
+thead th:first-child,thead th:nth-child(2){text-align:left}
+tbody td{padding:9px 12px;text-align:right;font-family:var(--mono);font-size:10px;color:var(--dark);border-bottom:1px solid var(--off)}
+tbody td:first-child{text-align:left;color:var(--night);font-weight:500}
+tbody td:nth-child(2){text-align:left;color:var(--mid)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg)}
+.bdg{display:inline-flex;align-items:center;font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:4px;font-weight:500}
+.b-mk{background:var(--mk-bg);color:var(--mk);border:1px solid var(--mk-border)}
+.b-mt{background:var(--mt-bg);color:var(--mt);border:1px solid var(--mt-border)}
+.b-sh{background:var(--sh-bg);color:var(--sh)}
+.b-ml{background:var(--ml-bg);color:var(--ml)}
 .mrg-cell{display:flex;align-items:center;gap:6px;justify-content:flex-end}
-.mbar{width:36px;height:2px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.mbar{width:40px;height:4px;background:var(--bg);border-radius:2px;overflow:hidden}
 .mfill{height:100%;border-radius:2px}
 .neg-val{color:var(--neg)}
-.pos-val{color:var(--pos);font-weight:500}
+.pos-val{color:var(--pos);font-weight:600}
 
 /* ── P&L ── */
-.pnl-period{background:var(--bg1);border-bottom:1px solid var(--line);padding:8px 20px;display:flex;gap:6px;align-items:center}
-.ppill{font-family:var(--mono);font-size:10px;padding:3px 12px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--txt3);cursor:pointer;transition:all .15s}
-.ppill:hover{border-color:var(--line2);color:var(--txt2)}
-.ppill.on{background:var(--bg3);border-color:var(--line2);color:#fff}
-.pnl-table{border-collapse:collapse;width:100%;min-width:900px;font-size:10px}
-.pnl-table th{font-family:var(--mono);font-size:8px;color:var(--txt3);padding:6px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--bg1);font-weight:400;letter-spacing:0.06em;position:sticky;top:0}
-.pnl-table th:first-child{text-align:left;min-width:180px;position:sticky;left:0;z-index:2}
-.pnl-table th:nth-child(2){text-align:left;min-width:80px}
-.pnl-table th.th-tot{background:var(--bg2);color:#fff;font-weight:500}
-.pnl-table td{font-family:var(--mono);font-size:10px;padding:5px 10px;text-align:right;border-bottom:1px solid var(--line);color:var(--txt2)}
-.pnl-table td:first-child{text-align:left;position:sticky;left:0;background:var(--bg1);z-index:1;color:var(--txt)}
-.pnl-table td:nth-child(2){text-align:left;color:var(--txt3);font-size:9px}
-.pnl-table td.td-tot{background:var(--bg2);color:#fff;font-weight:500}
-.pnl-table tr:hover td{background:var(--bg2)}
-.pnl-table tr:hover td:first-child{background:var(--bg2)}
-.pnl-table tr.bold td{color:#fff;font-weight:500}
-.pnl-table tr.shdr td{font-family:var(--mono);font-size:8px;font-weight:500;letter-spacing:0.1em;padding:4px 10px;border:none;color:rgba(255,255,255,0.7)}
-.pnl-table tr.shdr td:first-child{position:sticky;left:0;z-index:1}
+.pnl-periods{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:6px;align-items:center}
+.ppill{font-family:var(--mono);font-size:10px;padding:4px 14px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--mid);cursor:pointer;transition:all .15s}
+.ppill:hover{border-color:var(--mid);color:var(--dark)}
+.ppill.on{background:var(--night);border-color:var(--night);color:#fff}
 
-/* ── HISTÓRICO ── */
-.hbtn{font-family:var(--mono);font-size:11px;padding:7px 18px;border-radius:4px;border:1px solid var(--line);background:transparent;color:var(--txt3);cursor:pointer;transition:all .15s}
-.hbtn:hover{border-color:var(--line2);color:var(--txt2)}
-.hbtn.on{background:var(--bg3);border-color:var(--line2);color:#fff}
+/* ── P&L TABLE ── */
+.pnl-wrap{overflow-x:auto}
+.pnl-tbl{border-collapse:collapse;width:100%;min-width:800px;font-size:11px}
+.pnl-tbl th{font-family:var(--mono);font-size:8px;color:var(--light);padding:7px 10px;text-align:right;border-bottom:1.5px solid var(--border);white-space:nowrap;background:var(--off);font-weight:500;letter-spacing:0.06em;position:sticky;top:0;z-index:2}
+.pnl-tbl th:first-child{text-align:left;min-width:200px;position:sticky;left:0;z-index:3;background:var(--off)}
+.pnl-tbl th.th-tot{background:var(--night);color:rgba(255,255,255,0.7);font-weight:600}
+.pnl-tbl td{font-family:var(--mono);font-size:10px;padding:6px 10px;text-align:right;border-bottom:1px solid var(--off);color:var(--dark)}
+.pnl-tbl td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1;color:var(--night);min-width:200px}
+.pnl-tbl td.td-tot{background:var(--night);color:#fff;font-weight:600}
+.pnl-tbl tr:hover td{background:var(--bg)}
+.pnl-tbl tr:hover td:first-child{background:var(--bg)}
+.pnl-tbl tr.bold td{font-weight:700;color:var(--night)}
+.pnl-tbl tr.bold td:first-child{color:var(--night)}
+.pnl-tbl tr.shdr td{font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:0.1em;padding:5px 10px;border:none;color:#fff}
+.pnl-tbl tr.shdr td:first-child{position:sticky;left:0;z-index:1}
+.pnl-tbl tr.compact td{padding:4px 10px;font-size:9px;color:var(--mid)}
+.pnl-tbl tr.compact td:first-child{padding-left:20px;color:var(--mid)}
+.p-pos{color:var(--pos)!important;font-weight:600!important}
+.p-neg{color:var(--neg)!important;font-weight:600!important}
 
-/* ── CHECKLIST MODAL ── */
-#cl-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);overflow-y:auto;padding:40px 20px}
-.cl-box{max-width:580px;margin:0 auto;background:var(--bg1);border:1px solid var(--line2);border-radius:8px;overflow:hidden}
-.cl-head{background:var(--bg2);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
-.cl-htitle{font-size:13px;font-weight:500;color:#fff}
-.cl-close{background:transparent;border:1px solid var(--line);color:var(--txt3);border-radius:4px;padding:4px 12px;cursor:pointer;font-family:var(--mono);font-size:11px}
-.cl-prog-wrap{height:2px;background:var(--bg3);margin:0}
-.cl-prog{height:100%;background:var(--sh);transition:width .3s}
-.cl-body{padding:20px}
-.cl-section{margin-bottom:20px}
-.cl-stitle{font-family:var(--mono);font-size:9px;color:var(--txt3);letter-spacing:0.1em;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
-.cl-item{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:4px;cursor:pointer;transition:background .1s;margin-bottom:2px}
-.cl-item:hover{background:var(--bg2)}
-.cl-cb{width:16px;height:16px;border:1.5px solid var(--line2);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.cl-item.done .cl-cb{background:var(--sh);border-color:var(--sh)}
-.cl-item.done .cl-cb::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
-.cl-item.done .cl-lbl{text-decoration:line-through;color:var(--txt3)}
-.cl-lbl{font-size:12px;font-weight:500;color:var(--txt);margin-bottom:2px}
-.cl-sub{font-family:var(--mono);font-size:10px;color:var(--txt3);line-height:1.5}
-.cl-warn{font-family:var(--mono);font-size:10px;color:var(--warn);margin-top:3px}
-.cl-reset{font-family:var(--mono);font-size:10px;background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:6px 14px;cursor:pointer;color:var(--txt3)}
+/* ── INVENTARIO ── */
+.inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.inv-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.inv-sku{font-family:var(--mono);font-size:10px;color:var(--mid);margin-bottom:4px}
+.inv-nom{font-size:12px;font-weight:500;color:var(--night);margin-bottom:10px;line-height:1.3}
+.inv-num{font-size:28px;font-weight:600;letter-spacing:-0.04em;color:var(--night);line-height:1}
+.inv-lbl{font-family:var(--mono);font-size:9px;color:var(--light);margin-top:2px;margin-bottom:10px}
+.inv-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--light);margin-bottom:3px}
+.inv-row span:last-child{color:var(--dark);font-weight:500}
+.inv-bar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;margin-top:10px}
+.inv-fill{height:100%;border-radius:2px;transition:width .5s}
+.stato{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:4px;margin-top:8px;font-weight:500}
+.s-ok{background:var(--pos-bg);color:var(--pos)}
+.s-warn{background:var(--warn-bg);color:var(--warn)}
+.s-alert{background:#FEF3E2;color:#D35400}
+.s-crit{background:var(--neg-bg);color:var(--neg)}
+.s-none{background:var(--off);color:var(--light)}
 
 /* ── LOADING ── */
-.spin{text-align:center;padding:60px 0;font-family:var(--mono);font-size:11px;color:var(--txt3)}
+.spin{text-align:center;padding:60px 0}
 .dots{display:inline-flex;gap:5px;margin-bottom:12px}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--txt3);animation:blink 1.2s ease-in-out infinite}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--pale);animation:blink 1.2s ease-in-out infinite}
 .dot:nth-child(2){animation-delay:.2s}
 .dot:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+@keyframes blink{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.spin p{font-family:var(--mono);font-size:11px;color:var(--light)}
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .kgrid{grid-template-columns:1fr 1fr}
-  .row2,.row3{grid-template-columns:1fr}
-  .topbar,.fbar,.tabbar{padding-left:12px;padding-right:12px}
-}
+/* ── CHECKLIST ── */
+#cl-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(28,43,58,0.6);backdrop-filter:blur(4px);overflow-y:auto;padding:40px 20px}
+.cl-box{max-width:580px;margin:0 auto;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(28,43,58,0.2)}
+.cl-head{background:var(--night);padding:18px 22px;display:flex;justify-content:space-between;align-items:center}
+.cl-htitle{font-size:14px;font-weight:500;color:#fff;letter-spacing:-0.01em}
+.cl-close{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);border-radius:4px;padding:5px 12px;cursor:pointer;font-family:var(--mono);font-size:10px;transition:all .15s}
+.cl-close:hover{color:#fff}
+.cl-prog-wrap{height:3px;background:var(--bg)}
+.cl-prog{height:100%;background:var(--mk);transition:width .3s}
+.cl-body{padding:22px}
+.cl-section{margin-bottom:20px}
+.cl-stitle{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;margin-bottom:10px;padding-bottom:7px;border-bottom:1.5px solid var(--border)}
+.cl-item{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:6px;cursor:pointer;transition:background .1s;margin-bottom:2px}
+.cl-item:hover{background:var(--bg)}
+.cl-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cl-item.done .cl-cb{background:var(--mk);border-color:var(--mk)}
+.cl-item.done .cl-cb::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+.cl-item.done .cl-lbl{text-decoration:line-through;color:var(--light)}
+.cl-lbl{font-size:12px;font-weight:500;color:var(--night);margin-bottom:2px}
+.cl-sub{font-family:var(--mono);font-size:10px;color:var(--light);line-height:1.5}
+.cl-warn{font-family:var(--mono);font-size:10px;color:var(--warn);margin-top:3px;font-weight:500}
+.cl-reset{font-family:var(--mono);font-size:10px;background:var(--off);border:1.5px solid var(--border);border-radius:4px;padding:7px 16px;cursor:pointer;color:var(--mid);transition:all .15s}
+.cl-reset:hover{border-color:var(--mid)}
+@media(max-width:900px){.krow-4,.krow-5{grid-template-columns:1fr 1fr}.g2,.g3,.g23,.inv-grid{grid-template-columns:1fr}.page,.fbar,.topbar,.tabbar,.pnl-periods{padding-left:14px;padding-right:14px}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login">
   <div class="lbox">
     <div>
       <div class="llogo">
-        <svg width="24" height="24" viewBox="0 0 36 36" fill="none">
-          <polygon points="0,0 17,0 17,17" fill="#fff"/>
-          <polygon points="17,0 36,0 36,17 17,17" fill="#4a5568"/>
-          <polygon points="0,19 17,19 17,36 0,36" fill="#4a5568"/>
-          <polygon points="17,19 36,36 17,36" fill="#2d3748"/>
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+          <polygon points="0,0 17,0 17,17" fill="#1C2B3A"/>
+          <polygon points="17,0 36,0 36,17 17,17" fill="#4A6274"/>
+          <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
+          <polygon points="17,19 36,36 17,36" fill="#2C3E4C"/>
         </svg>
-        <span class="lmark">House<b>Brands</b></span>
+        <div>
+          <div class="lmark">House<b>Brands</b></div>
+          <div class="ltag">ERP — Acceso interno</div>
+        </div>
       </div>
-      <div class="ltag" style="margin-top:8px">ERP — Acceso interno</div>
     </div>
-    <div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--txt3);margin-bottom:6px;letter-spacing:0.08em">Contraseña</div>
+    <div class="lfield">
+      <label>Contraseña</label>
       <input type="password" id="pwd" class="linput" placeholder="••••••••" autocomplete="current-password">
     </div>
     <button class="lbtn" onclick="doLogin()">Entrar</button>
@@ -249,14 +279,22 @@ tr:hover td{background:var(--bg2)}
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="topbar">
-    <div class="tmark">House<b>Brands</b> <span style="color:var(--txt3);font-size:10px;margin-left:8px;font-weight:300">ERP</span></div>
+    <div style="display:flex;align-items:center">
+      <svg width="20" height="20" viewBox="0 0 36 36" fill="none" style="margin-right:10px">
+        <polygon points="0,0 17,0 17,17" fill="#fff"/>
+        <polygon points="17,0 36,0 36,17 17,17" fill="#8AA4B4"/>
+        <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
+        <polygon points="17,19 36,36 17,36" fill="#4A6274"/>
+      </svg>
+      <span class="tmark">House<b>Brands</b></span>
+      <span class="terp">ERP</span>
+    </div>
     <div class="tright">
       <span class="tchip" id="tc-usd">USD —</span>
       <span class="tchip" id="tc-uf">UF —</span>
-      <span class="tchip" id="tc-act" style="color:var(--txt3)">—</span>
+      <span class="tchip" id="tc-act" style="color:rgba(255,255,255,0.25)">—</span>
       <button class="tbtn" onclick="showCL()">☑ Checklist</button>
       <button class="tbtn" onclick="doLogout()">Salir</button>
     </div>
@@ -265,7 +303,7 @@ tr:hover td{background:var(--bg2)}
   <div class="tabbar">
     <div class="tab on" id="tab-ventas" onclick="goTab('ventas')">Ventas</div>
     <div class="tab" id="tab-pnl" onclick="goTab('pnl')">P&amp;L</div>
-    <div class="tab" id="tab-hist" onclick="goTab('hist')">Histórico</div>
+    <div class="tab" id="tab-inv" onclick="goTab('inv')">Inventario</div>
   </div>
 
   <!-- ── TAB VENTAS ── -->
@@ -275,10 +313,10 @@ tr:hover td{background:var(--bg2)}
       <select class="fsel" id="f-anio" onchange="render()"><option value="0">Todo</option></select>
       <select class="fsel" id="f-mes" onchange="render()">
         <option value="0">Todos los meses</option>
-        <option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option>
-        <option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option>
-        <option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option>
-        <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option>
+        <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+        <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+        <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+        <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
       </select>
       <div class="fsep"></div>
       <span class="flbl">Marca</span>
@@ -292,44 +330,50 @@ tr:hover td{background:var(--bg2)}
       <button class="fpill" id="fc-ml" onclick="sfc('ML',this)">MercadoLibre</button>
     </div>
 
-    <div id="v-loading" class="spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div>Cargando ventas...</div></div>
-    <div id="v-dash" style="display:none">
-      <!-- KPIs -->
-      <div class="kgrid" id="kgrid"></div>
+    <div id="v-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando ventas...</p></div>
 
-      <!-- Charts row -->
-      <div class="row2">
-        <div class="panel">
-          <div class="ptitle">Venta bruta mensual</div>
-          <div class="mbars" id="mbars"></div>
-          <div class="leg" id="mleg"></div>
-        </div>
-        <div class="panel">
-          <div class="ptitle">Canal y margen</div>
-          <div id="canal-content"></div>
-          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
-            <div class="ptitle" style="margin-bottom:10px">Subsidio despacho RM</div>
-            <div class="envio-num" id="envio-pct">—</div>
-            <div class="envio-sub">% costo envío neto / venta bruta<br><span id="envio-detalle" style="color:var(--txt3)"></span></div>
+    <div id="v-dash" style="display:none">
+      <div class="page">
+        <!-- KPIs principales -->
+        <div class="krow krow-4" id="kgrid"></div>
+        <!-- KPIs de gastos -->
+        <div class="krow krow-5" id="gkgrid" style="margin-bottom:16px"></div>
+        <!-- Canal + tendencia -->
+        <div class="g23">
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Venta bruta mensual</span>
+              <div style="display:flex;gap:10px">
+                <span style="display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--mk)"><span style="width:8px;height:8px;background:var(--mk);border-radius:2px;display:inline-block"></span>MemoKoala</span>
+                <span style="display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--mt)"><span style="width:8px;height:8px;background:var(--mt);border-radius:2px;display:inline-block;opacity:0.7"></span>Montana</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="trend" id="trend-bars" style="height:120px;align-items:flex-end"></div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px" id="trend-lbls"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">Canal y margen %</span></div>
+            <div class="card-body" id="canal-content"></div>
           </div>
         </div>
-      </div>
-
-      <!-- Tabla SKU -->
-      <div class="tpanel">
-        <div class="thead-row">
-          <span class="thtitle">Rentabilidad por SKU</span>
-          <span class="thmeta" id="sku-meta"></span>
-        </div>
-        <div class="tscroll">
-          <table>
-            <thead><tr>
-              <th>SKU</th><th>Producto</th><th>Marca</th><th>Canal</th>
-              <th>Uds</th><th>Venta bruta</th><th>Comisión</th>
-              <th>Ingreso neto</th><th>COGS</th><th>Margen $</th><th>Margen %</th>
-            </tr></thead>
-            <tbody id="sku-tbody"></tbody>
-          </table>
+        <!-- Tabla SKU -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Rentabilidad por SKU</span>
+            <span class="card-meta" id="sku-meta"></span>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th>SKU</th><th>Producto</th><th>Marca</th><th>Canal</th>
+                <th>Uds</th><th>Venta bruta</th><th>Comisión</th>
+                <th>Ingreso neto</th><th>COGS×1.19</th><th>Margen $</th><th>Margen %</th>
+              </tr></thead>
+              <tbody id="sku-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -337,38 +381,37 @@ tr:hover td{background:var(--bg2)}
 
   <!-- ── TAB P&L ── -->
   <div id="view-pnl" style="display:none">
-    <div class="pnl-period" id="pnl-periods"></div>
-    <div id="pnl-loading" class="spin"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div>Cargando P&L...</div></div>
+    <div class="pnl-periods" id="pnl-periods"></div>
+    <div id="pnl-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando P&L...</p></div>
     <div id="pnl-dash" style="display:none">
-      <div class="kgrid" id="pnl-kgrid"></div>
-      <div class="row2">
-        <div class="panel">
-          <div class="ptitle">Resultado neto mensual</div>
-          <div class="mbars" id="pnl-bars" style="height:100px"></div>
-          <div class="leg"><div class="legi"><div class="legd" style="background:var(--pos)"></div>Positivo</div><div class="legi"><div class="legd" style="background:var(--neg)"></div>Negativo</div></div>
+      <div class="page">
+        <div class="krow krow-4" id="pnl-kgrid" style="margin-bottom:16px"></div>
+        <div class="g2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-head"><span class="card-title">Resultado neto mensual</span></div>
+            <div class="card-body">
+              <div class="trend" id="pnl-bars" style="height:100px"></div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px" id="pnl-bar-lbls"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">Gastos como % de venta</span></div>
+            <div class="card-body" id="gasto-pct"></div>
+          </div>
         </div>
-        <div class="panel">
-          <div class="ptitle">Breakdown gastos</div>
-          <div id="gasto-bars"></div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Estado de resultados</span><span class="card-meta">Una fila por concepto — margen y venta juntos</span></div>
+          <div class="pnl-wrap" id="pnl-table-wrap"></div>
         </div>
-      </div>
-      <div class="row3">
-        <div class="panel"><div class="ptitle">Margen % · MemoKoala</div><div id="pnl-mk-canal"></div></div>
-        <div class="panel"><div class="ptitle">Margen % · Montana</div><div id="pnl-mt-canal"></div></div>
-        <div class="panel"><div class="ptitle">Mix canal · Venta bruta</div><div id="pnl-mix"></div></div>
-      </div>
-      <div class="tpanel">
-        <div class="thead-row"><span class="thtitle">Estado de resultados completo</span></div>
-        <div class="tscroll" id="pnl-table-wrap"></div>
       </div>
     </div>
   </div>
 
-  <!-- ── TAB HISTÓRICO ── -->
-  <div id="view-hist" style="display:none">
-    <div style="padding:20px">
-      <div style="display:flex;gap:8px;margin-bottom:20px" id="hist-btns"></div>
-      <div id="hist-content"></div>
+  <!-- ── TAB INVENTARIO ── -->
+  <div id="view-inv" style="display:none">
+    <div class="page">
+      <div class="krow krow-4" id="inv-kgrid" style="margin-bottom:16px"></div>
+      <div class="inv-grid" id="inv-cards"></div>
     </div>
   </div>
 
@@ -377,7 +420,7 @@ tr:hover td{background:var(--bg2)}
     <div class="cl-box">
       <div class="cl-head">
         <span class="cl-htitle">Actualización de ventas</span>
-        <button class="cl-close" onclick="hideCL()">✕ Cerrar</button>
+        <button class="cl-close" onclick="hideCL()">✕</button>
       </div>
       <div class="cl-prog-wrap"><div class="cl-prog" id="cl-prog" style="width:0%"></div></div>
       <div class="cl-body">
@@ -390,12 +433,12 @@ tr:hover td{background:var(--bg2)}
         <div class="cl-section">
           <div class="cl-stitle" style="color:var(--mt)">Shopify Montana</div>
           <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Exportar CSV sin formato</div><div class="cl-sub">montanagrills.myshopify.com → Pedidos → Exportar → CSV sin formato</div></div></div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Limpiar CSV_SHOPIFY e importar Montana</div><div class="cl-sub">🏪 Limpiar CSV_SHOPIFY → Importar CSV Montana</div><div class="cl-warn">⚠ Desactivar "Convertir texto en números, fechas y fórmulas"</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Limpiar CSV_SHOPIFY e importar Montana</div><div class="cl-sub">🏪 Limpiar CSV_SHOPIFY → Importar CSV Montana<div class="cl-warn">⚠ Desactivar "Convertir texto en números, fechas y fórmulas"</div></div></div></div>
           <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Procesar CSV Shopify</div><div class="cl-sub">🏪 Housebrands → Procesar CSV Shopify</div></div></div>
         </div>
         <div class="cl-section">
           <div class="cl-stitle" style="color:var(--ml)">MercadoLibre</div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Descargar reporte Excel de ML</div><div class="cl-sub">vendedores.mercadolibre.cl → Mis ventas → Descargar .xlsx</div></div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Descargar reporte Excel</div><div class="cl-sub">vendedores.mercadolibre.cl → Mis ventas → Descargar .xlsx</div></div></div>
           <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Pegar en CSV_ML y procesar</div><div class="cl-sub">Excel → Ctrl+A → Ctrl+C → Sheets CSV_ML A1 → Ctrl+V → 🏪 Procesar ML</div></div></div>
         </div>
         <div class="cl-section">
@@ -411,21 +454,40 @@ tr:hover td{background:var(--bg2)}
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────
-const PWD      = '200487';
-const CSV_V    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
-const CSV_PNL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1843070423&single=true&output=csv';
-const IVA      = 1.19;
-const META_MES = 14969250;
+const PWD='200487';
+const CSV_V='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
+const CSV_PNL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1843070423&single=true&output=csv';
+const IVA=1.19,META=14969250;
 
-// ── AUTH ─────────────────────────────────────────────────
+// COSTOS para inventario
+const COSTOS={
+  'MK-0001':16157,'MK-0002':16157,'MK-0003':10544,'MK-0004':10544,'TO04-4':5384,
+  'RW-11037A':9501,'RW-11037B':13818,'SJ-JL802B':6354,'SJ-JL802C':6354,
+  'SJ-AH209A':9530,'SJ-AH209E':9530,'SJ-JL801B':8339
+};
+const NOMBRES={
+  'MK-0001':'Silla HookOn Azul','MK-0002':'Silla HookOn Negra',
+  'MK-0003':'Mecedora LazyBoy Gris','MK-0004':'Mecedora LazyBoy Negra',
+  'TO04-4':'Organizador Take&Go','RW-11037A':'Afilador Barrel Haya',
+  'RW-11037B':'Afilador Barrel Nogal','SJ-JL802B':'Cuchillo Kiritsuke 8"',
+  'SJ-JL802C':'Cuchillo Santoku 7"','SJ-AH209A':'Cuchillo Chef 8"',
+  'SJ-AH209E':'Cuchillo Nakiri 7"','SJ-JL801B':'Cuchillo Fileteador 6"'
+};
+const STOCK_BASE={
+  'MK-0001':36,'MK-0002':27,'MK-0003':204,'MK-0004':227,'TO04-4':473,
+  'RW-11037A':248,'RW-11037B':59,'SJ-JL802B':26,'SJ-JL802C':23,
+  'SJ-AH209A':29,'SJ-AH209E':31,'SJ-JL801B':27
+};
+const FECHA_CIERRE=new Date(2026,7,31);
+
+// AUTH
 function doLogin(){
   if(document.getElementById('pwd').value===PWD){
     sessionStorage.setItem('hb','1');
     document.getElementById('login').style.display='none';
     document.getElementById('app').style.display='block';
     initApp();
-  } else {
+  }else{
     document.getElementById('lerr').style.display='block';
     document.getElementById('pwd').value='';
     document.getElementById('pwd').focus();
@@ -439,20 +501,18 @@ if(sessionStorage.getItem('hb')==='1'){
   initApp();
 }
 
-// ── TABS ─────────────────────────────────────────────────
+// TABS
 let pnlLoaded=false;
 function goTab(t){
-  ['ventas','pnl','hist'].forEach(x=>{
+  ['ventas','pnl','inv'].forEach(x=>{
     document.getElementById('view-'+x).style.display=x===t?'block':'none';
     document.getElementById('tab-'+x).className='tab'+(x===t?' on':'');
   });
-  if(t==='pnl'&&!pnlLoaded) loadPnL();
-  if(t==='hist') renderHist();
+  if(t==='pnl'&&!pnlLoaded)loadPnL();
+  if(t==='inv')renderInv();
 }
 
-// ── DATOS ────────────────────────────────────────────────
-let DATA=[], PNL={meses:[],rows:[]};
-let fMarca='Todas', fCanal='Todos';
+let DATA=[],PNL={meses:[],rows:[]},fMarca='Todas',fCanal='Todos';
 
 function initApp(){
   fetchTC();
@@ -460,18 +520,16 @@ function initApp(){
 }
 
 async function fetchTC(){
-  // TC desde mindicador.cl
   try{
     const hoy=new Date(),d=hoy.getDate(),m=hoy.getMonth()+1,a=hoy.getFullYear();
-    const ds=d+'-'+String(m).padStart(2,'0')+'-'+a;
-    const [ru,rf]=await Promise.all([
+    const ds=`${d}-${String(m).padStart(2,'0')}-${a}`;
+    const[ru,rf]=await Promise.all([
       fetch('https://mindicador.cl/api/dolar/'+ds).then(r=>r.json()).catch(()=>null),
       fetch('https://mindicador.cl/api/uf/'+ds).then(r=>r.json()).catch(()=>null)
     ]);
-    const usd=ru?.serie?.[0]?.valor||null;
-    const uf=rf?.serie?.[0]?.valor||null;
-    if(usd) document.getElementById('tc-usd').textContent='USD $'+Math.round(usd).toLocaleString('es-CL');
-    if(uf)  document.getElementById('tc-uf').textContent='UF $'+Math.round(uf).toLocaleString('es-CL');
+    const usd=ru?.serie?.[0]?.valor,uf=rf?.serie?.[0]?.valor;
+    if(usd)document.getElementById('tc-usd').textContent='USD $'+Math.round(usd).toLocaleString('es-CL');
+    if(uf)document.getElementById('tc-uf').textContent='UF $'+Math.round(uf).toLocaleString('es-CL');
   }catch(e){}
   document.getElementById('tc-act').textContent='act. '+new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
 }
@@ -479,9 +537,7 @@ async function fetchTC(){
 async function loadVentas(){
   try{
     const r=await fetch(CSV_V);
-    const txt=await r.text();
-    DATA=parseVentas(txt);
-    // Popular select años
+    DATA=parseVentas(await r.text());
     const years=[...new Set(DATA.map(r=>r.anio))].sort();
     const sel=document.getElementById('f-anio');
     years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;sel.appendChild(o);});
@@ -489,46 +545,38 @@ async function loadVentas(){
     document.getElementById('v-dash').style.display='block';
     render();
   }catch(e){
-    document.getElementById('v-loading').innerHTML='<div style="color:var(--neg);font-family:var(--mono);font-size:11px">Error cargando datos.<br><button onclick="loadVentas()" style="margin-top:10px;padding:6px 14px;background:var(--bg2);border:1px solid var(--line2);color:var(--txt);border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px">Reintentar</button></div>';
+    document.getElementById('v-loading').innerHTML='<p style="color:var(--neg);font-family:var(--mono);font-size:11px">Error al cargar datos.<br><button onclick="loadVentas()" style="margin-top:12px;padding:7px 16px;background:var(--night);border:none;color:#fff;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px">Reintentar</button></p>';
   }
 }
 
 function parseVentas(txt){
   const lines=txt.split('\n').filter(l=>l.trim());
-  if(lines.length<2) return [];
+  if(lines.length<2)return[];
   const rows=[];
   for(let i=1;i<lines.length;i++){
     const c=scsv(lines[i]);
-    if(c.length<20) continue;
+    if(c.length<20)continue;
     const marca=c[4]?.trim()||'';
-    if(!marca) continue;
+    if(!marca)continue;
     const canal=c[5]?.trim()||'';
-    const mes=parseInt(c[1])||0;
-    const anio=parseInt(c[3])||0;
-    const sku=c[7]?.trim()||'';
-    const prod=c[8]?.trim()||'';
+    const mes=parseInt(c[1])||0,anio=parseInt(c[3])||0;
+    const sku=c[7]?.trim()||'',prod=c[8]?.trim()||'';
     const qty=parseInt(c[9])||1;
-    const vb=pn(c[11]);
-    const costoUnit=pn(c[17]);
-    const costoTotal=pn(c[18]);
-    const mb=pn(c[19]);
-    const mrg=pn(c[20]);
-    const envio=pn(c[12]);
-    const cargoMP=pn(c[13]);
-    const descto=pn(c[15]);
-    if(vb<=0) continue;
-    // ICN: venta bruta - comision pasarela
-    const comision = canal==='Shopify' ? cargoMP : (canal==='ML'?cargoMP:0);
-    const icn = vb - comision;
+    const vb=pn(c[11]),costoUnit=pn(c[17]),costoTotal=pn(c[18]);
+    const mb=pn(c[19]),mrg=pn(c[20]);
+    const envio=pn(c[12]),cargoMP=pn(c[13]),descto=pn(c[15]);
+    if(vb<=0)continue;
+    const comision=cargoMP;
+    const icn=vb-comision;
     let fecha=c[0]?.trim()||'';
     const dmy=fecha.match(/^(\d{2})[\-\/](\d{2})[\-\/](\d{4})$/);
-    if(dmy) fecha=dmy[3]+'-'+dmy[2]+'-'+dmy[1];
+    if(dmy)fecha=dmy[3]+'-'+dmy[2]+'-'+dmy[1];
     rows.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costoUnit,costoTotal,mb,mrg,envio,cargoMP,descto,comision,icn});
   }
   return rows;
 }
 
-// ── FILTROS ──────────────────────────────────────────────
+// FILTROS
 function sfm(v,el){
   fMarca=v;
   ['fm-t','fm-mk','fm-mt'].forEach(id=>document.getElementById(id).className='fpill');
@@ -538,68 +586,89 @@ function sfm(v,el){
 function sfc(v,el){
   fCanal=v;
   ['fc-t','fc-sh','fc-ml'].forEach(id=>document.getElementById(id).className='fpill');
-  el.className='fpill on'; render();
+  el.className='fpill on';
+  render();
 }
-
 function fd(){
   const anio=parseInt(document.getElementById('f-anio').value)||0;
   const mes=parseInt(document.getElementById('f-mes').value)||0;
   return DATA.filter(r=>{
-    if(fMarca!=='Todas'&&r.marca!==fMarca) return false;
-    if(fCanal!=='Todos'&&r.canal!==fCanal) return false;
-    if(anio&&r.anio!==anio) return false;
-    if(mes&&r.mes!==mes) return false;
+    if(fMarca!=='Todas'&&r.marca!==fMarca)return false;
+    if(fCanal!=='Todos'&&r.canal!==fCanal)return false;
+    if(anio&&r.anio!==anio)return false;
+    if(mes&&r.mes!==mes)return false;
     return true;
   });
 }
+function render(){const d=fd();rKPIs(d);rGastos(d);rTrend(d);rCanal(d);rSKU(d);}
 
-function render(){
-  const d=fd();
-  rKPIs(d); rBars(d); rCanal(d); rSKU(d);
-}
-
-// ── KPIs ─────────────────────────────────────────────────
+// KPIs principales
 function rKPIs(d){
-  const vb=sum(d,'vb'), mb=sum(d,'mb'), icn=sum(d,'icn');
-  const comision=sum(d,'comision');
-  const un=d.reduce((s,r)=>s+r.qty,0), cnt=d.length;
-  const tk=un>0?vb/un:0, mrg=vb>0?mb/vb:0;
+  const vb=sum(d,'vb'),mb=sum(d,'mb'),icn=sum(d,'icn'),comision=sum(d,'comision');
+  const un=d.reduce((s,r)=>s+r.qty,0),cnt=d.length;
+  const tk=un>0?vb/un:0,mrg=vb>0?mb/vb:0;
   const meses=[...new Set(d.map(r=>r.anio+'-'+r.mes))].length||1;
-  const avg=vb/meses, gap=avg/META_MES-1;
-  const mrgCls=mrg>=.65?'pos':mrg>=.45?'warn':'neg';
-
-  // Sparkline por mes (últimos 8 meses en los datos filtrados)
+  const avg=vb/meses,gap=avg/META-1;
+  const mc=mrg>=.65?'pos':mrg>=.45?'warn':'neg';
   const byM={};
   d.forEach(r=>{const k=r.anio+'-'+String(r.mes).padStart(2,'0');byM[k]=(byM[k]||0)+r.vb;});
   const spk=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0])).slice(-8).map(([,v])=>v);
-  const spkMax=Math.max(...spk,1);
-  const spark=(color)=>spk.map(v=>`<div class="ksbar" style="height:${Math.max(8,(v/spkMax)*100)}%;background:${color}"></div>`).join('');
+  const sm=Math.max(...spk,1);
+  const mkSpk=(c)=>spk.map(v=>`<div class="ksbar" style="height:${Math.max(10,(v/sm)*100)}%;background:${c}"></div>`).join('');
 
   document.getElementById('kgrid').innerHTML=[
-    {lbl:'VENTA BRUTA', num:clp(vb), sub:cnt+' órdenes · '+un+' uds',
-     delta:gap>=0?{cls:'d-pos',txt:'↑ +'+Math.abs(gap*100).toFixed(1)+'% vs meta'}:{cls:'d-neg',txt:'↓ '+Math.abs(gap*100).toFixed(1)+'% vs meta'},
-     spk:'var(--sh)'},
-    {lbl:'INGRESO NETO COM.', num:clp(icn), sub:'venta − comisión pasarela',
-     delta:{cls:'d-neu',txt:(vb>0?(comision/vb*100).toFixed(1):0)+'% de comisiones'},
-     spk:'var(--txt3)'},
-    {lbl:'MARGEN BRUTO', num:(mrg*100).toFixed(1)+'%', numCls:mrgCls, sub:clp(mb)+' · pvp − costo×1.19',
-     delta:mrg>=.65?{cls:'d-pos',txt:'Saludable'}:mrg>=.45?{cls:'d-neu',txt:'OK'}:{cls:'d-neg',txt:'Revisar'},
-     spk:'var(--pos)'},
-    {lbl:'TICKET PROMEDIO', num:clp(tk), sub:'por unidad vendida',
-     delta:{cls:'d-neu',txt:meses+' mes'+(meses>1?'es':'')},
-     spk:'var(--txt3)'},
+    {lbl:'VENTA BRUTA',num:clp(vb),sub:cnt+' órdenes · '+un+' uds',
+     delta:gap>=0?{c:'d-pos',t:'↑ +'+Math.abs(gap*100).toFixed(1)+'% vs meta'}:{c:'d-neg',t:'↓ '+Math.abs(gap*100).toFixed(1)+'% vs meta'},
+     acc:'#8AA4B4',spk:'#D6E4EC'},
+    {lbl:'INGRESO NETO COM.',num:clp(icn),sub:'venta − comisión pasarela',
+     delta:{c:'d-neu',t:(vb>0?(comision/vb*100).toFixed(1):0)+'% en comisiones'},
+     acc:'#4A6274',spk:'#8AA4B4'},
+    {lbl:'MARGEN BRUTO',num:(mrg*100).toFixed(1)+'%',numcls:mc,sub:clp(mb)+' · pvp − costo×1.19',
+     delta:mrg>=.65?{c:'d-pos',t:'Saludable'}:mrg>=.45?{c:'d-warn',t:'OK'}:{c:'d-neg',t:'Revisar'},
+     acc:'#3d7a62',spk:'#3d7a62'},
+    {lbl:'TICKET PROMEDIO',num:clp(tk),sub:'por unidad · '+meses+' mes'+(meses>1?'es':''),
+     delta:{c:'d-neu',t:cnt+' transacciones'},
+     acc:'#b85a2a',spk:'#b85a2a'},
   ].map(k=>`
-    <div class="kblock">
-      <div class="klbl">${k.lbl}</div>
-      <div class="knum${k.numCls?' '+k.numCls:''}">${k.num}</div>
-      <div class="ksub">${k.sub}</div>
-      <div class="kdelta ${k.delta.cls}">${k.delta.txt}</div>
-      <div class="kspark">${spark(k.spk)}</div>
+    <div class="kcard">
+      <div class="kcard-accent" style="background:${k.acc}"></div>
+      <div class="kcard-label">${k.lbl}</div>
+      <div class="kcard-num${k.numcls?' '+k.numcls:''}">${k.num}</div>
+      <div class="kcard-sub">${k.sub}</div>
+      <div class="kcard-delta ${k.delta.c}">${k.delta.t}</div>
+      <div class="kcard-spark">${mkSpk(k.spk)}</div>
     </div>`).join('');
 }
 
-// ── BARRAS ───────────────────────────────────────────────
-function rBars(d){
+// KPIs gastos (% de venta)
+function rGastos(d){
+  const vb=sum(d,'vb')||1;
+  const envCobrado=sum(d.filter(r=>r.canal==='Shopify'),'envio');
+  const comisionSH=sum(d.filter(r=>r.canal==='Shopify'),'comision');
+  const comisionML=sum(d.filter(r=>r.canal==='ML'),'comision');
+  const pEnvio=envCobrado/vb*100;
+  const pComSH=comisionSH/vb*100;
+  const pComML=comisionML/vb*100;
+  const gastos=[
+    {icon:'🚚',lbl:'Envío cobrado clientes',num:pEnvio.toFixed(1)+'%',sub:clp(envCobrado)+' recuperado',bg:'#EBF2FA'},
+    {icon:'💳',lbl:'Comisión Shopify (MP)',num:pComSH.toFixed(1)+'%',sub:clp(comisionSH)+' total',bg:'#EBF2FA'},
+    {icon:'🛒',lbl:'Comisión MercadoLibre',num:pComML.toFixed(1)+'%',sub:clp(comisionML)+' total',bg:'#FDF6E3'},
+    {icon:'📦',lbl:'ABEE Fulfillment',num:'—',sub:'ver P&L para dato mensual',bg:'#F5F8FA'},
+    {icon:'📣',lbl:'Inversión en Ads',num:'—',sub:'ver P&L para dato mensual',bg:'#F5F8FA'},
+  ];
+  document.getElementById('gkgrid').innerHTML=gastos.map(g=>`
+    <div class="gcard">
+      <div class="gcard-icon" style="background:${g.bg}">${g.icon}</div>
+      <div class="gcard-body">
+        <div class="gcard-label">${g.lbl}</div>
+        <div class="gcard-num">${g.num}</div>
+        <div class="gcard-sub">${g.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
+// Gráfico tendencia
+function rTrend(d){
   const byM={};
   d.forEach(r=>{
     const k=r.anio+'-'+String(r.mes).padStart(2,'0');
@@ -608,85 +677,84 @@ function rBars(d){
   });
   const sorted=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0]));
   const maxV=Math.max(...sorted.map(([,v])=>v.mk+v.mt),1);
-  document.getElementById('mbars').innerHTML=sorted.map(([,v])=>{
-    const tot=v.mk+v.mt,h=Math.max(3,(tot/maxV)*100);
+  document.getElementById('trend-bars').innerHTML=sorted.map(([,v])=>{
+    const tot=v.mk+v.mt,h=Math.max(2,(tot/maxV)*100);
     const hmk=tot>0?(v.mk/tot)*h:h/2,hmt=h-hmk;
-    return `<div class="mbc"><div class="mbw">
-      <div class="mbs" style="height:${hmt}px;background:var(--mt);opacity:0.6;border-radius:2px 2px 0 0" title="${v.lbl}: ${clp(tot)}"></div>
-      <div class="mbs" style="height:${hmk}px;background:var(--mk)" title="${v.lbl}: ${clp(tot)}"></div>
-    </div><div class="mbl">${v.lbl}</div></div>`;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%">
+        <div style="height:${hmt}px;background:var(--mt);opacity:0.6;border-radius:2px 2px 0 0;width:100%" title="${v.lbl}: ${clp(tot)}"></div>
+        <div style="height:${hmk}px;background:var(--mk);width:100%" title="${v.lbl}: ${clp(tot)}"></div>
+      </div>
+    </div>`;
   }).join('');
-  document.getElementById('mleg').innerHTML=`
-    <div class="legi"><div class="legd" style="background:var(--mk)"></div>MemoKoala</div>
-    <div class="legi"><div class="legd" style="background:var(--mt);opacity:0.6"></div>Montana</div>`;
+  document.getElementById('trend-lbls').innerHTML=sorted.map(([,v])=>`
+    <div style="flex:1;text-align:center;font-family:var(--mono);font-size:7px;color:var(--light)">${v.lbl}</div>`).join('');
 }
 
-// ── CANAL ────────────────────────────────────────────────
+// Canal
 function rCanal(d){
   const ch={};
   d.forEach(r=>{
-    if(!ch[r.canal])ch[r.canal]={vb:0,mb:0,comision:0,envio:0,descto:0};
+    if(!ch[r.canal])ch[r.canal]={vb:0,mb:0,comision:0,envio:0};
     ch[r.canal].vb+=r.vb;ch[r.canal].mb+=r.mb;
-    ch[r.canal].comision+=r.comision;
-    ch[r.canal].envio+=r.envio;
-    ch[r.canal].descto+=r.descto;
+    ch[r.canal].comision+=r.comision;ch[r.canal].envio+=r.envio;
   });
   const tot=Object.values(ch).reduce((s,v)=>s+v.vb,0)||1;
-  const cc={Shopify:'var(--sh)',ML:'var(--ml)'};
-  const cc2={Shopify:'b-sh',ML:'b-ml'};
-  document.getElementById('canal-content').innerHTML=Object.entries(ch).map(([k,v])=>{
+  const cc={Shopify:'var(--sh)',ML:'var(--ml)','Venta Directa':'var(--mid)'};
+  const bc={Shopify:'b-sh',ML:'b-ml','Venta Directa':'b-sh'};
+  const html=Object.entries(ch).map(([k,v])=>{
     const mrg=v.vb>0?v.mb/v.vb:0;
     const mc=mrg>=.65?'var(--pos)':mrg>=.45?'var(--warn)':'var(--neg)';
-    return `<div class="canal-row">
+    return `<div class="canal-item">
       <div class="canal-top">
-        <span class="canal-name"><span class="bdg ${cc2[k]||''}">${k}</span></span>
-        <span class="canal-num" style="color:${mc}">${(mrg*100).toFixed(1)}%</span>
+        <div class="canal-lbl"><span class="bdg ${bc[k]||'b-sh'}">${k}</span><span style="font-family:var(--mono);font-size:9px;color:var(--light);margin-left:6px">${(v.vb/tot*100).toFixed(0)}% del total</span></div>
+        <div class="canal-num" style="color:${mc}">${(mrg*100).toFixed(1)}%</div>
       </div>
-      <div class="canal-track"><div class="canal-fill" style="width:${Math.min(100,mrg*100).toFixed(1)}%;background:${cc[k]||'var(--txt3)'}"></div></div>
-      <div class="canal-sub">${clp(v.vb)} bruto · ${(v.vb/tot*100).toFixed(0)}% del total</div>
+      <div class="canal-track"><div class="canal-fill" style="width:${Math.min(100,mrg*100).toFixed(1)}%;background:${cc[k]||'var(--mid)'}"></div></div>
+      <div class="canal-sub">${clp(v.vb)} venta bruta · margen ponderado</div>
     </div>`;
   }).join('');
-
-  // Envío cobrado vs costo (solo Shopify)
+  // Envío neto
   const envCobrado=sum(d.filter(r=>r.canal==='Shopify'),'envio');
-  // No tenemos ABEE en tiempo real — mostramos recupero como % de venta
-  const vbTotal=sum(d,'vb');
-  if(envCobrado>0&&vbTotal>0){
-    const pct=(envCobrado/vbTotal*100).toFixed(1);
-    document.getElementById('envio-pct').textContent=pct+'%';
-    document.getElementById('envio-detalle').textContent='Envío cobrado a clientes: '+clp(envCobrado);
-  } else {
-    document.getElementById('envio-pct').textContent='—';
-    document.getElementById('envio-detalle').textContent='Sin dato de envío en período';
-  }
+  const vbTot=tot;
+  const envHtml=`<div style="margin-top:14px;padding-top:12px;border-top:1.5px solid var(--border)">
+    <div class="canal-item" style="margin-bottom:0">
+      <div class="canal-top">
+        <span style="font-family:var(--mono);font-size:9px;color:var(--light)">Envío cobrado / venta</span>
+        <span style="font-size:20px;font-weight:600;letter-spacing:-0.03em;color:var(--warn)">${vbTot>0?(envCobrado/vbTot*100).toFixed(1):'0.0'}%</span>
+      </div>
+      <div class="canal-sub">${clp(envCobrado)} cobrado a clientes · subsidio ABEE en P&L</div>
+    </div>
+  </div>`;
+  document.getElementById('canal-content').innerHTML=html+envHtml;
 }
 
-// ── TABLA SKU ────────────────────────────────────────────
+// Tabla SKU
 function rSKU(d){
   const s={};
   d.forEach(r=>{
-    const key=r.sku+'|'+r.canal;
-    if(!s[key])s[key]={sku:r.sku,nom:r.prod,marca:r.marca,canal:r.canal,un:0,vb:0,comision:0,icn:0,costo:0,mb:0};
+    const key=r.sku+'||'+r.canal;
+    if(!s[key])s[key]={sku:r.sku,nom:r.prod,marca:r.marca,canal:r.canal,un:0,vb:0,comision:0,icn:0,cogs:0,mb:0};
     s[key].un+=r.qty;s[key].vb+=r.vb;s[key].comision+=r.comision;
-    s[key].icn+=r.icn;s[key].costo+=r.costoTotal*IVA;s[key].mb+=r.mb;
+    s[key].icn+=r.icn;s[key].cogs+=r.costoTotal*IVA;s[key].mb+=r.mb;
   });
   const rows=Object.values(s).sort((a,b)=>b.mb-a.mb);
-  document.getElementById('sku-meta').textContent=rows.length+' combinaciones SKU×canal';
+  document.getElementById('sku-meta').textContent=rows.length+' SKU×canal · orden por margen $';
   document.getElementById('sku-tbody').innerHTML=rows.map(r=>{
     const mp=r.vb>0?(r.mb/r.vb)*100:0;
     const mc=mp>=65?'var(--pos)':mp>=45?'var(--warn)':'var(--neg)';
     return `<tr>
       <td>${r.sku||'—'}</td>
-      <td>${(r.nom||'—').slice(0,28)}</td>
+      <td>${(r.nom||'—').slice(0,26)}</td>
       <td><span class="bdg ${r.marca==='MemoKoala'?'b-mk':'b-mt'}">${r.marca==='MemoKoala'?'MK':'MT'}</span></td>
-      <td><span class="bdg ${r.canal==='Shopify'?'b-sh':'b-ml'}">${r.canal}</span></td>
-      <td>${r.un}</td>
+      <td><span class="bdg ${r.canal==='Shopify'?'b-sh':r.canal==='ML'?'b-ml':'b-sh'}">${r.canal}</span></td>
+      <td style="color:var(--dark)">${r.un}</td>
       <td>${clp(r.vb)}</td>
       <td class="neg-val">${r.comision>0?'−'+clp(r.comision):'—'}</td>
       <td>${clp(r.icn)}</td>
-      <td style="color:var(--txt3)">${clp(r.costo)}</td>
-      <td style="color:#fff;font-weight:500">${clp(r.mb)}</td>
-      <td><div class="mrg-cell"><span style="color:${mc};font-weight:500">${mp.toFixed(1)}%</span>
+      <td style="color:var(--light)">${clp(r.cogs)}</td>
+      <td class="pos-val">${clp(r.mb)}</td>
+      <td><div class="mrg-cell"><span style="color:${mc};font-weight:600;font-family:var(--mono);font-size:11px">${mp.toFixed(1)}%</span>
         <div class="mbar"><div class="mfill" style="width:${Math.min(100,mp).toFixed(0)}%;background:${mc}"></div></div>
       </div></td>
     </tr>`;
@@ -694,24 +762,24 @@ function rSKU(d){
 }
 
 // ── P&L ──────────────────────────────────────────────────
-let pnlPeriod='corrido';
+let pnlPer='corrido';
 async function loadPnL(){
   try{
     const r=await fetch(CSV_PNL);
     PNL=parsePnL(await r.text());
     pnlLoaded=true;
-    buildPeriods();
+    buildPers();
     document.getElementById('pnl-loading').style.display='none';
     document.getElementById('pnl-dash').style.display='block';
     renderPnL();
   }catch(e){
-    document.getElementById('pnl-loading').innerHTML='<div style="color:var(--neg);font-family:var(--mono);font-size:11px">Error cargando P&L.<br><button onclick="loadPnL()" style="margin-top:10px;padding:6px 14px;background:var(--bg2);border:1px solid var(--line2);color:var(--txt);border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px">Reintentar</button></div>';
+    document.getElementById('pnl-loading').innerHTML='<p style="color:var(--neg);font-family:var(--mono);font-size:11px">Error al cargar P&L.<br><button onclick="loadPnL()" style="margin-top:12px;padding:7px 16px;background:var(--night);border:none;color:#fff;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px">Reintentar</button></p>';
   }
 }
 
 function parsePnL(txt){
   const lines=txt.split('\n').filter(l=>l.trim());
-  if(lines.length<3) return{meses:[],rows:[]};
+  if(lines.length<3)return{meses:[],rows:[]};
   let hi=-1;
   for(let i=0;i<Math.min(lines.length,6);i++){if(lines[i].toUpperCase().includes('CONCEPTO')){hi=i;break;}}
   if(hi===-1)hi=2;
@@ -721,14 +789,12 @@ function parsePnL(txt){
   for(let i=hi+1;i<lines.length;i++){
     const c=scsv(lines[i]);
     if(c.length<3)continue;
-    const concepto=fenc(c[0]?.trim()||'');
-    const cat=fenc(c[1]?.trim()||'');
+    const concepto=fenc(c[0]?.trim()||''),cat=fenc(c[1]?.trim()||'');
     if(!concepto)continue;
     const av=c.slice(2);
     const mv=av.slice(0,-1).map(v=>ppnl(v));
-    const tv=ppnl(av[av.length-1]||'0');
     while(mv.length<meses.length)mv.push(0);
-    rows.push({concepto,cat,mv,tv});
+    rows.push({concepto,cat,mv});
   }
   return{meses,rows};
 }
@@ -739,7 +805,7 @@ function fenc(s){
     .replace(/Ã±/g,'ñ').replace(/Ã"/g,'Ó').replace(/Ã‰/g,'É');
 }
 function ppnl(v){
-  if(v===null||v===undefined||v==='')return 0;
+  if(!v&&v!==0)return 0;
   const s=String(v).trim();
   if(s.endsWith('%'))return parseFloat(s.replace('%','').replace(',','.'))||0;
   let n=s.replace(/[$\s"]/g,'');
@@ -751,10 +817,10 @@ function ppnl(v){
   return parseFloat(n)||0;
 }
 
-function getPeriodIdx(){
+function getIdx(){
   const{meses}=PNL;if(!meses.length)return{idxs:[],labels:[]};
   const ord=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  if(pnlPeriod==='corrido'){
+  if(pnlPer==='corrido'){
     const idx=meses.map((m,i)=>({m,i})).sort((a,b)=>{
       const ya=parseInt('20'+a.m.slice(-2)),yb=parseInt('20'+b.m.slice(-2));
       if(ya!==yb)return ya-yb;
@@ -762,212 +828,330 @@ function getPeriodIdx(){
     }).slice(-12);
     return{idxs:idx.map(x=>x.i),labels:idx.map(x=>x.m)};
   }
-  const idxs=[],labels=[],ys=pnlPeriod.slice(2);
+  const idxs=[],labels=[],ys=pnlPer.slice(2);
   meses.forEach((m,i)=>{if(m.slice(-2)===ys){idxs.push(i);labels.push(m);}});
   return{idxs,labels};
 }
 
-function buildPeriods(){
+function buildPers(){
   const years=[...new Set(PNL.meses.map(m=>m.slice(-2)))].sort();
-  const opts=[{id:'corrido',lbl:'Últimos 12 meses'},...years.map(y=>({id:'20'+y,lbl:'20'+y}))];
-  document.getElementById('pnl-periods').innerHTML='<span class="flbl">Período</span>'+
-    opts.map(p=>`<button class="ppill${p.id===pnlPeriod?' on':''}" onclick="setPer('${p.id}',this)">${p.lbl}</button>`).join('');
+  const opts=[{id:'corrido',lbl:'Últimos 12m'},...years.map(y=>({id:'20'+y,lbl:'20'+y}))];
+  document.getElementById('pnl-periods').innerHTML='<span class="flbl" style="margin-right:4px">Período</span>'+
+    opts.map(p=>`<button class="ppill${p.id===pnlPer?' on':''}" onclick="setPer('${p.id}',this)">${p.lbl}</button>`).join('');
 }
-
 function setPer(id,el){
-  pnlPeriod=id;
+  pnlPer=id;
   document.querySelectorAll('.ppill').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');renderPnL();
 }
 
 function renderPnL(){
   const{rows}=PNL;if(!rows.length)return;
-  const{idxs,labels}=getPeriodIdx();
-  const fr=term=>rows.find(r=>r.concepto.toUpperCase().includes(term.toUpperCase()));
+  const{idxs,labels}=getIdx();
+  const fr=t=>rows.find(r=>r.concepto.toUpperCase().includes(t.toUpperCase()));
   const ps=row=>{if(!row)return 0;return idxs.reduce((s,i)=>s+(row.mv[i]||0),0);};
   const pv=row=>{if(!row)return idxs.map(()=>0);return idxs.map(i=>row.mv[i]||0);};
+
   const vbT=fr('VENTA BRUTA TOTAL'),mbT=fr('MARGEN BRUTO TOTAL');
   const logN=fr('TOTAL LOG'),mktT=fr('TOTAL MARKETING');
   const techT=fr('TOTAL TECH'),admT=fr('TOTAL ADMINISTRACI');
   const res=fr('RESULTADO NETO');
+
   const vbS=ps(vbT),mbS=ps(mbT),resS=ps(res);
   const mrgP=vbS>0?mbS/vbS:0;
   const gastS=ps(logN)+ps(mktT)+ps(techT)+ps(admT);
   const mPos=res?pv(res).filter(v=>v>0).length:0;
 
+  // KPIs P&L
   document.getElementById('pnl-kgrid').innerHTML=[
-    {lbl:'VENTA BRUTA',num:clp(vbS),sub:labels.length+' meses',spk:'var(--sh)',delta:{cls:'d-neu',txt:labels.length+' meses'}},
-    {lbl:'MARGEN BRUTO',num:(mrgP*100).toFixed(1)+'%',numCls:mrgP>=.65?'pos':mrgP>=.45?'warn':'neg',sub:clp(mbS),spk:'var(--pos)',delta:mrgP>=.65?{cls:'d-pos',txt:'Saludable'}:{cls:'d-neg',txt:'Revisar'}},
-    {lbl:'RESULTADO NETO',num:clp(resS),numCls:resS>=0?'pos':'neg',sub:'período completo',spk:resS>=0?'var(--pos)':'var(--neg)',delta:resS>=0?{cls:'d-pos',txt:'Positivo'}:{cls:'d-neg',txt:'Negativo'}},
-    {lbl:'MESES POSITIVOS',num:mPos+'/'+labels.length,sub:'con resultado >0',spk:'var(--txt3)',delta:{cls:'d-neu',txt:'vs meta período'}},
+    {lbl:'VENTA BRUTA',num:clp(vbS),sub:labels.length+' meses',acc:'#8AA4B4',
+     delta:{c:'d-neu',t:labels.join(' → ')||'período'}},
+    {lbl:'MARGEN BRUTO',num:(mrgP*100).toFixed(1)+'%',numcls:mrgP>=.65?'pos':mrgP>=.45?'warn':'neg',
+     sub:clp(mbS),acc:'#3d7a62',
+     delta:mrgP>=.65?{c:'d-pos',t:'Saludable'}:{c:'d-neg',t:'Revisar'}},
+    {lbl:'RESULTADO NETO',num:clp(resS),numcls:resS>=0?'pos':'neg',
+     sub:'período completo',acc:resS>=0?'#1a7a45':'#c0392b',
+     delta:resS>=0?{c:'d-pos',t:'Positivo'}:{c:'d-neg',t:'Negativo'}},
+    {lbl:'MESES POSITIVOS',num:mPos+'/'+labels.length,
+     sub:'con resultado > 0',acc:'#4A6274',
+     delta:{c:'d-neu',t:'del período'}},
   ].map(k=>{
-    const spkd=pv(res||vbT);
-    const spkMax=Math.max(...spkd.map(v=>Math.abs(v)),1);
-    const sc=spkd.map(v=>`<div class="ksbar" style="height:${Math.max(8,(Math.abs(v)/spkMax)*100)}%;background:${k.spk}"></div>`).join('');
-    return `<div class="kblock">
-      <div class="klbl">${k.lbl}</div>
-      <div class="knum${k.numCls?' '+k.numCls:''}">${k.num}</div>
-      <div class="ksub">${k.sub}</div>
-      <div class="kdelta ${k.delta.cls}">${k.delta.txt}</div>
-      <div class="kspark">${sc}</div>
+    const vals=pv(res||vbT);const sm=Math.max(...vals.map(v=>Math.abs(v)),1);
+    const spk=vals.map(v=>`<div class="ksbar" style="height:${Math.max(10,(Math.abs(v)/sm)*100)}%;background:${k.acc}"></div>`).join('');
+    return `<div class="kcard">
+      <div class="kcard-accent" style="background:${k.acc}"></div>
+      <div class="kcard-label">${k.lbl}</div>
+      <div class="kcard-num${k.numcls?' '+k.numcls:''}">${k.num}</div>
+      <div class="kcard-sub">${k.sub}</div>
+      <div class="kcard-delta ${k.delta.c}">${k.delta.t}</div>
+      <div class="kcard-spark">${spk}</div>
     </div>`;
   }).join('');
 
-  // Barras resultado neto
-  if(res){
-    const vals=pv(res),ma=Math.max(...vals.map(v=>Math.abs(v)),1);
-    document.getElementById('pnl-bars').innerHTML=vals.map((v,i)=>{
-      const h=Math.max(3,(Math.abs(v)/ma)*90);
-      return `<div class="mbc"><div class="mbw">
-        <div class="mbs" style="height:${h}px;background:${v>=0?'var(--pos)':'var(--neg)'};opacity:.8;border-radius:2px 2px 0 0" title="${labels[i]}: ${clp(v)}"></div>
-      </div><div class="mbl">${(labels[i]||'').slice(0,6)}</div></div>`;
-    }).join('');
-  }
+  // Barras resultado
+  const rvals=pv(res),rm=Math.max(...rvals.map(v=>Math.abs(v)),1);
+  document.getElementById('pnl-bars').innerHTML=rvals.map((v,i)=>{
+    const h=Math.max(3,(Math.abs(v)/rm)*90);
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%">
+        <div style="height:${h}px;background:${v>=0?'var(--pos)':'var(--neg)'};opacity:0.8;border-radius:2px 2px 0 0;width:100%" title="${labels[i]}: ${clp(v)}"></div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('pnl-bar-lbls').innerHTML=rvals.map((_,i)=>`
+    <div style="flex:1;text-align:center;font-family:var(--mono);font-size:7px;color:var(--light)">${(labels[i]||'').slice(0,6)}</div>`).join('');
 
-  // Breakdown gastos
+  // Gastos % de venta
   const gRows=[
-    {lbl:'Logístico neto',row:logN,c:'var(--mt)'},
-    {lbl:'Marketing',row:mktT,c:'var(--sh)'},
-    {lbl:'Tech & Software',row:techT,c:'var(--txt2)'},
-    {lbl:'Administración',row:admT,c:'var(--txt3)'},
+    {lbl:'Logístico neto',row:logN,icon:'🚚'},
+    {lbl:'Marketing',row:mktT,icon:'📣'},
+    {lbl:'Tech & Software',row:techT,icon:'💻'},
+    {lbl:'Administración',row:admT,icon:'📋'},
   ];
-  const maxG=Math.max(...gRows.map(g=>ps(g.row)),1);
-  document.getElementById('gasto-bars').innerHTML=gRows.map(g=>`
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--txt3);width:120px;text-align:right;flex-shrink:0">${g.lbl}</div>
-      <div style="flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${(ps(g.row)/maxG*100).toFixed(1)}%;background:${g.c};border-radius:2px"></div>
+  document.getElementById('gasto-pct').innerHTML=gRows.map(g=>{
+    const v=ps(g.row),pct=vbS>0?(v/vbS*100).toFixed(1):0;
+    const barW=Math.min(100,parseFloat(pct));
+    return `<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--dark)">${g.icon} ${g.lbl}</span>
+        <span style="font-size:18px;font-weight:600;letter-spacing:-0.03em;color:var(--night)">${pct}%</span>
       </div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--txt);width:90px;text-align:right;flex-shrink:0">${clp(ps(g.row))}</div>
-    </div>`).join('');
-
-  // Canal por marca
-  const rCM=(shT,mlT,cid)=>{
-    const ff=t=>{const tl=t.toLowerCase().replace(/[×x]/g,'.');return rows.find(r=>r.concepto.toLowerCase().replace(/[×x]/g,'.').includes(tl));};
-    const channels=[{lbl:'Shopify',row:ff(shT),c:'var(--sh)'},{lbl:'ML',row:ff(mlT),c:'var(--ml)'}];
-    document.getElementById(cid).innerHTML=channels.map(ch=>{
-      if(!ch.row)return'';
-      const vals=pv(ch.row).filter(v=>v!==0);
-      const avg=vals.length?vals.reduce((s,v)=>s+v,0)/vals.length:0;
-      const mc=avg>=65?'var(--pos)':avg>=45?'var(--warn)':'var(--neg)';
-      return `<div style="margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-          <span class="bdg ${ch.lbl==='Shopify'?'b-sh':'b-ml'}">${ch.lbl}</span>
-          <span style="font-size:28px;font-weight:500;letter-spacing:-0.04em;color:${mc}">${avg.toFixed(1)}%</span>
-        </div>
-        <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden">
-          <div style="height:100%;width:${Math.min(100,avg).toFixed(1)}%;background:${ch.c};border-radius:2px"></div>
-        </div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--txt3);margin-top:4px">prom. ${vals.length} mes${vals.length!==1?'es':''}</div>
-      </div>`;
-    }).join('');
-  };
-  rCM('% Margen MemoKoala × Shopify','% Margen MemoKoala × MercadoLibre','pnl-mk-canal');
-  rCM('% Margen Montana × Shopify','% Margen Montana × MercadoLibre','pnl-mt-canal');
-
-  // Mix canal
-  const vbMK=fr('Venta MemoKoala × Shopify'),vbML=fr('Venta MemoKoala × MercadoLibre');
-  const mtSH=fr('Venta Montana × Shopify'),mtML=fr('Venta Montana × MercadoLibre');
-  const mixRows=[
-    {lbl:'MK × Shopify',v:ps(vbMK),c:'var(--mk)'},
-    {lbl:'MK × ML',v:ps(vbML),c:'var(--mk)',op:'0.5'},
-    {lbl:'MT × Shopify',v:ps(mtSH),c:'var(--mt)'},
-    {lbl:'MT × ML',v:ps(mtML),c:'var(--mt)',op:'0.5'},
-  ];
-  const mixTot=mixRows.reduce((s,r)=>s+r.v,0)||1;
-  const mixMax=Math.max(...mixRows.map(r=>r.v),1);
-  document.getElementById('pnl-mix').innerHTML=mixRows.map(r=>`
-    <div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
-        <span style="font-family:var(--mono);font-size:9px;color:var(--txt3)">${r.lbl}</span>
-        <span style="font-family:var(--mono);font-size:9px;color:var(--txt2)">${(r.v/mixTot*100).toFixed(0)}%</span>
+      <div style="height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:3px">
+        <div style="height:100%;width:${barW}%;background:var(--mid);border-radius:3px"></div>
       </div>
-      <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${(r.v/mixMax*100).toFixed(1)}%;background:${r.c};opacity:${r.op||'1'};border-radius:2px"></div>
-      </div>
-    </div>`).join('');
+      <div style="font-family:var(--mono);font-size:9px;color:var(--light)">${clp(v)} del período</div>
+    </div>`;
+  }).join('');
 
-  renderPnLTable(idxs,labels);
+  renderPnLTable(idxs,labels,rows,vbS);
 }
 
-function renderPnLTable(idxs,labels){
-  const{rows}=PNL;
-  const SC={'INGRESOS':'#2E7D32','MARGEN':'#1b5e20','LOG':'#E65100','MARKETING':'#4A148C','TECH':'#1565C0','ADMINISTR':'#4E342E','RESULTADO':'#111','METRICAS':'#37474F','MARCA':'#263238'};
-  const getSC=c=>{const u=c.toUpperCase();for(const[k,v]of Object.entries(SC)){if(u.includes(k))return v;}return'#1e2330';};
-  const isShdr=r=>r.concepto.includes('▶')||r.concepto.startsWith('â–¶');
-  const isBold=r=>r.concepto.startsWith('TOTAL')||r.concepto.startsWith('VENTA BRUTA TOTAL')||r.concepto.startsWith('MARGEN BRUTO TOTAL')||r.concepto.startsWith('RESULTADO NETO');
+function renderPnLTable(idxs,labels,rows,vbTot){
+  const SC={
+    'INGRESOS':'#2E7D32','MARGEN':'#1b5e20','LOG':'#BF360C',
+    'MARKETING':'#4A148C','TECH':'#1565C0','ADMINISTR':'#37474F',
+    'RESULTADO':'#1C2B3A','METRICAS':'#37474F','MARCA':'#263238'
+  };
+  const getSC=c=>{const u=c.toUpperCase();for(const[k,v]of Object.entries(SC)){if(u.includes(k))return v;}return'#2C3E4C';};
+  const isShdr=r=>r.concepto.includes('▶');
   const isRes=r=>r.concepto.includes('RESULTADO NETO');
   const isPct=r=>r.concepto.startsWith('%');
-  const fv=(v,p)=>p?v.toFixed(1)+'%':clp(v);
-  const cc=(v,r)=>r?(v>=0?'color:var(--pos);font-weight:500':'color:var(--neg);font-weight:500'):'';
-  const psum=mv=>idxs.reduce((s,i)=>s+(mv[i]||0),0);
+
+  const ps=mv=>idxs.reduce((s,i)=>s+(mv[i]||0),0);
   const pavg=mv=>{const nz=idxs.map(i=>mv[i]||0).filter(v=>v!==0);return nz.length?nz.reduce((s,v)=>s+v,0)/nz.length:0;};
+  const fv=(v,p)=>p?v.toFixed(1)+'%':clp(v);
+  const cc=(v,r)=>r?(v>=0?'class="p-pos"':'class="p-neg"'):'';
+
+  // Construir P&L condensado
+  // Agrupamos venta+margen por marca en una sola fila
+  const findRow=t=>rows.find(r=>r.concepto.toUpperCase().includes(t.toUpperCase()));
+
+  const vbMK=findRow('Venta Bruta MemoKoala');
+  const vbMT=findRow('Venta Bruta Montana');
+  const mbMK=findRow('Margen Bruto MemoKoala');
+  const mbMT=findRow('Margen Bruto Montana');
+  const vbTOT=findRow('VENTA BRUTA TOTAL');
+  const mbTOT=findRow('MARGEN BRUTO TOTAL');
+
   const ths=labels.map(m=>`<th>${m.toUpperCase()}</th>`).join('');
-  let html=`<table class="pnl-table"><thead><tr><th>Concepto</th><th>Categoría</th>${ths}<th class="th-tot">Total/Prom</th></tr></thead><tbody>`;
-  rows.forEach(row=>{
-    if(isShdr(row)){
-      const bg=getSC(row.concepto);
-      html+=`<tr class="shdr"><td style="background:${bg}">${row.concepto.replace('â–¶','▶')}</td><td style="background:${bg}"></td>${labels.map(()=>`<td style="background:${bg}"></td>`).join('')}<td class="td-tot" style="background:${bg}"></td></tr>`;
-      return;
-    }
-    const pRow=isPct(row),bRow=isBold(row),rRow=isRes(row);
-    const tds=idxs.map(i=>{const v=row.mv[i]||0;return`<td style="${cc(v,rRow)}">${fv(v,pRow)}</td>`;}).join('');
-    const totV=pRow?pavg(row.mv):psum(row.mv);
-    html+=`<tr class="${bRow?'bold':''}"><td>${row.concepto}</td><td>${row.cat}</td>${tds}<td class="td-tot" style="${cc(totV,rRow)}">${fv(totV,pRow)}</td></tr>`;
+
+  let html=`<table class="pnl-tbl"><thead><tr>
+    <th>Concepto</th>${ths}<th class="th-tot">Total / Prom</th>
+  </tr></thead><tbody>`;
+
+  // INGRESOS + MARGEN condensado
+  html+=`<tr class="shdr"><td colspan="${labels.length+2}" style="background:#2E7D32">▶ INGRESOS Y MARGEN</td></tr>`;
+
+  // Una fila por marca: venta | margen%
+  if(vbMK&&mbMK){
+    const vtds=idxs.map(i=>{
+      const v=vbMK.mv[i]||0,m=mbMK.mv[i]||0,p=v>0?(m/v*100).toFixed(1):0;
+      return`<td>${v?clp(v):'—'}<br><span style="font-size:9px;color:${parseFloat(p)>=65?'var(--pos)':parseFloat(p)>=45?'var(--warn)':'var(--neg)'}">${v?p+'%':''}</span></td>`;
+    }).join('');
+    const vtot=ps(vbMK.mv),mtot=ps(mbMK.mv),pp=vtot>0?(mtot/vtot*100).toFixed(1):0;
+    html+=`<tr><td><span class="bdg b-mk">MK</span> MemoKoala<br><span style="font-size:9px;color:var(--light)">Venta bruta · Margen %</span></td>
+      ${vtds}<td class="td-tot">${clp(vtot)}<br><span style="font-size:9px;color:${parseFloat(pp)>=65?'#4acf80':'#f87171'}">${pp}%</span></td></tr>`;
+  }
+  if(vbMT&&mbMT){
+    const vtds=idxs.map(i=>{
+      const v=vbMT.mv[i]||0,m=mbMT.mv[i]||0,p=v>0?(m/v*100).toFixed(1):0;
+      return`<td>${v?clp(v):'—'}<br><span style="font-size:9px;color:${parseFloat(p)>=65?'var(--pos)':parseFloat(p)>=45?'var(--warn)':'var(--neg)'}">${v?p+'%':''}</span></td>`;
+    }).join('');
+    const vtot=ps(vbMT.mv),mtot=ps(mbMT.mv),pp=vtot>0?(mtot/vtot*100).toFixed(1):0;
+    html+=`<tr><td><span class="bdg b-mt">MT</span> Montana<br><span style="font-size:9px;color:var(--light)">Venta bruta · Margen %</span></td>
+      ${vtds}<td class="td-tot">${clp(vtot)}<br><span style="font-size:9px;color:${parseFloat(pp)>=65?'#4acf80':'#f87171'}">${pp}%</span></td></tr>`;
+  }
+  // Total
+  if(vbTOT&&mbTOT){
+    const vtds=idxs.map(i=>{
+      const v=vbTOT.mv[i]||0,m=mbTOT.mv[i]||0,p=v>0?(m/v*100).toFixed(1):0;
+      return`<td style="font-weight:600">${v?clp(v):'—'}<br><span style="font-size:9px;color:${parseFloat(p)>=65?'var(--pos)':parseFloat(p)>=45?'var(--warn)':'var(--neg)'}">${v?p+'%':''}</span></td>`;
+    }).join('');
+    const vtot=ps(vbTOT.mv),mtot=ps(mbTOT.mv),pp=vtot>0?(mtot/vtot*100).toFixed(1):0;
+    html+=`<tr class="bold"><td>TOTAL CONSOLIDADO<br><span style="font-size:9px;color:var(--light);font-weight:400">Venta bruta · Margen %</span></td>
+      ${vtds}<td class="td-tot">${clp(vtot)}<br><span style="font-size:9px;color:${parseFloat(pp)>=65?'#4acf80':'#f87171'}">${pp}%</span></td></tr>`;
+  }
+
+  // Resto de secciones: solo totales (sin sub-filas redundantes)
+  const sections=[
+    {title:'▶ GASTOS LOGÍSTICOS',bg:'#BF360C',rows:['ABEE — Fulfillment','ABEE — Envíos','SENDU','ML Colecta','Comisión MercadoPago','Comisión ML','ML FLEX — Bonificación','Envío cobrado a clientes','TOTAL LOGÍSTICO NETO']},
+    {title:'▶ MARKETING',bg:'#4A148C',rows:['The Link It','Meta Ads','Google Ads','MercadoLibre Ads','TOTAL MARKETING']},
+    {title:'▶ TECH & SOFTWARE',bg:'#1565C0',rows:['Shopify MK — Fee','Shopify MK — Txn','Shopify MT — Fee','Shopify MT — Txn','Claude Pro','Google Workspace','Canva','TOTAL TECH & SOFTWARE']},
+    {title:'▶ ADMINISTRACIÓN',bg:'#37474F',rows:['BP Consulting','Remuneraciones','Otros Admin','TOTAL ADMINISTRACIÓN']},
+  ];
+
+  sections.forEach(sec=>{
+    html+=`<tr class="shdr"><td colspan="${labels.length+2}" style="background:${sec.bg}">${sec.title}</td></tr>`;
+    sec.rows.forEach(rn=>{
+      const row=findRow(rn);
+      if(!row)return;
+      const isBold=rn.startsWith('TOTAL');
+      const isPctRow=isPct(row);
+      const tds=idxs.map(i=>{
+        const v=row.mv[i]||0;
+        const cls=isRes(row)?(v>=0?'class="p-pos"':'class="p-neg"'):'';
+        return`<td ${cls}>${v?fv(v,isPctRow):'—'}</td>`;
+      }).join('');
+      const totV=isPctRow?pavg(row.mv):ps(row.mv);
+      const totCls=isRes(row)?(totV>=0?'class="p-pos"':'class="p-neg"'):'';
+      html+=`<tr class="${isBold?'bold':''}"><td>${row.concepto}</td>${tds}<td class="td-tot" ${totCls}>${fv(totV,isPctRow)}</td></tr>`;
+    });
   });
+
+  // Resultado
+  const resRow=findRow('RESULTADO NETO');
+  if(resRow){
+    html+=`<tr class="shdr"><td colspan="${labels.length+2}" style="background:#1C2B3A">▶ RESULTADO</td></tr>`;
+    const tds=idxs.map(i=>{const v=resRow.mv[i]||0;return`<td ${v>=0?'class="p-pos"':'class="p-neg"'}>${clp(v)}</td>`;}).join('');
+    const totV=ps(resRow.mv);
+    html+=`<tr class="bold"><td>RESULTADO NETO</td>${tds}<td class="td-tot" ${totV>=0?'class="p-pos"':'class="p-neg"'}>${clp(totV)}</td></tr>`;
+  }
+
+  // Métricas condensadas: % de venta en una sola tabla
+  html+=`<tr class="shdr"><td colspan="${labels.length+2}" style="background:#37474F">▶ MÉTRICAS % SOBRE VENTA</td></tr>`;
+  const metRows=[
+    '% Margen Bruto / Venta','% Logístico Neto / Venta',
+    '% Marketing / Venta','% Tech / Venta','% Admin / Venta','% Resultado Neto / Venta'
+  ];
+  metRows.forEach(rn=>{
+    const row=findRow(rn);if(!row)return;
+    const tds=idxs.map(i=>{const v=row.mv[i]||0;return`<td>${v?v.toFixed(1)+'%':'—'}</td>`;}).join('');
+    const avg=pavg(row.mv);
+    html+=`<tr class="compact"><td>${row.concepto}</td>${tds}<td class="td-tot">${avg.toFixed(1)}%</td></tr>`;
+  });
+
+  // Métricas por marca×canal — UNA fila con ambos datos
+  html+=`<tr class="shdr"><td colspan="${labels.length+2}" style="background:#263238">▶ MARCA × CANAL</td></tr>`;
+  [
+    {lbl:'MemoKoala × Shopify',vR:'Venta MemoKoala × Shopify',mR:'% Margen MemoKoala × Shopify'},
+    {lbl:'MemoKoala × ML',vR:'Venta MemoKoala × MercadoLibre',mR:'% Margen MemoKoala × MercadoLibre'},
+    {lbl:'Montana × Shopify',vR:'Venta Montana × Shopify',mR:'% Margen Montana × Shopify'},
+    {lbl:'Montana × ML',vR:'Venta Montana × MercadoLibre',mR:'% Margen Montana × MercadoLibre'},
+  ].forEach(({lbl,vR,mR})=>{
+    const vRow=findRow(vR),mRow=findRow(mR);
+    if(!vRow)return;
+    const tds=idxs.map(i=>{
+      const v=vRow.mv[i]||0,m=mRow?(mRow.mv[i]||0):0;
+      return`<td>${v?clp(v):'—'}${m?`<br><span style="font-size:9px;color:${m>=65?'var(--pos)':m>=45?'var(--warn)':'var(--neg)'}">${m.toFixed(1)}%</span>`:''}
+      </td>`;
+    }).join('');
+    const vtot=ps(vRow.mv),mavg=mRow?pavg(mRow.mv):0;
+    html+=`<tr class="compact"><td>${lbl}<br><span style="color:var(--light)">Venta · Margen %</span></td>${tds}
+      <td class="td-tot">${clp(vtot)}<br><span style="font-size:9px;color:${mavg>=65?'#4acf80':'#f87171'}">${mavg.toFixed(1)}%</span></td></tr>`;
+  });
+
   html+='</tbody></table>';
   document.getElementById('pnl-table-wrap').innerHTML=html;
 }
 
-// ── HISTÓRICO ────────────────────────────────────────────
-async function renderHist(){
-  if(!pnlLoaded){await loadPnL();}
-  const{meses}=PNL;if(!meses.length)return;
-  const years=[...new Set(meses.map(m=>'20'+m.slice(-2)))].sort();
-  document.getElementById('hist-btns').innerHTML=years.map((y,i)=>
-    `<button class="hbtn${i===years.length-1?' on':''}" onclick="showHY('${y}',this)">${y}</button>`
-  ).join('');
-  showHY(years[years.length-1],document.querySelector('.hbtn.on'));
-}
+// ── INVENTARIO ──────────────────────────────────────────
+function renderInv(){
+  const hoy=new Date();
+  const hace90=new Date(hoy);hace90.setDate(hoy.getDate()-90);
 
-function showHY(year,el){
-  document.querySelectorAll('.hbtn').forEach(b=>b.classList.remove('on'));
-  if(el)el.classList.add('on');
-  const{meses,rows}=PNL;
-  const idxs=[],labels=[];
-  meses.forEach((m,i)=>{if(m.slice(-2)===year.slice(2)){idxs.push(i);labels.push(m);}});
-  const isPct=r=>r.concepto.startsWith('%');
-  const isShdr=r=>r.concepto.includes('▶')||r.concepto.startsWith('â–¶');
-  const isBold=r=>r.concepto.startsWith('TOTAL')||r.concepto.startsWith('VENTA BRUTA TOTAL')||r.concepto.startsWith('MARGEN BRUTO TOTAL')||r.concepto.startsWith('RESULTADO');
-  const isRes=r=>r.concepto.includes('RESULTADO NETO');
-  const fv=(v,p)=>p?v.toFixed(1)+'%':clp(v);
-  const SC={'INGRESOS':'#2E7D32','MARGEN':'#1b5e20','LOG':'#E65100','MARKETING':'#4A148C','TECH':'#1565C0','ADMINISTR':'#4E342E','RESULTADO':'#111','METRICAS':'#37474F','MARCA':'#263238'};
-  const getSC=c=>{const u=c.toUpperCase();for(const[k,v]of Object.entries(SC)){if(u.includes(k))return v;}return'#1e2330';};
-  const psum=mv=>idxs.reduce((s,i)=>s+(mv[i]||0),0);
-  const pavg=mv=>{const nz=idxs.map(i=>mv[i]||0).filter(v=>v!==0);return nz.length?nz.reduce((s,v)=>s+v,0)/nz.length:0;};
-  const ths=labels.map(m=>`<th>${m.toUpperCase()}</th>`).join('');
-  let html=`<div class="tpanel"><div class="thead-row"><span class="thtitle">Estado de resultados · ${year}</span></div><div class="tscroll"><table class="pnl-table"><thead><tr><th>Concepto</th><th>Categoría</th>${ths}<th class="th-tot">Total</th></tr></thead><tbody>`;
-  rows.forEach(row=>{
-    if(isShdr(row)){const bg=getSC(row.concepto);html+=`<tr class="shdr"><td style="background:${bg}">${row.concepto.replace('â–¶','▶')}</td><td style="background:${bg}"></td>${labels.map(()=>`<td style="background:${bg}"></td>`).join('')}<td class="td-tot" style="background:${bg}"></td></tr>`;return;}
-    const pRow=isPct(row),bRow=isBold(row),rRow=isRes(row);
-    const tds=idxs.map(i=>{const v=row.mv[i]||0;const s=rRow?(v>=0?'color:var(--pos);font-weight:500':'color:var(--neg);font-weight:500'):'';return`<td style="${s}">${fv(v,pRow)}</td>`;}).join('');
-    const totV=pRow?pavg(row.mv):psum(row.mv);
-    const ts=rRow?(totV>=0?'color:var(--pos);font-weight:500':'color:var(--neg);font-weight:500'):'';
-    html+=`<tr class="${bRow?'bold':''}"><td>${row.concepto}</td><td>${row.cat}</td>${tds}<td class="td-tot" style="${ts}">${fv(totV,pRow)}</td></tr>`;
+  // Calcular ventas post-cierre y últimos 90 días desde DATA
+  const vendSep={},vend90={};
+  DATA.forEach(r=>{
+    if(!r.sku||!r.fecha)return;
+    const f=new Date(r.fecha);
+    if(isNaN(f.getTime()))return;
+    if(f>FECHA_CIERRE)vendSep[r.sku]=(vendSep[r.sku]||0)+r.qty;
+    if(f>=hace90)vend90[r.sku]=(vend90[r.sku]||0)+r.qty;
   });
-  html+='</tbody></table></div></div>';
-  document.getElementById('hist-content').innerHTML=html;
+
+  const skus=Object.keys(STOCK_BASE);
+  let totalStock=0,totalVal=0,alertas=0,criticos=0;
+
+  const cards=skus.map(sku=>{
+    const marca=sku.startsWith('MK')||sku==='TO04-4'?'MemoKoala':'Montana';
+    const base=STOCK_BASE[sku]||0;
+    const vendido=vendSep[sku]||0;
+    const actual=Math.max(0,base-vendido);
+    const v90=vend90[sku]||0;
+    const vDia=Math.round((v90/90)*100)/100;
+    const dias=vDia>0?Math.round(actual/vDia):9999;
+    const umbral=60;
+    const costo=COSTOS[sku]||0;
+    const val=actual*costo*IVA;
+    totalStock+=actual;totalVal+=val;
+
+    let stato='ok',statoTxt='✅ Stock OK';
+    if(dias===9999){stato='none';statoTxt='Sin ventas recientes';}
+    else if(dias<umbral/2){stato='crit';statoTxt='🔴 Crítico';criticos++;}
+    else if(dias<umbral){stato='alert';statoTxt='🟠 Alerta';alertas++;}
+    else if(dias<umbral*2){stato='warn';statoTxt='🟡 Revisar';}
+
+    const barW=dias===9999?100:Math.min(100,(dias/180)*100);
+    const barC=stato==='ok'?'var(--pos)':stato==='warn'?'var(--warn)':stato==='alert'?'#D35400':'var(--neg)';
+    const nota=sku==='MK-0001'||sku==='MK-0002'?'<div style="font-family:var(--mono);font-size:9px;color:var(--warn);margin-top:4px">⚠ Solo stock ABEE — bodega papás pendiente</div>':'';
+
+    return`<div class="inv-card" style="border-color:${stato==='crit'?'var(--neg)':stato==='alert'?'#e8a85a':'var(--border)'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <div class="inv-sku">${sku}</div>
+        <span class="bdg ${marca==='MemoKoala'?'b-mk':'b-mt'}" style="font-size:8px">${marca==='MemoKoala'?'MK':'MT'}</span>
+      </div>
+      <div class="inv-nom">${NOMBRES[sku]||sku}</div>
+      <div class="inv-num">${actual}</div>
+      <div class="inv-lbl">unidades en stock</div>
+      <div class="inv-row"><span>Ventas 90 días</span><span>${v90} uds</span></div>
+      <div class="inv-row"><span>Promedio diario</span><span>${vDia.toFixed(2)} uds/día</span></div>
+      <div class="inv-row"><span>Días de stock</span><span>${dias===9999?'—':dias+' días'}</span></div>
+      <div class="inv-row"><span>Valor stock (costo×1.19)</span><span>${clp(val)}</span></div>
+      <div class="inv-bar"><div class="inv-fill" style="width:${barW}%;background:${barC}"></div></div>
+      <span class="stato s-${stato}">${statoTxt}</span>
+      ${nota}
+    </div>`;
+  }).join('');
+
+  // KPIs inventario
+  document.getElementById('inv-kgrid').innerHTML=[
+    {lbl:'STOCK TOTAL',num:totalStock.toLocaleString('es-CL'),sub:'unidades en sistema',acc:'#4A6274',delta:{c:'d-neu',t:'cierre base: 31-ago-2026'}},
+    {lbl:'VALOR TOTAL STOCK',num:clp(totalVal),sub:'a costo internado × 1.19',acc:'#2C3E4C',delta:{c:'d-neu',t:'según COSTOS_SKU'}},
+    {lbl:'ALERTAS',num:alertas+criticos,sub:criticos+' crítico'+(criticos!==1?'s':'')+' · '+alertas+' alerta'+(alertas!==1?'s':''),
+     acc:alertas+criticos>0?'#c0392b':'#1a7a45',
+     delta:alertas+criticos>0?{c:'d-neg',t:'Revisar reposición'}:{c:'d-pos',t:'Todo OK'}},
+    {lbl:'SKUs SIN ROTACIÓN',num:Object.keys(STOCK_BASE).filter(s=>(vend90[s]||0)===0).length,
+     sub:'sin ventas en 90 días',acc:'#8AA4B4',delta:{c:'d-neu',t:'últimos 90 días'}},
+  ].map(k=>`<div class="kcard">
+    <div class="kcard-accent" style="background:${k.acc}"></div>
+    <div class="kcard-label">${k.lbl}</div>
+    <div class="kcard-num">${k.num}</div>
+    <div class="kcard-sub">${k.sub}</div>
+    <div class="kcard-delta ${k.delta.c}">${k.delta.t}</div>
+  </div>`).join('');
+
+  document.getElementById('inv-cards').innerHTML=cards;
 }
 
-// ── CHECKLIST ────────────────────────────────────────────
+// CHECKLIST
 function showCL(){document.getElementById('cl-modal').style.display='block';document.body.style.overflow='hidden';}
 function hideCL(){document.getElementById('cl-modal').style.display='none';document.body.style.overflow='';}
 function clTog(el){el.classList.toggle('done');clProg();}
-function clProg(){const t=document.querySelectorAll('.cl-item').length,d=document.querySelectorAll('.cl-item.done').length;document.getElementById('cl-prog').style.width=(t>0?d/t*100:0)+'%';}
+function clProg(){const t=document.querySelectorAll('.cl-item').length,d=document.querySelectorAll('.cl-item.done').length;document.getElementById('cl-prog').style.width=(t?d/t*100:0)+'%';}
 function clReset(){document.querySelectorAll('.cl-item').forEach(e=>e.classList.remove('done'));clProg();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')hideCL();});
 
-// ── UTILS ────────────────────────────────────────────────
+// UTILS
 const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
 const sum=(arr,k)=>arr.reduce((s,r)=>s+(r[k]||0),0);
 function pn(v){
