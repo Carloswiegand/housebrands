@@ -56,8 +56,7 @@ input.price:focus{outline:none;border-color:var(--mid)}
 .add-row td{padding:.55rem .75rem;background:var(--off);border-bottom:1px solid var(--pale)}
 .add-btn{background:none;border:1px dashed var(--pale);border-radius:3px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--gray);padding:.3rem .75rem;transition:border-color .15s,color .15s;display:inline-flex;align-items:center;gap:.4rem}
 .add-btn:hover{border-color:var(--mid);color:var(--mid)}
-.envio-section{padding:.5rem 2.25rem 0}
-.envio-row{display:grid;grid-template-columns:1fr 80px 140px 150px 36px;align-items:center;background:var(--off);border:1px solid var(--pale);border-radius:3px;padding:.7rem .75rem}
+.envio-tr td{padding:.75rem .75rem;border-bottom:1px solid var(--pale);vertical-align:middle;background:var(--off)}
 .envio-lbl{font-size:.85rem;font-weight:500;color:var(--mid)}.envio-note{font-size:.7rem;color:var(--gray);margin-top:.1rem}
 .totales-wrap{padding:1rem 2.25rem 0;display:flex;justify-content:flex-end}.totales{width:300px}
 .t-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--pale);font-size:.82rem}
@@ -73,7 +72,7 @@ input.price:focus{outline:none;border-color:var(--mid)}
 .bank-tbl tr:nth-child(even) td{background:var(--off)}
 .cot-foot{background:var(--off);border-top:1px solid var(--pale);padding:.8rem 2.25rem;font-size:.7rem;color:var(--gray);font-style:italic;line-height:1.65}
 @media print{
-  body{background:white;padding:0;font-size:11px}
+  body{background:white;padding:0;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .toolbar{display:none}
   .cot{box-shadow:none;border:none;max-width:100%}
   [contenteditable]:hover,[contenteditable]:focus{background:transparent}
@@ -88,8 +87,7 @@ input.price:focus{outline:none;border-color:var(--mid)}
   .prod-table thead th{font-size:.55rem;padding:.45rem .5rem}
   .prod-row td{padding:.45rem .5rem;font-size:.78rem}
   .prod-name{font-size:.78rem}.prod-sku{font-size:.62rem}
-  .envio-section{padding:.35rem 1.5rem 0}
-  .envio-row{padding:.45rem .5rem;font-size:.78rem}
+  .envio-tr td{padding:.45rem .5rem;font-size:.78rem}
   .envio-lbl{font-size:.75rem}.envio-note{font-size:.62rem}
   input.qty,input.price{border:none;background:transparent;font-size:.78rem;width:auto}
   .price-sym{display:none}
@@ -102,7 +100,10 @@ input.price:focus{outline:none;border-color:var(--mid)}
   .b-title{font-size:.55rem;margin-bottom:.4rem}
   .info-tbl td{padding:.28rem .35rem;font-size:.72rem}
   .cot-foot{padding:.5rem 1.5rem;font-size:.62rem}
-  @page{size:A4 portrait;margin:12mm 14mm}
+  @page{size:A4 portrait;margin:10mm 14mm 10mm 14mm}
+  /* Suprimir header y footer del navegador */
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  head,header,footer:not(.cot-foot){display:none!important}
 }
 </style>
 </head>
@@ -113,10 +114,15 @@ input.price:focus{outline:none;border-color:var(--mid)}
     <span class="badge">Plantilla Cotización B2B</span>
     <span class="badge" id="badge-num">COT-001</span>
   </div>
-  <div class="tb-right">
-    <button class="btn btn-sm" id="btn-reset">&#8635; Nueva cotización</button>
-    <button class="btn btn-ghost" id="btn-print">Imprimir / PDF</button>
-    <button class="btn btn-dark" id="btn-copy">Copiar resumen</button>
+  <div class="tb-right" style="flex-direction:column;align-items:flex-end;gap:.35rem">
+    <div style="display:flex;gap:.5rem">
+      <button class="btn btn-sm" id="btn-reset">&#8635; Nueva cotización</button>
+      <button class="btn btn-ghost" id="btn-print">Imprimir / PDF</button>
+      <button class="btn btn-dark" id="btn-copy">Copiar resumen</button>
+    </div>
+    <div style="font-size:.62rem;color:var(--gray);font-style:italic">
+      Al imprimir: desactivar <strong>Encabezados y pies de página</strong> en opciones del diálogo
+    </div>
   </div>
 </div>
 
@@ -175,29 +181,28 @@ input.price:focus{outline:none;border-color:var(--mid)}
             <span style="font-size:1rem;line-height:1">+</span> Agregar producto
           </button>
         </td></tr>
+        <tr class="envio-tr">
+          <td>
+            <div class="envio-lbl">Envío</div>
+            <div class="envio-note ce" contenteditable id="envio-nota">ABEE / BlueX</div>
+          </td>
+          <td style="text-align:center">
+            <input class="qty" type="number" id="envio-qty" min="0" placeholder="0">
+          </td>
+          <td>
+            <div class="price-wrap">
+              <span class="price-sym">$</span>
+              <input class="price" type="number" id="envio-price" min="0" placeholder="0">
+            </div>
+          </td>
+          <td class="row-total dim" id="envio-total">&#8212;</td>
+          <td></td>
+        </tr>
       </tfoot>
     </table>
   </div>
 
-  <div class="envio-section">
-    <div class="envio-row">
-      <div>
-        <div class="envio-lbl">Envío</div>
-        <div class="envio-note ce" contenteditable id="envio-nota">ABEE / BlueX</div>
-      </div>
-      <div style="text-align:center">
-        <input class="qty" type="number" id="envio-qty" min="0" placeholder="0">
-      </div>
-      <div>
-        <div class="price-wrap">
-          <span class="price-sym">$</span>
-          <input class="price" type="number" id="envio-price" min="0" placeholder="0">
-        </div>
-      </div>
-      <div class="row-total dim" id="envio-total">&#8212;</div>
-      <div></div>
-    </div>
-  </div>
+
 
   <div class="totales-wrap">
     <div class="totales">
