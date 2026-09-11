@@ -9,12 +9,12 @@
 :root{--night:#1C2B3A;--dark:#2C3E4C;--mid:#4A6274;--light:#8AA4B4;--pale:#D6E4EC;--cream:#F7F6F3;--off:#EEECE8;--gray:#7A8F9E;--white:#FFFFFF;--line:rgba(28,43,58,0.1)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--night);padding:2rem 1rem}
-.toolbar{max-width:820px;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.toolbar{max-width:860px;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
 .tb-left{display:flex;align-items:center;gap:.5rem}.tb-right{display:flex;gap:.5rem}
 .badge{font-family:'Instrument Sans',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);background:var(--white);border:1px solid var(--line);border-radius:100px;padding:.28rem .7rem}
 .btn{font-family:'Instrument Sans',sans-serif;font-size:.72rem;font-weight:600;padding:.45rem 1rem;border-radius:3px;border:none;cursor:pointer;transition:opacity .15s}.btn:hover{opacity:.8}
 .btn-ghost{background:var(--white);color:var(--mid);border:1px solid var(--pale)}.btn-dark{background:var(--night);color:var(--cream)}.btn-sm{font-size:.65rem;padding:.35rem .75rem;background:transparent;color:var(--gray);border:1px solid var(--line)}
-.cot{max-width:820px;margin:0 auto;background:var(--white);border:1px solid var(--line);border-radius:3px;box-shadow:0 2px 16px rgba(28,43,58,.07)}
+.cot{max-width:860px;margin:0 auto;background:var(--white);border:1px solid var(--line);border-radius:3px;box-shadow:0 2px 16px rgba(28,43,58,.07)}
 .cot-head{display:grid;grid-template-columns:1fr auto;padding:1.75rem 2.25rem 1.5rem;gap:2rem;align-items:start}
 .logo{display:flex;align-items:center;gap:.65rem}
 .logo-name{font-family:'Instrument Sans',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:-.03em;color:var(--night)}.logo-name span{color:var(--mid)}
@@ -38,9 +38,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--night);p
 .prod-table thead tr{background:var(--night)}
 .prod-table thead th{font-family:'Instrument Sans',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--light);padding:.7rem .75rem;white-space:nowrap}
 .th-desc{text-align:left}.th-qty{text-align:center;width:80px}.th-price{text-align:right;width:140px}.th-total{text-align:right;width:150px}.th-del{width:36px}
-.prod-row td{padding:.8rem .75rem;border-bottom:1px solid var(--pale);vertical-align:middle;font-size:.87rem}
+.prod-row td{padding:.75rem .75rem;border-bottom:1px solid var(--pale);vertical-align:middle;font-size:.87rem}
 .prod-row:nth-child(even) td{background:var(--cream)}.prod-row:nth-child(odd) td{background:var(--white)}
 .prod-name{font-weight:600;color:var(--night)}.prod-sku{font-size:.72rem;color:var(--gray);margin-top:.1rem}
+/* selector de producto en fila nueva */
+.prod-select{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--night);border:1px solid var(--pale);border-radius:3px;padding:.32rem .5rem;background:var(--white);cursor:pointer}
+.prod-select:focus{outline:none;border-color:var(--mid)}
 input.qty{width:58px;text-align:center;padding:.32rem .4rem;border:1px solid var(--pale);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;color:var(--mid);-moz-appearance:textfield;background:var(--white)}
 input.qty::-webkit-outer-spin-button,input.qty::-webkit-inner-spin-button{-webkit-appearance:none}
 input.qty:focus{outline:none;border-color:var(--mid)}
@@ -50,15 +53,12 @@ input.price::-webkit-outer-spin-button,input.price::-webkit-inner-spin-button{-w
 input.price:focus{outline:none;border-color:var(--mid)}
 .row-total{font-family:'Instrument Sans',sans-serif;font-size:.9rem;font-weight:600;text-align:right;color:var(--night)}.row-total.dim{color:var(--pale)}
 .del-btn{background:none;border:none;cursor:pointer;color:var(--pale);font-size:1rem;line-height:1;padding:.2rem .4rem;border-radius:2px;transition:color .15s}.del-btn:hover{color:var(--mid)}
-.free-row td{padding:.6rem .75rem;border-bottom:1px solid var(--pale);background:var(--off)}
-input.free-desc{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--night);border:none;background:transparent;outline:none}
-input.free-desc::placeholder{color:var(--pale)}
-.add-row td{padding:.55rem .75rem;background:var(--off)}
+.add-row td{padding:.55rem .75rem;background:var(--off);border-bottom:1px solid var(--pale)}
 .add-btn{background:none;border:1px dashed var(--pale);border-radius:3px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--gray);padding:.3rem .75rem;transition:border-color .15s,color .15s;display:inline-flex;align-items:center;gap:.4rem}
 .add-btn:hover{border-color:var(--mid);color:var(--mid)}
 .envio-section{padding:.5rem 2.25rem 0}
 .envio-row{display:grid;grid-template-columns:1fr 80px 140px 150px 36px;align-items:center;background:var(--off);border:1px solid var(--pale);border-radius:3px;padding:.7rem .75rem}
-.envio-lbl{font-size:.85rem;color:var(--mid)}.envio-note{font-size:.7rem;color:var(--gray);margin-top:.1rem}
+.envio-lbl{font-size:.85rem;font-weight:500;color:var(--mid)}.envio-note{font-size:.7rem;color:var(--gray);margin-top:.1rem}
 .totales-wrap{padding:1rem 2.25rem 0;display:flex;justify-content:flex-end}.totales{width:300px}
 .t-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--pale);font-size:.82rem}
 .t-row:last-child{border-bottom:none}.t-row .lbl{color:var(--gray)}.t-row .val{color:var(--night);font-weight:500}
@@ -69,24 +69,26 @@ input.free-desc::placeholder{color:var(--pale)}
 .bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;padding:1.75rem 2.25rem;margin-top:1.5rem;border-top:1px solid var(--pale)}
 .b-title{font-family:'Instrument Sans',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:.65rem}
 .info-tbl{width:100%;border-collapse:collapse}.info-tbl tr{border-bottom:1px solid var(--pale)}.info-tbl tr:last-child{border-bottom:none}
-.info-tbl td{padding:.42rem .4rem;font-size:.8rem;vertical-align:top}.info-tbl td:first-child{font-weight:600;color:var(--night);width:38%;white-space:nowrap}.info-tbl td:last-child{color:var(--mid)}
+.info-tbl td{padding:.42rem .4rem;font-size:.8rem;vertical-align:top}.info-tbl td:first-child{font-weight:600;color:var(--night);width:40%;white-space:nowrap}.info-tbl td:last-child{color:var(--mid)}
 .bank-tbl tr:nth-child(even) td{background:var(--off)}
 .cot-foot{background:var(--off);border-top:1px solid var(--pale);padding:.8rem 2.25rem;font-size:.7rem;color:var(--gray);font-style:italic;line-height:1.65}
 @media print{body{background:white;padding:0}.toolbar{display:none}.cot{box-shadow:none;border:none}[contenteditable]:hover,[contenteditable]:focus{background:transparent}.del-btn,.add-btn,.add-row{display:none}}
 </style>
 </head>
 <body>
+
 <div class="toolbar">
   <div class="tb-left">
     <span class="badge">Plantilla Cotización B2B</span>
     <span class="badge" id="badge-num">COT-001</span>
   </div>
   <div class="tb-right">
-    <button class="btn btn-sm" onclick="resetCot()">&#8635; Nueva cotización</button>
-    <button class="btn btn-ghost" onclick="imprimir()">Imprimir / PDF</button>
-    <button class="btn btn-dark" onclick="copiar()">Copiar resumen</button>
+    <button class="btn btn-sm" id="btn-reset">&#8635; Nueva cotización</button>
+    <button class="btn btn-ghost" id="btn-print">Imprimir / PDF</button>
+    <button class="btn btn-dark" id="btn-copy">Copiar resumen</button>
   </div>
 </div>
+
 <div class="cot">
   <div class="cot-head">
     <div class="logo">
@@ -107,7 +109,9 @@ input.free-desc::placeholder{color:var(--pale)}
       <div class="meta-date ce" contenteditable id="cot-fecha"></div>
     </div>
   </div>
+
   <div class="bar"></div>
+
   <div class="parties">
     <div>
       <div class="p-lbl">Cliente</div>
@@ -123,8 +127,9 @@ input.free-desc::placeholder{color:var(--pale)}
       <span class="p-detail ce" contenteditable id="ent-nota">[Modalidad de despacho]</span>
     </div>
   </div>
+
   <div class="prod-section">
-    <table class="prod-table" id="prod-table">
+    <table class="prod-table">
       <thead><tr>
         <th class="th-desc">Producto</th>
         <th class="th-qty">Cant.</th>
@@ -135,13 +140,14 @@ input.free-desc::placeholder{color:var(--pale)}
       <tbody id="prod-body"></tbody>
       <tfoot>
         <tr class="add-row"><td colspan="5">
-          <button class="add-btn" onclick="addLine()">
-            <span style="font-size:1rem;line-height:1">+</span> Agregar línea
+          <button class="add-btn" id="btn-add">
+            <span style="font-size:1rem;line-height:1">+</span> Agregar producto
           </button>
         </td></tr>
       </tfoot>
     </table>
   </div>
+
   <div class="envio-section">
     <div class="envio-row">
       <div>
@@ -149,18 +155,19 @@ input.free-desc::placeholder{color:var(--pale)}
         <div class="envio-note ce" contenteditable id="envio-nota">ABEE / BlueX</div>
       </div>
       <div style="text-align:center">
-        <input class="qty" type="number" id="envio-qty" min="0" placeholder="0" oninput="recalc()">
+        <input class="qty" type="number" id="envio-qty" min="0" placeholder="0">
       </div>
       <div>
         <div class="price-wrap">
           <span class="price-sym">$</span>
-          <input class="price" type="number" id="envio-price" min="0" placeholder="a confirmar" oninput="recalc()">
+          <input class="price" type="number" id="envio-price" min="0" placeholder="0">
         </div>
       </div>
       <div class="row-total dim" id="envio-total">&#8212;</div>
       <div></div>
     </div>
   </div>
+
   <div class="totales-wrap">
     <div class="totales">
       <div class="t-row"><span class="lbl">Subtotal neto</span><span class="val" id="t-sub">$ 0</span></div>
@@ -170,6 +177,7 @@ input.free-desc::placeholder{color:var(--pale)}
       <div class="t-row t-final"><span class="lbl">Total con IVA</span><span class="val" id="t-total">$ 0</span></div>
     </div>
   </div>
+
   <div class="bottom">
     <div>
       <div class="b-title">Condiciones comerciales</div>
@@ -185,7 +193,7 @@ input.free-desc::placeholder{color:var(--pale)}
         <tr><td>Empresa</td><td>Housebrands Commerce SpA</td></tr>
         <tr><td>RUT</td><td>77.993.029-7</td></tr>
         <tr><td>Banco</td><td>BCI — Banco de Créditos e Inversiones</td></tr>
-        <tr><td>Cuenta</td><td>Corriente Nº 32630786</td></tr>
+        <tr><td>Cuenta</td><td>Corriente N° 32630786</td></tr>
         <tr><td>Email</td><td>contacto@housebrands.cl</td></tr>
       </table>
     </div>
@@ -195,100 +203,316 @@ input.free-desc::placeholder{color:var(--pale)}
         <tr><td>Empresa</td><td>Housebrands Commerce SpA</td></tr>
         <tr><td>RUT</td><td>77.993.029-7</td></tr>
         <tr><td>Dirección</td><td>Av. La Dehesa 1201, Oficina 201</td></tr>
-        <tr><td>Comuna / Ciudad</td><td>Lo Barnechea, Santiago</td></tr>
+        <tr><td>Comuna</td><td>Lo Barnechea, Santiago</td></tr>
         <tr><td>Celular</td><td>+569 6203 6561</td></tr>
         <tr><td>Email</td><td>contacto@housebrands.cl</td></tr>
       </table>
     </div>
   </div>
+
   <div class="cot-foot">
     Este documento es una cotización formal y no constituye una orden de compra.
     Los precios están en pesos chilenos (CLP).
     MemoKoala es una marca de Housebrands Commerce SpA &middot; RUT 77.993.029-7 &middot; housebrands.cl
   </div>
 </div>
+
 <script>
-const CATALOGO=[
-  {id:'hookon',nombre:'Silla de Comer Portátil HookOn',sku:'MemoKoala',precioB2B:53091,precioPub:58990},
-  {id:'lazboy',nombre:'Silla Mecedora para Bebé LazyBoy',sku:'MemoKoala',precioB2B:44991,precioPub:49990}
+// ── CATÁLOGO ─────────────────────────────────────────────────
+// Para agregar un producto al catálogo: añadir un objeto aquí.
+var CATALOGO = [
+  { id:'hookon', nombre:'Silla de Comer Portátil HookOn',  sku:'MemoKoala', precioB2B:53091, precioPub:58990 },
+  { id:'lazboy', nombre:'Silla Mecedora para Bebé LazyBoy', sku:'MemoKoala', precioB2B:44991, precioPub:49990 }
 ];
-let lineas=[];
-function clp(n){'use strict';return '$ '+Math.round(n).toLocaleString('es-CL');}
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function render(){
-  const tb=document.getElementById('prod-body');tb.innerHTML='';
-  lineas.forEach((ln,i)=>{
-    const tr=document.createElement('tr');tr.className='prod-row';tr.dataset.idx=i;
-    const tot=(ln.qty||0)*(ln.precio||0),ts=tot>0?clp(tot):'&mdash;';
-    if(ln.tipo==='cat'){
-      const cat=CATALOGO.find(c=>c.id===ln.id);
-      tr.innerHTML=`<td><div class="prod-name">${cat.nombre}</div><div class="prod-sku">${cat.sku} &middot; B2B &minus;10% s/precio p&uacute;blico ${clp(cat.precioPub)}</div></td>
-        <td style="text-align:center"><input class="qty" type="number" min="0" value="${ln.qty||''}" placeholder="0" oninput="upd(${i},'qty',this.value)"></td>
-        <td><div class="price-wrap"><span class="price-sym">$</span><input class="price" type="number" min="0" value="${ln.precio||''}" oninput="upd(${i},'precio',this.value)"></div></td>
-        <td class="row-total${tot?'':' dim'}">${ts}</td>
-        <td><button class="del-btn" onclick="del(${i})" title="Quitar">&times;</button></td>`;
-    }else{
-      tr.innerHTML=`<td><input class="free-desc" type="text" placeholder="Descripción del producto o servicio…" value="${esc(ln.nombre)}" oninput="upd(${i},'nombre',this.value)"></td>
-        <td style="text-align:center"><input class="qty" type="number" min="0" value="${ln.qty||''}" placeholder="0" oninput="upd(${i},'qty',this.value)"></td>
-        <td><div class="price-wrap"><span class="price-sym">$</span><input class="price" type="number" min="0" value="${ln.precio||''}" oninput="upd(${i},'precio',this.value)"></div></td>
-        <td class="row-total${tot?'':' dim'}">${ts}</td>
-        <td><button class="del-btn" onclick="del(${i})" title="Quitar">&times;</button></td>`;
+
+var lineas = [];
+
+// ── HELPERS ───────────────────────────────────────────────────
+function clp(n) {
+  return '$ ' + Math.round(n).toLocaleString('es-CL');
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function render() {
+  var tb = document.getElementById('prod-body');
+  tb.innerHTML = '';
+
+  for (var i = 0; i < lineas.length; i++) {
+    renderFila(i);
+  }
+  recalc();
+}
+
+function renderFila(i) {
+  var tb  = document.getElementById('prod-body');
+  var ln  = lineas[i];
+  var tr  = document.createElement('tr');
+  tr.className = 'prod-row';
+  tr.setAttribute('data-idx', String(i));
+
+  var tot = (ln.qty || 0) * (ln.precio || 0);
+  var ts  = tot > 0 ? clp(tot) : '—';
+  var bg  = (i % 2 === 1) ? 'background:var(--cream)' : 'background:var(--white)';
+
+  // Columna descripción
+  var tdDesc = document.createElement('td');
+  tdDesc.setAttribute('style', bg.replace('background',''));
+
+  if (ln.confirmado) {
+    // Producto ya elegido: mostrar nombre y sku
+    tdDesc.innerHTML = '<div class="prod-name">' + ln.nombre + '</div>' +
+      '<div class="prod-sku">' + ln.sku + ' &middot; B2B &minus;10% s/precio p&uacute;blico ' + clp(ln.precioPub) + '</div>';
+  } else {
+    // Selector desplegable
+    var sel = document.createElement('select');
+    sel.className = 'prod-select';
+
+    var optBlank = document.createElement('option');
+    optBlank.value = '';
+    optBlank.textContent = '— Seleccionar producto —';
+    sel.appendChild(optBlank);
+
+    for (var c = 0; c < CATALOGO.length; c++) {
+      var opt = document.createElement('option');
+      opt.value = CATALOGO[c].id;
+      opt.textContent = CATALOGO[c].nombre;
+      sel.appendChild(opt);
     }
-    tb.appendChild(tr);
-  });
-  recalc();
+
+    (function(idx) {
+      sel.addEventListener('change', function() {
+        var catId = this.value;
+        if (!catId) return;
+        var cat = null;
+        for (var k = 0; k < CATALOGO.length; k++) {
+          if (CATALOGO[k].id === catId) { cat = CATALOGO[k]; break; }
+        }
+        if (!cat) return;
+        lineas[idx].id        = cat.id;
+        lineas[idx].nombre    = cat.nombre;
+        lineas[idx].sku       = cat.sku;
+        lineas[idx].precio    = cat.precioB2B;
+        lineas[idx].precioPub = cat.precioPub;
+        lineas[idx].confirmado = true;
+        render();
+        // Foco en qty de la fila recién confirmada
+        var rows = document.querySelectorAll('#prod-body tr.prod-row');
+        var row  = rows[idx];
+        if (row) {
+          var qInput = row.querySelector('input.qty');
+          if (qInput) qInput.focus();
+        }
+      });
+    })(i);
+
+    tdDesc.appendChild(sel);
+  }
+
+  // Columna cantidad
+  var tdQty = document.createElement('td');
+  tdQty.setAttribute('style', 'text-align:center;' + bg.replace('background','background'));
+  var inpQty = document.createElement('input');
+  inpQty.className = 'qty';
+  inpQty.type = 'number';
+  inpQty.min  = '0';
+  inpQty.placeholder = '0';
+  if (ln.qty) inpQty.value = ln.qty;
+  (function(idx, tdTot) {
+    inpQty.addEventListener('input', function() {
+      lineas[idx].qty = parseFloat(this.value) || 0;
+      var t = (lineas[idx].qty || 0) * (lineas[idx].precio || 0);
+      tdTot.textContent = t > 0 ? clp(t) : '—';
+      tdTot.className   = 'row-total' + (t ? '' : ' dim');
+      recalc();
+    });
+  })(i, null); // tdTot se asigna abajo
+  tdQty.appendChild(inpQty);
+
+  // Columna precio
+  var tdPrice = document.createElement('td');
+  var priceWrap = document.createElement('div');
+  priceWrap.className = 'price-wrap';
+  var priceSym = document.createElement('span');
+  priceSym.className = 'price-sym';
+  priceSym.textContent = '$';
+  var inpPrice = document.createElement('input');
+  inpPrice.className = 'price';
+  inpPrice.type = 'number';
+  inpPrice.min  = '0';
+  if (ln.precio) inpPrice.value = ln.precio;
+  priceWrap.appendChild(priceSym);
+  priceWrap.appendChild(inpPrice);
+  tdPrice.appendChild(priceWrap);
+
+  // Columna total
+  var tdTot = document.createElement('td');
+  tdTot.className = 'row-total' + (tot ? '' : ' dim');
+  tdTot.textContent = ts;
+
+  // Ahora conectar los eventos con tdTot correcto
+  (function(idx, tdTotRef) {
+    inpQty.addEventListener('input', function() {
+      lineas[idx].qty = parseFloat(this.value) || 0;
+      var t = (lineas[idx].qty || 0) * (lineas[idx].precio || 0);
+      tdTotRef.textContent = t > 0 ? clp(t) : '—';
+      tdTotRef.className   = 'row-total' + (t ? '' : ' dim');
+      recalc();
+    });
+    inpPrice.addEventListener('input', function() {
+      lineas[idx].precio = parseFloat(this.value) || 0;
+      var t = (lineas[idx].qty || 0) * (lineas[idx].precio || 0);
+      tdTotRef.textContent = t > 0 ? clp(t) : '—';
+      tdTotRef.className   = 'row-total' + (t ? '' : ' dim');
+      recalc();
+    });
+  })(i, tdTot);
+
+  // Columna eliminar
+  var tdDel = document.createElement('td');
+  var btnDel = document.createElement('button');
+  btnDel.className = 'del-btn';
+  btnDel.title = 'Quitar';
+  btnDel.innerHTML = '&times;';
+  (function(idx) {
+    btnDel.addEventListener('click', function() {
+      lineas.splice(idx, 1);
+      render();
+    });
+  })(i);
+  tdDel.appendChild(btnDel);
+
+  tr.appendChild(tdDesc);
+  tr.appendChild(tdQty);
+  tr.appendChild(tdPrice);
+  tr.appendChild(tdTot);
+  tr.appendChild(tdDel);
+  tb.appendChild(tr);
 }
-function upd(i,c,v){
-  lineas[i][c]=(c==='qty'||c==='precio')?(parseFloat(v)||0):v;
-  const tr=document.querySelector('tr[data-idx="'+i+'"]');
-  if(tr){const t=(lineas[i].qty||0)*(lineas[i].precio||0),td=tr.querySelector('.row-total');td.innerHTML=t>0?clp(t):'&mdash;';td.className='row-total'+(t?'':' dim');}
-  recalc();
+
+// ── AGREGAR LÍNEA ─────────────────────────────────────────────
+document.getElementById('btn-add').addEventListener('click', function() {
+  lineas.push({ id:'', nombre:'', sku:'', precio:0, precioPub:0, qty:0, confirmado:false });
+  render();
+  // foco en el select de la última fila
+  var rows = document.querySelectorAll('#prod-body tr.prod-row');
+  var last = rows[rows.length - 1];
+  if (last) {
+    var sel = last.querySelector('select.prod-select');
+    if (sel) sel.focus();
+  }
+});
+
+// ── TOTALES ───────────────────────────────────────────────────
+function recalc() {
+  var sub = 0;
+  for (var i = 0; i < lineas.length; i++) {
+    sub += (lineas[i].qty || 0) * (lineas[i].precio || 0);
+  }
+  var iva = Math.round(sub * 0.19);
+
+  var eQ  = parseFloat(document.getElementById('envio-qty').value)   || 0;
+  var eP  = parseFloat(document.getElementById('envio-price').value) || 0;
+  var eN  = eQ * eP;
+  var eI  = Math.round(eN * 0.19);
+  var tot = sub + iva + eN + eI;
+
+  document.getElementById('t-sub').textContent   = clp(sub);
+  document.getElementById('t-iva').textContent   = clp(iva);
+  document.getElementById('t-total').textContent = clp(tot);
+
+  var hasE = eN > 0;
+  document.getElementById('t-row-envio').style.display = hasE ? '' : 'none';
+  document.getElementById('t-row-eiva').style.display  = hasE ? '' : 'none';
+  document.getElementById('t-envio-n').textContent   = clp(eN);
+  document.getElementById('t-envio-iva').textContent  = clp(eI);
+
+  var et = document.getElementById('envio-total');
+  et.textContent = eN > 0 ? clp(eN) : '—';
+  et.className   = 'row-total' + (eN ? '' : ' dim');
 }
-function del(i){lineas.splice(i,1);render();}
-function addLine(){
-  lineas.push({tipo:'libre',nombre:'',qty:0,precio:0});render();
-  const rows=document.querySelectorAll('#prod-body tr.prod-row'),last=rows[rows.length-1];
-  if(last){const inp=last.querySelector('input.free-desc')||last.querySelector('input.qty');if(inp)inp.focus();}
-}
-function recalc(){
-  const sub=lineas.reduce((s,ln)=>s+(ln.qty||0)*(ln.precio||0),0),iva=Math.round(sub*0.19);
-  const eQ=parseFloat(document.getElementById('envio-qty').value)||0,eP=parseFloat(document.getElementById('envio-price').value)||0;
-  const eN=eQ*eP,eI=Math.round(eN*0.19),tot=sub+iva+eN+eI;
-  document.getElementById('t-sub').textContent=clp(sub);
-  document.getElementById('t-iva').textContent=clp(iva);
-  document.getElementById('t-total').textContent=clp(tot);
-  const h=eN>0;
-  document.getElementById('t-row-envio').style.display=h?'':'none';
-  document.getElementById('t-row-eiva').style.display=h?'':'none';
-  document.getElementById('t-envio-n').textContent=clp(eN);
-  document.getElementById('t-envio-iva').textContent=clp(eI);
-  const et=document.getElementById('envio-total');et.innerHTML=eN>0?clp(eN):'&mdash;';et.className='row-total'+(eN?'':' dim');
-}
-function imprimir(){
-  const rows=document.querySelectorAll('#prod-body tr.prod-row'),hidden=[];
-  rows.forEach(tr=>{const i=parseInt(tr.dataset.idx);if(!lineas[i]||(lineas[i].qty||0)===0){tr.style.display='none';hidden.push(tr);}});
+
+document.getElementById('envio-qty').addEventListener('input', recalc);
+document.getElementById('envio-price').addEventListener('input', recalc);
+
+// ── IMPRIMIR ─────────────────────────────────────────────────
+document.getElementById('btn-print').addEventListener('click', function() {
+  var rows   = document.querySelectorAll('#prod-body tr.prod-row');
+  var hidden = [];
+  for (var i = 0; i < rows.length; i++) {
+    var idx = parseInt(rows[i].getAttribute('data-idx'));
+    if (!lineas[idx] || (lineas[idx].qty || 0) === 0 || !lineas[idx].confirmado) {
+      rows[i].style.display = 'none';
+      hidden.push(rows[i]);
+    }
+  }
   window.print();
-  setTimeout(()=>hidden.forEach(tr=>tr.style.display=''),800);
+  setTimeout(function() {
+    for (var i = 0; i < hidden.length; i++) { hidden[i].style.display = ''; }
+  }, 800);
+});
+
+// ── NUEVA COTIZACIÓN ──────────────────────────────────────────
+document.getElementById('btn-reset').addEventListener('click', function() {
+  if (!confirm('¿Limpiar esta cotización para una nueva?')) return;
+  var num = document.getElementById('cot-num').textContent.trim();
+  var m   = num.match(/(\d+)$/);
+  if (m) {
+    var next = 'COT-' + String(parseInt(m[1]) + 1).padStart(3, '0');
+    document.getElementById('cot-num').textContent   = next;
+    document.getElementById('badge-num').textContent = next;
+  }
+  document.getElementById('cli-nombre').textContent   = '[Razón social]';
+  document.getElementById('cli-rut').textContent      = 'RUT [XX.XXX.XXX-X]';
+  document.getElementById('cli-contacto').textContent = 'Contacto: [nombre]';
+  document.getElementById('ent-dir').textContent      = '[Dirección]';
+  document.getElementById('ent-ciudad').textContent   = '[Ciudad, Región]';
+  document.getElementById('ent-nota').textContent     = '[Modalidad de despacho]';
+  lineas = [];
+  document.getElementById('envio-qty').value   = '';
+  document.getElementById('envio-price').value = '';
+  document.getElementById('envio-nota').textContent = 'ABEE / BlueX';
+  setFecha();
+  render();
+});
+
+// ── COPIAR ────────────────────────────────────────────────────
+document.getElementById('btn-copy').addEventListener('click', function() {
+  var num = document.getElementById('cot-num').textContent.trim();
+  var cli = document.getElementById('cli-nombre').textContent.trim();
+  var tot = document.getElementById('t-total').textContent.trim();
+  var btn = this;
+  navigator.clipboard.writeText(num + ' \u00b7 ' + cli + '\nTotal con IVA: ' + tot + '\nValidez: 10 d\u00edas h\u00e1biles')
+    .then(function() {
+      var p = btn.textContent;
+      btn.textContent = '\u2713 Copiado';
+      setTimeout(function() { btn.textContent = p; }, 1800);
+    });
+});
+
+// ── BADGE SYNC ────────────────────────────────────────────────
+document.getElementById('cot-num').addEventListener('input', function() {
+  document.getElementById('badge-num').textContent = this.textContent || 'COT-???';
+});
+
+// ── FECHA ─────────────────────────────────────────────────────
+function setFecha() {
+  var d = new Date();
+  var m = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('cot-fecha').textContent =
+    d.getDate() + ' de ' + m[d.getMonth()] + ' de ' + d.getFullYear();
 }
-function resetCot(){
-  if(!confirm('Limpiar esta cotización para una nueva?'))return;
-  const num=document.getElementById('cot-num').textContent.trim(),m=num.match(/(\d+)$/);
-  if(m){const n='COT-'+String(parseInt(m[1])+1).padStart(3,'0');document.getElementById('cot-num').textContent=n;document.getElementById('badge-num').textContent=n;}
-  document.getElementById('cli-nombre').textContent='[Razón social]';
-  document.getElementById('cli-rut').textContent='RUT [XX.XXX.XXX-X]';
-  document.getElementById('cli-contacto').textContent='Contacto: [nombre]';
-  document.getElementById('ent-dir').textContent='[Dirección]';
-  document.getElementById('ent-ciudad').textContent='[Ciudad, Región]';
-  document.getElementById('ent-nota').textContent='[Modalidad de despacho]';
-  lineas=lineas.filter(ln=>ln.tipo==='cat');lineas.forEach(ln=>{ln.qty=0;});
-  document.getElementById('envio-qty').value='';document.getElementById('envio-price').value='';
-  document.getElementById('envio-nota').textContent='ABEE / BlueX';
-  setFecha();render();
-}
-function copiar(){
-  const num=document.getElementById('cot-num').textContent.trim(),cli=document.getElementById('cli-nombre').textContent.trim(),tot=document.getElementById('t-total').textContent.trim();
-  navigator.clipboard.writeText(num+' \u00b7 '+cli+'\nTotal con IVA: '+tot+'\nValidez: 10 días hábiles').then(()=>{const b=event.target,p=b.textContent;b.textContent='\u2713 Copiado';setTimeout(()=>b.textContent=p,1800);});
-}
-document.getElementById('cot-num').addEventListener('input',function(){document.getElementById('badge-num').textContent=this.textContent||'COT-???';});
-function setFecha(){
-  const d=ne
+
+// ── INIT ─────────────────────────────────────────────────────
+// Precargar cotización Parenas como ejemplo
+lineas = [
+  { id:'hookon', nombre:'Silla de Comer Portátil HookOn',  sku:'MemoKoala', precioB2B:53091, precioPub:58990, precio:53091, qty:40, confirmado:true },
+  { id:'lazboy', nombre:'Silla Mecedora para Bebé LazyBoy', sku:'MemoKoala', precioB2B:44991, precioPub:49990, precio:44991, qty:40, confirmado:true }
+];
+document.getElementById('envio-qty').value   = 80;
+document.getElementById('envio-price').value = '';
+document.getElementById('envio-nota').textContent = 'ABEE / BlueX \u00b7 Rancagua';
+setFecha();
+render();
+</script>
+</body>
+</html>
