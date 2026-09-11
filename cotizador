@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotización B2B — Housebrands</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--night:#1C2B3A;--dark:#2C3E4C;--mid:#4A6274;--light:#8AA4B4;--pale:#D6E4EC;--cream:#F7F6F3;--off:#EEECE8;--gray:#7A8F9E;--white:#FFFFFF;--line:rgba(28,43,58,0.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--night);padding:2rem 1rem}
+.toolbar{max-width:820px;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem}
+.tb-left{display:flex;align-items:center;gap:.5rem}.tb-right{display:flex;gap:.5rem}
+.badge{font-family:'Instrument Sans',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);background:var(--white);border:1px solid var(--line);border-radius:100px;padding:.28rem .7rem}
+.btn{font-family:'Instrument Sans',sans-serif;font-size:.72rem;font-weight:600;padding:.45rem 1rem;border-radius:3px;border:none;cursor:pointer;transition:opacity .15s}.btn:hover{opacity:.8}
+.btn-ghost{background:var(--white);color:var(--mid);border:1px solid var(--pale)}.btn-dark{background:var(--night);color:var(--cream)}.btn-sm{font-size:.65rem;padding:.35rem .75rem;background:transparent;color:var(--gray);border:1px solid var(--line)}
+.cot{max-width:820px;margin:0 auto;background:var(--white);border:1px solid var(--line);border-radius:3px;box-shadow:0 2px 16px rgba(28,43,58,.07)}
+.cot-head{display:grid;grid-template-columns:1fr auto;padding:1.75rem 2.25rem 1.5rem;gap:2rem;align-items:start}
+.logo{display:flex;align-items:center;gap:.65rem}
+.logo-name{font-family:'Instrument Sans',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:-.03em;color:var(--night)}.logo-name span{color:var(--mid)}
+.logo-sub{font-size:.72rem;color:var(--gray);margin-top:.15rem}
+.cot-meta{text-align:right}
+.meta-lbl{font-family:'Instrument Sans',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--light);margin-bottom:.15rem}
+.meta-num{font-family:'Instrument Sans',sans-serif;font-size:1.55rem;font-weight:700;color:var(--night);line-height:1}
+.meta-date{font-size:.78rem;color:var(--gray);margin-top:.3rem}
+[contenteditable]{outline:none;border-radius:2px;transition:background .12s}
+[contenteditable]:hover{background:rgba(138,164,180,.1)}[contenteditable]:focus{background:rgba(138,164,180,.18)}
+.ce{cursor:text}
+.bar{height:3px;background:var(--night);margin:0 2.25rem}
+.parties{display:grid;grid-template-columns:1fr 1px 1fr;padding:1.4rem 2.25rem 1.25rem}
+.party-sep{background:var(--pale);margin:.2rem 1.25rem}
+.p-lbl{font-family:'Instrument Sans',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--light);margin-bottom:.5rem}
+.p-name{font-family:'Instrument Sans',sans-serif;font-size:.95rem;font-weight:600;color:var(--night);line-height:1.3;display:block;margin-bottom:.35rem;min-width:60px}
+.p-detail{font-size:.8rem;color:var(--mid);line-height:1.75;display:block;min-width:60px}
+.ent{padding-left:1.25rem}
+.prod-section{padding:0 2.25rem}
+.prod-table{width:100%;border-collapse:collapse}
+.prod-table thead tr{background:var(--night)}
+.prod-table thead th{font-family:'Instrument Sans',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--light);padding:.7rem .75rem;white-space:nowrap}
+.th-desc{text-align:left}.th-qty{text-align:center;width:80px}.th-price{text-align:right;width:140px}.th-total{text-align:right;width:150px}.th-del{width:36px}
+.prod-row td{padding:.8rem .75rem;border-bottom:1px solid var(--pale);vertical-align:middle;font-size:.87rem}
+.prod-row:nth-child(even) td{background:var(--cream)}.prod-row:nth-child(odd) td{background:var(--white)}
+.prod-name{font-weight:600;color:var(--night)}.prod-sku{font-size:.72rem;color:var(--gray);margin-top:.1rem}
+input.qty{width:58px;text-align:center;padding:.32rem .4rem;border:1px solid var(--pale);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;color:var(--mid);-moz-appearance:textfield;background:var(--white)}
+input.qty::-webkit-outer-spin-button,input.qty::-webkit-inner-spin-button{-webkit-appearance:none}
+input.qty:focus{outline:none;border-color:var(--mid)}
+.price-wrap{display:flex;align-items:center;gap:.2rem;justify-content:flex-end}.price-sym{font-size:.72rem;color:var(--gray)}
+input.price{width:100px;text-align:right;padding:.32rem .4rem;border:1px solid var(--pale);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--mid);-moz-appearance:textfield;background:var(--white)}
+input.price::-webkit-outer-spin-button,input.price::-webkit-inner-spin-button{-webkit-appearance:none}
+input.price:focus{outline:none;border-color:var(--mid)}
+.row-total{font-family:'Instrument Sans',sans-serif;font-size:.9rem;font-weight:600;text-align:right;color:var(--night)}.row-total.dim{color:var(--pale)}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--pale);font-size:1rem;line-height:1;padding:.2rem .4rem;border-radius:2px;transition:color .15s}.del-btn:hover{color:var(--mid)}
+.free-row td{padding:.6rem .75rem;border-bottom:1px solid var(--pale);background:var(--off)}
+input.free-desc{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--night);border:none;background:transparent;outline:none}
+input.free-desc::placeholder{color:var(--pale)}
+.add-row td{padding:.55rem .75rem;background:var(--off)}
+.add-btn{background:none;border:1px dashed var(--pale);border-radius:3px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.78rem;color:var(--gray);padding:.3rem .75rem;transition:border-color .15s,color .15s;display:inline-flex;align-items:center;gap:.4rem}
+.add-btn:hover{border-color:var(--mid);color:var(--mid)}
+.envio-section{padding:.5rem 2.25rem 0}
+.envio-row{display:grid;grid-template-columns:1fr 80px 140px 150px 36px;align-items:center;background:var(--off);border:1px solid var(--pale);border-radius:3px;padding:.7rem .75rem}
+.envio-lbl{font-size:.85rem;color:var(--mid)}.envio-note{font-size:.7rem;color:var(--gray);margin-top:.1rem}
+.totales-wrap{padding:1rem 2.25rem 0;display:flex;justify-content:flex-end}.totales{width:300px}
+.t-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--pale);font-size:.82rem}
+.t-row:last-child{border-bottom:none}.t-row .lbl{color:var(--gray)}.t-row .val{color:var(--night);font-weight:500}
+.t-sep{border-bottom:2px solid var(--pale)!important}
+.t-final{background:var(--night);border-radius:3px;margin-top:.5rem;padding:.6rem .75rem;border-bottom:none!important}
+.t-final .lbl{font-family:'Instrument Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--light)}
+.t-final .val{font-family:'Instrument Sans',sans-serif;font-size:1.15rem;font-weight:700;color:var(--cream)}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.75rem 2.25rem;margin-top:1.5rem;border-top:1px solid var(--pale)}
+.b-title{font-family:'Instrument Sans',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:.65rem}
+.info-tbl{width:100%;border-collapse:collapse}.info-tbl tr{border-bottom:1px solid var(--pale)}.info-tbl tr:last-child{border-bottom:none}
+.info-tbl td{padding:.42rem .4rem;font-size:.8rem;vertical-align:top}.info-tbl td:first-child{font-weight:600;color:var(--night);width:38%;white-space:nowrap}.info-tbl td:last-child{color:var(--mid)}
+.bank-tbl tr:nth-child(even) td{background:var(--off)}
+.cot-foot{background:var(--off);border-top:1px solid var(--pale);padding:.8rem 2.25rem;font-size:.7rem;color:var(--gray);font-style:italic;line-height:1.65}
+@media print{body{background:white;padding:0}.toolbar{display:none}.cot{box-shadow:none;border:none}[contenteditable]:hover,[contenteditable]:focus{background:transparent}.del-btn,.add-btn,.add-row{display:none}}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <div class="tb-left">
+    <span class="badge">Plantilla Cotización B2B</span>
+    <span class="badge" id="badge-num">COT-001</span>
+  </div>
+  <div class="tb-right">
+    <button class="btn btn-sm" onclick="resetCot()">&#8635; Nueva cotización</button>
+    <button class="btn btn-ghost" onclick="imprimir()">Imprimir / PDF</button>
+    <button class="btn btn-dark" onclick="copiar()">Copiar resumen</button>
+  </div>
+</div>
+<div class="cot">
+  <div class="cot-head">
+    <div class="logo">
+      <svg width="36" height="36" viewBox="0 0 50 50" fill="none">
+        <polygon points="0,0 23,0 23,23" fill="#2C3E4C"/>
+        <polygon points="23,0 50,0 50,23 23,23" fill="#4A6274"/>
+        <polygon points="0,26 23,26 23,50 0,50" fill="#8AA4B4"/>
+        <polygon points="23,26 50,50 23,50" fill="#2C3E4C"/>
+      </svg>
+      <div>
+        <div class="logo-name">House<span>Brands</span></div>
+        <div class="logo-sub">Commerce SpA &middot; RUT 77.993.029-7</div>
+      </div>
+    </div>
+    <div class="cot-meta">
+      <div class="meta-lbl">Cotización</div>
+      <div class="meta-num ce" contenteditable id="cot-num">COT-001</div>
+      <div class="meta-date ce" contenteditable id="cot-fecha"></div>
+    </div>
+  </div>
+  <div class="bar"></div>
+  <div class="parties">
+    <div>
+      <div class="p-lbl">Cliente</div>
+      <span class="p-name ce" contenteditable id="cli-nombre">[Razón social]</span>
+      <span class="p-detail ce" contenteditable id="cli-rut">RUT [XX.XXX.XXX-X]</span>
+      <span class="p-detail ce" contenteditable id="cli-contacto">Contacto: [nombre]</span>
+    </div>
+    <div class="party-sep"></div>
+    <div class="ent">
+      <div class="p-lbl">Entrega</div>
+      <span class="p-name ce" contenteditable id="ent-dir">[Dirección]</span>
+      <span class="p-detail ce" contenteditable id="ent-ciudad">[Ciudad, Región]</span>
+      <span class="p-detail ce" contenteditable id="ent-nota">[Modalidad de despacho]</span>
+    </div>
+  </div>
+  <div class="prod-section">
+    <table class="prod-table" id="prod-table">
+      <thead><tr>
+        <th class="th-desc">Producto</th>
+        <th class="th-qty">Cant.</th>
+        <th class="th-price">Precio unit. neto</th>
+        <th class="th-total">Total neto</th>
+        <th class="th-del"></th>
+      </tr></thead>
+      <tbody id="prod-body"></tbody>
+      <tfoot>
+        <tr class="add-row"><td colspan="5">
+          <button class="add-btn" onclick="addLine()">
+            <span style="font-size:1rem;line-height:1">+</span> Agregar línea
+          </button>
+        </td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="envio-section">
+    <div class="envio-row">
+      <div>
+        <div class="envio-lbl">Envío</div>
+        <div class="envio-note ce" contenteditable id="envio-nota">ABEE / BlueX</div>
+      </div>
+      <div style="text-align:center">
+        <input class="qty" type="number" id="envio-qty" min="0" placeholder="0" oninput="recalc()">
+      </div>
+      <div>
+        <div class="price-wrap">
+          <span class="price-sym">$</span>
+          <input class="price" type="number" id="envio-price" min="0" placeholder="a confirmar" oninput="recalc()">
+        </div>
+      </div>
+      <div class="row-total dim" id="envio-total">&#8212;</div>
+      <div></div>
+    </div>
+  </div>
+  <div class="totales-wrap">
+    <div class="totales">
+      <div class="t-row"><span class="lbl">Subtotal neto</span><span class="val" id="t-sub">$ 0</span></div>
+      <div class="t-row t-sep"><span class="lbl">IVA (19%)</span><span class="val" id="t-iva">$ 0</span></div>
+      <div class="t-row" id="t-row-envio" style="display:none"><span class="lbl">Envío neto</span><span class="val" id="t-envio-n">&#8212;</span></div>
+      <div class="t-row" id="t-row-eiva" style="display:none"><span class="lbl">IVA envío (19%)</span><span class="val" id="t-envio-iva">&#8212;</span></div>
+      <div class="t-row t-final"><span class="lbl">Total con IVA</span><span class="val" id="t-total">$ 0</span></div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div>
+      <div class="b-title">Condiciones comerciales</div>
+      <table class="info-tbl">
+        <tr><td>Pago</td><td>Transferencia bancaria 100% anticipada. Factura electrónica al acreditarse el pago.</td></tr>
+        <tr><td>Plazo entrega</td><td>3 a 5 días hábiles desde confirmación del pago.</td></tr>
+        <tr><td>Validez</td><td>10 días hábiles desde la fecha de emisión.</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="b-title">Datos para transferencia</div>
+      <table class="info-tbl bank-tbl">
+        <tr><td>Empresa</td><td>Housebrands Commerce SpA</td></tr>
+        <tr><td>RUT</td><td>77.993.029-7</td></tr>
+        <tr><td>Banco</td><td>BCI &#8212; Banco de Créditos e Inversiones</td></tr>
+        <tr><td>Cuenta</td><td>Corriente N&#186; 32630786</td></tr>
+        <tr><td>Email</td><td>contacto@housebrands.cl</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="cot-foot">
+    Este documento es una cotización formal y no constituye una orden de compra.
+    Los precios están en pesos chilenos (CLP).
+    MemoKoala es una marca de Housebrands Commerce SpA &middot; RUT 77.993.029-7 &middot; housebrands.cl
+  </div>
+</div>
+<script>
+const CATALOGO=[
+  {id:'hookon',nombre:'Silla de Comer Portátil HookOn',sku:'MemoKoala',precioB2B:53091,precioPub:58990},
+  {id:'lazboy',nombre:'Silla Mecedora para Bebé LazyBoy',sku:'MemoKoala',precioB2B:44991,precioPub:49990}
+];
+let lineas=[];
+function clp(n){'use strict';return '$ '+Math.round(n).toLocaleString('es-CL');}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function render(){
+  const tb=document.getElementById('prod-body');tb.innerHTML='';
+  lineas.forEach((ln,i)=>{
+    const tr=document.createElement('tr');tr.className='prod-row';tr.dataset.idx=i;
+    const tot=(ln.qty||0)*(ln.precio||0),ts=tot>0?clp(tot):'&mdash;';
+    if(ln.tipo==='cat'){
+      const cat=CATALOGO.find(c=>c.id===ln.id);
+      tr.innerHTML=`<td><div class="prod-name">${cat.nombre}</div><div class="prod-sku">${cat.sku} &middot; B2B &minus;10% s/precio p&uacute;blico ${clp(cat.precioPub)}</div></td>
+        <td style="text-align:center"><input class="qty" type="number" min="0" value="${ln.qty||''}" placeholder="0" oninput="upd(${i},'qty',this.value)"></td>
+        <td><div class="price-wrap"><span class="price-sym">$</span><input class="price" type="number" min="0" value="${ln.precio||''}" oninput="upd(${i},'precio',this.value)"></div></td>
+        <td class="row-total${tot?'':' dim'}">${ts}</td>
+        <td><button class="del-btn" onclick="del(${i})" title="Quitar">&times;</button></td>`;
+    }else{
+      tr.innerHTML=`<td><input class="free-desc" type="text" placeholder="Descripción del producto o servicio…" value="${esc(ln.nombre)}" oninput="upd(${i},'nombre',this.value)"></td>
+        <td style="text-align:center"><input class="qty" type="number" min="0" value="${ln.qty||''}" placeholder="0" oninput="upd(${i},'qty',this.value)"></td>
+        <td><div class="price-wrap"><span class="price-sym">$</span><input class="price" type="number" min="0" value="${ln.precio||''}" oninput="upd(${i},'precio',this.value)"></div></td>
+        <td class="row-total${tot?'':' dim'}">${ts}</td>
+        <td><button class="del-btn" onclick="del(${i})" title="Quitar">&times;</button></td>`;
+    }
+    tb.appendChild(tr);
+  });
+  recalc();
+}
+function upd(i,c,v){
+  lineas[i][c]=(c==='qty'||c==='precio')?(parseFloat(v)||0):v;
+  const tr=document.querySelector('tr[data-idx="'+i+'"]');
+  if(tr){const t=(lineas[i].qty||0)*(lineas[i].precio||0),td=tr.querySelector('.row-total');td.innerHTML=t>0?clp(t):'&mdash;';td.className='row-total'+(t?'':' dim');}
+  recalc();
+}
+function del(i){lineas.splice(i,1);render();}
+function addLine(){
+  lineas.push({tipo:'libre',nombre:'',qty:0,precio:0});render();
+  const rows=document.querySelectorAll('#prod-body tr.prod-row'),last=rows[rows.length-1];
+  if(last){const inp=last.querySelector('input.free-desc')||last.querySelector('input.qty');if(inp)inp.focus();}
+}
+function recalc(){
+  const sub=lineas.reduce((s,ln)=>s+(ln.qty||0)*(ln.precio||0),0),iva=Math.round(sub*0.19);
+  const eQ=parseFloat(document.getElementById('envio-qty').value)||0,eP=parseFloat(document.getElementById('envio-price').value)||0;
+  const eN=eQ*eP,eI=Math.round(eN*0.19),tot=sub+iva+eN+eI;
+  document.getElementById('t-sub').textContent=clp(sub);
+  document.getElementById('t-iva').textContent=clp(iva);
+  document.getElementById('t-total').textContent=clp(tot);
+  const h=eN>0;
+  document.getElementById('t-row-envio').style.display=h?'':'none';
+  document.getElementById('t-row-eiva').style.display=h?'':'none';
+  document.getElementById('t-envio-n').textContent=clp(eN);
+  document.getElementById('t-envio-iva').textContent=clp(eI);
+  const et=document.getElementById('envio-total');et.innerHTML=eN>0?clp(eN):'&mdash;';et.className='row-total'+(eN?'':' dim');
+}
+function imprimir(){
+  const rows=document.querySelectorAll('#prod-body tr.prod-row'),hidden=[];
+  rows.forEach(tr=>{const i=parseInt(tr.dataset.idx);if(!lineas[i]||(lineas[i].qty||0)===0){tr.style.display='none';hidden.push(tr);}});
+  window.print();
+  setTimeout(()=>hidden.forEach(tr=>tr.style.display=''),800);
+}
+function resetCot(){
+  if(!confirm('Limpiar esta cotización para una nueva?'))return;
+  const num=document.getElementById('cot-num').textContent.trim(),m=num.match(/(\d+)$/);
+  if(m){const n='COT-'+String(parseInt(m[1])+1).padStart(3,'0');document.getElementById('cot-num').textContent=n;document.getElementById('badge-num').textContent=n;}
+  document.getElementById('cli-nombre').textContent='[Razón social]';
+  document.getElementById('cli-rut').textContent='RUT [XX.XXX.XXX-X]';
+  document.getElementById('cli-contacto').textContent='Contacto: [nombre]';
+  document.getElementById('ent-dir').textContent='[Dirección]';
+  document.getElementById('ent-ciudad').textContent='[Ciudad, Región]';
+  document.getElementById('ent-nota').textContent='[Modalidad de despacho]';
+  lineas=lineas.filter(ln=>ln.tipo==='cat');lineas.forEach(ln=>{ln.qty=0;});
+  document.getElementById('envio-qty').value='';document.getElementById('envio-price').value='';
+  document.getElementById('envio-nota').textContent='ABEE / BlueX';
+  setFecha();render();
+}
+function copiar(){
+  const num=document.getElementById('cot-num').textContent.trim(),cli=document.getElementById('cli-nombre').textContent.trim(),tot=document.getElementById('t-total').textContent.trim();
+  navigator.clipboard.writeText(num+' \u00b7 '+cli+'\nTotal con IVA: '+tot+'\nValidez: 10 días hábiles').then(()=>{const b=event.target,p=b.textContent;b.textContent='\u2713 Copiado';setTimeout(()=>b.textContent=p,1800);});
+}
+document.getElementById('cot-num').addEventListener('input',function(){document.getElementById('badge-num').textContent=this.textContent||'COT-???';});
+function setFecha(){
+  const d=new Date(),m=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('cot-fecha').textContent=d.getDate()+' de '+m[d.getMonth()]+' de '+d.getFullYear();
+}
+lineas=CATALOGO.map(c=>({tipo:'cat',id:c.id,nombre:c.nombre,precio:c.precioB2B,qty:0}));
+lineas[0].qty=40;lineas[1].qty=40;
+document.getElementById('envio-qty').value=80;
+document.getElementById('envio-nota').textContent='ABEE / BlueX \u00b7 Rancagua';
+setFecha();render();
+</script>
+</body>
+</html>
