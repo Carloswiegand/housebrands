@@ -72,7 +72,38 @@ input.price:focus{outline:none;border-color:var(--mid)}
 .info-tbl td{padding:.42rem .4rem;font-size:.8rem;vertical-align:top}.info-tbl td:first-child{font-weight:600;color:var(--night);width:40%;white-space:nowrap}.info-tbl td:last-child{color:var(--mid)}
 .bank-tbl tr:nth-child(even) td{background:var(--off)}
 .cot-foot{background:var(--off);border-top:1px solid var(--pale);padding:.8rem 2.25rem;font-size:.7rem;color:var(--gray);font-style:italic;line-height:1.65}
-@media print{body{background:white;padding:0}.toolbar{display:none}.cot{box-shadow:none;border:none}[contenteditable]:hover,[contenteditable]:focus{background:transparent}.del-btn,.add-btn,.add-row{display:none}}
+@media print{
+  body{background:white;padding:0;font-size:11px}
+  .toolbar{display:none}
+  .cot{box-shadow:none;border:none;max-width:100%}
+  [contenteditable]:hover,[contenteditable]:focus{background:transparent}
+  .del-btn,.add-btn,.add-row{display:none}
+  .cot-head{padding:1rem 1.5rem .75rem}
+  .logo-name{font-size:1rem}.logo-sub{font-size:.6rem}
+  .meta-num{font-size:1.1rem}.meta-date{font-size:.6rem}
+  .bar{margin:0 1.5rem}
+  .parties{padding:.75rem 1.5rem .6rem}
+  .p-name{font-size:.8rem}.p-detail{font-size:.7rem;line-height:1.5}
+  .prod-section{padding:0 1.5rem}
+  .prod-table thead th{font-size:.55rem;padding:.45rem .5rem}
+  .prod-row td{padding:.45rem .5rem;font-size:.78rem}
+  .prod-name{font-size:.78rem}.prod-sku{font-size:.62rem}
+  .envio-section{padding:.35rem 1.5rem 0}
+  .envio-row{padding:.45rem .5rem;font-size:.78rem}
+  .envio-lbl{font-size:.75rem}.envio-note{font-size:.62rem}
+  input.qty,input.price{border:none;background:transparent;font-size:.78rem;width:auto}
+  .price-sym{display:none}
+  .totales-wrap{padding:.5rem 1.5rem 0}
+  .totales{width:260px}
+  .t-row{padding:.2rem 0;font-size:.75rem}
+  .t-final{padding:.4rem .5rem}
+  .t-final .lbl{font-size:.6rem}.t-final .val{font-size:1rem}
+  .bottom{padding:1rem 1.5rem;gap:1rem;margin-top:1rem}
+  .b-title{font-size:.55rem;margin-bottom:.4rem}
+  .info-tbl td{padding:.28rem .35rem;font-size:.72rem}
+  .cot-foot{padding:.5rem 1.5rem;font-size:.62rem}
+  @page{size:A4 portrait;margin:12mm 14mm}
+}
 </style>
 </head>
 <body>
@@ -170,10 +201,9 @@ input.price:focus{outline:none;border-color:var(--mid)}
 
   <div class="totales-wrap">
     <div class="totales">
-      <div class="t-row"><span class="lbl">Subtotal neto</span><span class="val" id="t-sub">$ 0</span></div>
-      <div class="t-row t-sep"><span class="lbl">IVA (19%)</span><span class="val" id="t-iva">$ 0</span></div>
+      <div class="t-row"><span class="lbl">Subtotal neto productos</span><span class="val" id="t-sub">$ 0</span></div>
       <div class="t-row" id="t-row-envio" style="display:none"><span class="lbl">Envío neto</span><span class="val" id="t-envio-n">&#8212;</span></div>
-      <div class="t-row" id="t-row-eiva" style="display:none"><span class="lbl">IVA envío (19%)</span><span class="val" id="t-envio-iva">&#8212;</span></div>
+      <div class="t-row t-sep"><span class="lbl">IVA (19%)</span><span class="val" id="t-iva">$ 0</span></div>
       <div class="t-row t-final"><span class="lbl">Total con IVA</span><span class="val" id="t-total">$ 0</span></div>
     </div>
   </div>
@@ -408,13 +438,11 @@ function recalc() {
   for (var i = 0; i < lineas.length; i++) {
     sub += (lineas[i].qty || 0) * (lineas[i].precio || 0);
   }
-  var iva = Math.round(sub * 0.19);
-
   var eQ  = parseFloat(document.getElementById('envio-qty').value)   || 0;
   var eP  = parseFloat(document.getElementById('envio-price').value) || 0;
   var eN  = eQ * eP;
-  var eI  = Math.round(eN * 0.19);
-  var tot = sub + iva + eN + eI;
+  var iva = Math.round((sub + eN) * 0.19);
+  var tot = sub + eN + iva;
 
   document.getElementById('t-sub').textContent   = clp(sub);
   document.getElementById('t-iva').textContent   = clp(iva);
@@ -422,9 +450,7 @@ function recalc() {
 
   var hasE = eN > 0;
   document.getElementById('t-row-envio').style.display = hasE ? '' : 'none';
-  document.getElementById('t-row-eiva').style.display  = hasE ? '' : 'none';
-  document.getElementById('t-envio-n').textContent   = clp(eN);
-  document.getElementById('t-envio-iva').textContent  = clp(eI);
+  document.getElementById('t-envio-n').textContent = clp(eN);
 
   var et = document.getElementById('envio-total');
   et.textContent = eN > 0 ? clp(eN) : '—';
