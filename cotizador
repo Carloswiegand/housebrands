@@ -66,7 +66,7 @@ input.free-desc::placeholder{color:var(--pale)}
 .t-final{background:var(--night);border-radius:3px;margin-top:.5rem;padding:.6rem .75rem;border-bottom:none!important}
 .t-final .lbl{font-family:'Instrument Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--light)}
 .t-final .val{font-family:'Instrument Sans',sans-serif;font-size:1.15rem;font-weight:700;color:var(--cream)}
-.bottom{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.75rem 2.25rem;margin-top:1.5rem;border-top:1px solid var(--pale)}
+.bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;padding:1.75rem 2.25rem;margin-top:1.5rem;border-top:1px solid var(--pale)}
 .b-title{font-family:'Instrument Sans',sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:.65rem}
 .info-tbl{width:100%;border-collapse:collapse}.info-tbl tr{border-bottom:1px solid var(--pale)}.info-tbl tr:last-child{border-bottom:none}
 .info-tbl td{padding:.42rem .4rem;font-size:.8rem;vertical-align:top}.info-tbl td:first-child{font-weight:600;color:var(--night);width:38%;white-space:nowrap}.info-tbl td:last-child{color:var(--mid)}
@@ -174,7 +174,7 @@ input.free-desc::placeholder{color:var(--pale)}
     <div>
       <div class="b-title">Condiciones comerciales</div>
       <table class="info-tbl">
-        <tr><td>Pago</td><td>Transferencia bancaria 100% anticipada. Factura electrónica al acreditarse el pago.</td></tr>
+        <tr><td>Pago</td><td>Transferencia bancaria 100% anticipada contra orden de compra. Factura electrónica al acreditarse el pago.</td></tr>
         <tr><td>Plazo entrega</td><td>3 a 5 días hábiles desde confirmación del pago.</td></tr>
         <tr><td>Validez</td><td>10 días hábiles desde la fecha de emisión.</td></tr>
       </table>
@@ -184,8 +184,19 @@ input.free-desc::placeholder{color:var(--pale)}
       <table class="info-tbl bank-tbl">
         <tr><td>Empresa</td><td>Housebrands Commerce SpA</td></tr>
         <tr><td>RUT</td><td>77.993.029-7</td></tr>
-        <tr><td>Banco</td><td>BCI &#8212; Banco de Créditos e Inversiones</td></tr>
-        <tr><td>Cuenta</td><td>Corriente N&#186; 32630786</td></tr>
+        <tr><td>Banco</td><td>BCI — Banco de Créditos e Inversiones</td></tr>
+        <tr><td>Cuenta</td><td>Corriente Nº 32630786</td></tr>
+        <tr><td>Email</td><td>contacto@housebrands.cl</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="b-title">Datos para emisión de OC</div>
+      <table class="info-tbl bank-tbl">
+        <tr><td>Empresa</td><td>Housebrands Commerce SpA</td></tr>
+        <tr><td>RUT</td><td>77.993.029-7</td></tr>
+        <tr><td>Dirección</td><td>Av. La Dehesa 1201, Oficina 201</td></tr>
+        <tr><td>Comuna / Ciudad</td><td>Lo Barnechea, Santiago</td></tr>
+        <tr><td>Celular</td><td>+569 6203 6561</td></tr>
         <tr><td>Email</td><td>contacto@housebrands.cl</td></tr>
       </table>
     </div>
@@ -280,14 +291,4 @@ function copiar(){
 }
 document.getElementById('cot-num').addEventListener('input',function(){document.getElementById('badge-num').textContent=this.textContent||'COT-???';});
 function setFecha(){
-  const d=new Date(),m=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  document.getElementById('cot-fecha').textContent=d.getDate()+' de '+m[d.getMonth()]+' de '+d.getFullYear();
-}
-lineas=CATALOGO.map(c=>({tipo:'cat',id:c.id,nombre:c.nombre,precio:c.precioB2B,qty:0}));
-lineas[0].qty=40;lineas[1].qty=40;
-document.getElementById('envio-qty').value=80;
-document.getElementById('envio-nota').textContent='ABEE / BlueX \u00b7 Rancagua';
-setFecha();render();
-</script>
-</body>
-</html>
+  const d=ne
