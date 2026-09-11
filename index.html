@@ -298,21 +298,14 @@ footer svg { flex-shrink: 0; }
 
 .counter { display: inline-block; }
 
-/* ══════════════════════════════
-   RESPONSIVE
-══════════════════════════════ */
+/* RESPONSIVE */
 @media (max-width: 900px) {
-  /* cursor off */
   body { cursor: auto; }
   .cursor, .cursor-ring { display: none; }
-
-  /* NAV desktop links → hidden, toggle visible */
   .nav-links { display: none; }
   .nav-toggle { display: flex; }
   nav { padding: 0 1.25rem; height: 56px; }
   .nav-logo svg { width: 130px; }
-
-  /* HERO */
   .hero { padding: 56px 1.25rem 2rem; min-height: 100svh; }
   .hero-content { padding-bottom: 2.5rem; }
   .hero-h1 { font-size: clamp(3.2rem, 13vw, 5rem); }
@@ -320,29 +313,17 @@ footer svg { flex-shrink: 0; }
   .hero-meta { gap: 1.5rem; padding-top: 2rem; }
   .hero-meta-item .value { font-size: 0.95rem; }
   .hero-number { font-size: 40vw; }
-
-  /* SECTIONS */
   section { padding: 5rem 1.25rem; }
-
-  /* ABOUT */
   .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .stats-row { gap: 1.5rem; }
-
-  /* MARCAS */
   .marcas-grid { grid-template-columns: 1fr; }
   .marca-card { min-height: 300px; padding: 2rem 1.5rem; }
-
-  /* MODELO */
   .pilares { grid-template-columns: 1fr; }
   .pilar { border-right: none; border-bottom: 1px solid var(--line); }
   .pilar:last-child { border-bottom: none; }
   .modelo-h2 { margin-bottom: 3rem; }
-
-  /* CONTACTO */
   .contacto-section { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 1.25rem; }
   .contacto-right { min-width: unset; }
-
-  /* FOOTER */
   footer { flex-direction: column; align-items: flex-start; padding: 1.5rem 1.25rem; gap: 0.75rem; }
 }
 
@@ -382,8 +363,8 @@ footer svg { flex-shrink: 0; }
     <li><a href="#contacto">Contacto</a></li>
     <li><a href="/erp" class="nav-erp">ERP</a></li>
     <li><a href="/checklist-contable" class="nav-erp">Contabilidad</a></li>
+    <li><a href="/cotizador" class="nav-erp">Cotizador</a></li>
   </ul>
-  <!-- Hamburger -->
   <button class="nav-toggle" id="nav-toggle" aria-label="Menú">
     <span></span><span></span><span></span>
   </button>
@@ -396,6 +377,7 @@ footer svg { flex-shrink: 0; }
   <a href="#contacto" onclick="closeMobileNav()">Contacto</a>
   <a href="/erp" class="nav-erp-m">ERP</a>
   <a href="/checklist-contable" class="nav-erp-m">Contabilidad</a>
+  <a href="/cotizador" class="nav-erp-m">Cotizador</a>
 </div>
 
 <!-- HERO -->
@@ -609,9 +591,7 @@ document.querySelectorAll('a, button').forEach(el => {
 // MOBILE NAV
 const navToggle = document.getElementById('nav-toggle');
 const navMobile = document.getElementById('nav-mobile');
-navToggle.addEventListener('click', () => {
-  navMobile.classList.toggle('open');
-});
+navToggle.addEventListener('click', () => { navMobile.classList.toggle('open'); });
 function closeMobileNav() { navMobile.classList.remove('open'); }
 document.addEventListener('click', e => {
   if (!navToggle.contains(e.target) && !navMobile.contains(e.target)) {
