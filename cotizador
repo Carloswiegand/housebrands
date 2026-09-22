@@ -71,8 +71,11 @@ input.qty:focus{outline:none;border-color:var(--mid)}
 input.price{width:100px;text-align:right;padding:.32rem .4rem;border:1px solid var(--pale);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--mid);-moz-appearance:textfield;background:var(--white)}
 input.price::-webkit-outer-spin-button,input.price::-webkit-inner-spin-button{-webkit-appearance:none}
 input.price:focus{outline:none;border-color:var(--mid)}
-input.free-name{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--night);border:1px solid var(--pale);border-radius:3px;padding:.28rem .45rem;background:var(--white)}
-input.free-name:focus{outline:none;border-color:var(--mid)}
+input.free-name{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--night);border:none;border-bottom:1px solid var(--pale);border-radius:0;padding:.18rem .1rem;background:transparent;display:block}
+.free-name:focus{outline:none;border-bottom-color:var(--mid)}
+.free-l1{font-weight:600;font-size:.87rem;color:var(--night);margin-top:.15rem}
+.free-l2{font-size:.72rem;color:var(--gray);margin-top:.15rem}
+.free-l3{font-size:.72rem;color:var(--light);margin-top:.08rem}
 .row-total{font-family:'Instrument Sans',sans-serif;font-size:.9rem;font-weight:600;text-align:right;color:var(--night)}.row-total.dim{color:var(--pale)}
 .del-btn{background:none;border:none;cursor:pointer;color:var(--pale);font-size:1rem;line-height:1;padding:.2rem .4rem;border-radius:2px;transition:color .15s}.del-btn:hover{color:var(--mid)}
 /* fila envío en tfoot */
@@ -375,7 +378,7 @@ function renderFila(i){
       sel.addEventListener('change',function(){
         var val=this.value; if(!val)return;
         if(val==='__corp'||val==='__libre'){
-          lineas[idx]={ id:val, marca:val==='__corp'?'CORP':'LIBRE', nombre:'', sku:'', precio:0, precioPub:0, qty:0, img:null, confirmado:true, libre:true };
+          lineas[idx]={ id:val, marca:val==='__corp'?'CORP':'LIBRE', nombre:'', sku:'', linea2:'', linea3:'', precio:0, precioPub:0, qty:0, img:null, confirmado:true, libre:true };
         } else {
           var cat=null;
           for(var k=0;k<CATALOGO.length;k++){if(CATALOGO[k].id===val){cat=CATALOGO[k];break;}}
@@ -394,14 +397,32 @@ function renderFila(i){
     tdDesc.appendChild(sel);
   }
 
-  // td nombre editable (solo líneas libres confirmadas)
+  // td nombre editable (solo líneas libres confirmadas) — 3 líneas como catálogo
   if(ln.confirmado && ln.libre){
-    tdDesc.innerHTML='<span class="marca-badge '+MARCA_CLASS[ln.marca]+'">'+MARCA_LABEL[ln.marca]+'</span>';
-    var nameInp=document.createElement('input');
-    nameInp.className='free-name';nameInp.type='text';nameInp.placeholder='Nombre del producto…';
-    nameInp.value=ln.nombre||'';
-    (function(idx){ nameInp.addEventListener('input',function(){lineas[idx].nombre=this.value;}); })(i);
-    tdDesc.appendChild(nameInp);
+    tdDesc.innerHTML='';
+    // Badge marca
+    var bdg=document.createElement('span');
+    bdg.className='marca-badge '+MARCA_CLASS[ln.marca];
+    bdg.textContent=MARCA_LABEL[ln.marca];
+    tdDesc.appendChild(bdg);
+    // Línea 1 — nombre (negrita, como prod-name)
+    var n1=document.createElement('input');
+    n1.className='free-name free-l1';n1.type='text';
+    n1.placeholder='Nombre del producto…';n1.value=ln.nombre||'';
+    (function(idx){ n1.addEventListener('input',function(){lineas[idx].nombre=this.value;}); })(i);
+    tdDesc.appendChild(n1);
+    // Línea 2 — referencia / SKU (como prod-sku)
+    var n2=document.createElement('input');
+    n2.className='free-name free-l2';n2.type='text';
+    n2.placeholder='Referencia / SKU…';n2.value=ln.linea2||'';
+    (function(idx){ n2.addEventListener('input',function(){lineas[idx].linea2=this.value;}); })(i);
+    tdDesc.appendChild(n2);
+    // Línea 3 — detalle adicional (como prod-sku, más tenue)
+    var n3=document.createElement('input');
+    n3.className='free-name free-l3';n3.type='text';
+    n3.placeholder='Detalle adicional…';n3.value=ln.linea3||'';
+    (function(idx){ n3.addEventListener('input',function(){lineas[idx].linea3=this.value;}); })(i);
+    tdDesc.appendChild(n3);
   }
 
   // td qty
