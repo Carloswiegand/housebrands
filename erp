@@ -1025,53 +1025,161 @@ function setDefaultDate(){
   document.getElementById('mv-fecha').value=hoy.toISOString().slice(0,10);
 }
 
+// Estado modal
+const SKU_MARCA={'MK-0001':'MemoKoala','MK-0002':'MemoKoala','MK-0003':'MemoKoala','MK-0004':'MemoKoala','TO04-4':'MemoKoala','RW-11037A':'Montana','RW-11037B':'Montana','SJ-JL802B':'Montana','SJ-JL802C':'Montana','SJ-AH209A':'Montana','SJ-AH209E':'Montana','SJ-JL801B':'Montana'};
+const SKUS_MK=['MK-0001','MK-0002','MK-0003','MK-0004','TO04-4'];
+const SKUS_MT=['RW-11037A','RW-11037B','SJ-JL802B','SJ-JL802C','SJ-AH209A','SJ-AH209E','SJ-JL801B'];
+let mvMarca='Todas', mvLineas=[];
+
 function showMV(){
   document.getElementById('modal-venta').style.display='block';
   document.body.style.overflow='hidden';
+  // reset
+  mvMarca='Todas';
+  mvLineas=[];
+  // reset pills visualmente
+  ['mv-m-mk','mv-m-mt','mv-m-all'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.className='fpill'+(id==='mv-m-all'?' on':'');
+  });
+  document.getElementById('mv-m-all').className='fpill on';
+  document.getElementById('mv-m-mk').className='fpill mk';
+  document.getElementById('mv-m-mt').className='fpill mt';
+  mvRenderLineas();
+  mvAddLinea();
+  setDefaultDate();
   renderMVList();
 }
 function hideMV(){document.getElementById('modal-venta').style.display='none';document.body.style.overflow='';}
 
+function mvSetMarca(m,el){
+  mvMarca=m;
+  document.querySelectorAll('.mv-marca-pills .fpill').forEach(p=>{
+    p.classList.remove('on');
+  });
+  el.classList.add('on');
+  // Re-render líneas para actualizar selectores
+  mvRenderLineas();
+}
+
+function mvGetSKUs(){
+  if(mvMarca==='MemoKoala') return SKUS_MK;
+  if(mvMarca==='Montana')   return SKUS_MT;
+  return [...SKUS_MK,...SKUS_MT];
+}
+
+function mvAddLinea(){
+  mvLineas.push('ln-'+Date.now()+'-'+Math.random().toString(36).slice(2,6));
+  mvRenderLineas();
+}
+
+function mvDelLinea(id){
+  mvLineas=mvLineas.filter(x=>x!==id);
+  mvRenderLineas();
+}
+
+function mvRenderLineas(){
+  const cont=document.getElementById('mv-lineas');
+  if(!cont) return;
+  // Capturar valores actuales antes de re-renderizar
+  const vals={};
+  cont.querySelectorAll('[data-linea-id]').forEach(el=>{
+    const id=el.dataset.lineaId;
+    vals[id]={
+      sku:el.querySelector('select')?.value||'',
+      qty:el.querySelector('.mv-qty-inp')?.value||'1',
+      precio:el.querySelector('.mv-precio-inp')?.value||'',
+    };
+  });
+  const skuOpts=mvGetSKUs().map(s=>`<option value="${s}">${s} — ${NOMBRES[s]}</option>`).join('');
+  cont.innerHTML=mvLineas.map((id,idx)=>{
+    const v=vals[id]||{};
+    // Si el SKU guardado ya no está en la lista filtrada, usar el primero
+    const skuList=mvGetSKUs();
+    const selSku=skuList.includes(v.sku)?v.sku:skuList[0];
+    const optsConSel=mvGetSKUs().map(s=>`<option value="${s}"${s===selSku?' selected':''}>${s} — ${NOMBRES[s]}</option>`).join('');
+    return`<div data-linea-id="${id}" style="background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px">
+      <div style="display:grid;grid-template-columns:2fr 80px 1fr${mvLineas.length>1?' 28px':''};gap:8px;align-items:end">
+        <div>
+          <label class="mv-label">Producto</label>
+          <select class="mv-select" style="font-size:11px">${optsConSel}</select>
+        </div>
+        <div>
+          <label class="mv-label">Cant.</label>
+          <input type="number" class="mv-input mv-qty-inp" value="${v.qty||1}" min="1">
+        </div>
+        <div>
+          <label class="mv-label">Precio unit. (IVA inc.)</label>
+          <input type="number" class="mv-input mv-precio-inp" placeholder="49990" value="${v.precio||''}">
+        </div>
+        ${mvLineas.length>1?`<div style="display:flex;align-items:flex-end;padding-bottom:2px"><button onclick="mvDelLinea('${id}')" style="background:transparent;border:1px solid var(--neg-bg);color:var(--neg);border-radius:4px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">×</button></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function saveMV(){
   const fecha=document.getElementById('mv-fecha').value;
   const canal=document.getElementById('mv-canal').value;
-  const sku=document.getElementById('mv-sku').value;
-  const qty=parseInt(document.getElementById('mv-qty').value)||1;
-  const precioUnit=parseFloat(document.getElementById('mv-precio').value)||0;
   const envio=parseFloat(document.getElementById('mv-envio').value)||0;
   const comPct=parseFloat(document.getElementById('mv-com-pct').value)||0;
   const nota=document.getElementById('mv-nota').value||'';
-  if(!fecha||!sku||precioUnit<=0){alert('Completa fecha, SKU y precio.');return;}
-  const vb=precioUnit*qty+envio;
+  if(!fecha){alert('Indica la fecha de la venta.');return;}
+
+  // Leer líneas
+  const lineas=[];
+  let hayError=false;
+  document.querySelectorAll('#mv-lineas [data-linea-id]').forEach(el=>{
+    const sku=el.querySelector('select')?.value;
+    const qty=parseInt(el.querySelector('.mv-qty-inp')?.value)||1;
+    const precio=parseFloat(el.querySelector('.mv-precio-inp')?.value)||0;
+    if(!sku||precio<=0){hayError=true;return;}
+    lineas.push({sku,qty,precio});
+  });
+  if(hayError||!lineas.length){alert('Completa SKU y precio en todas las líneas.');return;}
+
   const fDate=new Date(fecha);
-  const entrada={
-    id:Date.now(),fecha,
-    mes:fDate.getMonth()+1,anio:fDate.getFullYear(),
-    marca:sku.startsWith('MK')||sku==='TO04-4'?'MemoKoala':'Montana',
-    canal,sku,prod:NOMBRES[sku]||sku,qty,vb,comPct,envio,nota,
-  };
+  const mesN=fDate.getMonth()+1, anioN=fDate.getFullYear();
+  const ordenId='M-'+Date.now();
+  const totalVB=lineas.reduce((s,l)=>s+l.precio*l.qty,0)||1;
+
+  const nuevas=lineas.map((l,i)=>{
+    const vbLinea=l.precio*l.qty;
+    const envioLinea=i===0?envio:0; // envío solo a primera línea
+    return{
+      id:Date.now()+i,fecha,mes:mesN,anio:anioN,
+      marca:SKU_MARCA[l.sku]||'MemoKoala',
+      canal,sku:l.sku,prod:NOMBRES[l.sku]||l.sku,
+      qty:l.qty,vb:vbLinea,comPct,envio:envioLinea,nota,ordenId,
+    };
+  });
+
   try{
     const existing=JSON.parse(localStorage.getItem('hb_ventas_manuales')||'[]');
-    existing.push(entrada);
+    existing.push(...nuevas);
     localStorage.setItem('hb_ventas_manuales',JSON.stringify(existing));
-    renderMVList();
-    // Recargar DATA
-    const csvData=DATA.filter(r=>!r.manual);
-    DATA=[...csvData,...loadManuales()];
+    DATA=[...DATA.filter(r=>!r.manual),...loadManuales()];
     buildCanalPills();
     render();
-    document.getElementById('mv-precio').value='';
+    renderMVList();
+    // Reset líneas
+    mvLineas=[];
+    mvRenderLineas();
+    mvAddLinea();
     document.getElementById('mv-envio').value='0';
     document.getElementById('mv-com-pct').value='0';
     document.getElementById('mv-nota').value='';
-    document.getElementById('mv-qty').value='1';
-  }catch(e){alert('Error guardando venta.');}
+    setDefaultDate();
+  }catch(e){alert('Error guardando: '+e.message);}
 }
 
 function deleteMV(id){
   try{
     const existing=JSON.parse(localStorage.getItem('hb_ventas_manuales')||'[]');
-    const filtered=existing.filter(r=>r.id!==id);
+    const target=existing.find(r=>r.id===id);
+    const filtered=target?.ordenId
+      ?existing.filter(r=>r.ordenId!==target.ordenId)
+      :existing.filter(r=>r.id!==id);
     localStorage.setItem('hb_ventas_manuales',JSON.stringify(filtered));
     DATA=[...DATA.filter(r=>!r.manual),...loadManuales()];
     buildCanalPills();
@@ -1083,13 +1191,23 @@ function renderMVList(){
   try{
     const entries=JSON.parse(localStorage.getItem('hb_ventas_manuales')||'[]');
     const el=document.getElementById('mv-list');
-    if(!entries.length){el.innerHTML='<div class="mv-list"><div class="mv-list-title">Sin ventas manuales registradas</div></div>';return;}
-    el.innerHTML=`<div class="mv-list">
-      <div class="mv-list-title">${entries.length} venta${entries.length>1?'s':''} manual${entries.length>1?'es':''}</div>
-      ${entries.slice(-5).reverse().map(e=>`
-        <div class="mv-entry">
-          <div class="mv-entry-info">${e.fecha} · ${e.canal} · ${e.sku} · x${e.qty} · ${clp(e.vb)}</div>
-          <span class="mv-entry-del" onclick="deleteMV(${e.id})">✕</span>
+    if(!entries.length){el.innerHTML='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--light)">Sin ventas manuales registradas</div>';return;}
+    const ordenes={};
+    entries.forEach(e=>{
+      const key=e.ordenId||('s-'+e.id);
+      if(!ordenes[key])ordenes[key]={fecha:e.fecha,canal:e.canal,lineas:[],id:e.id};
+      ordenes[key].lineas.push(e);
+    });
+    const lista=Object.values(ordenes).sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,8);
+    el.innerHTML=`<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.08em;margin-bottom:8px">${entries.length} línea${entries.length!==1?'s':''} · ${Object.keys(ordenes).length} orden${Object.keys(ordenes).length!==1?'es':''}</div>
+      ${lista.map(o=>`
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 10px;background:var(--bg);border-radius:5px;margin-bottom:4px">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--dark);line-height:1.6">
+            <strong>${o.fecha}</strong> · ${o.canal}<br>
+            ${o.lineas.map(l=>`${l.sku} ×${l.qty} ${clp(l.vb)}`).join(' · ')}
+          </div>
+          <span onclick="deleteMV(${o.id})" style="font-family:var(--mono);font-size:9px;color:var(--neg);cursor:pointer;padding:2px 8px;border:1px solid var(--neg-bg);border-radius:3px;flex-shrink:0;margin-left:8px">✕</span>
         </div>`).join('')}
     </div>`;
   }catch(e){}
