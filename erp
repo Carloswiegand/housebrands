@@ -461,13 +461,13 @@ tbody tr:hover td{background:var(--bg)}
             <div class="card-head">
               <span class="card-title">Tendencia mensual</span>
               <div style="display:flex;gap:6px">
-                <button onclick="convTrendMetric='conv';renderConvTrend()" id="ct-conv" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:var(--night);color:#fff;cursor:pointer">% Conv.</button>
-                <button onclick="convTrendMetric='cart';renderConvTrend()" id="ct-cart" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--mid);cursor:pointer">% Carrito</button>
-                <button onclick="convTrendMetric='rpv';renderConvTrend()" id="ct-rpv" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--mid);cursor:pointer">RPV</button>
+                <button onclick="convTrendMetric='conv';renderConvTrend()" id="ct-conv" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:var(--night);color:#fff;cursor:pointer">% Conversión</button>
+                <button onclick="convTrendMetric='cart';renderConvTrend()" id="ct-cart" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--mid);cursor:pointer">% Al carrito</button>
+                <button onclick="convTrendMetric='rpv';renderConvTrend()" id="ct-rpv" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--mid);cursor:pointer">Ing./visita</button>
               </div>
             </div>
             <div class="card-body">
-              <div id="conv-trend-chart" style="height:130px;position:relative"></div>
+              <div id="conv-trend-chart" style="height:120px;position:relative"></div>
               <div id="conv-trend-lbls" style="display:flex;margin-top:6px;overflow:hidden"></div>
               <div style="display:flex;gap:12px;margin-top:8px" id="conv-legend"></div>
             </div>
@@ -2009,16 +2009,16 @@ function renderConv(){
      sub:'compras / sesiones · benchmark: 2–3%',
      acc:'var(--sh)',numcls:pctConv>=2?'pos':pctConv>=1?'warn':'neg',
      delta:pctConv>=2?{c:'d-pos',t:'✓ Sobre benchmark'}:pctConv>=1?{c:'d-warn',t:'Bajo benchmark (2%)'}:{c:'d-neg',t:'Crítico — revisar'}},
-    {lbl:'TASA ADD-TO-CART',num:pctCart.toFixed(1)+'%',
-     sub:'carritos / sesiones · mide interés producto',
+    {lbl:'TASA AL CARRITO',num:pctCart.toFixed(1)+'%',
+     sub:'carritos / sesiones · mide interés en el producto',
      acc:'var(--mk)',numcls:pctCart>=10?'pos':pctCart>=5?'warn':'neg',
      delta:pctCart>=10?{c:'d-pos',t:'✓ Saludable'}:pctCart>=5?{c:'d-warn',t:'Mejorable'}:{c:'d-neg',t:'Bajo — revisar producto/precio'}},
-    {lbl:'CHECKOUT COMPLETION',num:pctCheckout.toFixed(1)+'%',
-     sub:'compras / carritos · mide fricción en pago',
+    {lbl:'COMPLETARON EL PAGO',num:pctCheckout.toFixed(1)+'%',
+     sub:'compras / carritos · mide fricción en el proceso de pago',
      acc:'var(--mt)',numcls:pctCheckout>=50?'pos':pctCheckout>=30?'warn':'neg',
-     delta:pctCheckout>=50?{c:'d-pos',t:'✓ Buen proceso de pago'}:pctCheckout>=30?{c:'d-warn',t:'Fricción en checkout'}:{c:'d-neg',t:'Alto abandono — revisar UX'}},
-    {lbl:'REVENUE PER VISITOR',num:rpv>0?clp(Math.round(rpv)):'—',
-     sub:'venta bruta / sesiones · combina conv. y ticket',
+     delta:pctCheckout>=50?{c:'d-pos',t:'✓ Buen proceso de pago'}:pctCheckout>=30?{c:'d-warn',t:'Fricción en proceso de pago'}:{c:'d-neg',t:'Alto abandono — revisar UX/confianza'}},
+    {lbl:'INGRESO POR VISITA',num:rpv>0?clp(Math.round(rpv)):'—',
+     sub:'venta bruta / sesiones · combina conversión y ticket',
      acc:'var(--mid)',
      delta:rpv>0?{c:'d-neu',t:clp(Math.round(vbFilt))+' en '+ses.toLocaleString('es-CL')+' sesiones'}:{c:'d-neu',t:'Requiere datos de ventas del período'}},
   ].map(k=>`<div class="kcard">
@@ -2064,7 +2064,7 @@ function renderConvFunnel(d, ses, car, pas, com){
       <div style="height:10px;background:var(--bg);border-radius:5px;overflow:hidden">
         <div style="height:100%;width:${w}%;background:${color};border-radius:5px;opacity:${1-i*0.12}"></div>
       </div>
-      ${drop&&parseFloat(drop)>0?`<div style="font-family:var(--mono);font-size:9px;color:var(--neg);margin-top:3px">↓ ${drop}% no continuaron al siguiente paso</div>`:''}
+      ${drop&&parseFloat(drop)>0&&i<steps.length-1?`<div style="font-family:var(--mono);font-size:9px;color:var(--neg);margin-top:3px">↓ ${drop}% no continuaron al siguiente paso</div>`:''}
     </div>`;
   }).join('');
 }
@@ -2083,28 +2083,26 @@ function renderConvTrend(){
     if(r.canal.includes('Shopify')){byM[k].sh.ses+=r.sesiones;byM[k].sh.car+=r.carro;byM[k].sh.com+=r.compras;}
     if(r.canal==='ML'){byM[k].ml.ses+=r.sesiones;byM[k].ml.car+=r.carro;byM[k].ml.com+=r.compras;}
   });
-  const sorted=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0]));
+  const sortedAll=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0]));
+  const sorted=sortedAll.slice(-12);
   if(!sorted.length)return;
+  const n=sorted.length;
 
   const getVal=(v,m)=>{
     if(m==='conv')return v.ses>0?(v.com/v.ses*100):0;
     if(m==='cart')return v.ses>0?(v.car/v.ses*100):0;
-    if(m==='rpv'){
-      // Revenue per visitor aproximado (no filtrado por período aquí, uso promedio)
-      return v.ses>0?v.com*15000/v.ses:0; // placeholder si no hay venta cruzada
-    }
+    if(m==='rpv')return v.ses>0?(v.com*15000/v.ses):0;
     return 0;
   };
 
   const shVals=sorted.map(([,v])=>getVal(v.sh,convTrendMetric));
   const mlVals=sorted.map(([,v])=>getVal(v.ml,convTrendMetric));
-  const allVals=[...shVals,...mlVals];
-  const maxV=Math.max(...allVals,0.01);
+  const allVals=[...shVals,...mlVals].filter(v=>v>0);
+  const maxV=Math.max(...allVals,0.01)*1.15;
   const lbls=sorted.map(([,v])=>v.lbl);
 
-  // SVG líneas
-  const W=100, H=110, PAD=8;
-  const px=(i)=>PAD+(i/(sorted.length-1||1))*(W-PAD*2);
+  const W=100, H=100, PAD=14;
+  const px=(i)=>PAD+(i/(n-1||1))*(W-PAD*2);
   const py=(v)=>H-PAD-(v/maxV)*(H-PAD*2);
 
   const mkLine=(vals,color)=>{
@@ -2131,8 +2129,8 @@ function renderConvTrend(){
       ${mkLine(mlVals,'var(--ml)')}
     </svg>`;
 
-  document.getElementById('conv-trend-lbls').innerHTML=sorted.map(([,v])=>`
-    <div style="flex:1;text-align:center;font-family:var(--mono);font-size:7px;color:var(--light)">${v.lbl.slice(0,6)}</div>`).join('');
+  document.getElementById('conv-trend-lbls').innerHTML=sorted.map(([,v],i)=>`
+    <div style="flex:1;text-align:center;font-family:var(--mono);font-size:7px;color:var(--light)">${i===0||i===n-1||(i+1)%3===0?v.lbl.slice(0,3)+'':''}</div>`).join('');
 
   document.getElementById('conv-legend').innerHTML=`
     <div style="display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--mid)"><div style="width:16px;height:2px;background:var(--sh);border-radius:1px"></div>Shopify</div>
