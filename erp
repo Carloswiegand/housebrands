@@ -322,6 +322,7 @@ tbody tr:hover td{background:var(--bg)}
   <div class="tabbar">
     <div class="tab on" id="tab-ventas" onclick="goTab('ventas')">Ventas</div>
     <div class="tab" id="tab-pnl" onclick="goTab('pnl')">P&amp;L</div>
+    <div class="tab" id="tab-conv" onclick="goTab('conv')">Conversión</div>
     <div class="tab" id="tab-inv" onclick="goTab('inv')">Inventario</div>
   </div>
 
@@ -363,19 +364,32 @@ tbody tr:hover td{background:var(--bg)}
         <!-- KPIs gastos -->
         <div class="krow k5" id="gkgrid" style="margin-bottom:16px"></div>
 
-        <!-- Gráfico + Canal -->
-        <div class="g23">
+        <!-- Dos gráficos + Canal -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
           <div class="card">
             <div class="card-head">
-              <span class="card-title" id="chart-title">Venta bruta mensual</span>
-              <div style="display:flex;gap:10px">
-                <span style="display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--mk)"><span style="width:8px;height:8px;background:var(--mk);border-radius:2px;display:inline-block"></span>MemoKoala</span>
-                <span style="display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--mt)"><span style="width:8px;height:8px;background:var(--mt);border-radius:2px;display:inline-block;opacity:.7"></span>Montana</span>
+              <span class="card-title" id="chart-title">Venta bruta</span>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span style="display:flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9px;color:var(--mk)"><span style="width:7px;height:7px;background:var(--mk);border-radius:2px;display:inline-block"></span>MK</span>
+                <span style="display:flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9px;color:var(--mt)"><span style="width:7px;height:7px;background:var(--mt);border-radius:2px;display:inline-block;opacity:.7"></span>MT</span>
+                <button onclick="toggleChartMode()" id="chart-mode-btn" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--mid);cursor:pointer">Acum.</button>
               </div>
             </div>
-            <div class="card-body">
-              <div class="trend" id="main-bars" style="height:120px;align-items:flex-end"></div>
-              <div style="display:flex;justify-content:space-between;margin-top:6px;overflow:hidden" id="main-lbls"></div>
+            <div class="card-body" style="padding:12px 14px">
+              <div id="main-bars" style="display:flex;align-items:flex-end;gap:2px;height:100px;width:100%"></div>
+              <div id="main-lbls" style="display:flex;justify-content:space-between;margin-top:4px;overflow:hidden"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title" id="orders-chart-title">Pedidos</span>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span style="display:flex;align-items:center;gap:3px;font-family:var(--mono);font-size:9px;color:var(--sh)"><span style="width:7px;height:7px;background:var(--sh);border-radius:2px;display:inline-block"></span>Pedidos</span>
+              </div>
+            </div>
+            <div class="card-body" style="padding:12px 14px">
+              <div id="orders-bars" style="display:flex;align-items:flex-end;gap:2px;height:100px;width:100%"></div>
+              <div id="orders-lbls" style="display:flex;justify-content:space-between;margin-top:4px;overflow:hidden"></div>
             </div>
           </div>
           <div class="card">
@@ -406,6 +420,55 @@ tbody tr:hover td{background:var(--bg)}
               </table>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB CONVERSIÓN -->
+  <div id="view-conv" style="display:none">
+    <div id="conv-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando datos de conversión...</p></div>
+    <div id="conv-dash" style="display:none">
+      <div class="page">
+        <!-- KPIs conversión -->
+        <div class="krow k4" id="conv-kgrid" style="margin-bottom:16px"></div>
+        <!-- Funnels -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="card">
+            <div class="card-head"><span class="card-title">Funnel Shopify (MemoKoala + Montana)</span><span class="card-meta" id="conv-sh-periodo"></span></div>
+            <div class="card-body" id="conv-funnel-sh"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">Funnel MercadoLibre</span><span class="card-meta" id="conv-ml-periodo"></span></div>
+            <div class="card-body" id="conv-funnel-ml"></div>
+          </div>
+        </div>
+        <!-- Tendencia conversión -->
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-head"><span class="card-title">Tasa de conversión mensual</span><span class="card-meta">% compras / sesiones por canal</span></div>
+          <div class="card-body">
+            <div id="conv-trend" style="height:100px"></div>
+            <div id="conv-trend-lbls" style="display:flex;justify-content:space-between;margin-top:4px;overflow:hidden"></div>
+          </div>
+        </div>
+        <!-- Tabla datos -->
+        <div class="card">
+          <div class="card-head"><span class="card-title">Historial de conversión</span><span class="card-meta">ingresado manualmente desde Shopify y ML</span></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th>Mes</th><th>Canal</th><th>Sesiones</th><th>Al carrito</th><th>% carrito</th>
+                <th>Pasarela</th><th>% pasarela</th><th>Compras</th><th>% conversión</th><th>Abandono carrito</th>
+              </tr></thead>
+              <tbody id="conv-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Nota ingreso datos -->
+        <div style="margin-top:12px;padding:12px 16px;background:var(--warn-bg);border:1px solid #e8d090;border-radius:var(--r);font-family:var(--mono);font-size:10px;color:var(--warn);line-height:1.6">
+          💡 Para agregar datos: en el Sheets abre la hoja <strong>Conversion</strong> e ingresa una fila por mes y canal.<br>
+          Columnas: <strong>Mes | Año | Canal | Sesiones | Al carrito | Pasarela | Compras</strong><br>
+          Canal: <code>Shopify MK</code> · <code>Shopify MT</code> · <code>ML</code>
         </div>
       </div>
     </div>
@@ -554,6 +617,7 @@ tbody tr:hover td{background:var(--bg)}
 const PWD='200487';
 const CSV_V='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
 const CSV_PNL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1843070423&single=true&output=csv';
+const CSV_CONV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1184267083&single=true&output=csv';
 const IVA=1.19, META=14969250;
 const COSTOS={'MK-0001':16157,'MK-0002':16157,'MK-0003':10544,'MK-0004':10544,'TO04-4':5384,'RW-11037A':9501,'RW-11037B':13818,'SJ-JL802B':6354,'SJ-JL802C':6354,'SJ-AH209A':9530,'SJ-AH209E':9530,'SJ-JL801B':8339};
 const NOMBRES={'MK-0001':'Silla HookOn Azul','MK-0002':'Silla HookOn Negra','MK-0003':'Mecedora LazyBoy Gris','MK-0004':'Mecedora LazyBoy Negra','TO04-4':'Organizador Take&Go','RW-11037A':'Afilador Barrel Haya','RW-11037B':'Afilador Barrel Nogal','SJ-JL802B':'Cuchillo Kiritsuke 8"','SJ-JL802C':'Cuchillo Santoku 7"','SJ-AH209A':'Cuchillo Chef 8"','SJ-AH209E':'Cuchillo Nakiri 7"','SJ-JL801B':'Cuchillo Fileteador 6"'};
@@ -586,13 +650,14 @@ if(sessionStorage.getItem('hb')==='1'){
 }
 
 // ── TABS ─────────────────────────────────────────────
-let pnlLoaded=false;
+let pnlLoaded=false, convLoaded=false;
 function goTab(t){
-  ['ventas','pnl','inv'].forEach(x=>{
+  ['ventas','pnl','conv','inv'].forEach(x=>{
     document.getElementById('view-'+x).style.display=x===t?'block':'none';
     document.getElementById('tab-'+x).className='tab'+(x===t?' on':'');
   });
   if(t==='pnl'&&!pnlLoaded)loadPnL();
+  if(t==='conv'&&!convLoaded)loadConv();
   if(t==='inv')renderInv();
 }
 
@@ -716,6 +781,7 @@ function render(){
   rKPIs2(d);
   rGastos(d);
   rChart(d);
+  rOrdersChart(d);
   rCanal(d);
   rMix(d);
   rSKU(d);
@@ -902,6 +968,70 @@ function rChart(d){
           <div style="height:${hmk}px;background:var(--mk);width:100%" title="${v.lbl}: ${clp(tot)}"></div>
         </div>
         <div class="tbar-lbl">${v.lbl}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── GRÁFICO PEDIDOS ───────────────────────────────────
+let chartMode='normal'; // 'normal' o 'acum'
+function toggleChartMode(){
+  chartMode=chartMode==='normal'?'acum':'normal';
+  const btn=document.getElementById('chart-mode-btn');
+  if(btn) btn.textContent=chartMode==='acum'?'Normal':'Acum.';
+  const d=fd();rChart(d);rOrdersChart(d);
+}
+
+function rOrdersChart(d){
+  const mes=parseInt(document.getElementById('f-mes').value)||0;
+  const title=mes>0?'Pedidos diarios':'Pedidos — últimos 6 meses';
+  const el=document.getElementById('orders-chart-title');
+  if(el) el.textContent=title;
+
+  if(mes>0){
+    // Vista diaria pedidos
+    const anio=parseInt(document.getElementById('f-anio').value)||new Date().getFullYear();
+    const diasMes=new Date(anio,mes,0).getDate();
+    const byDay={};
+    d.forEach(r=>{
+      const day=r.fecha?.slice(8,10);if(!day)return;
+      byDay[day]=(byDay[day]||0)+1;
+    });
+    const allDays=Array.from({length:diasMes},(_,i)=>String(i+1).padStart(2,'0'));
+    const vals=allDays.map(d=>byDay[d]||0);
+    const valsToShow=chartMode==='acum'?vals.map((v,i)=>vals.slice(0,i+1).reduce((s,x)=>s+x,0)):vals;
+    const maxV=Math.max(...valsToShow,1);
+    document.getElementById('orders-bars').innerHTML=valsToShow.map((v,i)=>{
+      const h=Math.max(v>0?3:0,(v/maxV)*90);
+      const isWE=new Date(anio,mes-1,parseInt(allDays[i])).getDay()%6===0;
+      return`<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;cursor:default" title="Día ${parseInt(allDays[i])}: ${v} pedido${v!==1?'s':''}">
+        <div style="width:100%;height:90px;display:flex;flex-direction:column;justify-content:flex-end">
+          ${v>0?`<div style="height:${h}px;background:var(--sh);border-radius:1px 1px 0 0;width:100%;opacity:.8"></div>`:`<div style="height:2px;background:var(--border);width:100%"></div>`}
+        </div>
+        <div style="font-family:var(--mono);font-size:6px;color:${isWE?'var(--mid)':'var(--light)'};margin-top:3px">${parseInt(allDays[i])}</div>
+      </div>`;
+    }).join('');
+    document.getElementById('orders-lbls').innerHTML='';
+  } else {
+    // Vista mensual
+    const byM={};
+    d.forEach(r=>{
+      const k=r.anio+'-'+String(r.mes).padStart(2,'0');
+      if(!byM[k])byM[k]={lbl:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][r.mes-1]+' '+String(r.anio).slice(2),cnt:0};
+      byM[k].cnt++;
+    });
+    const sorted=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0])).slice(-6);
+    if(!sorted.length){document.getElementById('orders-bars').innerHTML='';return;}
+    let vals=sorted.map(([,v])=>v.cnt);
+    if(chartMode==='acum') vals=vals.map((v,i)=>vals.slice(0,i+1).reduce((s,x)=>s+x,0));
+    const maxV=Math.max(...vals,1);
+    document.getElementById('orders-bars').innerHTML=sorted.map(([,v],i)=>{
+      const h=Math.max(3,(vals[i]/maxV)*90);
+      return`<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center">
+        <div style="width:100%;height:90px;display:flex;flex-direction:column;justify-content:flex-end">
+          <div style="height:${h}px;background:var(--sh);border-radius:2px 2px 0 0;width:80%;margin:0 auto" title="${v.lbl}: ${vals[i]} pedidos"></div>
+        </div>
+        <div style="font-family:var(--mono);font-size:7px;color:var(--light);margin-top:3px;text-align:center">${v.lbl}</div>
       </div>`;
     }).join('');
   }
@@ -1570,6 +1700,206 @@ function applyAdj(sku){
   const val=document.getElementById('adj-'+sku)?.value||'0';
   saveInvAdjuste(sku,val);
   renderInv();
+}
+
+// ── CONVERSIÓN ───────────────────────────────────────
+let CONV_DATA=[];
+
+async function loadConv(){
+  try{
+    const r=await fetch(CSV_CONV);
+    CONV_DATA=parseConv(await r.text());
+    convLoaded=true;
+    document.getElementById('conv-loading').style.display='none';
+    document.getElementById('conv-dash').style.display='block';
+    renderConv();
+  }catch(e){
+    document.getElementById('conv-loading').innerHTML='<p style="color:var(--neg);font-family:var(--mono);font-size:11px">Error cargando conversión.<br><button onclick="loadConv()" style="margin-top:12px;padding:7px 16px;background:var(--night);border:none;color:#fff;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px">Reintentar</button></p>';
+  }
+}
+
+function parseConv(txt){
+  const lines=txt.split('
+').filter(l=>l.trim());
+  if(lines.length<2)return[];
+  const MESES_ES={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const c=scsv(lines[i]);
+    if(c.length<7)continue;
+    const mesNom=c[0]?.trim().toLowerCase()||'';
+    const anio=parseInt(c[1])||0;
+    const canal=c[2]?.trim()||'';
+    const sesiones=pn(c[3]),carro=pn(c[4]),pasarela=pn(c[5]),compras=pn(c[6]);
+    if(!canal||!anio||sesiones<=0)continue;
+    const mesN=MESES_ES[mesNom]||0;
+    const mesKey=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][mesN]||mesNom;
+    rows.push({
+      mes:mesN,mesNom:mesKey,anio,canal,sesiones,carro,pasarela,compras,
+      pctCarro:sesiones>0?(carro/sesiones*100):0,
+      pctPasarela:carro>0?(pasarela/carro*100):0,
+      pctConv:sesiones>0?(compras/sesiones*100):0,
+      abandono:carro>0?((carro-compras)/carro*100):0,
+    });
+  }
+  return rows.sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:a.mes-b.mes);
+}
+
+function renderConv(){
+  if(!CONV_DATA.length){
+    document.getElementById('conv-kgrid').innerHTML='<div style="grid-column:span 4;font-family:var(--mono);font-size:11px;color:var(--light);padding:20px 0">Sin datos — ingresa datos en la hoja Conversion del Sheets.</div>';
+    return;
+  }
+
+  // Último período disponible para KPIs
+  const lastAnio=Math.max(...CONV_DATA.map(r=>r.anio));
+  const lastMes=Math.max(...CONV_DATA.filter(r=>r.anio===lastAnio).map(r=>r.mes));
+  const lastPeriod=CONV_DATA.filter(r=>r.anio===lastAnio&&r.mes===lastMes);
+
+  const shRows=lastPeriod.filter(r=>r.canal.includes('Shopify'));
+  const mlRows=lastPeriod.filter(r=>r.canal==='ML');
+
+  const totSesiones=CONV_DATA.reduce((s,r)=>s+r.sesiones,0);
+  const totCompras=CONV_DATA.reduce((s,r)=>s+r.compras,0);
+  const convGlobal=totSesiones>0?(totCompras/totSesiones*100):0;
+
+  const shSes=shRows.reduce((s,r)=>s+r.sesiones,0);
+  const shComp=shRows.reduce((s,r)=>s+r.compras,0);
+  const shCarro=shRows.reduce((s,r)=>s+r.carro,0);
+  const convSH=shSes>0?(shComp/shSes*100):0;
+  const abandSH=shCarro>0?((shCarro-shComp)/shCarro*100):0;
+
+  const mlSes=mlRows.reduce((s,r)=>s+r.sesiones,0);
+  const mlComp=mlRows.reduce((s,r)=>s+r.compras,0);
+  const convML=mlSes>0?(mlComp/mlSes*100):0;
+
+  const periodoLbl=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][lastMes]+' '+lastAnio;
+  document.getElementById('conv-sh-periodo').textContent=periodoLbl;
+  document.getElementById('conv-ml-periodo').textContent=periodoLbl;
+
+  // KPIs
+  document.getElementById('conv-kgrid').innerHTML=[
+    {lbl:'CONVERSIÓN SHOPIFY',num:convSH.toFixed(2)+'%',sub:'último período: '+periodoLbl,acc:'var(--sh)',
+     delta:convSH>=2?{c:'d-pos',t:'Buena'}:convSH>=1?{c:'d-warn',t:'OK'}:{c:'d-neg',t:'Baja'}},
+    {lbl:'CONVERSIÓN ML',num:convML.toFixed(2)+'%',sub:'visitas → compra',acc:'var(--ml)',
+     delta:convML>=2?{c:'d-pos',t:'Buena'}:convML>=1?{c:'d-warn',t:'OK'}:{c:'d-neg',t:'Baja'}},
+    {lbl:'ABANDONO CARRITO SH',num:abandSH.toFixed(1)+'%',sub:shCarro>0?(shCarro-shComp)+' carritos no completados':'sin datos',acc:'var(--warn)',
+     delta:abandSH<70?{c:'d-pos',t:'Normal'}:{c:'d-warn',t:'Alto'}},
+    {lbl:'SESIONES TOTALES',num:shSes>0?(shSes+mlSes).toLocaleString('es-CL'):'—',sub:'SH: '+shSes.toLocaleString('es-CL')+' · ML: '+mlSes.toLocaleString('es-CL'),acc:'var(--mid)',
+     delta:{c:'d-neu',t:periodoLbl}},
+  ].map(k=>`<div class="kcard">
+    <div class="kcard-accent" style="background:${k.acc}"></div>
+    <div class="kcard-label">${k.lbl}</div>
+    <div class="kcard-num">${k.num}</div>
+    <div class="kcard-sub">${k.sub}</div>
+    <div class="kdelta ${k.delta.c}">${k.delta.t}</div>
+  </div>`).join('');
+
+  // Funnels
+  renderFunnel('conv-funnel-sh', shRows, true);
+  renderFunnel('conv-funnel-ml', mlRows, false);
+
+  // Tendencia
+  renderConvTrend();
+
+  // Tabla
+  renderConvTable();
+}
+
+function renderFunnel(containerId, rows, isShopify){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  if(!rows.length){el.innerHTML='<div style="font-family:var(--mono);font-size:10px;color:var(--light);padding:20px 0">Sin datos para este período</div>';return;}
+  const ses=rows.reduce((s,r)=>s+r.sesiones,0);
+  const car=rows.reduce((s,r)=>s+r.carro,0);
+  const pas=rows.reduce((s,r)=>s+r.pasarela,0);
+  const com=rows.reduce((s,r)=>s+r.compras,0);
+
+  const steps=isShopify
+    ?[{lbl:'Sesiones',val:ses,pct:100},{lbl:'Al carrito',val:car,pct:ses>0?(car/ses*100):0},{lbl:'Pasarela',val:pas,pct:ses>0?(pas/ses*100):0},{lbl:'Compra',val:com,pct:ses>0?(com/ses*100):0}]
+    :[{lbl:'Visitas',val:ses,pct:100},{lbl:'Intención',val:car,pct:ses>0?(car/ses*100):0},{lbl:'Compra',val:com,pct:ses>0?(com/ses*100):0}];
+
+  const maxVal=steps[0].val||1;
+  const color=isShopify?'var(--sh)':'var(--ml)';
+
+  el.innerHTML=steps.map((s,i)=>{
+    const w=Math.max(8,(s.val/maxVal)*100);
+    const dropPct=i>0&&steps[i-1].val>0?((steps[i-1].val-s.val)/steps[i-1].val*100).toFixed(1):null;
+    return`<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--mid)">${s.lbl}</span>
+        <div style="text-align:right">
+          <span style="font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--night)">${s.val.toLocaleString('es-CL')}</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--light);margin-left:6px">${s.pct.toFixed(1)}%</span>
+        </div>
+      </div>
+      <div style="height:8px;background:var(--bg);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${w}%;background:${color};border-radius:4px;opacity:${1-(i*0.15)}"></div>
+      </div>
+      ${dropPct&&i>0?`<div style="font-family:var(--mono);font-size:9px;color:var(--neg);margin-top:2px">↓ ${dropPct}% drop del paso anterior</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderConvTrend(){
+  const byMes={};
+  CONV_DATA.forEach(r=>{
+    const k=r.anio+'-'+String(r.mes).padStart(2,'0');
+    if(!byMes[k])byMes[k]={lbl:r.mesNom+' '+r.anio,sh:{ses:0,com:0},ml:{ses:0,com:0}};
+    if(r.canal.includes('Shopify')){byMes[k].sh.ses+=r.sesiones;byMes[k].sh.com+=r.compras;}
+    if(r.canal==='ML'){byMes[k].ml.ses+=r.sesiones;byMes[k].ml.com+=r.compras;}
+  });
+  const sorted=Object.entries(byMes).sort((a,b)=>a[0].localeCompare(b[0]));
+  if(!sorted.length)return;
+
+  const shConv=sorted.map(([,v])=>v.sh.ses>0?(v.sh.com/v.sh.ses*100):0);
+  const mlConv=sorted.map(([,v])=>v.ml.ses>0?(v.ml.com/v.ml.ses*100):0);
+  const lbls=sorted.map(([,v])=>v.lbl);
+  const maxV=Math.max(...shConv,...mlConv,1);
+
+  const w=100/sorted.length;
+  let svgH='<div style="position:relative;height:100px">';
+  // Línea SH
+  const shPts=shConv.map((v,i)=>`${(i/(sorted.length-1||1)*100).toFixed(1)}%,${(100-(v/maxV*90)).toFixed(1)}%`).join(' ');
+  const mlPts=mlConv.map((v,i)=>`${(i/(sorted.length-1||1)*100).toFixed(1)}%,${(100-(v/maxV*90)).toFixed(1)}%`).join(' ');
+
+  // Usar barras simples por simplicidad
+  svgH+='<div style="display:flex;align-items:flex-end;gap:4px;height:100%">';
+  sorted.forEach(([,v],i)=>{
+    const csh=v.sh.ses>0?(v.sh.com/v.sh.ses*100):0;
+    const cml=v.ml.ses>0?(v.ml.com/v.ml.ses*100):0;
+    const hsh=Math.max(csh>0?3:0,(csh/maxV)*90);
+    const hml=Math.max(cml>0?3:0,(cml/maxV)*90);
+    svgH+=`<div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%">
+      <div style="flex:1;height:${hsh}px;background:var(--sh);border-radius:2px 2px 0 0;opacity:.8" title="SH ${lbls[i]}: ${csh.toFixed(2)}%"></div>
+      <div style="flex:1;height:${hml}px;background:var(--ml);border-radius:2px 2px 0 0;opacity:.8" title="ML ${lbls[i]}: ${cml.toFixed(2)}%"></div>
+    </div>`;
+  });
+  svgH+='</div></div>';
+
+  document.getElementById('conv-trend').innerHTML=svgH;
+  document.getElementById('conv-trend-lbls').innerHTML=sorted.map(([,v])=>`
+    <div style="flex:1;text-align:center;font-family:var(--mono);font-size:8px;color:var(--light)">${v.lbl.slice(0,6)}</div>`).join('');
+}
+
+function renderConvTable(){
+  const rows=[...CONV_DATA].reverse();
+  document.getElementById('conv-tbody').innerHTML=rows.map(r=>{
+    const bcC=r.canal.includes('Shopify')?'b-sh':r.canal==='ML'?'b-ml':'b-vd';
+    const convColor=r.pctConv>=2?'var(--pos)':r.pctConv>=1?'var(--warn)':'var(--neg)';
+    return`<tr>
+      <td>${r.mesNom} ${r.anio}</td>
+      <td><span class="bdg ${bcC}">${r.canal}</span></td>
+      <td>${r.sesiones.toLocaleString('es-CL')}</td>
+      <td>${r.carro.toLocaleString('es-CL')}</td>
+      <td style="color:var(--mid)">${r.pctCarro.toFixed(1)}%</td>
+      <td>${r.pasarela>0?r.pasarela.toLocaleString('es-CL'):'—'}</td>
+      <td style="color:var(--mid)">${r.pasarela>0?r.pctPasarela.toFixed(1)+'%':'—'}</td>
+      <td style="font-weight:600">${r.compras}</td>
+      <td><span style="color:${convColor};font-weight:600">${r.pctConv.toFixed(2)}%</span></td>
+      <td style="color:var(--warn)">${r.abandono.toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
 }
 
 // ── CHECKLIST ─────────────────────────────────────────
