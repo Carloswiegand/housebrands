@@ -847,7 +847,7 @@ function rGastos(d){
 function rChart(d){
   const mes=parseInt(document.getElementById('f-mes').value)||0;
   if(mes>0){
-    // Vista diaria
+    // Vista diaria — barras finas, gap mínimo, 31 días caben en el ancho
     document.getElementById('chart-title').textContent='Venta diaria del mes';
     const byDay={};
     d.forEach(r=>{
@@ -857,21 +857,26 @@ function rChart(d){
       else if(r.marca==='Montana')byDay[day].mt+=r.vb;
       else byDay[day].otro+=r.vb;
     });
-    const sorted=Object.entries(byDay).sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
-    if(!sorted.length){document.getElementById('main-bars').innerHTML='<div style="font-family:var(--mono);font-size:10px;color:var(--light);margin:auto">Sin ventas en este período</div>';document.getElementById('main-lbls').innerHTML='';return;}
+    // Completar todos los días del mes (con o sin venta)
+    const anio=parseInt(document.getElementById('f-anio').value)||new Date().getFullYear();
+    const diasMes=new Date(anio,mes,0).getDate();
+    const allDays=Array.from({length:diasMes},(_,i)=>String(i+1).padStart(2,'0'));
+    const sorted=allDays.map(d=>[d, byDay[d]||{mk:0,mt:0,otro:0}]);
     const maxV=Math.max(...sorted.map(([,v])=>v.mk+v.mt+v.otro),1);
-    document.getElementById('main-bars').innerHTML=sorted.map(([day,v])=>{
-      const tot=v.mk+v.mt+v.otro,h=Math.max(2,(tot/maxV)*100);
+    document.getElementById('main-bars').innerHTML=`<div style="display:flex;align-items:flex-end;gap:2px;width:100%;height:100%">`+sorted.map(([day,v])=>{
+      const tot=v.mk+v.mt+v.otro,h=Math.max(tot>0?3:0,(tot/maxV)*100);
       const hmk=tot>0?(v.mk/tot)*h:0,hmt=tot>0?(v.mt/tot)*h:0,hotro=h-hmk-hmt;
-      return`<div class="tbar-wrap">
-        <div class="tbar-inner">
-          <div style="height:${hotro}px;background:#9b59b6;opacity:.7;width:100%;min-height:${hotro>0?2:0}px" title="Día ${day}: ${clp(tot)}"></div>
-          <div style="height:${hmt}px;background:var(--mt);opacity:.7;width:100%" title="Día ${day}: ${clp(tot)}"></div>
-          <div style="height:${hmk}px;background:var(--mk);width:100%" title="Día ${day}: ${clp(tot)}"></div>
+      const isWeekend=new Date(anio,mes-1,parseInt(day)).getDay()%6===0;
+      return`<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;cursor:default" title="${parseInt(day)}/${mes}: ${tot?clp(tot):'Sin venta'}">
+        <div style="width:100%;display:flex;flex-direction:column;justify-content:flex-end;height:110px">
+          ${tot===0?`<div style="height:2px;background:var(--border);border-radius:1px;width:100%"></div>`:`
+          <div style="height:${hotro}px;background:#9b59b6;opacity:.7;width:100%;min-height:${hotro>0?2:0}px"></div>
+          <div style="height:${hmt}px;background:var(--mt);opacity:.7;width:100%"></div>
+          <div style="height:${hmk}px;background:var(--mk);width:100%;border-radius:1px 1px 0 0"></div>`}
         </div>
-        <div class="tbar-lbl">${parseInt(day)}</div>
+        <div style="font-family:var(--mono);font-size:6px;color:${isWeekend?'var(--mid)':'var(--light)'};margin-top:3px;text-align:center">${parseInt(day)}</div>
       </div>`;
-    }).join('');
+    }).join('')+`</div>`;
   } else {
     // Vista mensual (últimos 6 meses)
     document.getElementById('chart-title').textContent='Venta bruta — últimos 6 meses';
