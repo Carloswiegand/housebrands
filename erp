@@ -429,46 +429,54 @@ tbody tr:hover td{background:var(--bg)}
   <div id="view-conv" style="display:none">
     <div id="conv-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando datos de conversión...</p></div>
     <div id="conv-dash" style="display:none">
+      <!-- Filtros conversión -->
+      <div class="fbar">
+        <span class="flbl">Año</span>
+        <select class="fsel" id="cf-anio" onchange="renderConv()"><option value="0">Todos</option></select>
+        <span class="flbl" style="margin-left:4px">Mes</span>
+        <select class="fsel" id="cf-mes" onchange="renderConv()"><option value="0">Todos los meses</option></select>
+        <div class="fsep"></div>
+        <span class="flbl">Canal</span>
+        <select class="fsel" id="cf-canal" onchange="renderConv()">
+          <option value="Todos">Todos</option>
+          <option value="Shopify MK">Shopify MK</option>
+          <option value="Shopify MT">Shopify MT</option>
+          <option value="Shopify">Shopify (ambos)</option>
+          <option value="ML">MercadoLibre</option>
+        </select>
+      </div>
       <div class="page">
-        <!-- KPIs conversión -->
+        <!-- 4 KPIs accionables -->
         <div class="krow k4" id="conv-kgrid" style="margin-bottom:16px"></div>
-        <!-- Funnels -->
+        <!-- Funnels + tendencia -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div class="card">
-            <div class="card-head"><span class="card-title">Funnel Shopify (MemoKoala + Montana)</span><span class="card-meta" id="conv-sh-periodo"></span></div>
-            <div class="card-body" id="conv-funnel-sh"></div>
+            <div class="card-head">
+              <span class="card-title" id="conv-funnel-title">Funnel de conversión</span>
+              <span class="card-meta" id="conv-periodo"></span>
+            </div>
+            <div class="card-body" id="conv-funnel-main"></div>
           </div>
           <div class="card">
-            <div class="card-head"><span class="card-title">Funnel MercadoLibre</span><span class="card-meta" id="conv-ml-periodo"></span></div>
-            <div class="card-body" id="conv-funnel-ml"></div>
+            <div class="card-head">
+              <span class="card-title">Tendencia mensual</span>
+              <div style="display:flex;gap:6px">
+                <button onclick="convTrendMetric='conv';renderConvTrend()" id="ct-conv" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:var(--night);color:#fff;cursor:pointer">% Conv.</button>
+                <button onclick="convTrendMetric='cart';renderConvTrend()" id="ct-cart" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--mid);cursor:pointer">% Carrito</button>
+                <button onclick="convTrendMetric='rpv';renderConvTrend()" id="ct-rpv" style="font-family:var(--mono);font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;background:transparent;color:var(--mid);cursor:pointer">RPV</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="conv-trend-chart" style="height:130px;position:relative"></div>
+              <div id="conv-trend-lbls" style="display:flex;margin-top:6px;overflow:hidden"></div>
+              <div style="display:flex;gap:12px;margin-top:8px" id="conv-legend"></div>
+            </div>
           </div>
         </div>
-        <!-- Tendencia conversión -->
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-head"><span class="card-title">Tasa de conversión mensual</span><span class="card-meta">% compras / sesiones por canal</span></div>
-          <div class="card-body">
-            <div id="conv-trend" style="height:100px"></div>
-            <div id="conv-trend-lbls" style="display:flex;justify-content:space-between;margin-top:4px;overflow:hidden"></div>
-          </div>
-        </div>
-        <!-- Tabla datos -->
-        <div class="card">
-          <div class="card-head"><span class="card-title">Historial de conversión</span><span class="card-meta">ingresado manualmente desde Shopify y ML</span></div>
-          <div class="tbl-wrap">
-            <table>
-              <thead><tr>
-                <th>Mes</th><th>Canal</th><th>Sesiones</th><th>Al carrito</th><th>% carrito</th>
-                <th>Pasarela</th><th>% pasarela</th><th>Compras</th><th>% conversión</th><th>Abandono carrito</th>
-              </tr></thead>
-              <tbody id="conv-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-        <!-- Nota ingreso datos -->
-        <div style="margin-top:12px;padding:12px 16px;background:var(--warn-bg);border:1px solid #e8d090;border-radius:var(--r);font-family:var(--mono);font-size:10px;color:var(--warn);line-height:1.6">
-          💡 Para agregar datos: en el Sheets abre la hoja <strong>Conversion</strong> e ingresa una fila por mes y canal.<br>
-          Columnas: <strong>Mes | Año | Canal | Sesiones | Al carrito | Pasarela | Compras</strong><br>
-          Canal: <code>Shopify MK</code> · <code>Shopify MT</code> · <code>ML</code>
+        <!-- Nota -->
+        <div style="padding:10px 14px;background:var(--warn-bg);border:1px solid #e8d090;border-radius:var(--r);font-family:var(--mono);font-size:10px;color:var(--warn);line-height:1.6">
+          💡 Datos en hoja <strong>Conversion</strong> del Sheets · una fila por mes y canal ·
+          Columnas: <strong>Mes | Año | Canal | Sesiones | Al carrito | Pasarela | Compras</strong>
         </div>
       </div>
     </div>
@@ -582,31 +590,215 @@ tbody tr:hover td{background:var(--bg)}
   <!-- CHECKLIST -->
   <div id="cl-modal">
     <div class="cl-box">
-      <div class="cl-head"><span class="cl-htitle">Actualización de ventas</span><button class="cl-close" onclick="hideCL()">✕</button></div>
+      <div class="cl-head">
+        <span class="cl-htitle">Checklist operacional HouseBrands</span>
+        <button class="cl-close" onclick="hideCL()">✕</button>
+      </div>
       <div class="cl-prog-wrap"><div class="cl-prog" id="cl-prog" style="width:0%"></div></div>
       <div class="cl-body">
-        <div class="cl-section">
-          <div class="cl-stitle" style="color:var(--mk)">Shopify MemoKoala</div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Exportar CSV sin formato</div><div class="cl-sub">memokoala.myshopify.com → Pedidos → Exportar</div></div></div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Importar en CSV_SHOPIFY y procesar</div><div class="cl-sub">Sheets → Importar → Reemplazar CSV_SHOPIFY<div class="cl-warn">⚠ Desactivar "Convertir texto en números"</div></div></div></div>
+
+        <!-- FLUJO 1 -->
+        <div style="font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.1em;margin-bottom:12px;padding:6px 10px;background:var(--bg);border-radius:5px">
+          FLUJO 1 · Carga de ventas — hacer cada vez que cargas órdenes
         </div>
+
         <div class="cl-section">
-          <div class="cl-stitle" style="color:var(--mt)">Shopify Montana</div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Exportar CSV sin formato</div><div class="cl-sub">montanagrills.myshopify.com → Pedidos → Exportar</div></div></div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Limpiar CSV_SHOPIFY, importar Montana y procesar</div><div class="cl-sub">🏪 Limpiar CSV_SHOPIFY → Importar → Procesar<div class="cl-warn">⚠ Desactivar "Convertir texto en números"</div></div></div></div>
+          <div class="cl-stitle" style="color:var(--mk)">① Shopify MemoKoala</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Exportar CSV de pedidos</div>
+            <div class="cl-sub">memokoala.myshopify.com → Pedidos → Exportar → Todos los pedidos → CSV sin formato</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Importar en hoja CSV_SHOPIFY</div>
+            <div class="cl-sub">Sheets → Archivo → Importar → Subir archivo → Reemplazar hoja actual → Importar</div>
+            <div class="cl-warn">⚠ CRÍTICO: desactivar "Convertir texto en números, fechas y fórmulas"</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Procesar CSV Shopify</div>
+            <div class="cl-sub">🏪 Housebrands → Procesar CSV Shopify → verificar filas agregadas en el mensaje</div>
+          </div></div>
         </div>
+
         <div class="cl-section">
-          <div class="cl-stitle" style="color:var(--ml)">MercadoLibre</div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Descargar reporte Excel</div><div class="cl-sub">vendedores.mercadolibre.cl → Mis ventas → .xlsx</div></div></div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Pegar en CSV_ML y procesar</div><div class="cl-sub">Excel → Ctrl+A → Ctrl+C → Sheets CSV_ML A1 → Ctrl+V → 🏪 Procesar ML</div></div></div>
+          <div class="cl-stitle" style="color:var(--mt)">② Shopify Montana</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Exportar CSV de pedidos</div>
+            <div class="cl-sub">montanagrills.myshopify.com → Pedidos → Exportar → Todos los pedidos → CSV sin formato</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Limpiar CSV_SHOPIFY e importar Montana</div>
+            <div class="cl-sub">🏪 Housebrands → Limpiar CSV_SHOPIFY → Importar CSV Montana → Reemplazar hoja</div>
+            <div class="cl-warn">⚠ CRÍTICO: desactivar "Convertir texto en números, fechas y fórmulas"</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Procesar CSV Shopify (Montana)</div>
+            <div class="cl-sub">🏪 Housebrands → Procesar CSV Shopify → verificar filas agregadas</div>
+          </div></div>
         </div>
+
         <div class="cl-section">
-          <div class="cl-stitle">Cierre de mes</div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Actualizar inventario</div><div class="cl-sub">🏪 Housebrands → Actualizar Inventario</div></div></div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Ingresar gastos variables en Sheets</div><div class="cl-sub">Meta Ads, Google Ads, ML Ads, ABEE Fulfillment, ABEE Envíos, Remuneraciones</div></div></div>
-          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div><div class="cl-lbl">Generar P&L</div><div class="cl-sub">🏪 Housebrands → Generar P&L → verificar resultado neto</div></div></div>
+          <div class="cl-stitle" style="color:var(--ml)">③ MercadoLibre</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Descargar reporte Excel de ventas</div>
+            <div class="cl-sub">vendedores.mercadolibre.cl → Mis ventas → Ventas realizadas → Descargar (.xlsx)</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Pegar en hoja CSV_ML y procesar</div>
+            <div class="cl-sub">Abrir .xlsx → Ctrl+A → Ctrl+C → Sheets hoja CSV_ML → celda A1 → Ctrl+V → 🏪 Procesar ML</div>
+          </div></div>
         </div>
-        <button class="cl-reset" onclick="clReset()">↺ Reiniciar</button>
+
+        <div class="cl-section">
+          <div class="cl-stitle">④ Ventas manuales (si aplica)</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Registrar ventas directas, HigoKids o corporativas</div>
+            <div class="cl-sub">Botón "+ Venta manual" en la barra superior → seleccionar canal, marca, productos y precio con IVA</div>
+          </div></div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-stitle">⑤ Verificar carga</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Confirmar que no hay SKUs "Sin identificar"</div>
+            <div class="cl-sub">El mensaje de procesado avisa si hay filas sin marca — revisar col E en Libro_Ventas</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Recargar dashboard y revisar KPIs</div>
+            <div class="cl-sub">Tab Ventas → filtrar por el mes actual → confirmar que los números son coherentes</div>
+          </div></div>
+        </div>
+
+        <!-- FLUJO 2 -->
+        <div style="font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.1em;margin:16px 0 12px;padding:6px 10px;background:var(--bg);border-radius:5px">
+          FLUJO 2 · Facturas y gastos — hacer cuando llegan las facturas del mes
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-stitle">⑥ Facturas logísticas</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">ABEE Fulfillment</div>
+            <div class="cl-sub">Sheets → Gastos_Variables → col ABEE Fulfillment → ingresar monto neto sin IVA</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">ABEE Envíos</div>
+            <div class="cl-sub">Sheets → Gastos_Variables → col ABEE Envíos → ingresar monto neto sin IVA</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">SENDU (si aplica)</div>
+            <div class="cl-sub">Sheets → Gastos_Variables → col SENDU → ingresar monto neto sin IVA</div>
+          </div></div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-stitle">⑦ Gastos de marketing</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Meta Ads (Facebook + Instagram)</div>
+            <div class="cl-sub">Meta Business Suite → Facturación → monto del mes → Gastos_Variables → col Meta Ads</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Google Ads</div>
+            <div class="cl-sub">Google Ads → Facturación → monto del mes → Gastos_Variables → col Google Ads</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">MercadoLibre Ads</div>
+            <div class="cl-sub">ML → Publicidad → monto invertido del mes → Gastos_Variables → col ML Ads</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">The Link It — fee agencia</div>
+            <div class="cl-sub">Sheets → Gastos_Variables → col The Link It → ingresar monto factura neta</div>
+          </div></div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-stitle">⑧ Tech y administración</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Shopify MK — fee mensual (USD)</div>
+            <div class="cl-sub">Sheets → Config → TC del mes → Gastos_Variables → col Shopify MK Fee (convertir USD a CLP)</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Shopify MT — fee mensual (USD)</div>
+            <div class="cl-sub">Sheets → Config → TC del mes → Gastos_Variables → col Shopify MT Fee</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Claude Pro (USD)</div>
+            <div class="cl-sub">Gastos_Variables → col Claude Pro → convertir USD a CLP según TC del mes</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">BP Consulting — contabilidad (UF)</div>
+            <div class="cl-sub">Sheets → Config → UF del mes → Gastos_Variables → col BP Consulting (10 UF × valor UF)</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Remuneraciones</div>
+            <div class="cl-sub">Gastos_Variables → col Remuneraciones → ingresar monto bruto del mes</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Actualizar TC y UF en hoja Config</div>
+            <div class="cl-sub">Sheets → Config → ingresar USD y UF del último día del mes (fuente: mindicador.cl)</div>
+          </div></div>
+        </div>
+
+        <!-- FLUJO 3 -->
+        <div style="font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.1em;margin:16px 0 12px;padding:6px 10px;background:var(--bg);border-radius:5px">
+          FLUJO 3 · Cierre de mes — hacer el último día o primero del mes siguiente
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-stitle">⑨ Datos de conversión</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Ingresar datos Shopify MK en hoja Conversion</div>
+            <div class="cl-sub">Shopify Admin → Informes → Conversión → copiar: Sesiones / Al carrito / Pasarela / Compras → hoja Conversion, fila nueva canal "Shopify MK"</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Ingresar datos Shopify MT en hoja Conversion</div>
+            <div class="cl-sub">Mismos pasos para Montana → canal "Shopify MT"</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Ingresar datos ML en hoja Conversion</div>
+            <div class="cl-sub">ML → Resumen desempeño → Conversión de visitas → copiar: Visitas / Intención / Compras → canal "ML" (Pasarela = 0)</div>
+          </div></div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-stitle">⑩ Inventario</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Verificar alertas de stock</div>
+            <div class="cl-sub">Tab Inventario → revisar SKUs en 🔴 Crítico y 🟠 Alerta → evaluar reposición</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Actualizar stock bodega papás (si hubo movimiento)</div>
+            <div class="cl-sub">Tab Inventario → seleccionar MK-0001 o MK-0002 → campo "Ajuste manual" → ingresar diferencia</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Actualizar stock casa HigoKids (si hubo movimiento)</div>
+            <div class="cl-sub">Mismo proceso para unidades separadas para HigoKids en casa</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Actualizar Inventario en Sheets</div>
+            <div class="cl-sub">🏪 Housebrands → Actualizar Inventario → confirmar que días de stock cuadran</div>
+          </div></div>
+        </div>
+
+        <div class="cl-section">
+          <div class="cl-stitle">⑪ Generar P&L</div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Confirmar que todos los gastos están ingresados</div>
+            <div class="cl-sub">Revisar Flujo 2 completo antes de generar — el P&L no se puede regenerar parcialmente</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Generar P&L</div>
+            <div class="cl-sub">🏪 Housebrands → Generar P&L → revisar resultado neto en tab P&L del dashboard</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Verificar margen bruto % en tab P&L</div>
+            <div class="cl-sub">Debe ser coherente con tab Ventas → si hay diferencia grande investigar antes de cerrar</div>
+          </div></div>
+          <div class="cl-item" onclick="clTog(this)"><div class="cl-cb"></div><div>
+            <div class="cl-lbl">Revisar tab Conversión</div>
+            <div class="cl-sub">Confirmar que los funnels del mes cargaron correctamente con los datos recién ingresados</div>
+          </div></div>
+        </div>
+
+        <button class="cl-reset" onclick="clReset()">↺ Reiniciar checklist</button>
       </div>
     </div>
   </div>
@@ -1703,13 +1895,22 @@ function applyAdj(sku){
 }
 
 // ── CONVERSIÓN ───────────────────────────────────────
-let CONV_DATA=[];
+let CONV_DATA=[], convLoaded2=false, convTrendMetric='conv';
 
 async function loadConv(){
   try{
     const r=await fetch(CSV_CONV);
     CONV_DATA=parseConv(await r.text());
     convLoaded=true;
+    // Poblar filtros año/mes
+    const years=[...new Set(CONV_DATA.map(r=>r.anio))].sort();
+    const selA=document.getElementById('cf-anio');
+    years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;selA.appendChild(o);});
+    // Poblar meses
+    const MNOMS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const meses=[...new Set(CONV_DATA.map(r=>r.mes))].sort((a,b)=>a-b);
+    const selM=document.getElementById('cf-mes');
+    meses.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=MNOMS[m-1]||m;selM.appendChild(o);});
     document.getElementById('conv-loading').style.display='none';
     document.getElementById('conv-dash').style.display='block';
     renderConv();
@@ -1719,9 +1920,11 @@ async function loadConv(){
 }
 
 function parseConv(txt){
-  const lines=txt.split('\n').filter(l=>l.trim());
+  const lines=txt.split('
+').filter(l=>l.trim());
   if(lines.length<2)return[];
   const MESES_ES={enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
+  const MNOMS=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const rows=[];
   for(let i=1;i<lines.length;i++){
     const c=scsv(lines[i]);
@@ -1732,9 +1935,8 @@ function parseConv(txt){
     const sesiones=pn(c[3]),carro=pn(c[4]),pasarela=pn(c[5]),compras=pn(c[6]);
     if(!canal||!anio||sesiones<=0)continue;
     const mesN=MESES_ES[mesNom]||0;
-    const mesKey=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][mesN]||mesNom;
     rows.push({
-      mes:mesN,mesNom:mesKey,anio,canal,sesiones,carro,pasarela,compras,
+      mes:mesN,mesLbl:MNOMS[mesN]||mesNom,anio,canal,sesiones,carro,pasarela,compras,
       pctCarro:sesiones>0?(carro/sesiones*100):0,
       pctPasarela:carro>0?(pasarela/carro*100):0,
       pctConv:sesiones>0?(compras/sesiones*100):0,
@@ -1744,161 +1946,198 @@ function parseConv(txt){
   return rows.sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:a.mes-b.mes);
 }
 
+function cfData(){
+  const anio=parseInt(document.getElementById('cf-anio')?.value)||0;
+  const mes=parseInt(document.getElementById('cf-mes')?.value)||0;
+  const canal=document.getElementById('cf-canal')?.value||'Todos';
+  return CONV_DATA.filter(r=>{
+    if(anio&&r.anio!==anio)return false;
+    if(mes&&r.mes!==mes)return false;
+    if(canal==='Todos')return true;
+    if(canal==='Shopify')return r.canal.includes('Shopify');
+    return r.canal===canal;
+  });
+}
+
 function renderConv(){
   if(!CONV_DATA.length){
     document.getElementById('conv-kgrid').innerHTML='<div style="grid-column:span 4;font-family:var(--mono);font-size:11px;color:var(--light);padding:20px 0">Sin datos — ingresa datos en la hoja Conversion del Sheets.</div>';
     return;
   }
+  const d=cfData();
+  if(!d.length){
+    document.getElementById('conv-kgrid').innerHTML='<div style="grid-column:span 4;font-family:var(--mono);font-size:11px;color:var(--light);padding:20px 0">Sin datos para el filtro seleccionado.</div>';
+    document.getElementById('conv-funnel-main').innerHTML='';
+    return;
+  }
 
-  // Último período disponible para KPIs
-  const lastAnio=Math.max(...CONV_DATA.map(r=>r.anio));
-  const lastMes=Math.max(...CONV_DATA.filter(r=>r.anio===lastAnio).map(r=>r.mes));
-  const lastPeriod=CONV_DATA.filter(r=>r.anio===lastAnio&&r.mes===lastMes);
+  // Acumular métricas del filtro
+  const ses=d.reduce((s,r)=>s+r.sesiones,0);
+  const car=d.reduce((s,r)=>s+r.carro,0);
+  const pas=d.reduce((s,r)=>s+r.pasarela,0);
+  const com=d.reduce((s,r)=>s+r.compras,0);
+  const pctConv=ses>0?(com/ses*100):0;
+  const pctCart=ses>0?(car/ses*100):0;
+  const pctCheckout=car>0?(com/car*100):0;
+  const abandono=car>0?((car-com)/car*100):0;
 
-  const shRows=lastPeriod.filter(r=>r.canal.includes('Shopify'));
-  const mlRows=lastPeriod.filter(r=>r.canal==='ML');
+  // Revenue per Visitor: cruzar con ventas del CSV filtradas por mismo período
+  const anio=parseInt(document.getElementById('cf-anio')?.value)||0;
+  const mes=parseInt(document.getElementById('cf-mes')?.value)||0;
+  const canalF=document.getElementById('cf-canal')?.value||'Todos';
+  const ventasFilt=DATA.filter(r=>{
+    if(anio&&r.anio!==anio)return false;
+    if(mes&&r.mes!==mes)return false;
+    if(canalF==='Todos')return true;
+    if(canalF==='Shopify')return r.canal==='Shopify';
+    if(canalF==='ML')return r.canal==='ML';
+    if(canalF==='Shopify MK')return r.canal==='Shopify'&&r.marca==='MemoKoala';
+    if(canalF==='Shopify MT')return r.canal==='Shopify'&&r.marca==='Montana';
+    return true;
+  });
+  const vbFilt=sum(ventasFilt,'vb');
+  const rpv=ses>0?vbFilt/ses:0;
 
-  const totSesiones=CONV_DATA.reduce((s,r)=>s+r.sesiones,0);
-  const totCompras=CONV_DATA.reduce((s,r)=>s+r.compras,0);
-  const convGlobal=totSesiones>0?(totCompras/totSesiones*100):0;
+  // Período label
+  const anios=[...new Set(d.map(r=>r.anio))];
+  const meses=[...new Set(d.map(r=>r.mesLbl))];
+  const periodoLbl=meses.length===1&&anios.length===1?meses[0]+' '+anios[0]:anios.join('-');
+  document.getElementById('conv-periodo').textContent=periodoLbl;
 
-  const shSes=shRows.reduce((s,r)=>s+r.sesiones,0);
-  const shComp=shRows.reduce((s,r)=>s+r.compras,0);
-  const shCarro=shRows.reduce((s,r)=>s+r.carro,0);
-  const convSH=shSes>0?(shComp/shSes*100):0;
-  const abandSH=shCarro>0?((shCarro-shComp)/shCarro*100):0;
-
-  const mlSes=mlRows.reduce((s,r)=>s+r.sesiones,0);
-  const mlComp=mlRows.reduce((s,r)=>s+r.compras,0);
-  const convML=mlSes>0?(mlComp/mlSes*100):0;
-
-  const periodoLbl=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][lastMes]+' '+lastAnio;
-  document.getElementById('conv-sh-periodo').textContent=periodoLbl;
-  document.getElementById('conv-ml-periodo').textContent=periodoLbl;
-
-  // KPIs
+  // Benchmark e-commerce: conv 2-3%, cart 10-15%, checkout 50-70%
   document.getElementById('conv-kgrid').innerHTML=[
-    {lbl:'CONVERSIÓN SHOPIFY',num:convSH.toFixed(2)+'%',sub:'último período: '+periodoLbl,acc:'var(--sh)',
-     delta:convSH>=2?{c:'d-pos',t:'Buena'}:convSH>=1?{c:'d-warn',t:'OK'}:{c:'d-neg',t:'Baja'}},
-    {lbl:'CONVERSIÓN ML',num:convML.toFixed(2)+'%',sub:'visitas → compra',acc:'var(--ml)',
-     delta:convML>=2?{c:'d-pos',t:'Buena'}:convML>=1?{c:'d-warn',t:'OK'}:{c:'d-neg',t:'Baja'}},
-    {lbl:'ABANDONO CARRITO SH',num:abandSH.toFixed(1)+'%',sub:shCarro>0?(shCarro-shComp)+' carritos no completados':'sin datos',acc:'var(--warn)',
-     delta:abandSH<70?{c:'d-pos',t:'Normal'}:{c:'d-warn',t:'Alto'}},
-    {lbl:'SESIONES TOTALES',num:shSes>0?(shSes+mlSes).toLocaleString('es-CL'):'—',sub:'SH: '+shSes.toLocaleString('es-CL')+' · ML: '+mlSes.toLocaleString('es-CL'),acc:'var(--mid)',
-     delta:{c:'d-neu',t:periodoLbl}},
+    {lbl:'TASA DE CONVERSIÓN',num:pctConv.toFixed(2)+'%',
+     sub:'compras / sesiones · benchmark: 2–3%',
+     acc:'var(--sh)',numcls:pctConv>=2?'pos':pctConv>=1?'warn':'neg',
+     delta:pctConv>=2?{c:'d-pos',t:'✓ Sobre benchmark'}:pctConv>=1?{c:'d-warn',t:'Bajo benchmark (2%)'}:{c:'d-neg',t:'Crítico — revisar'}},
+    {lbl:'TASA ADD-TO-CART',num:pctCart.toFixed(1)+'%',
+     sub:'carritos / sesiones · mide interés producto',
+     acc:'var(--mk)',numcls:pctCart>=10?'pos':pctCart>=5?'warn':'neg',
+     delta:pctCart>=10?{c:'d-pos',t:'✓ Saludable'}:pctCart>=5?{c:'d-warn',t:'Mejorable'}:{c:'d-neg',t:'Bajo — revisar producto/precio'}},
+    {lbl:'CHECKOUT COMPLETION',num:pctCheckout.toFixed(1)+'%',
+     sub:'compras / carritos · mide fricción en pago',
+     acc:'var(--mt)',numcls:pctCheckout>=50?'pos':pctCheckout>=30?'warn':'neg',
+     delta:pctCheckout>=50?{c:'d-pos',t:'✓ Buen proceso de pago'}:pctCheckout>=30?{c:'d-warn',t:'Fricción en checkout'}:{c:'d-neg',t:'Alto abandono — revisar UX'}},
+    {lbl:'REVENUE PER VISITOR',num:rpv>0?clp(Math.round(rpv)):'—',
+     sub:'venta bruta / sesiones · combina conv. y ticket',
+     acc:'var(--mid)',
+     delta:rpv>0?{c:'d-neu',t:clp(Math.round(vbFilt))+' en '+ses.toLocaleString('es-CL')+' sesiones'}:{c:'d-neu',t:'Requiere datos de ventas del período'}},
   ].map(k=>`<div class="kcard">
     <div class="kcard-accent" style="background:${k.acc}"></div>
     <div class="kcard-label">${k.lbl}</div>
-    <div class="kcard-num">${k.num}</div>
+    <div class="kcard-num${k.numcls?' '+k.numcls:''}">${k.num}</div>
     <div class="kcard-sub">${k.sub}</div>
     <div class="kdelta ${k.delta.c}">${k.delta.t}</div>
   </div>`).join('');
 
-  // Funnels
-  renderFunnel('conv-funnel-sh', shRows, true);
-  renderFunnel('conv-funnel-ml', mlRows, false);
-
-  // Tendencia
+  // Funnel
+  renderConvFunnel(d, ses, car, pas, com);
   renderConvTrend();
-
-  // Tabla
-  renderConvTable();
 }
 
-function renderFunnel(containerId, rows, isShopify){
-  const el=document.getElementById(containerId);
+function renderConvFunnel(d, ses, car, pas, com){
+  const el=document.getElementById('conv-funnel-main');
   if(!el)return;
-  if(!rows.length){el.innerHTML='<div style="font-family:var(--mono);font-size:10px;color:var(--light);padding:20px 0">Sin datos para este período</div>';return;}
-  const ses=rows.reduce((s,r)=>s+r.sesiones,0);
-  const car=rows.reduce((s,r)=>s+r.carro,0);
-  const pas=rows.reduce((s,r)=>s+r.pasarela,0);
-  const com=rows.reduce((s,r)=>s+r.compras,0);
+  const canal=document.getElementById('cf-canal')?.value||'Todos';
+  const isML=canal==='ML';
+  const hasPas=!isML&&pas>0;
+  const color=isML?'var(--ml)':'var(--sh)';
 
-  const steps=isShopify
-    ?[{lbl:'Sesiones',val:ses,pct:100},{lbl:'Al carrito',val:car,pct:ses>0?(car/ses*100):0},{lbl:'Pasarela',val:pas,pct:ses>0?(pas/ses*100):0},{lbl:'Compra',val:com,pct:ses>0?(com/ses*100):0}]
-    :[{lbl:'Visitas',val:ses,pct:100},{lbl:'Intención',val:car,pct:ses>0?(car/ses*100):0},{lbl:'Compra',val:com,pct:ses>0?(com/ses*100):0}];
+  // Título dinámico
+  const titleEl=document.getElementById('conv-funnel-title');
+  if(titleEl) titleEl.textContent=canal==='ML'?'Funnel MercadoLibre':canal==='Shopify MK'?'Funnel Shopify MemoKoala':canal==='Shopify MT'?'Funnel Shopify Montana':canal==='Shopify'?'Funnel Shopify (consolidado)':'Funnel consolidado';
 
-  const maxVal=steps[0].val||1;
-  const color=isShopify?'var(--sh)':'var(--ml)';
+  const steps=hasPas
+    ?[{lbl:'Sesiones',val:ses,sub:'100% visitantes'},{lbl:'Add-to-cart',val:car,sub:(ses>0?(car/ses*100).toFixed(1):0)+'% de sesiones'},{lbl:'Llegaron a pago',val:pas,sub:(car>0?(pas/car*100).toFixed(1):0)+'% del carrito'},{lbl:'Compraron',val:com,sub:(ses>0?(com/ses*100).toFixed(1):0)+'% conversión final'}]
+    :[{lbl:'Sesiones / Visitas',val:ses,sub:'100% visitantes'},{lbl:isML?'Intención de compra':'Add-to-cart',val:car,sub:(ses>0?(car/ses*100).toFixed(1):0)+'% de sesiones'},{lbl:'Compraron',val:com,sub:(ses>0?(com/ses*100).toFixed(1):0)+'% conversión final'}];
 
   el.innerHTML=steps.map((s,i)=>{
-    const w=Math.max(8,(s.val/maxVal)*100);
-    const dropPct=i>0&&steps[i-1].val>0?((steps[i-1].val-s.val)/steps[i-1].val*100).toFixed(1):null;
-    return`<div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+    const w=Math.max(10,(s.val/(ses||1))*100);
+    const drop=i>0&&steps[i-1].val>0?((steps[i-1].val-s.val)/steps[i-1].val*100).toFixed(1):null;
+    return`<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
         <span style="font-family:var(--mono);font-size:10px;color:var(--mid)">${s.lbl}</span>
-        <div style="text-align:right">
-          <span style="font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--night)">${s.val.toLocaleString('es-CL')}</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--light);margin-left:6px">${s.pct.toFixed(1)}%</span>
+        <div>
+          <span style="font-size:22px;font-weight:600;letter-spacing:-.04em;color:var(--night)">${s.val.toLocaleString('es-CL')}</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--light);margin-left:6px">${s.sub}</span>
         </div>
       </div>
-      <div style="height:8px;background:var(--bg);border-radius:4px;overflow:hidden">
-        <div style="height:100%;width:${w}%;background:${color};border-radius:4px;opacity:${1-(i*0.15)}"></div>
+      <div style="height:10px;background:var(--bg);border-radius:5px;overflow:hidden">
+        <div style="height:100%;width:${w}%;background:${color};border-radius:5px;opacity:${1-i*0.12}"></div>
       </div>
-      ${dropPct&&i>0?`<div style="font-family:var(--mono);font-size:9px;color:var(--neg);margin-top:2px">↓ ${dropPct}% drop del paso anterior</div>`:''}
+      ${drop&&parseFloat(drop)>0?`<div style="font-family:var(--mono);font-size:9px;color:var(--neg);margin-top:3px">↓ ${drop}% no continuaron al siguiente paso</div>`:''}
     </div>`;
   }).join('');
 }
 
 function renderConvTrend(){
-  const byMes={};
+  // Actualizar botones toggle
+  ['conv','cart','rpv'].forEach(m=>{
+    const btn=document.getElementById('ct-'+m);
+    if(btn){btn.style.background=m===convTrendMetric?'var(--night)':'transparent';btn.style.color=m===convTrendMetric?'#fff':'var(--mid)';}
+  });
+
+  const byM={};
   CONV_DATA.forEach(r=>{
     const k=r.anio+'-'+String(r.mes).padStart(2,'0');
-    if(!byMes[k])byMes[k]={lbl:r.mesNom+' '+r.anio,sh:{ses:0,com:0},ml:{ses:0,com:0}};
-    if(r.canal.includes('Shopify')){byMes[k].sh.ses+=r.sesiones;byMes[k].sh.com+=r.compras;}
-    if(r.canal==='ML'){byMes[k].ml.ses+=r.sesiones;byMes[k].ml.com+=r.compras;}
+    if(!byM[k])byM[k]={lbl:r.mesLbl+' '+r.anio,sh:{ses:0,car:0,com:0},ml:{ses:0,car:0,com:0}};
+    if(r.canal.includes('Shopify')){byM[k].sh.ses+=r.sesiones;byM[k].sh.car+=r.carro;byM[k].sh.com+=r.compras;}
+    if(r.canal==='ML'){byM[k].ml.ses+=r.sesiones;byM[k].ml.car+=r.carro;byM[k].ml.com+=r.compras;}
   });
-  const sorted=Object.entries(byMes).sort((a,b)=>a[0].localeCompare(b[0]));
+  const sorted=Object.entries(byM).sort((a,b)=>a[0].localeCompare(b[0]));
   if(!sorted.length)return;
 
-  const shConv=sorted.map(([,v])=>v.sh.ses>0?(v.sh.com/v.sh.ses*100):0);
-  const mlConv=sorted.map(([,v])=>v.ml.ses>0?(v.ml.com/v.ml.ses*100):0);
+  const getVal=(v,m)=>{
+    if(m==='conv')return v.ses>0?(v.com/v.ses*100):0;
+    if(m==='cart')return v.ses>0?(v.car/v.ses*100):0;
+    if(m==='rpv'){
+      // Revenue per visitor aproximado (no filtrado por período aquí, uso promedio)
+      return v.ses>0?v.com*15000/v.ses:0; // placeholder si no hay venta cruzada
+    }
+    return 0;
+  };
+
+  const shVals=sorted.map(([,v])=>getVal(v.sh,convTrendMetric));
+  const mlVals=sorted.map(([,v])=>getVal(v.ml,convTrendMetric));
+  const allVals=[...shVals,...mlVals];
+  const maxV=Math.max(...allVals,0.01);
   const lbls=sorted.map(([,v])=>v.lbl);
-  const maxV=Math.max(...shConv,...mlConv,1);
 
-  const w=100/sorted.length;
-  let svgH='<div style="position:relative;height:100px">';
-  // Línea SH
-  const shPts=shConv.map((v,i)=>`${(i/(sorted.length-1||1)*100).toFixed(1)}%,${(100-(v/maxV*90)).toFixed(1)}%`).join(' ');
-  const mlPts=mlConv.map((v,i)=>`${(i/(sorted.length-1||1)*100).toFixed(1)}%,${(100-(v/maxV*90)).toFixed(1)}%`).join(' ');
+  // SVG líneas
+  const W=100, H=110, PAD=8;
+  const px=(i)=>PAD+(i/(sorted.length-1||1))*(W-PAD*2);
+  const py=(v)=>H-PAD-(v/maxV)*(H-PAD*2);
 
-  // Usar barras simples por simplicidad
-  svgH+='<div style="display:flex;align-items:flex-end;gap:4px;height:100%">';
-  sorted.forEach(([,v],i)=>{
-    const csh=v.sh.ses>0?(v.sh.com/v.sh.ses*100):0;
-    const cml=v.ml.ses>0?(v.ml.com/v.ml.ses*100):0;
-    const hsh=Math.max(csh>0?3:0,(csh/maxV)*90);
-    const hml=Math.max(cml>0?3:0,(cml/maxV)*90);
-    svgH+=`<div style="flex:1;display:flex;gap:2px;align-items:flex-end;height:100%">
-      <div style="flex:1;height:${hsh}px;background:var(--sh);border-radius:2px 2px 0 0;opacity:.8" title="SH ${lbls[i]}: ${csh.toFixed(2)}%"></div>
-      <div style="flex:1;height:${hml}px;background:var(--ml);border-radius:2px 2px 0 0;opacity:.8" title="ML ${lbls[i]}: ${cml.toFixed(2)}%"></div>
-    </div>`;
-  });
-  svgH+='</div></div>';
+  const mkLine=(vals,color)=>{
+    if(vals.every(v=>v===0))return'';
+    const pts=vals.map((v,i)=>`${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ');
+    const dots=vals.map((v,i)=>`<circle cx="${px(i).toFixed(1)}" cy="${py(v).toFixed(1)}" r="3" fill="${color}" stroke="white" stroke-width="1.5">
+      <title>${lbls[i]}: ${convTrendMetric==='rpv'?clp(Math.round(v)):v.toFixed(2)+'%'}</title>
+    </circle>`).join('');
+    return`<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>
+    ${dots}`;
+  };
 
-  document.getElementById('conv-trend').innerHTML=svgH;
-  document.getElementById('conv-trend-lbls').innerHTML=sorted.map(([,v])=>`
-    <div style="flex:1;text-align:center;font-family:var(--mono);font-size:8px;color:var(--light)">${v.lbl.slice(0,6)}</div>`).join('');
-}
-
-function renderConvTable(){
-  const rows=[...CONV_DATA].reverse();
-  document.getElementById('conv-tbody').innerHTML=rows.map(r=>{
-    const bcC=r.canal.includes('Shopify')?'b-sh':r.canal==='ML'?'b-ml':'b-vd';
-    const convColor=r.pctConv>=2?'var(--pos)':r.pctConv>=1?'var(--warn)':'var(--neg)';
-    return`<tr>
-      <td>${r.mesNom} ${r.anio}</td>
-      <td><span class="bdg ${bcC}">${r.canal}</span></td>
-      <td>${r.sesiones.toLocaleString('es-CL')}</td>
-      <td>${r.carro.toLocaleString('es-CL')}</td>
-      <td style="color:var(--mid)">${r.pctCarro.toFixed(1)}%</td>
-      <td>${r.pasarela>0?r.pasarela.toLocaleString('es-CL'):'—'}</td>
-      <td style="color:var(--mid)">${r.pasarela>0?r.pctPasarela.toFixed(1)+'%':'—'}</td>
-      <td style="font-weight:600">${r.compras}</td>
-      <td><span style="color:${convColor};font-weight:600">${r.pctConv.toFixed(2)}%</span></td>
-      <td style="color:var(--warn)">${r.abandono.toFixed(1)}%</td>
-    </tr>`;
+  const unitLbl=convTrendMetric==='rpv'?'$/visita':'%';
+  const gridLines=[0, maxV/2, maxV].map(v=>{
+    const y=py(v).toFixed(1);
+    return`<line x1="${PAD}" y1="${y}" x2="${W-PAD}" y2="${y}" stroke="var(--border)" stroke-width="0.5"/>
+    <text x="${PAD-1}" y="${parseFloat(y)+3}" font-size="5" fill="var(--light)" text-anchor="end">${convTrendMetric==='rpv'?clp(Math.round(v)):v.toFixed(1)+unitLbl}</text>`;
   }).join('');
+
+  document.getElementById('conv-trend-chart').innerHTML=`
+    <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+      ${gridLines}
+      ${mkLine(shVals,'var(--sh)')}
+      ${mkLine(mlVals,'var(--ml)')}
+    </svg>`;
+
+  document.getElementById('conv-trend-lbls').innerHTML=sorted.map(([,v])=>`
+    <div style="flex:1;text-align:center;font-family:var(--mono);font-size:7px;color:var(--light)">${v.lbl.slice(0,6)}</div>`).join('');
+
+  document.getElementById('conv-legend').innerHTML=`
+    <div style="display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--mid)"><div style="width:16px;height:2px;background:var(--sh);border-radius:1px"></div>Shopify</div>
+    <div style="display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:9px;color:var(--mid)"><div style="width:16px;height:2px;background:var(--ml);border-radius:1px"></div>ML</div>`;
 }
 
 // ── CHECKLIST ─────────────────────────────────────────
