@@ -2004,24 +2004,36 @@ function renderConv(){
   const periodoLbl=meses.length===1&&anios.length===1?meses[0]+' '+anios[0]:anios.join('-');
   document.getElementById('conv-periodo').textContent=periodoLbl;
 
-  // Benchmark e-commerce: conv 2-3%, cart 10-15%, checkout 50-70%
+  // Ticket promedio desde CSV de ventas
+  const ticketProm=com>0&&vbFilt>0?Math.round(vbFilt/com):0;
+  const isMLCanal=canalF==='ML';
+
+  // KPI 3: Checkout (Shopify) o Ticket ML (MercadoLibre)
+  const kpi3num=isMLCanal?(ticketProm>0?clp(ticketProm):'—'):(pctCheckout>100?'—':pctCheckout.toFixed(1)+'%');
+  const kpi3lbl=isMLCanal?'TICKET PROMEDIO ML':'COMPLETARON EL PAGO';
+  const kpi3sub=isMLCanal?'venta bruta / compras · desde Libro_Ventas':'compras / carritos · mide fricción en el checkout';
+  const kpi3acc=isMLCanal?'var(--ml)':'var(--mt)';
+  const kpi3cls=isMLCanal?'':(pctCheckout>100?'':pctCheckout>=50?'pos':pctCheckout>=30?'warn':'neg');
+  const kpi3d=isMLCanal
+    ?(ticketProm>0?{c:'d-neu',t:com+' órdenes · '+clp(Math.round(vbFilt))+' total'}:{c:'d-neu',t:'Sin ventas ML en el período'})
+    :(pctCheckout>100?{c:'d-neu',t:'No aplica — funnel ML no es secuencial'}:pctCheckout>=50?{c:'d-pos',t:'✓ Buen proceso de pago'}:pctCheckout>=30?{c:'d-warn',t:'Fricción en checkout'}:{c:'d-neg',t:'Alto abandono — revisar UX'});
+
+  // KPI 4: Ticket promedio siempre (desde ventas CSV)
+  const kpi4num=ticketProm>0?clp(ticketProm):'—';
+  const kpi4sub='venta bruta / compras · desde Libro_Ventas';
+  const kpi4d=ticketProm>0?{c:'d-neu',t:com+' compras · '+clp(Math.round(vbFilt))+' total'}:{c:'d-neu',t:'Sin datos de ventas en el período'};
+
   document.getElementById('conv-kgrid').innerHTML=[
     {lbl:'TASA DE CONVERSIÓN',num:pctConv.toFixed(2)+'%',
      sub:'compras / sesiones · benchmark: 2–3%',
      acc:'var(--sh)',numcls:pctConv>=2?'pos':pctConv>=1?'warn':'neg',
      delta:pctConv>=2?{c:'d-pos',t:'✓ Sobre benchmark'}:pctConv>=1?{c:'d-warn',t:'Bajo benchmark (2%)'}:{c:'d-neg',t:'Crítico — revisar'}},
     {lbl:'TASA AL CARRITO',num:pctCart.toFixed(1)+'%',
-     sub:'carritos / sesiones · mide interés en el producto',
+     sub:isMLCanal?'intención / visitas · comportamiento pre-compra':'carritos / sesiones · mide interés en el producto',
      acc:'var(--mk)',numcls:pctCart>=10?'pos':pctCart>=5?'warn':'neg',
      delta:pctCart>=10?{c:'d-pos',t:'✓ Saludable'}:pctCart>=5?{c:'d-warn',t:'Mejorable'}:{c:'d-neg',t:'Bajo — revisar producto/precio'}},
-    {lbl:'COMPLETARON EL PAGO',num:pctCheckout.toFixed(1)+'%',
-     sub:'compras / carritos · mide fricción en el proceso de pago',
-     acc:'var(--mt)',numcls:pctCheckout>=50?'pos':pctCheckout>=30?'warn':'neg',
-     delta:pctCheckout>=50?{c:'d-pos',t:'✓ Buen proceso de pago'}:pctCheckout>=30?{c:'d-warn',t:'Fricción en proceso de pago'}:{c:'d-neg',t:'Alto abandono — revisar UX/confianza'}},
-    {lbl:'INGRESO POR VISITA',num:rpv>0?clp(Math.round(rpv)):'—',
-     sub:'venta bruta / sesiones · combina conversión y ticket',
-     acc:'var(--mid)',
-     delta:rpv>0?{c:'d-neu',t:clp(Math.round(vbFilt))+' en '+ses.toLocaleString('es-CL')+' sesiones'}:{c:'d-neu',t:'Requiere datos de ventas del período'}},
+    {lbl:kpi3lbl,num:kpi3num,sub:kpi3sub,acc:kpi3acc,numcls:kpi3cls,delta:kpi3d},
+    {lbl:'TICKET PROMEDIO',num:kpi4num,sub:kpi4sub,acc:'var(--mid)',numcls:'',delta:kpi4d},
   ].map(k=>`<div class="kcard">
     <div class="kcard-accent" style="background:${k.acc}"></div>
     <div class="kcard-label">${k.lbl}</div>
@@ -2029,6 +2041,7 @@ function renderConv(){
     <div class="kcard-sub">${k.sub}</div>
     <div class="kdelta ${k.delta.c}">${k.delta.t}</div>
   </div>`).join('');
+
 
   // Funnel
   renderConvFunnel(d, ses, car, pas, com);
