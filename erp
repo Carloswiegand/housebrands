@@ -557,8 +557,12 @@ const CSV_PNL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWX
 const IVA=1.19, META=14969250;
 const COSTOS={'MK-0001':16157,'MK-0002':16157,'MK-0003':10544,'MK-0004':10544,'TO04-4':5384,'RW-11037A':9501,'RW-11037B':13818,'SJ-JL802B':6354,'SJ-JL802C':6354,'SJ-AH209A':9530,'SJ-AH209E':9530,'SJ-JL801B':8339};
 const NOMBRES={'MK-0001':'Silla HookOn Azul','MK-0002':'Silla HookOn Negra','MK-0003':'Mecedora LazyBoy Gris','MK-0004':'Mecedora LazyBoy Negra','TO04-4':'Organizador Take&Go','RW-11037A':'Afilador Barrel Haya','RW-11037B':'Afilador Barrel Nogal','SJ-JL802B':'Cuchillo Kiritsuke 8"','SJ-JL802C':'Cuchillo Santoku 7"','SJ-AH209A':'Cuchillo Chef 8"','SJ-AH209E':'Cuchillo Nakiri 7"','SJ-JL801B':'Cuchillo Fileteador 6"'};
-const STOCK_BASE={'MK-0001':36,'MK-0002':27,'MK-0003':204,'MK-0004':227,'TO04-4':473,'RW-11037A':248,'RW-11037B':59,'SJ-JL802B':26,'SJ-JL802C':23,'SJ-AH209A':29,'SJ-AH209E':31,'SJ-JL801B':27};
-const FECHA_CIERRE=new Date(2026,7,31);
+const STOCK_BASE={'MK-0001':107,'MK-0002':20,'MK-0003':187,'MK-0004':225,'TO04-4':470,'RW-11037A':220,'RW-11037B':54,'SJ-JL802B':18,'SJ-JL802C':19,'SJ-AH209A':13,'SJ-AH209E':29,'SJ-JL801B':22};
+// Cierre 30-sep-2026: ABEE + papás + casa HigoKids
+// MK-0001: 62 ABEE + 42 papás + 3 casa = 107
+// MK-0002: 19 ABEE + 1 casa = 20
+// Resto: solo ABEE según reporte 01-oct-2026 (sin contar 2 RW-11037A vendidas el 01-oct)
+const FECHA_CIERRE=new Date(2026,8,30);
 
 // ── AUTH ──────────────────────────────────────────────
 function doLogin(){
@@ -1483,7 +1487,7 @@ function renderInv(){
   let totalStock=0,totalVal=0,alertas=0,criticos=0,sinRot=0;
   inv.forEach(r=>{totalStock+=r.actual;totalVal+=r.val;if(r.stato==='crit')criticos++;if(r.stato==='alert')alertas++;if(r.v90===0)sinRot++;});
   document.getElementById('inv-kgrid').innerHTML=[
-    {lbl:'STOCK TOTAL',num:totalStock.toLocaleString('es-CL'),sub:'unidades · cierre base 31-ago-2026',acc:'#4A6274',delta:{c:'d-neu',t:'todos los SKUs'}},
+    {lbl:'STOCK TOTAL',num:totalStock.toLocaleString('es-CL'),sub:'unidades · cierre base 30-sep-2026',acc:'#4A6274',delta:{c:'d-neu',t:'todos los SKUs'}},
     {lbl:'VALOR STOCK',num:clp(totalVal),sub:'costo × 1.19 × stock actual',acc:'#2C3E4C',delta:{c:'d-neu',t:'estimado'}},
     {lbl:'ALERTAS',num:alertas+criticos,sub:criticos+' crítico'+(criticos!==1?'s':'')+' · '+alertas+' en alerta',acc:alertas+criticos>0?'#c0392b':'#1a7a45',delta:alertas+criticos>0?{c:'d-neg',t:'Revisar reposición'}:{c:'d-pos',t:'Todo OK'}},
     {lbl:'SIN ROTACIÓN 90d',num:sinRot,sub:'SKUs sin ventas recientes',acc:'#8AA4B4',delta:{c:'d-neu',t:'últimos 90 días'}},
@@ -1530,7 +1534,7 @@ function showInvDetail(r){
   const barW=r.dias===9999?100:Math.min(100,(r.dias/180)*100);
   const barC=r.stato==='ok'?'var(--pos)':r.stato==='warn'?'var(--warn)':r.stato==='alert'?'#D35400':'var(--neg)';
   const diasTxt=r.dias===9999?'Sin datos':'~'+r.dias+' días';
-  const nota=(r.sku==='MK-0001'||r.sku==='MK-0002')?`<div class="inv-note">⚠ Solo stock ABEE. Bodega papás pendiente de conteo — actualizar ajuste manual cuando se cuente.</div>`:'';
+  const nota=r.sku==='MK-0001'?`<div class="inv-note">📦 MK-0001: 62 ABEE + 42 papás + 3 casa HigoKids = 107 total al 30-sep-2026</div>`:r.sku==='MK-0002'?`<div class="inv-note">📦 MK-0002: 19 ABEE + 1 casa HigoKids = 20 total al 30-sep-2026</div>`:'';
   const repoTxt=r.dias!==9999&&r.dias<r.umbral?`<div class="inv-note">🛒 Reponer pronto — bajo umbral de ${r.umbral} días.</div>`:'';
   const ajusteActual=getInvAdjuste(r.sku);
   document.getElementById('inv-detail').innerHTML=`
@@ -1546,7 +1550,7 @@ function showInvDetail(r){
       <div class="inv-big">${r.actual}</div>
       <div class="inv-big-lbl">unidades en stock actual</div>
       <div class="inv-edit-row">
-        <div class="inv-edit-lbl">Ajuste manual de stock<br><span style="color:var(--light);font-size:8px">cierre base (${r.base}) − ventas (${r.vendido}) + ajuste</span></div>
+        <div class="inv-edit-lbl">Ajuste manual de stock<br><span style="color:var(--light);font-size:8px">cierre 30-sep (${r.base}) − ventas oct+ (${r.vendido}) + ajuste</span></div>
         <input type="number" class="inv-edit-inp" id="adj-${r.sku}" value="${ajusteActual}" placeholder="0">
         <button class="inv-edit-btn" onclick="applyAdj('${r.sku}')">Aplicar</button>
       </div>
