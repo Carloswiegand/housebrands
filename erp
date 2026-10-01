@@ -328,8 +328,9 @@ tbody tr:hover td{background:var(--bg)}
   <!-- TAB VENTAS -->
   <div id="view-ventas">
     <div class="fbar">
-      <span class="flbl">Período</span>
-      <select class="fsel" id="f-anio" onchange="render()"><option value="0">Todo</option></select>
+      <span class="flbl">Año</span>
+      <select class="fsel" id="f-anio" onchange="render()"><option value="0">Todos</option></select>
+      <span class="flbl" style="margin-left:4px">Mes</span>
       <select class="fsel" id="f-mes" onchange="render()">
         <option value="0">Todos los meses</option>
         <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
@@ -339,14 +340,16 @@ tbody tr:hover td{background:var(--bg)}
       </select>
       <div class="fsep"></div>
       <span class="flbl">Marca</span>
-      <button class="fpill on" id="fm-t" onclick="sfm('Todas',this)">Todas</button>
-      <button class="fpill" id="fm-mk" onclick="sfm('MemoKoala',this)">MemoKoala</button>
-      <button class="fpill" id="fm-mt" onclick="sfm('Montana',this)">Montana</button>
+      <select class="fsel" id="f-marca" onchange="sfmSel()">
+        <option value="Todas">Todas las marcas</option>
+        <option value="MemoKoala">🐨 MemoKoala</option>
+        <option value="Montana">🔪 Montana</option>
+      </select>
       <div class="fsep"></div>
       <span class="flbl">Canal</span>
-      <div id="canal-pills" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-        <button class="fpill on" id="fc-t" onclick="sfc('Todos',this)">Todos</button>
-      </div>
+      <select class="fsel" id="f-canal" onchange="sfcSel()">
+        <option value="Todos">Todos los canales</option>
+      </select>
     </div>
 
     <div id="v-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando ventas...</p></div>
@@ -667,31 +670,33 @@ function parseVentas(txt){
 }
 
 // ── FILTROS ───────────────────────────────────────────
-function sfm(v,el){
-  fMarca=v;
-  ['fm-t','fm-mk','fm-mt'].forEach(id=>document.getElementById(id).className='fpill');
-  el.className=v==='MemoKoala'?'fpill mk':v==='Montana'?'fpill mt':'fpill on';
+function sfmSel(){
+  fMarca=document.getElementById('f-marca').value;
   render();
 }
-function sfc(v,el){
-  fCanal=v;
-  document.querySelectorAll('#canal-pills .fpill').forEach(p=>p.className='fpill');
-  el.className='fpill on';
+// mantener sfm por compatibilidad interna
+function sfm(v){fMarca=v;render();}
+function sfcSel(){
+  fCanal=document.getElementById('f-canal').value;
   render();
 }
+// mantener sfc por compatibilidad interna
+function sfc(v){fCanal=v;render();}
 
 function buildCanalPills(){
-  const canales=['Todos',...[...new Set(DATA.map(r=>r.canal).filter(Boolean))].sort()];
-  const ETIQUETAS={'Shopify':'Shopify','ML':'MercadoLibre','Venta Directa':'Venta Directa','HigoKids':'HigoKids Market','Venta Corporativa':'Corporativa','Otro':'Otro'};
-  const container=document.getElementById('canal-pills');
-  if(!container)return;
-  container.innerHTML=canales.map(c=>`
-    <button class="fpill${c==='Todos'?' on':''}" onclick="sfc('${c}',this)">${c==='Todos'?'Todos':(ETIQUETAS[c]||c)}</button>
-  `).join('');
+  const ETIQUETAS={'Shopify':'Shopify','ML':'MercadoLibre','Venta Directa':'Venta Directa','HigoKids':'HigoKids Market','Venta Corporativa':'Venta Corporativa','Otro':'Otro'};
+  const canales=[...new Set(DATA.map(r=>r.canal).filter(Boolean))].sort();
+  const sel=document.getElementById('f-canal');
+  if(!sel)return;
+  const current=sel.value||'Todos';
+  sel.innerHTML='<option value="Todos">Todos los canales</option>'+
+    canales.map(c=>`<option value="${c}"${c===current?' selected':''}>${ETIQUETAS[c]||c}</option>`).join('');
 }
 function fd(){
   const anio=parseInt(document.getElementById('f-anio').value)||0;
   const mes=parseInt(document.getElementById('f-mes').value)||0;
+  fMarca=document.getElementById('f-marca')?.value||'Todas';
+  fCanal=document.getElementById('f-canal')?.value||'Todos';
   return DATA.filter(r=>{
     if(fMarca!=='Todas'&&r.marca!==fMarca)return false;
     if(fCanal!=='Todos'&&r.canal!==fCanal)return false;
