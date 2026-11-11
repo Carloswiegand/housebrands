@@ -1,635 +1,451 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-CL">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HouseBrands — Marcas Digitales</title>
+<title>HouseBrands | Creamos y operamos marcas de consumo</title>
+<meta name="description" content="HouseBrands crea y opera marcas de consumo desde Chile: importación directa, marca propia y venta en Shopify y MercadoLibre. Dueños de MemoKoala y Montana Grills.">
+<meta name="theme-color" content="#E4EAEE">
+<meta property="og:type" content="website">
+<meta property="og:title" content="HouseBrands | Creamos y operamos marcas de consumo">
+<meta property="og:description" content="Importación directa, marca propia y venta online desde Chile. MemoKoala y Montana Grills.">
+<meta property="og:url" content="https://housebrands.cl">
+<meta property="og:locale" content="es_CL">
+<link rel="canonical" href="https://housebrands.cl">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cpolygon points='0,0 17,0 17,17' fill='%232C3E4C'/%3E%3Cpolygon points='19,0 36,0 36,17 19,17' fill='%234A6274'/%3E%3Cpolygon points='0,19 17,19 17,36 0,36' fill='%238AA4B4'/%3E%3Cpolygon points='19,19 36,36 19,36' fill='%232C3E4C'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "HouseBrands",
+  "url": "https://housebrands.cl",
+  "email": "contacto@housebrands.cl",
+  "foundingDate": "2024",
+  "address": { "@type": "PostalAddress", "addressLocality": "Santiago", "addressCountry": "CL" },
+  "sameAs": ["https://www.linkedin.com/company/116026999/"],
+  "brand": [
+    { "@type": "Brand", "name": "MemoKoala", "url": "https://memokoala.com" },
+    { "@type": "Brand", "name": "Montana Grills", "url": "https://montanagrills.cl" }
+  ]
+}
+</script>
 <style>
-:root {
-  --black: #1C2B3A;
-  --white: #F7F6F3;
-  --off: #EEECE8;
-  --mid: #2C3E4C;
-  --gray: #7A8F9E;
-  --line: rgba(28,43,58,0.1);
-  --mk: #7B5FC4;
-  --mg: #3D4A1A;
-  --accent: #4A6274;
-  --accent-light: #8AA4B4;
-  --font-display: 'Instrument Sans', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+/* ── Tokens ─────────────────────────────────────────────── */
+:root{
+  --pizarra:#1C2B3A;   /* tinta principal (color del logo) */
+  --acero:#4A6274;     /* texto secundario */
+  --hielo:#8AA4B4;     /* piezas claras del logo */
+  --niebla:#E4EAEE;    /* fondo base */
+  --bruma:#CDD8DF;     /* líneas y superficies */
+  --mk-fondo:#D9D1F2; --mk-tinta:#2A1F52; --mk:#7B5FC4;
+  --mg-fondo:#353F17; --mg-tinta:#ECE6CF; --mg:#C9A24A;
+
+  --font:'Archivo', system-ui, sans-serif;
+  /* escala modular 1.333 (cuarta) */
+  --t-0:1rem; --t-1:1.333rem; --t-2:1.777rem; --t-3:2.369rem; --t-4:3.157rem;
+  --t-hero:clamp(3rem, 8.4vw, 7.6rem);
+  --t-brand:clamp(3.6rem, 13vw, 12.5rem);
+  --gutter:clamp(1rem, 4vw, 3.5rem);
+  --max:1360px;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-body);
-  background: var(--white);
-  color: var(--black);
-  overflow-x: hidden;
-  cursor: none;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font);font-size:1.0625rem;line-height:1.55;
+  font-variation-settings:'wdth' 100;
+  background:var(--niebla);color:var(--pizarra);
+  overflow-x:hidden;text-rendering:optimizeLegibility;
 }
+a{color:inherit}
+:focus-visible{outline:2px solid var(--pizarra);outline-offset:3px;border-radius:2px}
+.skip{position:absolute;left:-9999px;top:0;background:var(--pizarra);color:var(--niebla);padding:.6rem 1rem;z-index:200}
+.skip:focus{left:1rem;top:1rem}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
 
-/* CURSOR */
-.cursor {
-  position: fixed; width: 8px; height: 8px;
-  background: var(--black); border-radius: 50%;
-  pointer-events: none; z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease;
+/* ── Header ─────────────────────────────────────────────── */
+.top{
+  position:sticky;top:0;z-index:50;background:var(--niebla);
+  border-bottom:1px solid transparent;transition:border-color .3s;
 }
-.cursor-ring {
-  position: fixed; width: 32px; height: 32px;
-  border: 1px solid var(--black); border-radius: 50%;
-  pointer-events: none; z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: transform 0.12s ease, width 0.3s ease, height 0.3s ease;
-}
+.top.scrolled{border-bottom-color:var(--bruma)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:.7rem;text-decoration:none;font-weight:650;font-size:1.05rem;letter-spacing:-.01em}
+.logo svg{width:26px;height:26px;flex:none}
+.nav{display:flex;gap:clamp(1rem,3vw,2.4rem);list-style:none}
+.nav a{text-decoration:none;font-size:.97rem;color:var(--acero);padding:.3rem 0;border-bottom:1.5px solid transparent;transition:color .2s,border-color .2s}
+.nav a:hover{color:var(--pizarra);border-bottom-color:var(--pizarra)}
 
-/* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.25rem 3rem;
-  background: rgba(247,246,243,0.90);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(28,26,23,0.07);
-  transition: background 0.3s;
+/* ── Hero ───────────────────────────────────────────────── */
+.hero{padding:clamp(2rem,5vw,4.5rem) 0 clamp(2.5rem,5vw,4rem)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(1.5rem,4vw,4rem);align-items:end}
+.hero h1{
+  font-size:var(--t-hero);line-height:.9;letter-spacing:-.02em;font-weight:800;
+  font-variation-settings:'wdth' 68;text-wrap:balance;
 }
-.nav-logo { display: block; text-decoration: none; line-height: 0; flex-shrink: 0; }
-.nav-logo svg { display: block; width: 160px; height: auto; }
-.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
-.nav-links a {
-  font-size: 0.75rem; font-weight: 400; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--black); text-decoration: none;
-  opacity: 0.5; transition: opacity 0.2s; white-space: nowrap;
-}
-.nav-links a:hover { opacity: 1; }
-.nav-links a.nav-erp {
-  opacity: 0.35; font-size: 0.62rem; letter-spacing: 0.15em;
-  border: 1px solid rgba(28,26,23,0.2); padding: 0.3rem 0.65rem;
-  border-radius: 2px; transition: opacity 0.2s, border-color 0.2s;
-}
-.nav-links a.nav-erp:hover { opacity: 0.7; border-color: rgba(28,26,23,0.5); }
+.hero-lead{font-size:var(--t-1);line-height:1.45;color:var(--acero);max-width:34ch;margin-top:clamp(1.25rem,3vw,2rem);font-variation-settings:'wdth' 96}
+.tiles{position:relative;width:100%;aspect-ratio:1/1;max-height:640px;touch-action:pan-y}
+.tiles canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
-/* HAMBURGER — mobile only */
-.nav-toggle {
-  display: none; flex-direction: column; gap: 5px;
-  cursor: pointer; padding: 4px; background: none; border: none;
+.facts{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem;
+  margin-top:clamp(2.5rem,5vw,4rem);padding-top:1.5rem;border-top:1.5px solid var(--pizarra);
 }
-.nav-toggle span {
-  display: block; width: 22px; height: 1.5px;
-  background: var(--black); border-radius: 2px;
-  transition: transform 0.25s, opacity 0.25s;
-}
+.facts div{display:flex;flex-direction:column-reverse;gap:.15rem}
+.facts dt{font-size:.95rem;color:var(--acero)}
+.facts dd{font-size:var(--t-3);font-weight:700;line-height:1;font-variation-settings:'wdth' 75;letter-spacing:-.01em}
 
-/* MOBILE MENU */
-.nav-mobile {
-  display: none; position: fixed; top: 56px; left: 0; right: 0;
-  background: rgba(247,246,243,0.98); backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(28,26,23,0.1);
-  flex-direction: column; padding: 1.5rem 1.5rem;
-  gap: 1.25rem; z-index: 99;
+/* ── Marcas ─────────────────────────────────────────────── */
+.brand{padding:clamp(3.5rem,8vw,7rem) 0;overflow:hidden}
+.brand.mk{background:var(--mk-fondo);color:var(--mk-tinta)}
+.brand.mg{background:var(--mg-fondo);color:var(--mg-tinta)}
+.brand-name{
+  font-size:var(--t-brand);line-height:.85;font-weight:850;letter-spacing:-.025em;
+  white-space:nowrap;font-variation-settings:'wdth' 100;will-change:font-variation-settings;
 }
-.nav-mobile.open { display: flex; }
-.nav-mobile a {
-  font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--black); text-decoration: none;
-  opacity: 0.6; padding: 0.5rem 0; border-bottom: 1px solid var(--line);
+.brand-body{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(2rem,6vw,6rem);margin-top:clamp(2rem,5vw,3.5rem)}
+.brand-kind{font-size:var(--t-2);line-height:1.2;font-weight:600;font-variation-settings:'wdth' 90;max-width:22ch}
+.brand-copy{margin-top:1.1rem;max-width:52ch;font-size:1.08rem;opacity:.86}
+.brand-link{
+  display:inline-block;margin-top:2rem;font-weight:650;font-size:1.1rem;text-decoration:none;
+  padding-bottom:.2rem;border-bottom:2px solid currentColor;transition:padding-bottom .2s,letter-spacing .25s;
 }
-.nav-mobile a:last-child { border-bottom: none; }
-.nav-mobile a:hover { opacity: 1; }
-.nav-mobile a.nav-erp-m {
-  opacity: 0.4; font-size: 0.75rem; letter-spacing: 0.15em;
+.brand-link:hover{letter-spacing:.02em}
+.lineup h3{font-size:1rem;font-weight:600;padding-bottom:.7rem;border-bottom:1.5px solid currentColor}
+.lineup ul{list-style:none}
+.lineup li{
+  display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  padding:.85rem 0;border-bottom:1px solid color-mix(in srgb,currentColor 22%,transparent);
+  font-size:1.08rem;
 }
+.lineup li span:last-child{opacity:.7;font-size:.95rem;text-align:right}
+.mk .lineup h3,.mk .brand-link{color:var(--mk-tinta)}
+.mk .chip{background:var(--mk)}
+.mg .chip{background:var(--mg)}
+.chip{display:inline-block;width:.7em;height:.7em;margin-right:.55em;vertical-align:.02em;clip-path:polygon(0 0,100% 0,100% 100%)}
 
-/* HERO */
-.hero {
-  min-height: 100vh; min-height: 100svh;
-  display: grid; grid-template-rows: 1fr auto;
-  padding: 0 3rem 3rem; padding-top: 88px;
-  position: relative; overflow: hidden;
+/* ── Proceso ────────────────────────────────────────────── */
+.how{padding:clamp(4rem,9vw,8rem) 0}
+.how-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2rem;align-items:end}
+.how h2,.contact h2{font-size:var(--t-4);line-height:.95;font-weight:800;font-variation-settings:'wdth' 72;letter-spacing:-.015em;max-width:14ch;text-wrap:balance}
+.how-head p{color:var(--acero);max-width:44ch;font-size:1.08rem}
+.steps{list-style:none;margin-top:clamp(2.5rem,6vw,4.5rem);position:relative;counter-reset:paso}
+.steps::before,.steps::after{
+  content:'';position:absolute;left:calc(clamp(3.2rem,8vw,6rem) / 2 - 1px);top:.6rem;bottom:.6rem;width:2px;
 }
-.hero-content {
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding-bottom: 4rem;
+.steps::before{background:var(--bruma)}
+.steps::after{background:var(--pizarra);transform-origin:top;transform:scaleY(var(--p,0))}
+.step{
+  display:grid;grid-template-columns:clamp(3.2rem,8vw,6rem) minmax(0,16rem) minmax(0,1fr);
+  gap:clamp(1rem,3vw,2.5rem);padding:clamp(1.1rem,2.4vw,1.7rem) 0;align-items:baseline;position:relative;
 }
-.hero-eyebrow {
-  font-size: 0.7rem; font-weight: 400; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--gray); margin-bottom: 2rem;
-  opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+.step-n{
+  counter-increment:paso;justify-self:center;position:relative;z-index:1;
+  width:2.4rem;height:2.4rem;display:grid;place-items:center;border-radius:50%;
+  background:var(--niebla);border:2px solid var(--bruma);font-weight:700;font-size:.95rem;
+  color:var(--acero);transition:background .35s,border-color .35s,color .35s;
 }
-.hero-h1 {
-  font-family: var(--font-display);
-  font-size: clamp(4.5rem, 10vw, 10rem);
-  font-weight: 800; line-height: 0.92; letter-spacing: -0.04em;
-  color: var(--black); opacity: 0; animation: fadeUp 0.9s 0.35s forwards;
-}
-.hero-h1 em { font-style: normal; color: var(--accent-light); }
-.hero-sub {
-  font-size: 1rem; font-weight: 300; line-height: 1.6;
-  color: var(--gray); max-width: 420px; margin-top: 2.5rem;
-  opacity: 0; animation: fadeUp 0.9s 0.5s forwards;
-}
-.hero-meta {
-  display: flex; gap: 4rem; padding-top: 3rem;
-  border-top: 1px solid var(--line);
-  opacity: 0; animation: fadeUp 0.9s 0.65s forwards;
-  flex-wrap: wrap;
-}
-.hero-meta-item .label {
-  font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--gray); margin-bottom: 0.4rem;
-}
-.hero-meta-item .value {
-  font-family: var(--font-display); font-size: 1.1rem;
-  font-weight: 700; color: var(--black);
-}
-.hero-number {
-  position: absolute; right: -0.05em; bottom: -0.15em;
-  font-family: var(--font-display);
-  font-size: clamp(12rem, 28vw, 28rem);
-  font-weight: 800; letter-spacing: -0.06em;
-  color: transparent; -webkit-text-stroke: 1px rgba(10,10,10,0.06);
-  pointer-events: none; line-height: 1; user-select: none;
-}
+.step-n::before{content:counter(paso)}
+.step.on .step-n{background:var(--pizarra);border-color:var(--pizarra);color:var(--niebla)}
+.step h3{font-size:var(--t-2);font-weight:700;line-height:1.1;font-variation-settings:'wdth' 80}
+.step p{color:var(--acero);max-width:56ch}
 
-/* MARQUEE */
-.marquee-section {
-  background: var(--mid); overflow: hidden;
-  padding: 1.25rem 0; border-top: 1px solid rgba(255,255,255,0.06);
+/* ── Contacto ───────────────────────────────────────────── */
+.contact{background:var(--pizarra);color:var(--niebla);padding:clamp(4rem,9vw,8rem) 0 2.5rem}
+.contact h2{max-width:18ch}
+.contact-lead{margin-top:1.25rem;max-width:48ch;color:var(--hielo);font-size:1.12rem}
+.mail{
+  display:inline-block;margin-top:clamp(2rem,5vw,3.5rem);text-decoration:none;
+  font-size:clamp(1.9rem,6.4vw,5.6rem);font-weight:800;line-height:1;letter-spacing:-.02em;
+  font-variation-settings:'wdth' 70;transition:font-variation-settings .45s cubic-bezier(.2,.8,.2,1);
+  overflow-wrap:anywhere;
 }
-.marquee-track {
-  display: flex; white-space: nowrap;
-  animation: marquee 18s linear infinite;
+.mail:hover,.mail:focus-visible{font-variation-settings:'wdth' 112}
+.mail-sub{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:1.5rem}
+.mail-sub a{color:var(--hielo);text-decoration:none;border-bottom:1px solid var(--acero);padding-bottom:.15rem}
+.mail-sub a:hover{color:var(--niebla);border-color:var(--niebla)}
+.foot{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+  margin-top:clamp(4rem,9vw,7rem);padding-top:1.5rem;border-top:1px solid #33465A;
+  color:var(--hielo);font-size:.9rem;
 }
-.marquee-item {
-  font-family: var(--font-display); font-size: 0.75rem;
-  font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
-  color: rgba(255,255,255,0.3); padding: 0 3rem; flex-shrink: 0;
-}
-.marquee-item.accent { color: var(--accent-light); }
-@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.foot a{color:#6F889A;text-decoration:none}
+.foot a:hover{color:var(--niebla)}
 
-/* SECTION BASE */
-section { padding: 8rem 3rem; }
-.section-label {
-  font-size: 0.65rem; font-weight: 400; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--gray); margin-bottom: 3rem;
-  display: flex; align-items: center; gap: 1rem;
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width:900px){
+  .hero .wrap,.brand-body,.how-head{grid-template-columns:1fr}
+  .tiles{aspect-ratio:4/3;order:-1}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:1.75rem}
+  .step{grid-template-columns:3.2rem minmax(0,1fr)}
+  .step p{grid-column:2}
+  .steps::before,.steps::after{left:calc(1.6rem - 1px)}
 }
-.section-label::before {
-  content: ''; display: block; width: 2rem; height: 1px; background: var(--gray);
+@media (max-width:560px){
+  .nav{gap:1rem}
+  .nav li:nth-child(2){display:none}
+  .brand-name{white-space:normal}
 }
-
-/* ABOUT */
-.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: start; }
-.about-h2 {
-  font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.8rem);
-  font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
-}
-.about-right { padding-top: 0.5rem; }
-.about-right p { font-size: 1.05rem; font-weight: 300; line-height: 1.8; color: var(--gray); margin-bottom: 2rem; }
-.about-right p strong { color: var(--black); font-weight: 500; }
-.stats-row { display: flex; gap: 3rem; margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--line); flex-wrap: wrap; }
-.stat .n { font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.4rem; }
-.stat .l { font-size: 0.75rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); }
-
-/* MARCAS */
-.marcas-section { background: var(--mid); color: var(--white); }
-.marcas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 4rem; }
-.marca-card {
-  border: 1px solid rgba(255,255,255,0.08); border-radius: 2px; padding: 3rem;
-  display: flex; flex-direction: column; justify-content: space-between;
-  min-height: 380px; position: relative; overflow: hidden;
-  transition: border-color 0.3s; text-decoration: none; color: inherit;
-}
-.marca-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s; }
-.mk-card::before { background: rgba(155,127,212,0.06); }
-.mg-card::before { background: rgba(75,83,32,0.1); }
-.marca-card:hover::before { opacity: 1; }
-.marca-card:hover { border-color: rgba(255,255,255,0.2); }
-.marca-tag {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
-  padding: 0.4rem 0.9rem; border-radius: 100px; font-weight: 500;
-  width: fit-content; margin-bottom: 2rem;
-}
-.mk-tag { background: rgba(155,127,212,0.15); color: #C4ADEA; }
-.mg-tag { background: rgba(75,83,32,0.3); color: #A8B87A; }
-.marca-tag-dot { width: 5px; height: 5px; border-radius: 50%; }
-.mk-dot { background: #9B7FD4; }
-.mg-dot { background: #7A8B3A; }
-.marca-name {
-  font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3rem);
-  font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin-bottom: 1rem;
-}
-.mk-name { color: #C4ADEA; }
-.mg-name { color: #A8B87A; }
-.marca-desc { font-size: 0.9rem; font-weight: 300; line-height: 1.7; color: rgba(255,255,255,0.4); max-width: 360px; flex-grow: 1; }
-.marca-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 2rem; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.06);
-}
-.marca-url { font-size: 0.75rem; letter-spacing: 0.05em; color: rgba(255,255,255,0.25); }
-.marca-arrow {
-  width: 2.5rem; height: 2.5rem; border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.3s, transform 0.3s;
-}
-.marca-card:hover .marca-arrow { border-color: rgba(255,255,255,0.4); transform: rotate(45deg); }
-.marca-arrow svg { width: 14px; height: 14px; stroke: rgba(255,255,255,0.4); }
-
-/* MODELO */
-.modelo-section { background: var(--off); }
-.modelo-h2 {
-  font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.8rem);
-  font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;
-  max-width: 600px; margin-bottom: 5rem;
-}
-.pilares { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); }
-.pilar { padding: 2.5rem; border-right: 1px solid var(--line); }
-.pilar:last-child { border-right: none; }
-.pilar-num { font-family: var(--font-display); font-size: 3rem; font-weight: 800; letter-spacing: -0.06em; color: rgba(10,10,10,0.08); line-height: 1; margin-bottom: 1.5rem; }
-.pilar h3 { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 0.75rem; }
-.pilar p { font-size: 0.875rem; font-weight: 300; line-height: 1.7; color: var(--gray); }
-
-/* CONTACTO */
-.contacto-section {
-  background: var(--off); color: var(--black);
-  display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 4rem;
-}
-.contacto-h2 {
-  font-family: var(--font-display); font-size: clamp(2.8rem, 6vw, 6rem);
-  font-weight: 900; letter-spacing: -0.04em; line-height: 0.95;
-}
-.contacto-h2 span { color: var(--accent-light); font-style: normal; }
-.contacto-right { display: flex; flex-direction: column; gap: 1rem; min-width: 240px; }
-.contact-link {
-  display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem;
-  border: 1px solid var(--line); text-decoration: none; color: var(--black);
-  font-size: 0.85rem; font-weight: 400; letter-spacing: 0.05em;
-  transition: border-color 0.2s, background 0.2s;
-}
-.contact-link:hover { border-color: var(--black); background: rgba(28,26,23,0.04); }
-.contact-link svg { width: 16px; height: 16px; stroke: var(--gray); flex-shrink: 0; }
-
-/* FOOTER */
-footer {
-  background: var(--mid); color: rgba(255,255,255,0.25);
-  padding: 2rem 3rem; display: flex; align-items: center;
-  justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06);
-  font-size: 0.75rem; letter-spacing: 0.05em; flex-wrap: wrap; gap: 1rem;
-}
-footer a { color: inherit; text-decoration: none; }
-footer svg { flex-shrink: 0; }
-
-/* SCROLL REVEAL */
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
-
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-.counter { display: inline-block; }
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  body { cursor: auto; }
-  .cursor, .cursor-ring { display: none; }
-  .nav-links { display: none; }
-  .nav-toggle { display: flex; }
-  nav { padding: 0 1.25rem; height: 56px; }
-  .nav-logo svg { width: 130px; }
-  .hero { padding: 56px 1.25rem 2rem; min-height: 100svh; }
-  .hero-content { padding-bottom: 2.5rem; }
-  .hero-h1 { font-size: clamp(3.2rem, 13vw, 5rem); }
-  .hero-sub { font-size: 0.9rem; margin-top: 1.5rem; max-width: 100%; }
-  .hero-meta { gap: 1.5rem; padding-top: 2rem; }
-  .hero-meta-item .value { font-size: 0.95rem; }
-  .hero-number { font-size: 40vw; }
-  section { padding: 5rem 1.25rem; }
-  .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-  .stats-row { gap: 1.5rem; }
-  .marcas-grid { grid-template-columns: 1fr; }
-  .marca-card { min-height: 300px; padding: 2rem 1.5rem; }
-  .pilares { grid-template-columns: 1fr; }
-  .pilar { border-right: none; border-bottom: 1px solid var(--line); }
-  .pilar:last-child { border-bottom: none; }
-  .modelo-h2 { margin-bottom: 3rem; }
-  .contacto-section { grid-template-columns: 1fr; gap: 2.5rem; padding: 4rem 1.25rem; }
-  .contacto-right { min-width: unset; }
-  footer { flex-direction: column; align-items: flex-start; padding: 1.5rem 1.25rem; gap: 0.75rem; }
-}
-
-@media (max-width: 480px) {
-  nav { height: 52px; }
-  .nav-logo svg { width: 110px; }
-  .nav-mobile { top: 52px; }
-  .hero { padding-top: 52px; }
-  .hero-h1 { font-size: clamp(2.8rem, 15vw, 4rem); }
-  .hero-meta { gap: 1rem; }
-  .hero-number { font-size: 45vw; }
-  .marca-card { padding: 1.5rem; }
-  .pilar { padding: 1.75rem 1.25rem; }
-  .contacto-h2 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+  .steps::after{transform:scaleY(1)}
 }
 </style>
 </head>
 <body>
+<a class="skip" href="#contenido">Ir al contenido</a>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursor-ring"></div>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">
-    <svg width="192" height="32" viewBox="0 0 192 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="HouseBrands">
-      <polygon points="0,0 13,0 13,13" fill="#2C3E4C"/>
-      <polygon points="13,0 28,0 28,13 13,13" fill="#4A6274"/>
-      <polygon points="0,15 13,15 13,28 0,28" fill="#8AA4B4"/>
-      <polygon points="13,15 28,28 13,28" fill="#2C3E4C"/>
-      <text x="36" y="22" font-family="Instrument Sans, sans-serif" font-size="16" font-weight="600" letter-spacing="-0.02em" fill="#1C2B3A">House<tspan fill="#4A6274">Brands</tspan></text>
-    </svg>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#marcas">Marcas</a></li>
-    <li><a href="#modelo">Modelo</a></li>
-    <li><a href="#contacto">Contacto</a></li>
-    <li><a href="/erp" class="nav-erp">ERP</a></li>
-    <li><a href="/checklist-contable" class="nav-erp">Contabilidad</a></li>
-    <li><a href="/cotizador" class="nav-erp">Cotizador</a></li>
-  </ul>
-  <button class="nav-toggle" id="nav-toggle" aria-label="Menú">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-
-<!-- MOBILE MENU -->
-<div class="nav-mobile" id="nav-mobile">
-  <a href="#marcas" onclick="closeMobileNav()">Marcas</a>
-  <a href="#modelo" onclick="closeMobileNav()">Modelo</a>
-  <a href="#contacto" onclick="closeMobileNav()">Contacto</a>
-  <a href="/erp" class="nav-erp-m">ERP</a>
-  <a href="/checklist-contable" class="nav-erp-m">Contabilidad</a>
-  <a href="/cotizador" class="nav-erp-m">Cotizador</a>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-content">
-    <p class="hero-eyebrow">Marcas digitales — Chile</p>
-    <h1 class="hero-h1">House<em>Brands</em></h1>
-    <p class="hero-sub">Creamos y operamos marcas de consumo digitales. Desarrolladas desde Chile, construidas para escalar en Latinoamérica.</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item">
-        <p class="label">Fundación</p>
-        <p class="value">2024</p>
-      </div>
-      <div class="hero-meta-item">
-        <p class="label">Marcas activas</p>
-        <p class="value">2</p>
-      </div>
-      <div class="hero-meta-item">
-        <p class="label">Clientes</p>
-        <p class="value">500+</p>
-      </div>
-      <div class="hero-meta-item">
-        <p class="label">Mercado</p>
-        <p class="value">Chile · LATAM</p>
-      </div>
-    </div>
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="logo" href="#" aria-label="HouseBrands, inicio">
+      <svg viewBox="0 0 36 36" aria-hidden="true">
+        <polygon points="0,0 17,0 17,17" fill="#2C3E4C"/>
+        <polygon points="19,0 36,0 36,17 19,17" fill="#4A6274"/>
+        <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
+        <polygon points="19,19 36,36 19,36" fill="#2C3E4C"/>
+      </svg>
+      HouseBrands
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav">
+        <li><a href="#marcas">Marcas</a></li>
+        <li><a href="#como">Cómo trabajamos</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
   </div>
-  <div class="hero-number" aria-hidden="true">HB</div>
-</div>
+</header>
 
-<!-- MARQUEE -->
-<div class="marquee-section" aria-hidden="true">
-  <div class="marquee-track">
-    <span class="marquee-item">Marcas Digitales</span>
-    <span class="marquee-item accent">MemoKoala</span>
-    <span class="marquee-item">D2C Chile</span>
-    <span class="marquee-item accent">Montana Grills</span>
-    <span class="marquee-item">Shopify</span>
-    <span class="marquee-item accent">500+ Clientes</span>
-    <span class="marquee-item">LATAM</span>
-    <span class="marquee-item accent">HouseBrands</span>
-    <span class="marquee-item">Importación Directa</span>
-    <span class="marquee-item accent">Marca Propia</span>
-    <span class="marquee-item">Marcas Digitales</span>
-    <span class="marquee-item accent">MemoKoala</span>
-    <span class="marquee-item">D2C Chile</span>
-    <span class="marquee-item accent">Montana Grills</span>
-    <span class="marquee-item">Shopify</span>
-    <span class="marquee-item accent">500+ Clientes</span>
-    <span class="marquee-item">LATAM</span>
-    <span class="marquee-item accent">HouseBrands</span>
-    <span class="marquee-item">Importación Directa</span>
-    <span class="marquee-item accent">Marca Propia</span>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<section id="nosotros">
-  <div class="section-label reveal">Sobre HouseBrands</div>
-  <div class="about-grid">
-    <div class="reveal reveal-delay-1">
-      <h2 class="about-h2">Construimos marcas que la gente elige de verdad.</h2>
-    </div>
-    <div class="about-right reveal reveal-delay-2">
-      <p>HouseBrands es un operador de marcas digitales nativas. Identificamos oportunidades de mercado, importamos directamente, desarrollamos marca propia y vendemos <strong>D2C a través de Shopify y MercadoLibre</strong>.</p>
-      <p>Cada marca que desarrollamos tiene identidad, posicionamiento y comunidad propios. No somos un marketplace ni un reseller — <strong>construimos activos de marca de largo plazo.</strong></p>
-      <div class="stats-row">
-        <div class="stat">
-          <div class="n"><span class="counter" data-target="2">0</span></div>
-          <div class="l">Marcas activas</div>
-        </div>
-        <div class="stat">
-          <div class="n"><span class="counter" data-target="500">0</span>+</div>
-          <div class="l">Clientes finales</div>
-        </div>
-        <div class="stat">
-          <div class="n">2024</div>
-          <div class="l">Año de fundación</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- MARCAS -->
-<section class="marcas-section" id="marcas">
-  <div class="section-label reveal" style="color:rgba(255,255,255,0.3)">
-    <span style="background:rgba(255,255,255,0.15);width:2rem;height:1px;display:block"></span>
-    Portafolio de marcas
-  </div>
-  <div class="marcas-grid">
-    <a href="https://memokoala.com" target="_blank" class="marca-card mk-card reveal reveal-delay-1">
+<main id="contenido">
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="wrap">
       <div>
-        <div class="marca-tag mk-tag"><span class="marca-tag-dot mk-dot"></span>Accesorios bebé</div>
-        <div class="marca-name mk-name">MemoKoala</div>
-        <p class="marca-desc">Productos para el día a día de familias con bebés. Diseñados para hacer más fácil cada salida, cada comida, cada momento. Una marca construida desde la experiencia real de criar.</p>
+        <h1 id="hero-h">Creamos marcas de consumo y las operamos de punta a punta.</h1>
+        <p class="hero-lead">Detectamos categorías con demanda real, importamos directo de fábrica y construimos marcas propias que se venden online en Chile.</p>
       </div>
-      <div class="marca-footer">
-        <span class="marca-url">memokoala.com</span>
-        <div class="marca-arrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
+      <div class="tiles" id="tiles" aria-hidden="true"><canvas></canvas></div>
+    </div>
+    <div class="wrap">
+      <dl class="facts">
+        <div><dt>año de inicio</dt><dd>2024</dd></div>
+        <div><dt>marcas propias</dt><dd>2</dd></div>
+        <div><dt>clientes</dt><dd>+500</dd></div>
+        <div><dt>canales de venta</dt><dd>Shopify y ML</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="marcas" aria-label="Nuestras marcas">
+    <article class="brand mk" data-brand>
+      <div class="wrap">
+        <h2 class="brand-name">MemoKoala</h2>
+        <div class="brand-body">
+          <div>
+            <p class="brand-kind"><span class="chip"></span>Accesorios para familias con bebés de 0 a 3 años.</p>
+            <p class="brand-copy">Productos para hacer más fácil cada salida, cada comida y cada siesta. Una marca construida desde la experiencia real de criar, con diseño propio y atención directa a cada familia.</p>
+            <a class="brand-link" href="https://memokoala.com" rel="noopener">Visitar memokoala.com</a>
+          </div>
+          <div class="lineup">
+            <h3>Línea actual</h3>
+            <ul>
+              <li><span>Silla portátil HookOn</span><span>Azul y negra</span></li>
+              <li><span>Mecedora LazyBoy</span><span>Gris y negra</span></li>
+              <li><span>Organizador Take&amp;Go</span><span>Para coche</span></li>
+            </ul>
+          </div>
         </div>
       </div>
-    </a>
-    <a href="https://montanagrills.cl" target="_blank" class="marca-card mg-card reveal reveal-delay-2">
-      <div>
-        <div class="marca-tag mg-tag"><span class="marca-tag-dot mg-dot"></span>Cuchillería · Asado</div>
-        <div class="marca-name mg-name">Montana Grills</div>
-        <p class="marca-desc">Cuchillería para el asador que se toma en serio su oficio. Una marca con identidad propia, construida para quienes entienden que las herramientas importan tanto como la técnica.</p>
-      </div>
-      <div class="marca-footer">
-        <span class="marca-url">montanagrills.cl</span>
-        <div class="marca-arrow">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 17L17 7M17 7H7M17 7v10"/>
-          </svg>
+    </article>
+
+    <article class="brand mg" data-brand>
+      <div class="wrap">
+        <h2 class="brand-name">Montana Grills</h2>
+        <div class="brand-body">
+          <div>
+            <p class="brand-kind"><span class="chip"></span>Cuchillería para el asador que se toma en serio su oficio.</p>
+            <p class="brand-copy">Cuchillos de cocina y afiladores pensados para la parrilla chilena. Herramientas con identidad propia para quienes saben que el corte importa tanto como el fuego.</p>
+            <a class="brand-link" href="https://montanagrills.cl" rel="noopener">Visitar montanagrills.cl</a>
+          </div>
+          <div class="lineup">
+            <h3>Línea actual</h3>
+            <ul>
+              <li><span>Afilador Rolling Sharpener</span><span>Haya y nogal</span></li>
+              <li><span>Kiritsuke y chef</span><span>8 pulgadas</span></li>
+              <li><span>Santoku y nakiri</span><span>7 pulgadas</span></li>
+              <li><span>Cuchillo fileteador</span><span>6 pulgadas</span></li>
+            </ul>
+          </div>
         </div>
       </div>
-    </a>
-  </div>
-</section>
+    </article>
+  </section>
 
-<!-- MODELO -->
-<section class="modelo-section" id="modelo">
-  <div class="section-label reveal">Cómo operamos</div>
-  <h2 class="modelo-h2 reveal reveal-delay-1">Un modelo construido para escalar marcas desde cero.</h2>
-  <div class="pilares">
-    <div class="pilar reveal reveal-delay-1">
-      <div class="pilar-num">01</div>
-      <h3>Identificación de mercado</h3>
-      <p>Detectamos categorías con demanda real y baja oferta de marca propia en Chile y LATAM. Validamos antes de importar.</p>
+  <section class="how" id="como" aria-labelledby="como-h">
+    <div class="wrap">
+      <div class="how-head">
+        <h2 id="como-h">De una idea a una marca que se vende.</h2>
+        <p>Cada marca pasa por el mismo proceso. Ningún producto se importa sin que los números cierren antes.</p>
+      </div>
+      <ol class="steps" id="steps">
+        <li class="step"><span class="step-n" aria-hidden="true"></span><h3>Detectar</h3><p>Buscamos categorías con demanda comprobada y poca marca propia en Chile. Evaluamos demanda, competencia y margen de cada producto antes de pedir una muestra.</p></li>
+        <li class="step"><span class="step-n" aria-hidden="true"></span><h3>Validar</h3><p>Probamos muestras de varios fabricantes y calculamos el costo internado real. Si el margen no es sano, el producto no avanza.</p></li>
+        <li class="step"><span class="step-n" aria-hidden="true"></span><h3>Importar</h3><p>Compramos directo a fábrica y controlamos calidad y costo en cada lote, sin intermediarios.</p></li>
+        <li class="step"><span class="step-n" aria-hidden="true"></span><h3>Construir la marca</h3><p>Identidad, contenido y tienda propia desde el primer día. Cada marca tiene su propio público y su propia voz.</p></li>
+        <li class="step"><span class="step-n" aria-hidden="true"></span><h3>Vender y operar</h3><p>Tienda Shopify y MercadoLibre como canales principales, con logística, despacho y atención al cliente resueltos.</p></li>
+        <li class="step"><span class="step-n" aria-hidden="true"></span><h3>Escalar</h3><p>Diseñamos cada marca para crecer hacia México, Colombia y Argentina sin rehacer la operación.</p></li>
+      </ol>
     </div>
-    <div class="pilar reveal reveal-delay-2">
-      <div class="pilar-num">02</div>
-      <h3>Marca y canal propios</h3>
-      <p>Desarrollamos identidad, posicionamiento y contenido desde el día uno. Shopify D2C + MercadoLibre como canales primarios.</p>
-    </div>
-    <div class="pilar reveal reveal-delay-3">
-      <div class="pilar-num">03</div>
-      <h3>Escalabilidad regional</h3>
-      <p>Cada marca está diseñada para operar en Chile y expandirse a México, Colombia y Argentina sin rediseño operacional.</p>
-    </div>
-  </div>
-</section>
+  </section>
+</main>
 
-<!-- CONTACTO -->
-<section class="contacto-section" id="contacto">
-  <div class="reveal">
-    <div class="section-label" style="color:var(--gray)">
-      <span style="background:var(--gray);width:2rem;height:1px;display:block"></span>
-      Contacto
+<footer class="contact" id="contacto" aria-labelledby="contacto-h">
+  <div class="wrap">
+    <h2 id="contacto-h">¿Fabricas, distribuyes o vendes al detalle? Conversemos.</h2>
+    <p class="contact-lead">Buscamos fabricantes, retailers y marketplaces para crecer nuestras marcas.</p>
+    <a class="mail" href="mailto:contacto@housebrands.cl">contacto@housebrands.cl</a>
+    <div class="mail-sub">
+      <a href="https://www.linkedin.com/company/116026999/" rel="noopener">HouseBrands en LinkedIn</a>
+      <a href="https://memokoala.com" rel="noopener">MemoKoala</a>
+      <a href="https://montanagrills.cl" rel="noopener">Montana Grills</a>
     </div>
-    <h2 class="contacto-h2">¿Hablamos<br>de <span>negocios?</span></h2>
+    <div class="foot">
+      <span>HouseBrands, Santiago de Chile. © <span id="y">2026</span></span>
+      <a href="/erp">Acceso equipo</a>
+    </div>
   </div>
-  <div class="contacto-right reveal reveal-delay-2">
-    <a href="mailto:contacto@housebrands.cl" class="contact-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 8l9 6 9-6M3 8v10a1 1 0 001 1h16a1 1 0 001-1V8M3 8a1 1 0 011-1h16a1 1 0 011 1"/>
-      </svg>
-      contacto@housebrands.cl
-    </a>
-    <a href="https://www.linkedin.com/company/116026999/" target="_blank" class="contact-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
-        <circle cx="4" cy="4" r="2"/>
-      </svg>
-      LinkedIn
-    </a>
-    <a href="https://housebrands.cl" target="_blank" class="contact-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
-      </svg>
-      housebrands.cl
-    </a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <svg width="160" height="27" viewBox="0 0 192 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="HouseBrands" style="opacity:0.5">
-    <polygon points="0,0 13,0 13,13" fill="#F7F6F3"/>
-    <polygon points="13,0 28,0 28,13 13,13" fill="#8AA4B4"/>
-    <polygon points="0,15 13,15 13,28 0,28" fill="#8AA4B4"/>
-    <polygon points="13,15 28,28 13,28" fill="#4A6274"/>
-    <text x="36" y="22" font-family="Instrument Sans, sans-serif" font-size="16" font-weight="600" letter-spacing="-0.02em" fill="#F7F6F3">House<tspan fill="#8AA4B4">Brands</tspan></text>
-  </svg>
-  <span>© <span id="yr"></span> HouseBrands — Santiago, Chile</span>
 </footer>
 
 <script>
-// CURSOR
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animateCursor() {
-  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-  rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animateCursor);
-}
-animateCursor();
-document.querySelectorAll('a, button').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.style.width='12px'; cursor.style.height='12px'; ring.style.width='48px'; ring.style.height='48px'; });
-  el.addEventListener('mouseleave', () => { cursor.style.width='8px'; cursor.style.height='8px'; ring.style.width='32px'; ring.style.height='32px'; });
-});
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('y').textContent = new Date().getFullYear();
 
-// MOBILE NAV
-const navToggle = document.getElementById('nav-toggle');
-const navMobile = document.getElementById('nav-mobile');
-navToggle.addEventListener('click', () => { navMobile.classList.toggle('open'); });
-function closeMobileNav() { navMobile.classList.remove('open'); }
-document.addEventListener('click', e => {
-  if (!navToggle.contains(e.target) && !navMobile.contains(e.target)) {
-    navMobile.classList.remove('open');
+  /* Header: línea al hacer scroll */
+  const top = document.getElementById('top');
+  const onScrollHeader = () => top.classList.toggle('scrolled', scrollY > 8);
+
+  /* ── Campo de piezas del logo ─────────────────────────────
+     Cada bloque 2x2 repite el isotipo. Las piezas giran y se
+     encogen cerca del puntero; sin puntero, un cursor fantasma
+     recorre el campo. */
+  const host = document.getElementById('tiles');
+  const cv = host.querySelector('canvas');
+  const ctx = cv.getContext('2d');
+  const COL = { a:'#2C3E4C', b:'#4A6274', c:'#8AA4B4', mk:'#7B5FC4', mg:'#5E6B2B' };
+  // tipo: 0 triángulo sup-der, 1 cuadrado, 2 triángulo inf-izq
+  const PIECE = [[0,'a'],[1,'b'],[1,'c'],[2,'a']]; // (0,0) (1,0) (0,1) (1,1)
+  let W=0, H=0, S=0, cells=[], ptr=null, last=0, start=0, visible=true, raf=0;
+
+  function build(){
+    const r = host.getBoundingClientRect(), dpr = Math.min(devicePixelRatio||1, 2);
+    W = r.width; H = r.height;
+    cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const cols = W < 480 ? 10 : 12;
+    S = W/cols;
+    const rows = Math.floor(H/S);
+    cells = [];
+    for(let y=0;y<rows;y++) for(let x=0;x<cols;x++){
+      const [type,color] = PIECE[(y%2)*2 + (x%2)];
+      const block = (Math.floor(y/2)*cols/2 + Math.floor(x/2));
+      // dos bloques llevan el color de cada marca
+      let c = COL[color];
+      if (block === 7 && color!=='c') c = COL.mk;
+      if (block === Math.floor(rows/2)*cols/2 + 3 && color!=='c') c = COL.mg;
+      cells.push({
+        cx:x*S+S/2, cy:y*S+S/2, type, c,
+        a: reduce ? 0 : (1+Math.floor(Math.random()*3))*Math.PI/2, s: reduce?1:0,
+        delay:(x+y)*38, par:(x+y)%2?1:-1
+      });
+    }
+    start = performance.now();
+    if (reduce) draw(start);
   }
-});
 
-// SCROLL REVEAL
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-}, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  function shape(t, g){
+    const h = S/2 - g;
+    ctx.beginPath();
+    if (t===0){ ctx.moveTo(-h,-h); ctx.lineTo(h,-h); ctx.lineTo(h,h); }
+    else if (t===1){ ctx.rect(-h,-h,2*h,2*h); }
+    else { ctx.moveTo(-h,-h); ctx.lineTo(h,h); ctx.lineTo(-h,h); }
+    ctx.closePath(); ctx.fill();
+  }
 
-// COUNTERS
-function animateCounter(el, target, duration) {
-  let start = 0;
-  const step = ts => {
-    if (!start) start = ts;
-    const progress = Math.min((ts - start) / duration, 1);
-    el.textContent = Math.floor((1 - Math.pow(1 - progress, 3)) * target);
-    if (progress < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
-const counterObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { animateCounter(e.target, parseInt(e.target.dataset.target), 1200); counterObs.unobserve(e.target); }
+  function draw(now){
+    ctx.clearRect(0,0,W,H);
+    // cursor fantasma cuando no hay puntero activo
+    let p = ptr;
+    if (!p && !reduce){
+      const t = now/1000;
+      p = { x: W*(.5 + .36*Math.sin(t*.53)), y: H*(.5 + .34*Math.sin(t*.37+1.2)) };
+    }
+    const R = Math.max(W,H)*.32, g = Math.max(1.5, S*.05);
+    for (const c of cells){
+      let ta = 0, ts = 1;
+      if (p){
+        const d = Math.hypot(c.cx-p.x, c.cy-p.y);
+        if (d < R){ const k = 1 - d/R, e = k*k*(3-2*k); ta = e*Math.PI*c.par; ts = 1 - .42*e; }
+      }
+      if (!reduce){
+        const intro = now - start - c.delay;
+        const f = intro < 0 ? 0 : .14;
+        c.a += (ta - c.a)*f; c.s += (ts - c.s)*f;
+      }
+      if (c.s < .01) continue;
+      ctx.save(); ctx.translate(c.cx,c.cy); ctx.rotate(c.a); ctx.scale(c.s,c.s);
+      ctx.fillStyle = c.c; shape(c.type, g); ctx.restore();
+    }
+  }
+
+  function loop(now){
+    if (visible) draw(now);
+    raf = requestAnimationFrame(loop);
+  }
+
+  host.addEventListener('pointermove', e => {
+    const r = host.getBoundingClientRect(); ptr = { x:e.clientX-r.left, y:e.clientY-r.top };
   });
-}, { threshold: 0.5 });
-document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+  host.addEventListener('pointerleave', () => ptr = null);
+  new IntersectionObserver(es => visible = es[0].isIntersecting).observe(host);
+  let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(build, 150); });
+  build();
+  if (!reduce) raf = requestAnimationFrame(loop);
 
-// YEAR + NAV SCROLL
-document.getElementById('yr').textContent = new Date().getFullYear();
-const navEl = document.querySelector('nav');
-window.addEventListener('scroll', () => {
-  navEl.style.background = window.scrollY > 60 ? 'rgba(247,246,243,0.97)' : 'rgba(247,246,243,0.90)';
-  navEl.style.borderBottomColor = window.scrollY > 60 ? 'rgba(28,26,23,0.12)' : 'rgba(28,26,23,0.07)';
-}, { passive: true });
+  /* ── Nombres de marca: el ancho tipográfico sigue al scroll ── */
+  const names = [...document.querySelectorAll('.brand-name')];
+  const steps = document.getElementById('steps');
+  const stepEls = [...steps.querySelectorAll('.step')];
+
+  function onScroll(){
+    onScrollHeader();
+    const vh = innerHeight;
+    if (!reduce){
+      for (const n of names){
+        const r = n.closest('[data-brand]').getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height*.6)));
+        const w = 62 + p*63;                       // 62 → 125
+        const fits = n.parentElement.clientWidth;
+        n.style.fontVariationSettings = `'wdth' ${w.toFixed(1)}`;
+        if (n.scrollWidth > fits) n.style.fontVariationSettings = `'wdth' ${Math.max(62, w - (n.scrollWidth-fits)/fits*120).toFixed(1)}`;
+      }
+    }
+    // riel del proceso
+    const sr = steps.getBoundingClientRect();
+    const mid = vh*.62;
+    const p = Math.min(1, Math.max(0, (mid - sr.top) / sr.height));
+    steps.style.setProperty('--p', p.toFixed(3));
+    for (const s of stepEls){
+      const r = s.getBoundingClientRect();
+      s.classList.toggle('on', reduce || r.top + 20 < mid);
+    }
+  }
+  let ticking = false;
+  addEventListener('scroll', () => { if (!ticking){ ticking = true; requestAnimationFrame(() => { onScroll(); ticking = false; }); } }, { passive:true });
+  addEventListener('resize', onScroll);
+  onScroll();
+})();
 </script>
 </body>
 </html>
