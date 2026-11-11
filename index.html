@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231C2B3A'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Arial Narrow,Arial,sans-serif' font-weight='900' font-size='36' letter-spacing='-2' fill='%23E4EAEE'%3EHB%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=DM+Sans:opsz,wght@9..40,300..500&family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Urbanist:wght@200&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -43,7 +43,8 @@
   --mk-fondo:#D9D1F2; --mk-tinta:#2A1F52; --mk:#7B5FC4;
   --mg-fondo:#353F17; --mg-tinta:#ECE6CF; --mg:#C9A24A;
 
-  --font:'Archivo', system-ui, sans-serif;
+  --font:'DM Sans', system-ui, sans-serif;
+  --display:'Instrument Sans', system-ui, sans-serif;
   --t-1:1.333rem; --t-2:1.777rem; --t-3:2.369rem; --t-4:3.157rem;
   --t-brand:clamp(3.6rem, 13vw, 12.5rem);
   --gutter:clamp(1rem, 4vw, 3.5rem);
@@ -54,7 +55,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
-  font-family:var(--font);font-size:1.0625rem;line-height:1.55;
+  font-family:var(--font);font-size:1.0625rem;line-height:1.6;font-weight:400;
   background:var(--niebla);color:var(--pizarra);
   overflow-x:hidden;text-rendering:optimizeLegibility;
 }
@@ -75,7 +76,7 @@ img{display:block;max-width:100%}
 .nav{display:flex;gap:clamp(1rem,3vw,2.4rem);list-style:none}
 .nav a{text-decoration:none;font-size:.97rem;color:var(--acero);padding:.3rem 0;border-bottom:1.5px solid transparent;transition:color .2s,border-color .2s}
 .nav a:hover{color:var(--pizarra);border-bottom-color:var(--pizarra)}
-.team{
+.team{font-family:var(--display);
   text-decoration:none;font-size:.92rem;font-weight:600;color:var(--pizarra);
   padding:.45rem .95rem;border:1.5px solid var(--pizarra);border-radius:999px;
   transition:background .2s,color .2s;white-space:nowrap;
@@ -85,12 +86,12 @@ img{display:block;max-width:100%}
 /* ── Wordmark dinámico: HouseBrands → HB ───────────────────
    Fijo sobre la página; JS interpola tamaño, posición y el
    ancho de "ouse" y "rands" según el scroll. */
-.wm{
+.wm{font-family:var(--display);
   position:fixed;left:0;top:0;z-index:60;display:flex;align-items:flex-start;
   text-decoration:none;color:var(--pizarra);
-  font-weight:850;line-height:.8;letter-spacing:-.04em;white-space:nowrap;
+  font-weight:700;line-height:.8;letter-spacing:-.04em;white-space:nowrap;
   font-size:15vw;transform-origin:0 0;will-change:transform;
-  font-variation-settings:'wdth' 100;
+  
 }
 .wm span{display:inline-block}
 .wm .tail{overflow:hidden}
@@ -103,31 +104,32 @@ img{display:block;max-width:100%}
   display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(1.5rem,4vw,4rem);
   margin-top:clamp(2rem,5vw,3.5rem);align-items:end;
 }
-.hero h1{
-  font-size:clamp(2rem,4.2vw,3.6rem);line-height:1;letter-spacing:-.015em;font-weight:780;
-  font-variation-settings:'wdth' 72;text-wrap:balance;max-width:18ch;
+.hero h1{font-family:var(--display);
+  font-size:clamp(2rem,4vw,3.4rem);line-height:1.05;letter-spacing:-.03em;font-weight:600;
+  text-wrap:balance;max-width:18ch;
 }
-.hero-lead{font-size:var(--t-1);line-height:1.45;color:var(--acero);max-width:36ch}
+.hero-lead{font-size:var(--t-1);line-height:1.5;font-weight:300;color:var(--acero);max-width:36ch}
 .facts{
   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem;
   margin-top:clamp(2.5rem,5vw,3.5rem);padding-top:1.5rem;border-top:1.5px solid var(--pizarra);
 }
 .facts div{display:flex;flex-direction:column-reverse;gap:.15rem}
 .facts dt{font-size:.95rem;color:var(--acero)}
-.facts dd{font-size:var(--t-3);font-weight:700;line-height:1;font-variation-settings:'wdth' 75;letter-spacing:-.01em}
+.facts dd{font-family:var(--display);font-size:var(--t-3);font-weight:700;line-height:1;letter-spacing:-.01em}
 
 /* ── Marcas ─────────────────────────────────────────────── */
 .brand{padding:clamp(3.5rem,8vw,7rem) 0 clamp(3rem,6vw,5rem);overflow:hidden}
 .brand.mk{background:var(--mk-fondo);color:var(--mk-tinta)}
 .brand.mg{background:var(--mg-fondo);color:var(--mg-tinta)}
 .brand-name{
-  font-size:var(--t-brand);line-height:.85;font-weight:850;letter-spacing:-.025em;
-  white-space:nowrap;font-variation-settings:'wdth' 100;
+  font-size:var(--t-brand);line-height:.9;white-space:nowrap;
 }
+.mk .brand-name{font-family:'Bricolage Grotesque',var(--display);font-weight:700;letter-spacing:-.04em}
+.mg .brand-name{font-family:'Urbanist',var(--display);font-weight:200;letter-spacing:-.02em}
 .brand-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(1.5rem,6vw,6rem);margin-top:clamp(1.75rem,4vw,3rem);align-items:start}
-.brand-kind{font-size:var(--t-2);line-height:1.2;font-weight:600;font-variation-settings:'wdth' 90;max-width:22ch}
+.brand-kind{font-family:var(--display);font-size:var(--t-2);line-height:1.2;font-weight:600;max-width:22ch}
 .brand-copy{max-width:48ch;font-size:1.08rem;opacity:.86}
-.brand-link{
+.brand-link{font-family:var(--display);
   display:inline-block;margin-top:1.5rem;font-weight:650;font-size:1.1rem;text-decoration:none;
   padding-bottom:.2rem;border-bottom:2px solid currentColor;transition:letter-spacing .25s;
 }
@@ -157,8 +159,17 @@ img{display:block;max-width:100%}
   position:absolute;left:.8rem;right:.8rem;bottom:.7rem;z-index:2;color:#fff;
   display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
 }
-.shot-cap b{font-size:.98rem;font-weight:700;font-variation-settings:'wdth' 85}
+.shot-cap b{font-family:var(--display);font-size:.98rem;font-weight:700;}
 .shot-cap span{display:none}
+.tile{display:flex;flex-direction:column;justify-content:space-between;padding:1.1rem;text-decoration:none}
+.tile::after{display:none}
+.mk .tile{background:var(--mk-tinta);color:var(--mk-fondo)}
+.mg .tile{background:var(--mg-tinta);color:var(--mg-fondo)}
+.tile-name{font-size:1.6rem;line-height:1}
+.mk .tile-name{font-family:'Bricolage Grotesque',var(--display);font-weight:700;letter-spacing:-.03em}
+.mg .tile-name{font-family:'Urbanist',var(--display);font-weight:200}
+.tile-cta{font-family:var(--display);font-weight:600;font-size:.98rem;padding-bottom:.2rem;border-bottom:1.5px solid currentColor;align-self:flex-start}
+.tile:hover .tile-cta{letter-spacing:.02em}
 .reel-nav{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
 .reel-nav button{
   width:2.75rem;height:2.75rem;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:inherit;
@@ -171,7 +182,7 @@ img{display:block;max-width:100%}
 /* ── Proceso ────────────────────────────────────────────── */
 .how{padding:clamp(4rem,9vw,8rem) 0}
 .how-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2rem;align-items:end}
-.how h2,.contact h2{font-size:var(--t-4);line-height:.95;font-weight:800;font-variation-settings:'wdth' 72;letter-spacing:-.015em;max-width:14ch;text-wrap:balance}
+.how h2,.contact h2{font-family:var(--display);font-size:var(--t-4);line-height:1;font-weight:700;letter-spacing:-.035em;max-width:14ch;text-wrap:balance}
 .how-head p{color:var(--acero);max-width:44ch;font-size:1.08rem}
 .steps{list-style:none;margin-top:clamp(2.5rem,6vw,4.5rem);position:relative;counter-reset:paso}
 .steps::before,.steps::after{
@@ -191,20 +202,20 @@ img{display:block;max-width:100%}
 }
 .step-n::before{content:counter(paso)}
 .step.on .step-n{background:var(--pizarra);border-color:var(--pizarra);color:var(--niebla)}
-.step h3{font-size:var(--t-2);font-weight:700;line-height:1.1;font-variation-settings:'wdth' 80}
+.step h3{font-family:var(--display);font-size:var(--t-2);font-weight:700;line-height:1.1;}
 .step p{color:var(--acero);max-width:56ch}
 
 /* ── Contacto ───────────────────────────────────────────── */
 .contact{background:var(--pizarra);color:var(--niebla);padding:clamp(4rem,9vw,8rem) 0 2.5rem}
 .contact h2{max-width:18ch}
 .contact-lead{margin-top:1.25rem;max-width:48ch;color:var(--hielo);font-size:1.12rem}
-.mail{
+.mail{font-family:var(--display);font-variation-settings:'wdth' 75;
   display:inline-block;margin-top:clamp(2rem,5vw,3.5rem);text-decoration:none;
-  font-size:clamp(1.9rem,6.4vw,5.6rem);font-weight:800;line-height:1;letter-spacing:-.02em;
-  font-variation-settings:'wdth' 70;transition:font-variation-settings .45s cubic-bezier(.2,.8,.2,1);
+  font-size:clamp(1.9rem,6.4vw,5.6rem);font-weight:700;line-height:1;letter-spacing:-.02em;
+  transition:font-variation-settings .45s cubic-bezier(.2,.8,.2,1);
   overflow-wrap:anywhere;
 }
-.mail:hover,.mail:focus-visible{font-variation-settings:'wdth' 112}
+.mail:hover,.mail:focus-visible{font-variation-settings:'wdth' 100}
 .mail-sub{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:1.5rem}
 .mail-sub a{color:var(--hielo);text-decoration:none;border-bottom:1px solid var(--acero);padding-bottom:.15rem}
 .mail-sub a:hover{color:var(--niebla);border-color:var(--niebla)}
@@ -224,6 +235,8 @@ img{display:block;max-width:100%}
 }
 @media (max-width:640px){
   .nav li:not(:last-child){display:none}
+  .facts dd{font-size:1.65rem}
+  .facts{align-items:end}
   .brand-name{white-space:normal}
 }
 @media (prefers-reduced-motion:reduce){
@@ -263,7 +276,7 @@ img{display:block;max-width:100%}
       <dl class="facts">
         <div><dt>año de inicio</dt><dd>2024</dd></div>
         <div><dt>marcas propias</dt><dd>2</dd></div>
-        <div><dt>clientes</dt><dd>+500</dd></div>
+        <div><dt>pedidos despachados</dt><dd>+800</dd></div>
         <div><dt>canales de venta</dt><dd>Shopify y ML</dd></div>
       </dl>
     </div>
@@ -286,7 +299,7 @@ img{display:block;max-width:100%}
           <a class="shot" href="https://memokoala.com" rel="noopener"><img src="/img/marcas/mk-01.webp" alt="Silla portátil HookOn de MemoKoala" loading="lazy" onerror="this.remove()"><span class="shot-cap"><b>Silla HookOn</b><span>Ver en tienda</span></span></a>
           <a class="shot" href="https://memokoala.com" rel="noopener"><img src="/img/marcas/mk-02.webp" alt="Mecedora LazyBoy de MemoKoala" loading="lazy" onerror="this.remove()"><span class="shot-cap"><b>Mecedora LazyBoy</b><span>Ver en tienda</span></span></a>
           <a class="shot" href="https://memokoala.com" rel="noopener"><img src="/img/marcas/mk-03.webp" alt="Organizador Take&amp;Go de MemoKoala" loading="lazy" onerror="this.remove()"><span class="shot-cap"><b>Take&amp;Go</b><span>Ver en tienda</span></span></a>
-          <a class="shot" href="https://memokoala.com" rel="noopener"><img src="/img/marcas/mk-04.webp" alt="Silla HookOn en uso en una mesa familiar" loading="lazy" onerror="this.remove()"><span class="shot-cap"><b>A la mesa, donde sea</b><span>Ver en tienda</span></span></a>
+          <a class="shot tile" href="https://memokoala.com/collections/all" rel="noopener"><span class="tile-name">MemoKoala</span><span class="tile-cta">Ver toda la colección</span></a>
         </div>
         <div class="wrap reel-nav">
           <button type="button" data-dir="-1" aria-label="Foto anterior de MemoKoala">‹</button>
@@ -312,6 +325,7 @@ img{display:block;max-width:100%}
           <a class="shot" href="https://montanagrills.cl" rel="noopener"><img src="/img/marcas/mg-02.webp" alt="Afilador Rolling Sharpener de Montana Grills" loading="lazy" onerror="this.remove()"><span class="shot-cap"><b>Rolling Sharpener</b><span>Ver en tienda</span></span></a>
           <a class="shot" href="https://montanagrills.cl" rel="noopener"><img src="/img/marcas/mg-03.webp" alt="Cuchillo santoku Montana Grills junto a la parrilla" loading="lazy" onerror="this.remove()"><span class="shot-cap"><b>Santoku</b><span>Ver en tienda</span></span></a>
           <a class="shot" href="https://montanagrills.cl" rel="noopener"><img src="/img/marcas/mg-04.webp" alt="Cuchillo fileteador Montana Grills" loading="lazy" onerror="this.remove()"><span class="shot-cap"><b>Fileteador</b><span>Ver en tienda</span></span></a>
+          <a class="shot tile" href="https://montanagrills.cl/collections/all" rel="noopener"><span class="tile-name">Montana Grills</span><span class="tile-cta">Ver toda la colección</span></a>
         </div>
         <div class="wrap reel-nav">
           <button type="button" data-dir="-1" aria-label="Foto anterior de Montana Grills">‹</button>
@@ -374,7 +388,8 @@ img{display:block;max-width:100%}
     const wrap = space.parentElement;
     const cs = getComputedStyle(wrap);
     const inner = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    big = Math.floor(100 * inner / w100 * 0.995);
+    const share = innerWidth > 900 ? 0.62 : 1;      // en desktop no ocupa todo el ancho
+    big = Math.floor(100 * inner * share / w100 * 0.995);
     wm.style.fontSize = big + 'px';
     tw = tails.map(t => t.firstElementChild.getBoundingClientRect().width);
     space.style.height = (big * 0.8) + 'px';
@@ -416,16 +431,6 @@ img{display:block;max-width:100%}
   function onScroll(){
     update();
     const vh = innerHeight;
-    if (!reduce){
-      for (const n of names){
-        const r = n.closest('[data-brand]').getBoundingClientRect();
-        const p = clamp((vh - r.top) / (vh + r.height * .6), 0, 1);
-        const w = 62 + p * 63;                       // ancho tipográfico 62 → 125
-        n.style.fontVariationSettings = `'wdth' ${w.toFixed(1)}`;
-        const fits = n.parentElement.clientWidth;
-        if (n.scrollWidth > fits) n.style.fontVariationSettings = `'wdth' ${Math.max(62, w - (n.scrollWidth - fits) / fits * 120).toFixed(1)}`;
-      }
-    }
     const sr = steps.getBoundingClientRect(), mid = vh * .62;
     steps.style.setProperty('--p', clamp((mid - sr.top) / sr.height, 0, 1).toFixed(3));
     for (const s of stepEls) s.classList.toggle('on', reduce || s.getBoundingClientRect().top + 20 < mid);
