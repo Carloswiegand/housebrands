@@ -18,7 +18,8 @@ const H_STOCK_EXT  = 'Stock_Externo';
 const ENC_INVENTARIO = ['Fecha', 'SKU', 'Producto', 'Marca', 'Stock Shopify', 'Stock ML', 'Diferencia', 'Estado',
   'Publicaciones ML', 'Stock externo', 'Stock total'];
 
-// Corrida automática diaria (activador). Reemplaza la foto del día si se corre dos veces.
+// Corrida automática cada hora (activador). Reemplaza la foto del día: la última corrida
+// del día (~23:xx) queda como historial y el ERP siempre muestra el stock de la última hora.
 function snapshotInventario() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) return;
@@ -65,13 +66,13 @@ function snapshotInventario() {
   }
 }
 
-// Crea (una sola vez) el activador diario a las 23:00 (zona del proyecto).
+// Crea (una sola vez) el activador horario.
 function activarInventarioDiario() {
   ScriptApp.getProjectTriggers()
     .filter(tr => tr.getHandlerFunction() === 'snapshotInventario')
     .forEach(tr => ScriptApp.deleteTrigger(tr));
-  ScriptApp.newTrigger('snapshotInventario').timeBased().everyDays(1).atHour(23).create();
-  console.log('Activador diario de snapshotInventario creado (23:00).');
+  ScriptApp.newTrigger('snapshotInventario').timeBased().everyHours(1).create();
+  console.log('Activador horario de snapshotInventario creado.');
 }
 
 // ── internos ────────────────────────────────────────────────
