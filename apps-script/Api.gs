@@ -87,8 +87,10 @@ function ventaManual_(v) {
       margen, bruto > 0 ? Math.round((margen / bruto) * 10000) / 100 : 0,
       '', '', 'CL',
       new Date(), 'Manual_ERP',
+      '', _clienteId_('MN-', v.cliente), canal, '', '', '', '', '',
     ];
   });
+  _asegurarEncabezadosExtra_(hojaV);
   const ul = hojaV.getLastRow();
   hojaV.getRange(ul + 1, 1, filas.length, filas[0].length).setValues(filas);
   _formato(hojaV, ul + 1, filas.length);
@@ -153,4 +155,85 @@ function _avisarSinCosto_(filas, canal) {
 function probarAvisoSinCosto() {
   ScriptApp.requireScopes(ScriptApp.AuthMode.FULL, ['https://www.googleapis.com/auth/script.send_mail']);
   _avisarSinCosto_([[0, 0, 0, 0, 0, 'Prueba', 'PRUEBA-1', 'SKU-DE-PRUEBA']], 'Prueba');
+}
+
+// ── Columnas de análisis (después de Origen) ────────────────
+// Se agregan al final para no mover las 26 columnas que usan el P&L y el ERP.
+const H_EXTRA = ['Hora', 'Cliente', 'Fuente', 'Campaña', 'N° compra cliente', 'Medio de pago', 'Despacho', 'Región código'];
+
+function _asegurarEncabezadosExtra_(hojaV) {
+  const r = hojaV.getRange(1, 27, 1, H_EXTRA.length);
+  const act = r.getValues()[0];
+  if (act.join('|') !== H_EXTRA.join('|')) r.setValues([H_EXTRA]).setFontWeight('bold');
+}
+
+// Código anónimo y estable de cliente (no se guarda el email ni el id real).
+function _clienteId_(prefijo, valor) {
+  const v = String(valor || '').trim().toLowerCase();
+  if (!v) return '';
+  const d = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, 'hb|' + v);
+  return prefijo + d.slice(0, 5).map(b => ('0' + (b & 255).toString(16)).slice(-2)).join('');
+}
+
+// Código de región ISO de Chile sin prefijo ("CL-RM" → "RM").
+function _regionCod_(v) { return String(v || '').replace(/^CL-/, '').trim().toUpperCase(); }
+
+// Rellena columnas de análisis (y ciudad/región de ML) en ventas ya registradas, con lo que
+// las APIs todavía entregan: Shopify últimos ~60 días, ML último año. Se puede correr varias
+// veces: solo completa filas vacías y se detiene antes del límite de tiempo.
+function enriquecerHistorico() {
+  const t0 = Date.now();
+  const hojaV = SpreadsheetApp.getActive().getSheetByName(H_VENTAS);
+  _asegurarEncabezadosExtra_(hojaV);
+  const n = hojaV.getLastRow() - 1;
+  const base = hojaV.getRange(2, 1, n, 26 + H_EXTRA.length).getValues();
+  const pendientes = {};   // 'canal|orden' → [índices de fila]
+  base.forEach((r, i) => {
+    if (r[26] !== '' && r[26] !== null) return;                       // ya tiene Hora
+    if (r[5] !== 'Shopify' && r[5] !== 'ML') return;
+    const k = r[5] + '|' + String(r[6]);
+    (pendientes[k] = pendientes[k] || []).push(i);
+  });
+  let llenas = 0;
+  const aplicar = (k, extra, ciudad, region) => {
+    (pendientes[k] || []).forEach(i => {
+      for (let j = 0; j < H_EXTRA.length; j++) base[i][26 + j] = extra[j];
+      if (ciudad && !base[i][21]) base[i][21] = ciudad;
+      if (region && !base[i][22]) base[i][22] = region;
+      llenas++;
+    });
+    delete pendientes[k];
+  };
+
+  // Shopify
+  SHOPIFY_TIENDAS.forEach(t => {
+    const token = _shopifyToken_(t);
+    if (!token) return;
+    _shopifyPedidos_(t, token, 60).forEach(o => {
+      const k = 'Shopify|' + o.name;
+      if (pendientes[k]) aplicar(k, _shopifyExtra_(o, new Date(o.processedAt || o.createdAt)));
+    });
+  });
+
+  // MercadoLibre (último año). Solo consulta el envío de órdenes que faltan.
+  const desde = Utilities.formatDate(new Date(Date.now() - 365 * 864e5), 'America/Santiago', "yyyy-MM-dd'T'00:00:00.000-03:00");
+  const cache = {};
+  let cortado = false;
+  for (const o of _mlOrdenes_(desde)) {
+    if (Date.now() - t0 > 270000) { cortado = true; break; }
+    const k = 'ML|' + String(o.pack_id || o.id);
+    if (!pendientes[k]) continue;
+    const env = _mlEnvio_(o.shipping && o.shipping.id, cache);
+    const pago = (o.payments || [])[0] || {};
+    const medio = String(pago.payment_type || '') + (Number(pago.installments) > 1 ? ' ' + pago.installments + ' cuotas' : '');
+    aplicar(k, [Utilities.formatDate(new Date(o.date_created), 'America/Santiago', 'HH:mm'), _clienteId_('ML-', (o.buyer || {}).id),
+      'MercadoLibre', '', '', medio, env.logistica, env.regionCod], env.ciudad, env.region);
+  }
+
+  // Solo se escriben Ciudad/Región y las columnas nuevas (el resto de la fila no se toca).
+  hojaV.getRange(2, 22, n, 2).setValues(base.map(r => [r[21], r[22]]));
+  hojaV.getRange(2, 27, n, H_EXTRA.length).setValues(base.map(r => r.slice(26, 26 + H_EXTRA.length)));
+  const msg = llenas + ' líneas completadas; quedan ' + Object.keys(pendientes).length + ' órdenes sin datos en las APIs' + (cortado ? ' (corte por tiempo: volver a ejecutar)' : '');
+  console.log(msg);
+  return msg;
 }

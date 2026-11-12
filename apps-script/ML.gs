@@ -121,19 +121,25 @@ function _mlOrdenes_(desde, hasta) {
 //   Flex (self_service): envío 0, bonificación = descuento promocionado por ML.
 //   Colecta / cross_docking / otros: envío = costo que paga el vendedor, bonificación 0.
 function _mlEnvio_(shippingId, cacheEnvios) {
-  if (!shippingId) return { costo: 0, bonif: 0 };
+  if (!shippingId) return { costo: 0, bonif: 0, ciudad: '', region: '', regionCod: '', logistica: '' };
   if (cacheEnvios[shippingId]) return cacheEnvios[shippingId];
-  let res = { costo: 0, bonif: 0 };
+  let res = { costo: 0, bonif: 0, ciudad: '', region: '', regionCod: '', logistica: '' };
   try {
     const sh = _mlGet_('/shipments/' + shippingId);
     const logistica = String(sh.logistic_type || (sh.logistic || {}).type || '');
+    const dir = sh.receiver_address || (sh.destination || {}).shipping_address || {};
+    const geo = {
+      ciudad: String((dir.city || {}).name || ''), region: String((dir.state || {}).name || ''),
+      regionCod: _regionCod_((dir.state || {}).id),
+      logistica: { self_service: 'Flex', cross_docking: 'Colecta', xd_drop_off: 'Colecta', drop_off: 'Drop off', fulfillment: 'Full' }[logistica] || logistica,
+    };
     const c = _mlGet_('/shipments/' + shippingId + '/costs');
     const s = (c.senders || [])[0] || {};
     if (logistica === 'self_service') {
       const bonif = (s.discounts || []).reduce((acc, d) => acc + Math.abs(Number(d.promoted_amount) || 0), 0);
-      res = { costo: 0, bonif: Math.round(bonif) };
+      res = Object.assign({ costo: 0, bonif: Math.round(bonif) }, geo);
     } else {
-      res = { costo: Math.round(Math.abs(Number(s.cost) || 0)), bonif: 0 };
+      res = Object.assign({ costo: Math.round(Math.abs(Number(s.cost) || 0)), bonif: 0 }, geo);
     }
   } catch (e) { /* sin datos de envío: se deja en 0 */ }
   cacheEnvios[shippingId] = res;
@@ -175,6 +181,14 @@ function _mlFilas_(ordenes, claves) {
     const mes = Number(Utilities.formatDate(fecha, 'America/Santiago', 'M'));
     const anio = Number(Utilities.formatDate(fecha, 'America/Santiago', 'yyyy'));
     const shipId = o.shipping && o.shipping.id;
+    const env = _mlEnvio_(shipId, cacheEnvios);          // datos de destino (también para líneas sin costo de envío)
+    const pago = (o.payments || [])[0] || {};
+    const medio = String(pago.payment_type || '') + (Number(pago.installments) > 1 ? ' ' + pago.installments + ' cuotas' : '');
+    const extra = [
+      Utilities.formatDate(fecha, 'America/Santiago', 'HH:mm'),
+      _clienteId_('ML-', (o.buyer || {}).id),
+      'MercadoLibre', '', '', medio, env.logistica, env.regionCod,
+    ];
 
     pendientes.forEach(it => {
       const sku = String(it.item.seller_sku || it.item.seller_custom_field || '').trim();
@@ -205,9 +219,9 @@ function _mlFilas_(ordenes, claves) {
         costoEnvio, comision, cupon ? 'CUPON ML -' + cupon : '', bonif, ingresoReal,
         costoUnit, costoTotal,
         margenB, margenPct,
-        '', '', 'CL',
+        env.ciudad, env.region, 'CL',
         new Date(), 'ML_API',
-      ]);
+      ].concat(extra));
     });
   });
   return filas;
@@ -292,6 +306,7 @@ function syncML() {
     });
     if (filas.length) {
       _avisarSinCosto_(filas, 'MercadoLibre');
+      _asegurarEncabezadosExtra_(hojaV);
       const ul = hojaV.getLastRow();
       hojaV.getRange(ul + 1, 7, filas.length, 1).setNumberFormat('0');
       hojaV.getRange(ul + 1, 1, filas.length, filas[0].length).setValues(filas);

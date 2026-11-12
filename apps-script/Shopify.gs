@@ -103,6 +103,7 @@ function _syncTienda_(t) {
       const anio = Number(Utilities.formatDate(fecha, 'America/Santiago', 'yyyy'));
       const envioTotal = _monto_(o.totalShippingPriceSet);
       const dir = o.billingAddress || o.shippingAddress || {};
+      const extra = _shopifyExtra_(o, fecha);
 
       (o.lineItems.nodes || []).forEach((li, idx) => {
         const sku = String(li.sku || '').trim();
@@ -136,13 +137,14 @@ function _syncTienda_(t) {
           margenB, margenPct,
           String(dir.city || ''), String(dir.province || ''), String(dir.countryCodeV2 || ''),
           new Date(), 'Shopify_API',
-        ]);
+        ].concat(extra));
         claves.add(clave);
       });
     });
 
     if (rows.length > 0) {
       _avisarSinCosto_(rows, 'Shopify ' + t.nombre);
+      _asegurarEncabezadosExtra_(hojaV);
       const ul = hojaV.getLastRow();
       hojaV.getRange(ul + 1, 1, rows.length, rows[0].length).setValues(rows);
       _formato(hojaV, ul + 1, rows.length);
@@ -181,7 +183,9 @@ function _shopifyPedidos_(t, token, dias) {
   const desde = Utilities.formatDate(new Date(Date.now() - dias * 864e5), 'UTC', "yyyy-MM-dd'T'HH:mm:ss'Z'");
   const query = 'query($c:String,$q:String){orders(first:100,after:$c,query:$q,sortKey:CREATED_AT){' +
     'pageInfo{hasNextPage endCursor} nodes{name createdAt processedAt cancelledAt test displayFinancialStatus discountCode ' +
-    'totalShippingPriceSet{shopMoney{amount}} billingAddress{city province countryCodeV2} shippingAddress{city province countryCodeV2} ' +
+    'totalShippingPriceSet{shopMoney{amount}} billingAddress{city province countryCodeV2} shippingAddress{city province provinceCode countryCodeV2} ' +
+    'email sourceName paymentGatewayNames shippingLine{title} ' +
+    'customerJourneySummary{customerOrderIndex firstVisit{source utmParameters{source medium campaign}} lastVisit{source utmParameters{source medium campaign}}} ' +
     'lineItems(first:50){nodes{sku name vendor quantity originalUnitPriceSet{shopMoney{amount}} totalDiscountSet{shopMoney{amount}}}}}}}';
   const out = [];
   let cursor = null;
@@ -202,6 +206,24 @@ function _shopifyPedidos_(t, token, dias) {
     cursor = ord.pageInfo.endCursor;
   }
   return out;
+}
+
+// Columnas de análisis: Hora, Cliente, Fuente, Campaña, N° compra cliente, Medio de pago, Despacho, Región código.
+function _shopifyExtra_(o, fecha) {
+  const cj = o.customerJourneySummary || {};
+  const visita = cj.firstVisit || cj.lastVisit || {};
+  const utm = ((cj.lastVisit || {}).utmParameters) || ((cj.firstVisit || {}).utmParameters) || {};
+  const fuente = visita.source || (o.sourceName === 'web' ? 'Directo' : String(o.sourceName || ''));
+  return [
+    Utilities.formatDate(fecha, 'America/Santiago', 'HH:mm'),
+    _clienteId_('SH-', o.email),
+    String(fuente || ''),
+    [utm.source, utm.medium, utm.campaign].filter(Boolean).join(' / '),
+    cj.customerOrderIndex || '',
+    (o.paymentGatewayNames || []).join(', '),
+    String((o.shippingLine || {}).title || ''),
+    _regionCod_((o.shippingAddress || {}).provinceCode),
+  ];
 }
 
 function _monto_(set) {
