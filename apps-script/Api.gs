@@ -38,6 +38,7 @@ function doPost(e) {
   try {
     if (body.action === 'venta_manual') return json_(ventaManual_(body.venta || {}));
     if (body.action === 'anular_manual') return json_(anularManual_(body.orden, body.canal));
+    if (body.action === 'enriquecer') return json_(enriquecerDesdeDatos_(body.canal, body.datos || {}));
     return json_({ ok: false, error: 'acción desconocida' });
   } catch (err) {
     return json_({ ok: false, error: err.message });
@@ -95,6 +96,27 @@ function ventaManual_(v) {
   hojaV.getRange(ul + 1, 1, filas.length, filas[0].length).setValues(filas);
   _formato(hojaV, ul + 1, filas.length);
   return { ok: true, orden: orden, lineas: filas.length, total: filas.reduce((s, f) => s + f[11], 0) };
+}
+
+// Completa columnas de análisis desde datos externos (p. ej. CSV histórico de Shopify procesado
+// fuera de la planilla). datos = { 'N° orden': [Hora, Cliente, Fuente, Campaña, N° compra, Medio de pago, Despacho, Región código] }.
+// Solo llena filas del canal indicado cuya columna Hora está vacía; no toca nada más.
+function enriquecerDesdeDatos_(canal, datos) {
+  if (['Shopify', 'ML'].indexOf(canal) === -1) throw new Error('canal no válido');
+  const hojaV = SpreadsheetApp.getActive().getSheetByName(H_VENTAS);
+  _asegurarEncabezadosExtra_(hojaV);
+  const n = hojaV.getLastRow() - 1;
+  const base = hojaV.getRange(2, 1, n, 26 + H_EXTRA.length).getValues();
+  let llenas = 0;
+  const extra = base.map(r => {
+    const act = r.slice(26, 26 + H_EXTRA.length);
+    const d = datos[String(r[6])];
+    if (r[5] !== canal || !d || (act[0] !== '' && act[0] !== null)) return act;
+    llenas++;
+    return H_EXTRA.map((_, j) => (d[j] === undefined || d[j] === null) ? '' : d[j]);
+  });
+  hojaV.getRange(2, 27, n, H_EXTRA.length).setValues(extra);
+  return { ok: true, llenas: llenas };
 }
 
 // Solo anula ventas cargadas desde el módulo manual (Origen = Manual_ERP).

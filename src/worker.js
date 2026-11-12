@@ -68,7 +68,7 @@ async function ventaManual(request, env) {
 
   let body;
   try { body = await request.json(); } catch { return json({ ok: false, error: 'json inválido' }, 400); }
-  if (!['venta_manual', 'anular_manual'].includes(body.action)) return json({ ok: false, error: 'acción desconocida' }, 400);
+  if (!['venta_manual', 'anular_manual', 'enriquecer'].includes(body.action)) return json({ ok: false, error: 'acción desconocida' }, 400);
   const payload = { ...body, key: env.SHEETS_API_KEY, usuario: identity.email };
 
   // Apps Script responde 302 a googleusercontent; fetch lo sigue con GET y trae el JSON.
