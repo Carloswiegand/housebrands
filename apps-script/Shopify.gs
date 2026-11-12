@@ -124,7 +124,7 @@ function _syncTienda_(t) {
           envio, cargoMP, discCode, descuento, precioBruto - cargoMP,
           costoUnit, costoTotal,
           margenB, margenPct,
-          String(dir.city || ''), String(dir.province || ''), String(dir.country || ''),
+          String(dir.city || ''), String(dir.province || ''), String(dir.countryCodeV2 || ''),
           new Date(), 'Shopify_API',
         ]);
         claves.add(clave);
@@ -170,7 +170,7 @@ function _shopifyPedidos_(t, token, dias) {
   const desde = Utilities.formatDate(new Date(Date.now() - dias * 864e5), 'UTC', "yyyy-MM-dd'T'HH:mm:ss'Z'");
   const query = 'query($c:String,$q:String){orders(first:100,after:$c,query:$q,sortKey:CREATED_AT){' +
     'pageInfo{hasNextPage endCursor} nodes{name createdAt processedAt cancelledAt test displayFinancialStatus discountCode ' +
-    'totalShippingPriceSet{shopMoney{amount}} billingAddress{city province country} shippingAddress{city province country} ' +
+    'totalShippingPriceSet{shopMoney{amount}} billingAddress{city province countryCodeV2} shippingAddress{city province countryCodeV2} ' +
     'lineItems(first:50){nodes{sku name vendor quantity originalUnitPriceSet{shopMoney{amount}} totalDiscountSet{shopMoney{amount}}}}}}}';
   const out = [];
   let cursor = null;
