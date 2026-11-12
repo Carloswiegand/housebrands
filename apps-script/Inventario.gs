@@ -5,13 +5,18 @@
 // y se compara. Si Shopify y ML no coinciden para un SKU, queda marcado "Revisar".
 //
 // Hoja: Inventario_Diario (historial; una fila por SKU por día).
-//   Fecha | SKU | Producto | Marca | Stock Shopify | Stock ML | Diferencia | Estado | Publicaciones ML
+//   Fecha | SKU | Producto | Marca | Stock Shopify | Stock ML | Diferencia | Estado |
+//   Publicaciones ML | Stock externo | Stock total
 //
-// Ojo: esto es stock en ABEE. Unidades fuera de ABEE (bodega papás, casa HigoKids)
-// no aparecen en las plataformas y se siguen ajustando a mano en el ERP.
+// Stock fuera de ABEE (otra bodega, casa HigoKids, etc.) no aparece en las plataformas:
+// se anota a mano en la hoja Stock_Externo (SKU | Ubicación | Unidades | Actualizado | Nota)
+// y se suma en "Stock total". Stock total = stock ABEE (Shopify; si no hay, ML) + externo.
 // =============================================================
 
 const H_INVENTARIO = 'Inventario_Diario';
+const H_STOCK_EXT  = 'Stock_Externo';
+const ENC_INVENTARIO = ['Fecha', 'SKU', 'Producto', 'Marca', 'Stock Shopify', 'Stock ML', 'Diferencia', 'Estado',
+  'Publicaciones ML', 'Stock externo', 'Stock total'];
 
 // Corrida automática diaria (activador). Reemplaza la foto del día si se corre dos veces.
 function snapshotInventario() {
@@ -21,26 +26,26 @@ function snapshotInventario() {
     const sh = _stockShopify_();
     let ml;
     try { ml = _stockML_(); } catch (e) { ml = { stock: {}, nombre: {}, publicaciones: {}, error: e.message }; }
-    const skus = new Set(Object.keys(COSTOS_SKU).concat(Object.keys(sh.stock), Object.keys(ml.stock)));
+    const ext = _stockExterno_();
+    const skus = new Set(Object.keys(COSTOS_SKU).concat(Object.keys(sh.stock), Object.keys(ml.stock), Object.keys(ext)));
     const hoy = Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd');
 
     const filas = [];
     Array.from(skus).filter(Boolean).sort().forEach(sku => {
       const s = sh.stock[sku], m = ml.stock[sku];
-      if (s === undefined && m === undefined) return;            // SKU sin publicación (p. ej. extinto)
+      const e = ext[sku] || 0;
+      if (s === undefined && m === undefined && !e) return;      // SKU sin publicación ni stock externo (p. ej. extinto)
+      const abee = s !== undefined ? s : (m !== undefined ? m : 0);
       const dif = (s === undefined || m === undefined) ? '' : s - m;
-      const estado = s === undefined ? 'Solo ML' : m === undefined ? (ml.error ? 'Sin dato ML' : 'Solo Shopify') : dif === 0 ? 'OK' : 'Revisar';
+      const estado = (s === undefined && m === undefined) ? 'Solo externo' : s === undefined ? 'Solo ML' : m === undefined ? (ml.error ? 'Sin dato ML' : 'Solo Shopify') : dif === 0 ? 'OK' : 'Revisar';
       filas.push([hoy, sku, NOMBRES_SKU[sku] || sh.nombre[sku] || ml.nombre[sku] || '', sh.marca[sku] || _marcaML(sku, ml.nombre[sku] || ''),
-        s === undefined ? '' : s, m === undefined ? '' : m, dif, estado, ml.publicaciones[sku] || 0]);
+        s === undefined ? '' : s, m === undefined ? '' : m, dif, estado, ml.publicaciones[sku] || 0, e, abee + e]);
     });
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     let hoja = ss.getSheetByName(H_INVENTARIO);
-    if (!hoja) {
-      hoja = ss.insertSheet(H_INVENTARIO);
-      hoja.appendRow(['Fecha', 'SKU', 'Producto', 'Marca', 'Stock Shopify', 'Stock ML', 'Diferencia', 'Estado', 'Publicaciones ML']);
-      hoja.setFrozenRows(1);
-    }
+    if (!hoja) { hoja = ss.insertSheet(H_INVENTARIO); hoja.setFrozenRows(1); }
+    hoja.getRange(1, 1, 1, ENC_INVENTARIO.length).setValues([ENC_INVENTARIO]);
     // Quita la foto previa del mismo día (si existe) para no duplicar.
     const datos = hoja.getDataRange().getDisplayValues();
     for (let i = datos.length - 1; i >= 1; i--) if (datos[i][0] === hoy) hoja.deleteRow(i + 1);
@@ -49,7 +54,7 @@ function snapshotInventario() {
       hoja.getRange(2, 1, hoja.getLastRow() - 1, 1).setNumberFormat('@');
     }
 
-    const revisar = filas.filter(f => f[7] !== 'OK' && f[7] !== 'Sin dato ML').map(f => f[1] + ' (' + f[7] + ': SH ' + f[4] + ' / ML ' + f[5] + ')');
+    const revisar = filas.filter(f => ['OK', 'Sin dato ML', 'Solo externo'].indexOf(f[7]) === -1).map(f => f[1] + ' (' + f[7] + ': SH ' + f[4] + ' / ML ' + f[5] + ')');
     const msg = hoy + ' — ' + filas.length + ' SKUs, ' + revisar.length + ' por revisar' + (revisar.length ? ': ' + revisar.join('; ') : '') +
       (sh.errores.length ? ' | errores: ' + sh.errores.join('; ') : '') + (ml.error ? ' | ML: ' + ml.error : '');
     PropertiesService.getScriptProperties().setProperty('INVENTARIO_ULTIMO', msg);
@@ -70,6 +75,25 @@ function activarInventarioDiario() {
 }
 
 // ── internos ────────────────────────────────────────────────
+
+// Unidades fuera de ABEE por SKU (suma de todas las ubicaciones). Crea la hoja si no existe.
+function _stockExterno_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let hoja = ss.getSheetByName(H_STOCK_EXT);
+  if (!hoja) {
+    hoja = ss.insertSheet(H_STOCK_EXT);
+    hoja.appendRow(['SKU', 'Ubicación', 'Unidades', 'Actualizado', 'Nota']);
+    hoja.setFrozenRows(1);
+    return {};
+  }
+  const out = {};
+  hoja.getDataRange().getValues().slice(1).forEach(r => {
+    const sku = String(r[0] || '').trim();
+    const u = Number(r[2]) || 0;
+    if (sku && u) out[sku] = (out[sku] || 0) + u;
+  });
+  return out;
+}
 
 // Stock disponible por SKU en Shopify (suma de ubicaciones). Si un SKU aparece en
 // más de una variante, se toma el mayor (misma existencia física).

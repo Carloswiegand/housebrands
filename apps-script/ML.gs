@@ -349,7 +349,9 @@ function _anularFilas_(hojaV, debeAnular, motivo) {
 
 // Anulación a mano de órdenes completas (todas sus líneas). Editar la lista y ejecutar.
 function anularOrdenesManual() {
-  const ORDENES = ['2000018450610640|ML', '2000018747735068|ML'];   // orden|canal
+  // Ojo: N° de ML cargados desde Excel pueden tener el último dígito en 0 (Excel guarda 15 dígitos).
+  // Usar el número tal como aparece en el Libro_Ventas.
+  const ORDENES = ['2000018747735060|ML'];   // orden|canal (ya ejecutado 12-nov-2026 junto a 2000018450610640)
   const motivo = 'Devolución / cancelada por el comprador (confirmado por Carlos)';
   const set = new Set(ORDENES);
   const hojaV = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(H_VENTAS);
