@@ -298,6 +298,7 @@ tbody tr:hover td{background:var(--bg)}
       <span class="tchip" id="tc-act" style="color:rgba(255,255,255,.25)">—</span>
       <button class="tbtn" onclick="showMV()">+ Venta manual</button>
       <button class="tbtn" onclick="showCL()">☑ Checklist</button>
+      <label class="tbtn" style="cursor:pointer" title="Completa hora, cliente, medio de pago y región de pedidos antiguos con el CSV exportado desde Shopify">⇪ Historial Shopify<input type="file" accept=".csv,text/csv" multiple style="display:none" onchange="importarHistorialShopify(this.files);this.value=''"></label>
       <button class="tbtn" onclick="doLogout()">Salir</button>
     </div>
   </div>
@@ -2230,6 +2231,54 @@ function clTog(el){el.classList.toggle('done');clProg();}
 function clProg(){const t=document.querySelectorAll('.cl-item').length,d=document.querySelectorAll('.cl-item.done').length;document.getElementById('cl-prog').style.width=(t?d/t*100:0)+'%';}
 function clReset(){document.querySelectorAll('.cl-item').forEach(e=>e.classList.remove('done'));clProg();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideCL();hideMV();}});
+
+// ── HISTORIAL SHOPIFY (CSV "Exportar pedidos") ─────────
+// Se procesa en el navegador: el email se convierte en un código anónimo (igual al de la
+// sincronización automática) y solo se envían las columnas de análisis.
+function csvFilas(txt){
+  const out=[];let fila=[],campo='',q=false;
+  for(let i=0;i<txt.length;i++){
+    const c=txt[i];
+    if(q){ if(c==='"'){ if(txt[i+1]==='"'){campo+='"';i++;} else q=false; } else campo+=c; }
+    else if(c==='"')q=true;
+    else if(c===','){fila.push(campo);campo='';}
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&txt[i+1]==='\n')i++; fila.push(campo);campo=''; out.push(fila);fila=[]; }
+    else campo+=c;
+  }
+  if(campo||fila.length){fila.push(campo);out.push(fila);}
+  return out.filter(f=>f.length>1);
+}
+async function hashCliente(email){
+  const e=String(email||'').trim().toLowerCase(); if(!e)return '';
+  const d=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('hb|'+e)));
+  return 'SH-'+[...d.slice(0,5)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function importarHistorialShopify(files){
+  if(!files||!files.length)return;
+  try{
+    const pedidos={},porCliente={};
+    for(const f of files){
+      const filas=csvFilas((await f.text()).replace(/^\uFEFF/,''));
+      const H=filas[0], ix=n=>H.indexOf(n);
+      const iN=ix('Name'),iE=ix('Email'),iC=ix('Created at'),iP=ix('Payment Method'),iS=ix('Shipping Method'),iR=ix('Shipping Province'),iB=ix('Billing Province');
+      if(iN<0||iC<0)throw new Error(f.name+' no parece una exportación de pedidos de Shopify');
+      for(const r of filas.slice(1)){
+        const n=r[iN]; if(!n||pedidos[n]||!r[iC])continue;
+        const cli=await hashCliente(r[iE]);
+        pedidos[n]={creado:r[iC],d:[r[iC].slice(11,16),cli,'','','',r[iP]||'',r[iS]||'',String(r[iR]||r[iB]||'').toUpperCase()]};
+        if(cli){const k=(n.startsWith('MN-')?'MG':'MK')+'|'+cli;(porCliente[k]=porCliente[k]||[]).push(n);}
+      }
+    }
+    Object.values(porCliente).forEach(l=>l.sort((a,b)=>pedidos[a].creado.localeCompare(pedidos[b].creado)).forEach((n,i)=>pedidos[n].d[4]=i+1));
+    const nombres=Object.keys(pedidos);let llenas=0;
+    for(let i=0;i<nombres.length;i+=150){
+      const datos={};nombres.slice(i,i+150).forEach(n=>datos[n]=pedidos[n].d);
+      const r=await fetch(API_VENTA,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'enriquecer',canal:'Shopify',datos})});
+      const out=await r.json(); if(!out.ok)throw new Error(out.error||'error'); llenas+=out.llenas;
+    }
+    alert('Historial Shopify: '+nombres.length+' pedidos leídos, '+llenas+' líneas de venta completadas.');
+  }catch(e){alert('No se pudo importar el historial: '+e.message);}
+}
 
 // ── UTILS ─────────────────────────────────────────────
 const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
