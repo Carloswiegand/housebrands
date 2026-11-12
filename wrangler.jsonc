@@ -1,0 +1,18 @@
+// Despliegue de housebrands.cl (Workers Builds ejecuta `npx wrangler deploy` en cada push a main).
+{
+  "name": "housebrands",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-10",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // Solo la API pasa por el Worker; el resto lo sirve el CDN de assets directamente.
+    "run_worker_first": ["/erp/api/*"]
+  },
+  // Valores no secretos. ACCESS_AUD, ACCESS_TEAM_DOMAIN y SHEETS_API_KEY son secretos del Worker (dashboard).
+  "vars": {
+    "ALLOWED_EMAILS": "carlosw@housebrands.cl",
+    "SHEETS_API_URL": "https://script.google.com/macros/s/AKfycbz5zXmoV2Rzd34UtEQNazWnc0SMH9Mopo3Rd3WJt9dSA59bsS1_i92PlfHqmtaP-2sU/exec"
+  },
+  "observability": { "enabled": true }
+}

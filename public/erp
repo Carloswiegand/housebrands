@@ -280,24 +280,6 @@ tbody tr:hover td{background:var(--bg)}
 </head>
 <body>
 
-<div id="login">
-  <div class="lbox">
-    <div>
-      <div class="llogo">
-        <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-          <polygon points="0,0 17,0 17,17" fill="#1C2B3A"/>
-          <polygon points="17,0 36,0 36,17 17,17" fill="#4A6274"/>
-          <polygon points="0,19 17,19 17,36 0,36" fill="#8AA4B4"/>
-          <polygon points="17,19 36,36 17,36" fill="#2C3E4C"/>
-        </svg>
-        <div><div class="lmark">House<b>Brands</b></div><div class="ltag">ERP — Acceso interno</div></div>
-      </div>
-    </div>
-    <div class="lfield"><label>Contraseña</label><input type="password" id="pwd" class="linput" placeholder="••••••••" autocomplete="current-password"></div>
-    <button class="lbtn" onclick="doLogin()">Entrar</button>
-    <div class="lerr" id="lerr">Contraseña incorrecta</div>
-  </div>
-</div>
 
 <div id="app">
   <div class="topbar">
@@ -807,10 +789,10 @@ tbody tr:hover td{background:var(--bg)}
 
 <script>
 // ── CONFIG ────────────────────────────────────────────
-const PWD='200487';
-const CSV_V='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=573947071&single=true&output=csv';
-const CSV_PNL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1843070423&single=true&output=csv';
-const CSV_CONV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSSW-hwbvafdfQkWXySGjtTr8MkjFecsAQG_tbEyfkWoud0wCqpFDE3PPf9CPU3s_yKr0Z4D5qGBhBH/pub?gid=1184267083&single=true&output=csv';
+// Datos privados: los entrega el Worker de Cloudflare solo con sesión de Cloudflare Access válida.
+const CSV_V='/erp/api/ventas';
+const CSV_PNL='/erp/api/pnl';
+const CSV_CONV='/erp/api/conv';
 const IVA=1.19, META=14969250;
 const COSTOS={'MK-0001':16157,'MK-0002':16157,'MK-0003':10544,'MK-0004':10544,'TO04-4':5384,'RW-11037A':9501,'RW-11037B':13818,'SJ-JL802B':6354,'SJ-JL802C':6354,'SJ-AH209A':9530,'SJ-AH209E':9530,'SJ-JL801B':8339};
 const NOMBRES={'MK-0001':'Silla HookOn Azul','MK-0002':'Silla HookOn Negra','MK-0003':'Mecedora LazyBoy Gris','MK-0004':'Mecedora LazyBoy Negra','TO04-4':'Organizador Take&Go','RW-11037A':'Afilador Barrel Haya','RW-11037B':'Afilador Barrel Nogal','SJ-JL802B':'Cuchillo Kiritsuke 8"','SJ-JL802C':'Cuchillo Santoku 7"','SJ-AH209A':'Cuchillo Chef 8"','SJ-AH209E':'Cuchillo Nakiri 7"','SJ-JL801B':'Cuchillo Fileteador 6"'};
@@ -822,25 +804,13 @@ const STOCK_BASE={'MK-0001':107,'MK-0002':20,'MK-0003':187,'MK-0004':225,'TO04-4
 const FECHA_CIERRE=new Date(2026,8,30);
 
 // ── AUTH ──────────────────────────────────────────────
-function doLogin(){
-  if(document.getElementById('pwd').value===PWD){
-    sessionStorage.setItem('hb','1');
-    document.getElementById('login').style.display='none';
-    document.getElementById('app').style.display='block';
-    initApp();
-  } else {
-    document.getElementById('lerr').style.display='block';
-    document.getElementById('pwd').value='';
-    document.getElementById('pwd').focus();
-  }
-}
-function doLogout(){sessionStorage.removeItem('hb');location.reload();}
-document.getElementById('pwd').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-if(sessionStorage.getItem('hb')==='1'){
-  document.getElementById('login').style.display='none';
-  document.getElementById('app').style.display='block';
-  initApp();
-}
+// El acceso lo controla Cloudflare Access antes de que esta página cargue.
+// Si la sesión expira, la API responde 401 y se recarga para volver a autenticarse.
+function doLogout(){location.href='/cdn-cgi/access/logout';}
+const _fetch=window.fetch.bind(window);
+window.fetch=async(...a)=>{const r=await _fetch(...a); if(r.status===401&&String(a[0]).startsWith('/erp/api/')){location.reload();} return r;};
+document.getElementById('app').style.display='block';
+document.addEventListener('DOMContentLoaded',()=>initApp());
 
 // ── TABS ─────────────────────────────────────────────
 let pnlLoaded=false, convLoaded=false;
