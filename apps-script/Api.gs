@@ -127,3 +127,29 @@ function generarApiKey() {
   PropertiesService.getScriptProperties().setProperty('API_KEY', clave);
   console.log('Nueva API_KEY (cópiala al secreto SHEETS_API_KEY de Cloudflare): ' + clave);
 }
+
+// ── Aviso de SKU sin costo ──────────────────────────────────
+// Las ventas automáticas (Shopify/ML) se registran igual, pero con costo 0 el margen sale
+// inflado. Se avisa por correo al dueño del script una vez por SKU al día.
+function _avisarSinCosto_(filas, canal) {
+  const sinCosto = {};
+  filas.forEach(f => { if (!COSTOS_SKU[f[7]]) (sinCosto[f[7] || '(sin SKU)'] = sinCosto[f[7] || '(sin SKU)'] || []).push(f[6]); });
+  const skus = Object.keys(sinCosto);
+  if (!skus.length) return;
+  const cache = CacheService.getScriptCache();
+  const nuevos = skus.filter(s => !cache.get('aviso_sin_costo_' + s));
+  if (!nuevos.length) return;
+  const cuerpo = 'Entraron ventas de ' + canal + ' con SKU que no tiene costo cargado en el ERP.\n' +
+    'Quedaron registradas con costo $0, así que su margen aparece inflado hasta que se cargue el costo.\n\n' +
+    nuevos.map(s => '• ' + s + ' — órdenes: ' + sinCosto[s].join(', ')).join('\n') +
+    '\n\nQué hacer: agregar el SKU a COSTOS_SKU y NOMBRES_SKU (Código.gs) y luego recalcular márgenes.';
+  try {
+    MailApp.sendEmail(Session.getEffectiveUser().getEmail(), 'ERP HouseBrands: venta con SKU sin costo (' + nuevos.join(', ') + ')', cuerpo);
+    nuevos.forEach(s => cache.put('aviso_sin_costo_' + s, '1', 6 * 3600));
+  } catch (e) { console.log('No se pudo enviar el aviso: ' + e.message); }
+}
+
+// Ejecutar una vez desde el editor para autorizar el envío de correos.
+function probarAvisoSinCosto() {
+  _avisarSinCosto_([[0, 0, 0, 0, 0, 'Prueba', 'PRUEBA-1', 'SKU-DE-PRUEBA']], 'Prueba');
+}

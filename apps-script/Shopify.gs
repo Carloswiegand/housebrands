@@ -142,6 +142,7 @@ function _syncTienda_(t) {
     });
 
     if (rows.length > 0) {
+      _avisarSinCosto_(rows, 'Shopify ' + t.nombre);
       const ul = hojaV.getLastRow();
       hojaV.getRange(ul + 1, 1, rows.length, rows[0].length).setValues(rows);
       _formato(hojaV, ul + 1, rows.length);

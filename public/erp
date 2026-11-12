@@ -339,6 +339,7 @@ tbody tr:hover td{background:var(--bg)}
     <div id="v-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando ventas...</p></div>
 
     <div id="v-dash" style="display:none">
+      <div id="v-alerta" role="alert"></div>
       <div class="page">
         <!-- KPIs principales -->
         <div class="krow k4" id="kgrid"></div>
@@ -949,6 +950,7 @@ function fd(){
 }
 
 function render(){
+  rAlertaSinCosto();
   const d=fd();
   rKPIs(d);
   rKPIs2(d);
@@ -958,6 +960,16 @@ function render(){
   rCanal(d);
   rMix(d);
   rSKU(d);
+}
+
+// Ventas registradas con SKU sin costo: su margen aparece inflado hasta cargar el costo.
+function rAlertaSinCosto(){
+  const el=document.getElementById('v-alerta');if(!el)return;
+  const malas=DATA.filter(r=>r.vb>0&&!(r.costoUnit>0));
+  if(!malas.length){el.innerHTML='';return;}
+  const skus=[...new Set(malas.map(r=>r.sku||'(sin SKU)'))];
+  el.innerHTML=`<div style="margin:0 0 14px;padding:10px 14px;border:1px solid #e8b4a8;background:#fdf1ee;border-radius:6px;font-size:12px;color:#7a2a17">
+    <strong>${malas.length} línea${malas.length!==1?'s':''} de venta sin costo cargado</strong> (${skus.map(escH).join(', ')}). Su margen aparece en 100% hasta que se cargue el costo del SKU.</div>`;
 }
 
 // ── KPIs PRINCIPALES ──────────────────────────────────

@@ -291,6 +291,7 @@ function syncML() {
       return true;
     });
     if (filas.length) {
+      _avisarSinCosto_(filas, 'MercadoLibre');
       const ul = hojaV.getLastRow();
       hojaV.getRange(ul + 1, 7, filas.length, 1).setNumberFormat('0');
       hojaV.getRange(ul + 1, 1, filas.length, filas[0].length).setValues(filas);
