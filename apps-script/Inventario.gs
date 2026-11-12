@@ -19,7 +19,8 @@ function snapshotInventario() {
   if (!lock.tryLock(30000)) return;
   try {
     const sh = _stockShopify_();
-    const ml = _stockML_();
+    let ml;
+    try { ml = _stockML_(); } catch (e) { ml = { stock: {}, nombre: {}, publicaciones: {}, error: e.message }; }
     const skus = new Set(Object.keys(COSTOS_SKU).concat(Object.keys(sh.stock), Object.keys(ml.stock)));
     const hoy = Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd');
 
@@ -28,7 +29,7 @@ function snapshotInventario() {
       const s = sh.stock[sku], m = ml.stock[sku];
       if (s === undefined && m === undefined) return;            // SKU sin publicación (p. ej. extinto)
       const dif = (s === undefined || m === undefined) ? '' : s - m;
-      const estado = s === undefined ? 'Solo ML' : m === undefined ? 'Solo Shopify' : dif === 0 ? 'OK' : 'Revisar';
+      const estado = s === undefined ? 'Solo ML' : m === undefined ? (ml.error ? 'Sin dato ML' : 'Solo Shopify') : dif === 0 ? 'OK' : 'Revisar';
       filas.push([hoy, sku, NOMBRES_SKU[sku] || sh.nombre[sku] || ml.nombre[sku] || '', sh.marca[sku] || _marcaML(sku, ml.nombre[sku] || ''),
         s === undefined ? '' : s, m === undefined ? '' : m, dif, estado, ml.publicaciones[sku] || 0]);
     });
@@ -48,9 +49,9 @@ function snapshotInventario() {
       hoja.getRange(2, 1, hoja.getLastRow() - 1, 1).setNumberFormat('@');
     }
 
-    const revisar = filas.filter(f => f[7] !== 'OK').map(f => f[1] + ' (' + f[7] + ': SH ' + f[4] + ' / ML ' + f[5] + ')');
+    const revisar = filas.filter(f => f[7] !== 'OK' && f[7] !== 'Sin dato ML').map(f => f[1] + ' (' + f[7] + ': SH ' + f[4] + ' / ML ' + f[5] + ')');
     const msg = hoy + ' — ' + filas.length + ' SKUs, ' + revisar.length + ' por revisar' + (revisar.length ? ': ' + revisar.join('; ') : '') +
-      (sh.errores.length ? ' | errores: ' + sh.errores.join('; ') : '');
+      (sh.errores.length ? ' | errores: ' + sh.errores.join('; ') : '') + (ml.error ? ' | ML: ' + ml.error : '');
     PropertiesService.getScriptProperties().setProperty('INVENTARIO_ULTIMO', msg);
     console.log(msg);
     return msg;
