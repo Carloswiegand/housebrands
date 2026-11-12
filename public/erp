@@ -544,9 +544,9 @@ tbody tr:hover td{background:var(--bg)}
         <!-- ENCABEZADO ORDEN -->
         <div class="mv-section-title">Datos de la venta</div>
         <div class="mv-row3">
-          <div class="mv-field"><label class="mv-label" for="mv-fecha">Fecha</label><input type="date" id="mv-fecha" class="mv-input"></div>
+          <div class="mv-field"><label class="mv-label" for="mv-fecha">Fecha</label><input type="date" id="mv-fecha" class="mv-input" onchange="mvComisionAuto()"></div>
           <div class="mv-field"><label class="mv-label" for="mv-canal">Canal</label>
-            <select id="mv-canal" class="mv-select">
+            <select id="mv-canal" class="mv-select" onchange="mvComisionAuto()">
               <option value="B2B">B2B con factura</option>
               <option value="HigoKids">HigoKids Market</option>
               <option value="Venta Directa">Venta directa (boleta)</option>
@@ -554,7 +554,7 @@ tbody tr:hover td{background:var(--bg)}
               <option value="Otro">Otro</option>
             </select>
           </div>
-          <div class="mv-field"><label class="mv-label" for="mv-com-pct">Comisión del canal %</label><input type="number" id="mv-com-pct" class="mv-input" value="0" step="0.1" min="0" max="100"></div>
+          <div class="mv-field"><label class="mv-label" for="mv-com-pct">Comisión del canal %</label><input type="number" id="mv-com-pct" class="mv-input" value="0" step="0.01" min="0" max="100"><div id="mv-com-nota" style="font-family:var(--mono);font-size:9px;color:var(--light);margin-top:3px"></div></div>
         </div>
         <div class="mv-row3">
           <div class="mv-field"><label class="mv-label" for="mv-doc">N° documento</label><input type="text" id="mv-doc" class="mv-input" placeholder="FAC-1234 / BOL-567"></div>
@@ -810,6 +810,9 @@ const CSV_PNL='/erp/api/pnl';
 const CSV_CONV='/erp/api/conv';
 const CSV_INV='/erp/api/inv';
 const API_VENTA='/erp/api/venta';
+// Comisión de canales manuales según fecha de la venta (% sobre el precio con IVA).
+// HigoKids: sin comisión los primeros 3 meses; desde 21-nov-2026 cobra 12% + IVA = 14,28%.
+const COMISION_CANAL={HigoKids:[{desde:'2000-01-01',pct:0,nota:'Higo: sin comisión (primeros 3 meses)'},{desde:'2026-11-21',pct:14.28,nota:'Higo: 12% + IVA'}]};
 const IVA=1.19, META=14969250;
 const COSTOS={'MK-0001':16157,'MK-0002':16157,'MK-0003':10544,'MK-0004':10544,'TO04-4':5384,'RW-11037A':9501,'RW-11037B':13818,'SJ-JL802B':6354,'SJ-JL802C':6354,'SJ-AH209A':9530,'SJ-AH209E':9530,'SJ-JL801B':8339};
 const NOMBRES={'MK-0001':'Silla HookOn Azul','MK-0002':'Silla HookOn Negra','MK-0003':'Mecedora LazyBoy Gris','MK-0004':'Mecedora LazyBoy Negra','TO04-4':'Organizador Take&Go','RW-11037A':'Afilador Barrel Haya','RW-11037B':'Afilador Barrel Nogal','SJ-JL802B':'Cuchillo Kiritsuke 8"','SJ-JL802C':'Cuchillo Santoku 7"','SJ-AH209A':'Cuchillo Chef 8"','SJ-AH209E':'Cuchillo Nakiri 7"','SJ-JL801B':'Cuchillo Fileteador 6"'};
@@ -1478,6 +1481,15 @@ function mvTotal(){
   el.textContent=t>0?'Total con IVA: '+clp(t)+(mvXmlTotal?(Math.abs(t-mvXmlTotal)>mvLineas.length+2?' · ⚠ el documento dice '+clp(mvXmlTotal):' · cuadra con el documento'):''):'';
 }
 
+function mvComisionAuto(){
+  const canal=document.getElementById('mv-canal').value, fecha=document.getElementById('mv-fecha').value||'';
+  const reglas=(COMISION_CANAL[canal]||[]).filter(r=>r.desde<=fecha).sort((a,b)=>a.desde.localeCompare(b.desde));
+  const r=reglas[reglas.length-1];
+  const nota=document.getElementById('mv-com-nota');
+  document.getElementById('mv-com-pct').value=r?r.pct:0;
+  nota.textContent=r?r.nota:'';
+}
+
 function mvReset(){
   mvLineas=[];mvXmlTotal=0;mvRenderLineas();mvAddLinea();
   ['mv-doc','mv-cliente'].forEach(id=>document.getElementById(id).value='');
@@ -1485,7 +1497,7 @@ function mvReset(){
   document.getElementById('mv-com-pct').value='0';
   document.getElementById('mv-xml').value='';
   document.getElementById('mv-xml-msg').textContent='';
-  setDefaultDate();mvTotal();
+  setDefaultDate();mvComisionAuto();mvTotal();
 }
 
 async function recargarVentas(){
@@ -1549,6 +1561,7 @@ function mvImportarXML(file){
       document.getElementById('mv-fecha').value=t('FchEmis');
       document.getElementById('mv-cliente').value=t('RznSocRecep');
       if(tipo==='33'||tipo==='34')document.getElementById('mv-canal').value='B2B';
+      mvComisionAuto();
       const boleta=tipo==='39'||tipo==='41';           // en boletas los montos ya traen IVA
       const det=[...doc.getElementsByTagNameNS('*','Detalle')].map(d=>({
         nombre:t('NmbItem',d), codigo:t('VlrCodigo',d), qty:parseFloat(t('QtyItem',d))||1,
