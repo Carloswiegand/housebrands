@@ -151,5 +151,6 @@ function _avisarSinCosto_(filas, canal) {
 
 // Ejecutar una vez desde el editor para autorizar el envío de correos.
 function probarAvisoSinCosto() {
+  ScriptApp.requireScopes(ScriptApp.AuthMode.FULL, ['https://www.googleapis.com/auth/script.send_mail']);
   _avisarSinCosto_([[0, 0, 0, 0, 0, 'Prueba', 'PRUEBA-1', 'SKU-DE-PRUEBA']], 'Prueba');
 }
