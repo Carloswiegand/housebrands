@@ -6,7 +6,9 @@
 // Reglas iguales a procesarML():
 //   - N° de orden = pack_id (carrito) si existe; si no, id de la orden.
 //   - Clave de duplicado: orden|ML|sku (misma función _claves).
-//   - Se omiten órdenes canceladas.
+//   - Se omiten órdenes canceladas; si una venta ya registrada se cancela después,
+//     sus filas se mueven a la hoja Ventas_Anuladas (no se borran).
+//   - Cupones financiados por el vendedor se restan del Precio Total (igual que Shopify).
 //   - Margen = PVP − Costo × IVA (COSTOS_SKU congelados).
 //
 // Credenciales (Propiedades del script): ML_CLIENT_ID, ML_CLIENT_SECRET.
@@ -138,25 +140,49 @@ function _mlEnvio_(shippingId, cacheEnvios) {
   return res;
 }
 
+// Cupones que financia el vendedor, por ítem. Los cupones de ML (seller = 0) no se restan:
+// ML los devuelve como "Cobro por descuento a tu contraparte". Los descuentos de precio
+// (type 'discount') ya vienen incluidos en unit_price.
+function _mlCuponesVendedor_(orderId) {
+  const out = {};
+  try {
+    const d = _mlGet_('/orders/' + orderId + '/discounts');
+    (d.details || []).forEach(det => {
+      if (det.type !== 'coupon') return;
+      (det.items || []).forEach(i => {
+        const v = Math.round(Math.abs(Number((i.amounts || {}).seller) || 0));
+        if (v) out[i.id] = (out[i.id] || 0) + v;
+      });
+    });
+  } catch (e) { /* sin descuentos */ }
+  return out;
+}
+
 // Convierte órdenes en filas del Libro_Ventas (mismo orden de columnas que procesarML).
-function _mlFilas_(ordenes) {
+// Si se pasa `claves`, las líneas ya registradas se saltan antes de consultar envíos y cupones.
+function _mlFilas_(ordenes, claves) {
   const filas = [];
   const cacheEnvios = {};
   const envioUsado = {};
   ordenes.forEach(o => {
     if (String(o.status || '').toLowerCase().indexOf('cancel') !== -1) return;
     const num = String(o.pack_id || o.id);
+    const pendientes = (o.order_items || []).filter(it =>
+      !claves || !claves.has(num + '|ML|' + String(it.item.seller_sku || it.item.seller_custom_field || '').trim()));
+    if (!pendientes.length) return;
+    const cupones = _mlCuponesVendedor_(o.id);
     const fecha = new Date(o.date_created);
     const mes = Number(Utilities.formatDate(fecha, 'America/Santiago', 'M'));
     const anio = Number(Utilities.formatDate(fecha, 'America/Santiago', 'yyyy'));
     const shipId = o.shipping && o.shipping.id;
 
-    (o.order_items || []).forEach(it => {
+    pendientes.forEach(it => {
       const sku = String(it.item.seller_sku || it.item.seller_custom_field || '').trim();
       const titulo = String(it.item.title || '').trim();
       const qty = Number(it.quantity) || 1;
       const precioUnit = Math.round(Number(it.unit_price) || 0);
-      const bruto = precioUnit * qty;
+      const cupon = cupones[it.item.id] || 0;          // cupón pagado por el vendedor ("Descuento a tu contraparte")
+      const bruto = precioUnit * qty - cupon;
       const comision = Math.round((Number(it.sale_fee) || 0) * qty);
       // El envío se asigna una sola vez por envío (un carrito comparte envío).
       let costoEnvio = 0, bonif = 0;
@@ -176,7 +202,7 @@ function _mlFilas_(ordenes) {
         _marcaML(sku, titulo), 'ML', num, sku,
         NOMBRES_SKU[sku] || titulo, qty,
         precioUnit, bruto,
-        costoEnvio, comision, '', bonif, ingresoReal,
+        costoEnvio, comision, cupon ? 'CUPON ML -' + cupon : '', bonif, ingresoReal,
         costoUnit, costoTotal,
         margenB, margenPct,
         '', '', 'CL',
@@ -250,7 +276,15 @@ function syncML() {
 
     const desdeVentana = Utilities.formatDate(new Date(Date.now() - ML_DIAS_SYNC * 864e5), 'America/Santiago', 'yyyy-MM-dd');
     const desde = (desdeVentana > corte ? desdeVentana : corte) + 'T00:00:00.000-03:00';
-    const filas = _mlFilas_(_mlOrdenes_(desde)).filter(f => {
+    const ordenes = _mlOrdenes_(desde);
+    const anuladas = new Set();
+    ordenes.forEach(o => {
+      if (String(o.status || '').toLowerCase().indexOf('cancel') === -1) return;
+      const num = String(o.pack_id || o.id);
+      (o.order_items || []).forEach(it => anuladas.add(num + '|ML|' + String(it.item.seller_sku || it.item.seller_custom_field || '').trim()));
+    });
+    const nAnuladas = _anularFilas_(hojaV, k => anuladas.has(k), 'Cancelada en MercadoLibre');
+    const filas = _mlFilas_(ordenes, claves).filter(f => {
       const k = f[6] + '|ML|' + f[7];
       if (claves.has(k)) return false;
       claves.add(k);
@@ -262,7 +296,7 @@ function syncML() {
       hojaV.getRange(ul + 1, 1, filas.length, filas[0].length).setValues(filas);
       _formato(hojaV, ul + 1, filas.length);
     }
-    const msg = Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd HH:mm') + ' — ' + filas.length + ' líneas nuevas desde ' + desde.slice(0, 10);
+    const msg = Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd HH:mm') + ' — ' + filas.length + ' líneas nuevas, ' + nAnuladas + ' anuladas, desde ' + desde.slice(0, 10);
     props.setProperty('ML_ULTIMA_SYNC', msg);
     console.log(msg);
     return msg;
@@ -284,4 +318,42 @@ function activarSyncMLHorario() {
     .forEach(tr => ScriptApp.deleteTrigger(tr));
   ScriptApp.newTrigger('syncML').timeBased().everyHours(1).create();
   console.log('Activador horario de syncML creado.');
+}
+
+// ── Anulaciones (compartido con Shopify.gs) ─────────────────
+// Mueve a la hoja Ventas_Anuladas las filas del Libro_Ventas cuya clave orden|canal|sku
+// cumple `debeAnular`. No borra información: queda la fila completa + fecha y motivo.
+function _anularFilas_(hojaV, debeAnular, motivo) {
+  const datos = hojaV.getDataRange().getValues();
+  const idx = [];
+  for (let i = 1; i < datos.length; i++) {
+    const r = datos[i];
+    if (debeAnular(String(r[6]) + '|' + String(r[5]) + '|' + String(r[7]).trim())) idx.push(i);
+  }
+  if (!idx.length) return 0;
+  const ss = hojaV.getParent();
+  let hojaA = ss.getSheetByName('Ventas_Anuladas');
+  if (!hojaA) {
+    hojaA = ss.insertSheet('Ventas_Anuladas');
+    hojaA.appendRow(datos[0].concat(['Fecha anulación', 'Motivo']));
+    hojaA.setFrozenRows(1);
+  }
+  const ahora = new Date();
+  const mover = idx.map(i => datos[i].concat([ahora, motivo]));
+  const ul = hojaA.getLastRow();
+  hojaA.getRange(ul + 1, 7, mover.length, 1).setNumberFormat('0');
+  hojaA.getRange(ul + 1, 1, mover.length, mover[0].length).setValues(mover);
+  idx.sort((a, b) => b - a).forEach(i => hojaV.deleteRow(i + 1));
+  return idx.length;
+}
+
+// Anulación a mano de órdenes completas (todas sus líneas). Editar la lista y ejecutar.
+function anularOrdenesManual() {
+  const ORDENES = ['2000018450610640|ML', '2000018747735068|ML'];   // orden|canal
+  const motivo = 'Devolución / cancelada por el comprador (confirmado por Carlos)';
+  const set = new Set(ORDENES);
+  const hojaV = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(H_VENTAS);
+  const n = _anularFilas_(hojaV, k => set.has(k.split('|').slice(0, 2).join('|')), motivo);
+  console.log(n + ' filas movidas a Ventas_Anuladas');
+  return n;
 }

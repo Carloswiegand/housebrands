@@ -78,9 +78,19 @@ function _syncTienda_(t) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     let hojaV = ss.getSheetByName(H_VENTAS);
     if (!hojaV) { hojaV = ss.insertSheet(H_VENTAS); _encabezados(hojaV); }
+    const pedidos = _shopifyPedidos_(t, token, SHOPIFY_DIAS_SYNC);
+
+    // Pedidos cancelados o reembolsados completos después de registrados → Ventas_Anuladas.
+    const anulados = new Set();
+    pedidos.forEach(o => {
+      const fin = String(o.displayFinancialStatus || '').toLowerCase();
+      if (o.cancelledAt || fin === 'refunded' || fin === 'voided') {
+        (o.lineItems.nodes || []).forEach(li => anulados.add(o.name + '|Shopify|' + String(li.sku || '').trim()));
+      }
+    });
+    const nAnul = _anularFilas_(hojaV, k => anulados.has(k), 'Cancelado/reembolsado en Shopify ' + t.nombre);
     const claves = _claves(hojaV);
 
-    const pedidos = _shopifyPedidos_(t, token, SHOPIFY_DIAS_SYNC);
     const rows = [];
     let dup = 0, omit = 0;
 
@@ -136,7 +146,7 @@ function _syncTienda_(t) {
       hojaV.getRange(ul + 1, 1, rows.length, rows[0].length).setValues(rows);
       _formato(hojaV, ul + 1, rows.length);
     }
-    return { tienda: t.nombre, msg: rows.length + ' líneas nuevas, ' + dup + ' ya existían, ' + omit + ' pedidos omitidos' };
+    return { tienda: t.nombre, msg: rows.length + ' líneas nuevas, ' + dup + ' ya existían, ' + omit + ' pedidos omitidos, ' + nAnul + ' líneas anuladas' };
   } catch (e) {
     return { tienda: t.nombre, msg: 'ERROR ' + e.message };
   }
