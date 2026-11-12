@@ -530,23 +530,35 @@ tbody tr:hover td{background:var(--bg)}
         <button class="mv-close" onclick="hideMV()">✕</button>
       </div>
       <div class="mv-body">
+        <!-- IMPORTAR FACTURA -->
+        <div class="mv-section-title">Importar factura o boleta (opcional)</div>
+        <div class="mv-field" style="margin-bottom:6px">
+          <label class="mv-label" for="mv-xml">Archivo XML del documento (el que entrega el SII o tu facturador)</label>
+          <input type="file" id="mv-xml" accept=".xml,text/xml,application/xml" class="mv-input" onchange="mvImportarXML(this.files[0])">
+        </div>
+        <div id="mv-xml-msg" style="font-family:var(--mono);font-size:10px;color:var(--mid);margin-bottom:6px"></div>
+
+        <div class="mv-divider"></div>
+
         <!-- ENCABEZADO ORDEN -->
-        <div class="mv-section-title">Datos de la orden</div>
+        <div class="mv-section-title">Datos de la venta</div>
         <div class="mv-row3">
-          <div class="mv-field"><label class="mv-label">Fecha</label><input type="date" id="mv-fecha" class="mv-input"></div>
-          <div class="mv-field"><label class="mv-label">Canal</label>
+          <div class="mv-field"><label class="mv-label" for="mv-fecha">Fecha</label><input type="date" id="mv-fecha" class="mv-input"></div>
+          <div class="mv-field"><label class="mv-label" for="mv-canal">Canal</label>
             <select id="mv-canal" class="mv-select">
-              <option value="Venta Directa">Venta Directa</option>
+              <option value="B2B">B2B con factura</option>
               <option value="HigoKids">HigoKids Market</option>
-              <option value="Venta Corporativa">Venta Corporativa</option>
+              <option value="Venta Directa">Venta directa (boleta)</option>
+              <option value="Venta Corporativa">Venta corporativa</option>
               <option value="Otro">Otro</option>
             </select>
           </div>
-          <div class="mv-field"><label class="mv-label">Comisión canal %</label><input type="number" id="mv-com-pct" class="mv-input" value="0" step="0.1" max="100"></div>
+          <div class="mv-field"><label class="mv-label" for="mv-com-pct">Comisión del canal %</label><input type="number" id="mv-com-pct" class="mv-input" value="0" step="0.1" min="0" max="100"></div>
         </div>
-        <div class="mv-row2">
-          <div class="mv-field"><label class="mv-label">Envío cobrado al cliente (0 si retira)</label><input type="number" id="mv-envio" class="mv-input" value="0"></div>
-          <div class="mv-field"><label class="mv-label">Notas</label><input type="text" id="mv-nota" class="mv-input" placeholder="opcional"></div>
+        <div class="mv-row3">
+          <div class="mv-field"><label class="mv-label" for="mv-doc">N° documento</label><input type="text" id="mv-doc" class="mv-input" placeholder="FAC-1234 / BOL-567"></div>
+          <div class="mv-field"><label class="mv-label" for="mv-cliente">Cliente</label><input type="text" id="mv-cliente" class="mv-input" placeholder="Razón social o nombre"></div>
+          <div class="mv-field"><label class="mv-label" for="mv-envio">Envío cobrado (con IVA)</label><input type="number" id="mv-envio" class="mv-input" value="0" min="0" oninput="mvTotal()"></div>
         </div>
 
         <div class="mv-divider"></div>
@@ -564,7 +576,9 @@ tbody tr:hover td{background:var(--bg)}
         <div class="mv-lineas" id="mv-lineas"></div>
         <button class="mv-add-btn" onclick="mvAddLinea()">+ Agregar producto</button>
 
-        <button class="mv-submit" onclick="saveMV()">Registrar venta</button>
+        <div id="mv-total" style="font-family:var(--mono);font-size:11px;color:var(--dark);margin:8px 0"></div>
+        <button class="mv-submit" id="mv-submit" onclick="saveMV()">Registrar venta</button>
+        <div id="mv-status" role="status" style="font-family:var(--mono);font-size:11px;margin-top:8px"></div>
         <div class="mv-list" id="mv-list"></div>
       </div>
     </div>
@@ -793,15 +807,11 @@ tbody tr:hover td{background:var(--bg)}
 const CSV_V='/erp/api/ventas';
 const CSV_PNL='/erp/api/pnl';
 const CSV_CONV='/erp/api/conv';
+const CSV_INV='/erp/api/inv';
+const API_VENTA='/erp/api/venta';
 const IVA=1.19, META=14969250;
 const COSTOS={'MK-0001':16157,'MK-0002':16157,'MK-0003':10544,'MK-0004':10544,'TO04-4':5384,'RW-11037A':9501,'RW-11037B':13818,'SJ-JL802B':6354,'SJ-JL802C':6354,'SJ-AH209A':9530,'SJ-AH209E':9530,'SJ-JL801B':8339};
 const NOMBRES={'MK-0001':'Silla HookOn Azul','MK-0002':'Silla HookOn Negra','MK-0003':'Mecedora LazyBoy Gris','MK-0004':'Mecedora LazyBoy Negra','TO04-4':'Organizador Take&Go','RW-11037A':'Afilador Barrel Haya','RW-11037B':'Afilador Barrel Nogal','SJ-JL802B':'Cuchillo Kiritsuke 8"','SJ-JL802C':'Cuchillo Santoku 7"','SJ-AH209A':'Cuchillo Chef 8"','SJ-AH209E':'Cuchillo Nakiri 7"','SJ-JL801B':'Cuchillo Fileteador 6"'};
-const STOCK_BASE={'MK-0001':107,'MK-0002':20,'MK-0003':187,'MK-0004':225,'TO04-4':470,'RW-11037A':220,'RW-11037B':54,'SJ-JL802B':18,'SJ-JL802C':19,'SJ-AH209A':13,'SJ-AH209E':29,'SJ-JL801B':22};
-// Cierre 30-sep-2026: ABEE + papás + casa HigoKids
-// MK-0001: 62 ABEE + 42 papás + 3 casa = 107
-// MK-0002: 19 ABEE + 1 casa = 20
-// Resto: solo ABEE según reporte 01-oct-2026 (sin contar 2 RW-11037A vendidas el 01-oct)
-const FECHA_CIERRE=new Date(2026,8,30);
 
 // ── AUTH ──────────────────────────────────────────────
 // El acceso lo controla Cloudflare Access antes de que esta página cargue.
@@ -851,12 +861,11 @@ async function fetchTC(){
 async function loadVentas(){
   try{
     const r=await fetch(CSV_V);
-    const csvData=parseVentas(await r.text());
-    const manual=loadManuales();
-    DATA=[...csvData,...manual];
+    DATA=parseVentas(await r.text());
     const years=[...new Set(DATA.map(r=>r.anio))].sort();
     const sel=document.getElementById('f-anio');
-    years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;sel.appendChild(o);});
+    sel.querySelectorAll('option[data-y]').forEach(o=>o.remove());
+    years.forEach(y=>{const o=document.createElement('option');o.value=y;o.dataset.y='1';o.textContent=y;sel.appendChild(o);});
     document.getElementById('v-loading').style.display='none';
     document.getElementById('v-dash').style.display='block';
     buildCanalPills();
@@ -896,7 +905,8 @@ function parseVentas(txt){
     const flexRecupero=canal==='ML'?descto:0;
     const costoEnvioML=canal==='ML'?envio:0;
     const envioCobradoSH=canal==='Shopify'?envio:0;
-    rows.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costoUnit,costoTotal,mb,mrg,envio,cargoMP,descto,comision,comPct,icn,flexRecupero,costoEnvioML,envioCobradoSH,manual:false});
+    const orden=c[6]||'',origen=c[25]||'';
+    rows.push({fecha,mes,anio,marca,canal,sku,prod,qty,vb,costoUnit,costoTotal,mb,mrg,envio,cargoMP,descto,comision,comPct,icn,flexRecupero,costoEnvioML,envioCobradoSH,orden,origen,cliente:origen==='Manual_ERP'?(c[14]||''):'',manual:origen==='Manual_ERP'});
   }
   return rows;
 }
@@ -1307,25 +1317,7 @@ function rSKU(d){
 }
 
 // ── VENTAS MANUALES ───────────────────────────────────
-function loadManuales(){
-  try{
-    const raw=localStorage.getItem('hb_ventas_manuales');
-    if(!raw)return[];
-    return JSON.parse(raw).map(r=>({
-      ...r,manual:true,
-      comision:r.vb*(r.comPct||0)/100,
-      comPct:r.comPct||0,
-      icn:r.vb-(r.vb*(r.comPct||0)/100),
-      costoUnit:COSTOS[r.sku]||0,
-      costoTotal:(COSTOS[r.sku]||0)*r.qty,
-      mb:r.vb-(COSTOS[r.sku]||0)*r.qty*IVA,
-      mrg:((r.vb-(COSTOS[r.sku]||0)*r.qty*IVA)/r.vb*100)||0,
-      envio:r.envio||0,cargoMP:0,descto:0,
-      flexRecupero:0,costoEnvioML:0,
-      envioCobradoSH:r.envio||0,
-    }));
-  }catch(e){return[];}
-}
+// Se guardan en el Libro_Ventas (Origen = Manual_ERP) vía /erp/api/venta. Nada queda solo en el navegador.
 
 function setDefaultDate(){
   const hoy=new Date();
@@ -1352,9 +1344,8 @@ function showMV(){
   document.getElementById('mv-m-all').className='fpill on';
   document.getElementById('mv-m-mk').className='fpill mk';
   document.getElementById('mv-m-mt').className='fpill mt';
-  mvRenderLineas();
-  mvAddLinea();
-  setDefaultDate();
+  mvReset();
+  document.getElementById('mv-status').textContent='';
   renderMVList();
 }
 function hideMV(){document.getElementById('modal-venta').style.display='none';document.body.style.overflow='';}
@@ -1385,140 +1376,216 @@ function mvDelLinea(id){
   mvRenderLineas();
 }
 
-function mvRenderLineas(){
+function mvRenderLineas(preset){
   const cont=document.getElementById('mv-lineas');
   if(!cont) return;
-  // Capturar valores actuales antes de re-renderizar
-  const vals={};
-  cont.querySelectorAll('[data-linea-id]').forEach(el=>{
-    const id=el.dataset.lineaId;
-    vals[id]={
-      sku:el.querySelector('select')?.value||'',
+  // Valores actuales (o los que trae una factura importada) antes de re-renderizar
+  const vals=preset||{};
+  if(!preset)cont.querySelectorAll('[data-linea-id]').forEach(el=>{
+    vals[el.dataset.lineaId]={
+      sku:el.querySelector('select')?.value??'',
       qty:el.querySelector('.mv-qty-inp')?.value||'1',
       precio:el.querySelector('.mv-precio-inp')?.value||'',
     };
   });
-  const skuOpts=mvGetSKUs().map(s=>`<option value="${s}">${s} — ${NOMBRES[s]}</option>`).join('');
-  cont.innerHTML=mvLineas.map((id,idx)=>{
-    const v=vals[id]||{};
-    // Si el SKU guardado ya no está en la lista filtrada, usar el primero
-    const skuList=mvGetSKUs();
-    const selSku=skuList.includes(v.sku)?v.sku:skuList[0];
-    const optsConSel=mvGetSKUs().map(s=>`<option value="${s}"${s===selSku?' selected':''}>${s} — ${NOMBRES[s]}</option>`).join('');
+  const skuList=mvGetSKUs();
+  cont.innerHTML=mvLineas.map(id=>{
+    const v=vals[id];
+    const selSku=v&&skuList.includes(v.sku)?v.sku:(v&&v.sku===''?'':skuList[0]);
+    const opts=`<option value=""${selSku===''?' selected':''}>— Elegir producto —</option>`+
+      skuList.map(s=>`<option value="${s}"${s===selSku?' selected':''}>${s} — ${NOMBRES[s]}</option>`).join('');
     return`<div data-linea-id="${id}" style="background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px">
       <div style="display:grid;grid-template-columns:2fr 80px 1fr${mvLineas.length>1?' 28px':''};gap:8px;align-items:end">
         <div>
           <label class="mv-label">Producto</label>
-          <select class="mv-select" style="font-size:11px">${optsConSel}</select>
+          <select class="mv-select" style="font-size:11px">${opts}</select>
         </div>
         <div>
           <label class="mv-label">Cant.</label>
-          <input type="number" class="mv-input mv-qty-inp" value="${v.qty||1}" min="1">
+          <input type="number" class="mv-input mv-qty-inp" value="${v?.qty||1}" min="1" oninput="mvTotal()">
         </div>
         <div>
           <label class="mv-label">Precio unit. (IVA inc.)</label>
-          <input type="number" class="mv-input mv-precio-inp" placeholder="49990" value="${v.precio||''}">
+          <input type="number" class="mv-input mv-precio-inp" placeholder="49990" value="${v?.precio||''}" oninput="mvTotal()">
         </div>
-        ${mvLineas.length>1?`<div style="display:flex;align-items:flex-end;padding-bottom:2px"><button onclick="mvDelLinea('${id}')" style="background:transparent;border:1px solid var(--neg-bg);color:var(--neg);border-radius:4px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">×</button></div>`:''}
+        ${mvLineas.length>1?`<div style="display:flex;align-items:flex-end;padding-bottom:2px"><button onclick="mvDelLinea('${id}')" aria-label="Quitar línea" style="background:transparent;border:1px solid var(--neg-bg);color:var(--neg);border-radius:4px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">×</button></div>`:''}
       </div>
     </div>`;
   }).join('');
+  mvTotal();
 }
 
-function saveMV(){
+async function saveMV(){
   const fecha=document.getElementById('mv-fecha').value;
   const canal=document.getElementById('mv-canal').value;
   const envio=parseFloat(document.getElementById('mv-envio').value)||0;
-  const comPct=parseFloat(document.getElementById('mv-com-pct').value)||0;
-  const nota=document.getElementById('mv-nota').value||'';
-  if(!fecha){alert('Indica la fecha de la venta.');return;}
+  const comisionPct=parseFloat(document.getElementById('mv-com-pct').value)||0;
+  const documento=document.getElementById('mv-doc').value.trim();
+  const cliente=document.getElementById('mv-cliente').value.trim();
+  const st=document.getElementById('mv-status');
+  if(!fecha){st.innerHTML='<span style="color:var(--neg)">Indica la fecha de la venta.</span>';return;}
+  if(canal==='B2B'&&!documento){st.innerHTML='<span style="color:var(--neg)">Para B2B indica el N° de factura.</span>';return;}
 
-  // Leer líneas
-  const lineas=[];
-  let hayError=false;
-  document.querySelectorAll('#mv-lineas [data-linea-id]').forEach(el=>{
-    const sku=el.querySelector('select')?.value;
-    const qty=parseInt(el.querySelector('.mv-qty-inp')?.value)||1;
-    const precio=parseFloat(el.querySelector('.mv-precio-inp')?.value)||0;
-    if(!sku||precio<=0){hayError=true;return;}
-    lineas.push({sku,qty,precio});
-  });
-  if(hayError||!lineas.length){alert('Completa SKU y precio en todas las líneas.');return;}
+  const lineas=mvLeerLineas();
+  if(!lineas){st.innerHTML='<span style="color:var(--neg)">Completa producto, cantidad y precio en todas las líneas.</span>';return;}
 
-  const fDate=new Date(fecha);
-  const mesN=fDate.getMonth()+1, anioN=fDate.getFullYear();
-  const ordenId='M-'+Date.now();
-  const totalVB=lineas.reduce((s,l)=>s+l.precio*l.qty,0)||1;
-
-  const nuevas=lineas.map((l,i)=>{
-    const vbLinea=l.precio*l.qty;
-    const envioLinea=i===0?envio:0; // envío solo a primera línea
-    return{
-      id:Date.now()+i,fecha,mes:mesN,anio:anioN,
-      marca:SKU_MARCA[l.sku]||'MemoKoala',
-      canal,sku:l.sku,prod:NOMBRES[l.sku]||l.sku,
-      qty:l.qty,vb:vbLinea,comPct,envio:envioLinea,nota,ordenId,
-    };
-  });
-
+  const btn=document.getElementById('mv-submit');
+  btn.disabled=true;btn.textContent='Registrando…';st.textContent='';
   try{
-    const existing=JSON.parse(localStorage.getItem('hb_ventas_manuales')||'[]');
-    existing.push(...nuevas);
-    localStorage.setItem('hb_ventas_manuales',JSON.stringify(existing));
-    DATA=[...DATA.filter(r=>!r.manual),...loadManuales()];
-    buildCanalPills();
-    render();
-    renderMVList();
-    // Reset líneas
-    mvLineas=[];
-    mvRenderLineas();
-    mvAddLinea();
-    document.getElementById('mv-envio').value='0';
-    document.getElementById('mv-com-pct').value='0';
-    document.getElementById('mv-nota').value='';
-    setDefaultDate();
-  }catch(e){alert('Error guardando: '+e.message);}
+    const r=await fetch(API_VENTA,{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({action:'venta_manual',venta:{fecha,canal,documento,cliente,comisionPct,envio,lineas}})});
+    const out=await r.json().catch(()=>({ok:false,error:'respuesta inválida'}));
+    if(!out.ok)throw new Error(out.error||('HTTP '+r.status));
+    st.innerHTML=`<span style="color:var(--pos)">Venta registrada: ${out.orden} · ${out.lineas} línea${out.lineas!==1?'s':''} · ${clp(out.total)}</span>`;
+    mvReset();
+    await recargarVentas();
+  }catch(e){
+    st.innerHTML=`<span style="color:var(--neg)">No se registró: ${escH(e.message)}</span>`;
+  }finally{btn.disabled=false;btn.textContent='Registrar venta';}
 }
 
-function deleteMV(id){
+function mvLeerLineas(){
+  const lineas=[];let ok=true;
+  document.querySelectorAll('#mv-lineas [data-linea-id]').forEach(el=>{
+    const sku=el.querySelector('select')?.value;
+    const qty=parseInt(el.querySelector('.mv-qty-inp')?.value)||0;
+    const precioUnit=parseFloat(el.querySelector('.mv-precio-inp')?.value)||0;
+    if(!sku||qty<=0||precioUnit<=0){ok=false;return;}
+    lineas.push({sku,qty,precioUnit});
+  });
+  return ok&&lineas.length?lineas:null;
+}
+
+function mvTotal(){
+  const el=document.getElementById('mv-total');if(!el)return;
+  let t=0;
+  document.querySelectorAll('#mv-lineas [data-linea-id]').forEach(l=>{
+    t+=(parseInt(l.querySelector('.mv-qty-inp')?.value)||0)*(parseFloat(l.querySelector('.mv-precio-inp')?.value)||0);
+  });
+  t+=parseFloat(document.getElementById('mv-envio').value)||0;
+  el.textContent=t>0?'Total con IVA: '+clp(t)+(mvXmlTotal?(Math.abs(t-mvXmlTotal)>mvLineas.length+2?' · ⚠ el documento dice '+clp(mvXmlTotal):' · cuadra con el documento'):''):'';
+}
+
+function mvReset(){
+  mvLineas=[];mvXmlTotal=0;mvRenderLineas();mvAddLinea();
+  ['mv-doc','mv-cliente'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mv-envio').value='0';
+  document.getElementById('mv-com-pct').value='0';
+  document.getElementById('mv-xml').value='';
+  document.getElementById('mv-xml-msg').textContent='';
+  setDefaultDate();mvTotal();
+}
+
+async function recargarVentas(){
+  const r=await fetch(CSV_V,{cache:'no-store'});
+  DATA=parseVentas(await r.text());
+  buildCanalPills();render();renderMVList();
+}
+
+async function anularMV(orden,canal){
+  if(!confirm('¿Anular la venta '+orden+' ('+canal+')? Se mueve a la hoja Ventas_Anuladas.'))return;
+  const st=document.getElementById('mv-status');
   try{
-    const existing=JSON.parse(localStorage.getItem('hb_ventas_manuales')||'[]');
-    const target=existing.find(r=>r.id===id);
-    const filtered=target?.ordenId
-      ?existing.filter(r=>r.ordenId!==target.ordenId)
-      :existing.filter(r=>r.id!==id);
-    localStorage.setItem('hb_ventas_manuales',JSON.stringify(filtered));
-    DATA=[...DATA.filter(r=>!r.manual),...loadManuales()];
-    buildCanalPills();
-    renderMVList();render();
-  }catch(e){}
+    const r=await fetch(API_VENTA,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'anular_manual',orden,canal})});
+    const out=await r.json().catch(()=>({ok:false,error:'respuesta inválida'}));
+    if(!out.ok)throw new Error(out.error);
+    st.innerHTML=`<span style="color:var(--pos)">Venta ${escH(orden)} anulada.</span>`;
+    await recargarVentas();
+  }catch(e){st.innerHTML=`<span style="color:var(--neg)">No se anuló: ${escH(e.message)}</span>`;}
 }
 
 function renderMVList(){
-  try{
-    const entries=JSON.parse(localStorage.getItem('hb_ventas_manuales')||'[]');
-    const el=document.getElementById('mv-list');
-    if(!entries.length){el.innerHTML='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--light)">Sin ventas manuales registradas</div>';return;}
-    const ordenes={};
-    entries.forEach(e=>{
-      const key=e.ordenId||('s-'+e.id);
-      if(!ordenes[key])ordenes[key]={fecha:e.fecha,canal:e.canal,lineas:[],id:e.id};
-      ordenes[key].lineas.push(e);
-    });
-    const lista=Object.values(ordenes).sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,8);
-    el.innerHTML=`<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.08em;margin-bottom:8px">${entries.length} línea${entries.length!==1?'s':''} · ${Object.keys(ordenes).length} orden${Object.keys(ordenes).length!==1?'es':''}</div>
-      ${lista.map(o=>`
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 10px;background:var(--bg);border-radius:5px;margin-bottom:4px">
-          <div style="font-family:var(--mono);font-size:10px;color:var(--dark);line-height:1.6">
-            <strong>${o.fecha}</strong> · ${o.canal}<br>
-            ${o.lineas.map(l=>`${l.sku} ×${l.qty} ${clp(l.vb)}`).join(' · ')}
-          </div>
-          <span onclick="deleteMV(${o.id})" style="font-family:var(--mono);font-size:9px;color:var(--neg);cursor:pointer;padding:2px 8px;border:1px solid var(--neg-bg);border-radius:3px;flex-shrink:0;margin-left:8px">✕</span>
-        </div>`).join('')}
-    </div>`;
-  }catch(e){}
+  const el=document.getElementById('mv-list');if(!el)return;
+  const manuales=DATA.filter(r=>r.manual);
+  if(!manuales.length){el.innerHTML='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--light)">Sin ventas manuales registradas</div>';return;}
+  const ordenes={};
+  manuales.forEach(e=>{
+    const key=e.orden+'|'+e.canal;
+    if(!ordenes[key])ordenes[key]={orden:e.orden,fecha:e.fecha,canal:e.canal,cliente:e.cliente,lineas:[]};
+    ordenes[key].lineas.push(e);
+  });
+  const lista=Object.values(ordenes).sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,10);
+  el.innerHTML=`<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.08em;margin-bottom:8px">Últimas ventas manuales (guardadas en el Libro_Ventas)</div>
+    ${lista.map(o=>`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 10px;background:var(--bg);border-radius:5px;margin-bottom:4px">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--dark);line-height:1.6">
+          <strong>${escH(o.fecha)}</strong> · ${escH(o.canal)} · ${escH(o.orden)}${o.cliente?' · '+escH(o.cliente):''}<br>
+          ${o.lineas.map(l=>`${escH(l.sku)} ×${l.qty} ${clp(l.vb)}`).join(' · ')}
+        </div>
+        <button onclick="anularMV('${escH(o.orden)}','${escH(o.canal)}')" style="font-family:var(--mono);font-size:9px;color:var(--neg);cursor:pointer;padding:2px 8px;border:1px solid var(--neg-bg);border-radius:3px;flex-shrink:0;margin-left:8px;background:transparent">Anular</button>
+      </div>`).join('')}
+  </div>`;
 }
+
+// ── Importar DTE (XML del SII): fecha, folio, cliente, líneas con precio + IVA ──
+let mvXmlTotal=0;
+function mvImportarXML(file){
+  const msg=document.getElementById('mv-xml-msg');
+  if(!file)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const x=new DOMParser().parseFromString(rd.result,'application/xml');
+      if(x.getElementsByTagName('parsererror').length)throw new Error('el archivo no es un XML válido');
+      const doc=x.getElementsByTagNameNS('*','Documento')[0]||x;
+      const t=(n,ctx)=>((ctx||doc).getElementsByTagNameNS('*',n)[0]?.textContent||'').trim();
+      const tipo=t('TipoDTE'), folio=t('Folio');
+      if(!folio)throw new Error('no encontré el folio; ¿es el XML del documento?');
+      const pref={'33':'FAC','34':'FAE','39':'BOL','41':'BOE','52':'GD'}[tipo]||('DTE'+tipo);
+      document.getElementById('mv-doc').value=pref+'-'+folio;
+      document.getElementById('mv-fecha').value=t('FchEmis');
+      document.getElementById('mv-cliente').value=t('RznSocRecep');
+      if(tipo==='33'||tipo==='34')document.getElementById('mv-canal').value='B2B';
+      const boleta=tipo==='39'||tipo==='41';           // en boletas los montos ya traen IVA
+      const det=[...doc.getElementsByTagNameNS('*','Detalle')].map(d=>({
+        nombre:t('NmbItem',d), codigo:t('VlrCodigo',d), qty:parseFloat(t('QtyItem',d))||1,
+        monto:parseFloat(t('MontoItem',d))||0, exento:t('IndExe',d)==='1'
+      }));
+      const sumNeto=det.filter(d=>!d.exento).reduce((s,d)=>s+d.monto,0);
+      const mntNeto=parseFloat(t('MntNeto'))||sumNeto;
+      const factor=!boleta&&sumNeto>0?mntNeto/sumNeto:1;   // reparte descuentos globales
+      const iva=boleta?1:IVA;
+      mvXmlTotal=parseFloat(t('MntTotal'))||0;
+      let envio=0;const lineas=[];const sinSku=[];
+      det.forEach(d=>{
+        const sku=mvAdivinarSku(d.nombre,d.codigo);
+        const pu=Math.round(d.monto*factor*(d.exento?1:iva)/d.qty);
+        if(sku)lineas.push({sku,qty:d.qty,precio:pu});
+        else if(/despacho|env[ií]o|flete|transporte/i.test(d.nombre))envio+=Math.round(d.monto*factor*(d.exento?1:iva));
+        else{sinSku.push(d.nombre);lineas.push({sku:'',qty:d.qty,precio:pu,nombre:d.nombre});}
+      });
+      document.getElementById('mv-envio').value=envio;
+      mvMarca='Todas';
+      mvLineas=lineas.map((l,i)=>'ln-x'+i);
+      mvRenderLineas(Object.fromEntries(mvLineas.map((id,i)=>[id,{sku:lineas[i].sku,qty:String(lineas[i].qty),precio:String(lineas[i].precio)}])));
+      msg.innerHTML=`Leí ${pref}-${folio} de ${escH(t('RznSocRecep'))}: ${det.length} línea${det.length!==1?'s':''}, total ${clp(mvXmlTotal)}.`+
+        (sinSku.length?`<br><span style="color:var(--neg)">Elige el producto para: ${sinSku.map(escH).join(', ')}</span>`:' Revisa los productos y registra.');
+      mvTotal();
+    }catch(e){msg.innerHTML=`<span style="color:var(--neg)">No pude leer el XML: ${escH(e.message)}</span>`;}
+  };
+  rd.readAsText(file);
+}
+
+// Busca el SKU por código del ítem o por palabras del nombre (ej. "Silla HookOn Azul").
+function mvAdivinarSku(nombre,codigo){
+  const skus=Object.keys(NOMBRES);
+  const cod=String(codigo||'').toUpperCase();
+  if(skus.includes(cod))return cod;
+  const n=String(nombre||'').toUpperCase();
+  const directo=skus.find(s=>n.includes(s));if(directo)return directo;
+  const norm=w=>w.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  const pal=norm(nombre).split(/[^a-z0-9]+/).filter(w=>w.length>2);
+  let mejor='',pts=0;
+  skus.forEach(s=>{
+    const ws=norm(NOMBRES[s]).split(/[^a-z0-9]+/).filter(w=>w.length>2);
+    const p=ws.filter(w=>pal.includes(w)).length/ws.length;
+    if(p>pts){pts=p;mejor=s;}
+  });
+  return pts>=0.66?mejor:'';
+}
+
+function escH(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 // ── P&L ───────────────────────────────────────────────
 let pnlPer='corrido';
@@ -1741,27 +1808,39 @@ let invFiltMarca='Todas', invFiltEstado='Todos', invSelected=null;
 function sifm(v,el){invFiltMarca=v;['if-t','if-mk','if-mt'].forEach(id=>document.getElementById(id).className='fpill');el.className=v==='MemoKoala'?'fpill mk':v==='Montana'?'fpill mt':'fpill on';renderInv();}
 function sife(v,el){invFiltEstado=v;['if-ea','if-ec','if-el','if-ew','if-eo'].forEach(id=>document.getElementById(id).className='fpill');el.className='fpill on';renderInvList();}
 
-function getInvAdjuste(sku){
-  try{const adj=JSON.parse(localStorage.getItem('hb_inv_ajustes')||'{}');return adj[sku]||0;}catch(e){return 0;}
-}
-function saveInvAdjuste(sku,val){
-  try{const adj=JSON.parse(localStorage.getItem('hb_inv_ajustes')||'{}');adj[sku]=parseInt(val)||0;localStorage.setItem('hb_inv_ajustes',JSON.stringify(adj));}catch(e){}
+// Stock: foto de la hoja Inventario_Diario (Apps Script la actualiza cada hora desde Shopify y ML;
+// ABEE sincroniza Shopify). Stock total = stock ABEE (Shopify) + stock externo (hoja Stock_Externo).
+let INV_SNAP=null, INV_FECHA='', invLoading=null;
+async function loadInvSnap(){
+  if(INV_SNAP)return INV_SNAP;
+  if(invLoading)return invLoading;
+  invLoading=(async()=>{
+    const r=await fetch(CSV_INV);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const lines=(await r.text()).split('\n').filter(l=>l.trim()).slice(1).map(scsv);
+    INV_FECHA=lines.reduce((m,c)=>c[0]>m?c[0]:m,'');
+    INV_SNAP={};
+    lines.filter(c=>c[0]===INV_FECHA&&c[1]).forEach(c=>{
+      const num=v=>v===''||v===undefined?null:pn(v);
+      INV_SNAP[c[1]]={sku:c[1],prod:c[2],marca:c[3],sh:num(c[4]),ml:num(c[5]),dif:num(c[6]),estadoSync:c[7],pubs:pn(c[8]),ext:pn(c[9]),total:pn(c[10])};
+    });
+    return INV_SNAP;
+  })();
+  try{return await invLoading;}finally{invLoading=null;}
 }
 
 function calcInvData(){
   const hoy=new Date(),hace90=new Date(hoy);hace90.setDate(hoy.getDate()-90);
-  const vendSep={},vend90={};
+  const vend90={};
   DATA.forEach(r=>{
     if(!r.sku||!r.fecha)return;
     const f=new Date(r.fecha);if(isNaN(f.getTime()))return;
-    if(f>FECHA_CIERRE)vendSep[r.sku]=(vendSep[r.sku]||0)+r.qty;
     if(f>=hace90)vend90[r.sku]=(vend90[r.sku]||0)+r.qty;
   });
-  return Object.keys(STOCK_BASE).map(sku=>{
-    const marca=sku.startsWith('MK')||sku==='TO04-4'?'MemoKoala':'Montana';
-    const base=STOCK_BASE[sku]||0,vendido=vendSep[sku]||0;
-    const ajuste=getInvAdjuste(sku);
-    const actual=Math.max(0,base-vendido+ajuste);
+  return Object.values(INV_SNAP||{}).map(s=>{
+    const sku=s.sku;
+    const marca=s.marca&&s.marca.toLowerCase().startsWith('memo')?'MemoKoala':'Montana';
+    const actual=Math.max(0,s.total);
     const v90=vend90[sku]||0,vDia=Math.round((v90/90)*100)/100;
     const dias=vDia>0?Math.round(actual/vDia):9999;
     const umbral=60,costo=COSTOS[sku]||0;
@@ -1771,19 +1850,25 @@ function calcInvData(){
     else if(dias<umbral/2){stato='crit';statoTxt='🔴 Crítico';}
     else if(dias<umbral){stato='alert';statoTxt='🟠 Alerta';}
     else if(dias<umbral*2){stato='warn';statoTxt='🟡 Revisar';}
-    return{sku,marca,actual,base,vendido,ajuste,v90,vDia,dias,umbral,costo,val,stato,statoTxt};
+    return{...s,marca,actual,v90,vDia,dias,umbral,costo,val,stato,statoTxt,nombre:NOMBRES[sku]||s.prod||sku};
   });
 }
 
-function renderInv(){
+async function renderInv(){
+  const kg=document.getElementById('inv-kgrid');
+  if(!INV_SNAP){
+    kg.innerHTML='<div style="padding:16px;font-family:var(--mono);font-size:10px;color:var(--light)">Cargando stock…</div>';
+    try{await loadInvSnap();}
+    catch(e){kg.innerHTML='<div style="padding:16px;font-family:var(--mono);font-size:11px;color:var(--neg)">No se pudo cargar el stock. <button onclick="renderInv()" class="inv-edit-btn">Reintentar</button></div>';return;}
+  }
   const inv=calcInvData();
-  let totalStock=0,totalVal=0,alertas=0,criticos=0,sinRot=0;
-  inv.forEach(r=>{totalStock+=r.actual;totalVal+=r.val;if(r.stato==='crit')criticos++;if(r.stato==='alert')alertas++;if(r.v90===0)sinRot++;});
-  document.getElementById('inv-kgrid').innerHTML=[
-    {lbl:'STOCK TOTAL',num:totalStock.toLocaleString('es-CL'),sub:'unidades · cierre base 30-sep-2026',acc:'#4A6274',delta:{c:'d-neu',t:'todos los SKUs'}},
+  let totalStock=0,totalVal=0,alertas=0,criticos=0,descuadre=0;
+  inv.forEach(r=>{totalStock+=r.actual;totalVal+=r.val;if(r.stato==='crit')criticos++;if(r.stato==='alert')alertas++;if(r.estadoSync==='Revisar')descuadre++;});
+  kg.innerHTML=[
+    {lbl:'STOCK TOTAL',num:totalStock.toLocaleString('es-CL'),sub:'unidades · ABEE + bodegas externas',acc:'#4A6274',delta:{c:'d-neu',t:'foto '+INV_FECHA}},
     {lbl:'VALOR STOCK',num:clp(totalVal),sub:'costo × 1.19 × stock actual',acc:'#2C3E4C',delta:{c:'d-neu',t:'estimado'}},
     {lbl:'ALERTAS',num:alertas+criticos,sub:criticos+' crítico'+(criticos!==1?'s':'')+' · '+alertas+' en alerta',acc:alertas+criticos>0?'#c0392b':'#1a7a45',delta:alertas+criticos>0?{c:'d-neg',t:'Revisar reposición'}:{c:'d-pos',t:'Todo OK'}},
-    {lbl:'SIN ROTACIÓN 90d',num:sinRot,sub:'SKUs sin ventas recientes',acc:'#8AA4B4',delta:{c:'d-neu',t:'últimos 90 días'}},
+    {lbl:'DESCUADRE ML',num:descuadre,sub:'SKUs con stock distinto en ML y ABEE',acc:descuadre>0?'#D35400':'#1a7a45',delta:descuadre>0?{c:'d-neg',t:'riesgo de sobreventa en ML'}:{c:'d-pos',t:'ML calza con ABEE'}},
   ].map(k=>`<div class="kcard">
     <div class="kcard-accent" style="background:${k.acc}"></div>
     <div class="kcard-label">${k.lbl}</div>
@@ -1795,12 +1880,13 @@ function renderInv(){
 }
 
 function renderInvList(){
+  if(!INV_SNAP)return;
   const inv=calcInvData();
   const filtered=inv.filter(r=>{
     if(invFiltMarca!=='Todas'&&r.marca!==invFiltMarca)return false;
     if(invFiltEstado!=='Todos'&&r.stato!==invFiltEstado)return false;
     return true;
-  });
+  }).sort((a,b)=>a.sku.localeCompare(b.sku));
   const dotC={ok:'var(--pos)',warn:'var(--warn)',alert:'#D35400',crit:'var(--neg)',none:'var(--light)'};
   const stC={ok:'s-ok',warn:'s-warn',alert:'s-alert',crit:'s-crit',none:'s-none'};
   document.getElementById('inv-list-items').innerHTML=filtered.length===0
@@ -1809,8 +1895,8 @@ function renderInvList(){
     <div class="inv-list-item${invSelected===r.sku?' active':''}" onclick="selectInv('${r.sku}')">
       <div class="il-dot" style="background:${dotC[r.stato]||'var(--light)'}"></div>
       <div class="il-body">
-        <div class="il-sku">${r.sku}</div>
-        <div class="il-nom">${NOMBRES[r.sku]||r.sku}</div>
+        <div class="il-sku">${r.sku}${r.estadoSync==='Revisar'?' <span style="color:#D35400" title="ML no calza con ABEE">⚠</span>':''}</div>
+        <div class="il-nom">${r.nombre}</div>
       </div>
       <div class="il-right">
         <div class="il-stock">${r.actual}</div>
@@ -1827,25 +1913,27 @@ function showInvDetail(r){
   const barW=r.dias===9999?100:Math.min(100,(r.dias/180)*100);
   const barC=r.stato==='ok'?'var(--pos)':r.stato==='warn'?'var(--warn)':r.stato==='alert'?'#D35400':'var(--neg)';
   const diasTxt=r.dias===9999?'Sin datos':'~'+r.dias+' días';
-  const nota=r.sku==='MK-0001'?`<div class="inv-note">📦 MK-0001: 62 ABEE + 42 papás + 3 casa HigoKids = 107 total al 30-sep-2026</div>`:r.sku==='MK-0002'?`<div class="inv-note">📦 MK-0002: 19 ABEE + 1 casa HigoKids = 20 total al 30-sep-2026</div>`:'';
+  const v=x=>x===null?'—':x;
+  const syncNota=r.estadoSync==='Revisar'
+    ?`<div class="inv-note">⚠ MercadoLibre muestra ${v(r.ml)} y ABEE ${v(r.sh)} (${r.ml-r.sh>0?'+':''}${r.ml-r.sh}). Si ML muestra más, puede vender unidades que no existen.</div>`:'';
   const repoTxt=r.dias!==9999&&r.dias<r.umbral?`<div class="inv-note">🛒 Reponer pronto — bajo umbral de ${r.umbral} días.</div>`:'';
-  const ajusteActual=getInvAdjuste(r.sku);
   document.getElementById('inv-detail').innerHTML=`
     <div class="inv-detail-head">
       <div class="inv-detail-badges">
         <span class="bdg ${r.marca==='MemoKoala'?'b-mk':'b-mt'}">${r.marca==='MemoKoala'?'MK':'MT'} · ${r.marca}</span>
         <span class="stato ${stC[r.stato]}">${r.statoTxt}</span>
       </div>
-      <div class="inv-detail-nom">${NOMBRES[r.sku]||r.sku}</div>
+      <div class="inv-detail-nom">${r.nombre}</div>
       <div class="inv-detail-sku">${r.sku}</div>
     </div>
     <div class="inv-detail-body">
       <div class="inv-big">${r.actual}</div>
-      <div class="inv-big-lbl">unidades en stock actual</div>
-      <div class="inv-edit-row">
-        <div class="inv-edit-lbl">Ajuste manual de stock<br><span style="color:var(--light);font-size:8px">cierre 30-sep (${r.base}) − ventas oct+ (${r.vendido}) + ajuste</span></div>
-        <input type="number" class="inv-edit-inp" id="adj-${r.sku}" value="${ajusteActual}" placeholder="0">
-        <button class="inv-edit-btn" onclick="applyAdj('${r.sku}')">Aplicar</button>
+      <div class="inv-big-lbl">unidades en stock · foto ${INV_FECHA}</div>
+      <div class="inv-spec-grid" style="margin-bottom:14px">
+        <div class="inv-spec"><div class="inv-spec-lbl">ABEE (Shopify)</div><div class="inv-spec-val">${v(r.sh)}</div><div class="inv-spec-sub">disponible para vender</div></div>
+        <div class="inv-spec"><div class="inv-spec-lbl">Publicado en ML</div><div class="inv-spec-val">${v(r.ml)}</div><div class="inv-spec-sub">${r.estadoSync==='OK'?'calza con ABEE':r.estadoSync}</div></div>
+        <div class="inv-spec"><div class="inv-spec-lbl">Bodegas externas</div><div class="inv-spec-val">${r.ext}</div><div class="inv-spec-sub">hoja Stock_Externo</div></div>
+        <div class="inv-spec"><div class="inv-spec-lbl">Valor stock</div><div class="inv-spec-val">${clp(r.val)}</div><div class="inv-spec-sub">costo × 1.19 × stock</div></div>
       </div>
       <div class="inv-cov"><div class="inv-cov-fill" style="width:${barW}%;background:${barC}"></div></div>
       <div class="inv-cov-meta"><span>Cobertura: <strong>${diasTxt}</strong></span><span>Umbral: ${r.umbral} días</span></div>
@@ -1853,16 +1941,11 @@ function showInvDetail(r){
         <div class="inv-spec"><div class="inv-spec-lbl">Ventas 90 días</div><div class="inv-spec-val">${r.v90}</div><div class="inv-spec-sub">unidades</div></div>
         <div class="inv-spec"><div class="inv-spec-lbl">Promedio diario</div><div class="inv-spec-val">${r.vDia.toFixed(2)}</div><div class="inv-spec-sub">uds/día (90d)</div></div>
         <div class="inv-spec"><div class="inv-spec-lbl">Costo unitario</div><div class="inv-spec-val">${clp(r.costo)}</div><div class="inv-spec-sub">internado neto</div></div>
-        <div class="inv-spec"><div class="inv-spec-lbl">Valor stock</div><div class="inv-spec-val">${clp(r.val)}</div><div class="inv-spec-sub">costo × 1.19 × stock</div></div>
+        <div class="inv-spec"><div class="inv-spec-lbl">Publicaciones ML</div><div class="inv-spec-val">${r.pubs}</div><div class="inv-spec-sub">activas</div></div>
       </div>
-      ${nota}${repoTxt}
+      ${syncNota}${repoTxt}
+      <div class="inv-note" style="opacity:.75">Unidades fuera de ABEE (otra bodega, casa HigoKids) se anotan en la hoja Stock_Externo y se suman aquí.</div>
     </div>`;
-}
-
-function applyAdj(sku){
-  const val=document.getElementById('adj-'+sku)?.value||'0';
-  saveInvAdjuste(sku,val);
-  renderInv();
 }
 
 // ── CONVERSIÓN ───────────────────────────────────────

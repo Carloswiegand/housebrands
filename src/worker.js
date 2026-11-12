@@ -3,6 +3,8 @@
 //   /erp/api/ventas  → hoja Libro_Ventas
 //   /erp/api/pnl     → hoja P&L
 //   /erp/api/conv    → hoja Conversion
+//   /erp/api/inv     → hoja Inventario_Diario
+//   POST /erp/api/venta → registra o anula una venta manual (Apps Script doPost)
 // La API solo responde si la petición trae un token válido de Cloudflare Access
 // emitido para un correo autorizado (ALLOWED_EMAILS). Falla cerrada: si falta
 // cualquier configuración, responde 503 y no entrega datos.
@@ -10,13 +12,14 @@
 // Configuración (wrangler.jsonc → vars):  ACCESS_TEAM_DOMAIN, ACCESS_AUD, ALLOWED_EMAILS, SHEETS_API_URL
 // Secreto (dashboard / wrangler secret):   SHEETS_API_KEY
 
-const SHEETS = new Set(['ventas', 'pnl', 'conv']);
+const SHEETS = new Set(['ventas', 'pnl', 'conv', 'inv']);
 const CACHE_SECONDS = 60;
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const m = url.pathname.match(/^\/erp\/api\/([a-z]+)\/?$/);
+    if (m && m[1] === 'venta') return ventaManual(request, env);
     if (m) return api(m[1], request, env, ctx);
     return env.ASSETS.fetch(request);
   },
@@ -51,6 +54,31 @@ async function api(sheet, request, env, ctx) {
   });
   ctx.waitUntil(cache.put(cacheKey, res.clone()));
   return withPrivateHeaders(res);
+}
+
+// Ventas manuales: el navegador manda {action, venta|orden,canal}; el Worker agrega la clave
+// (que nunca llega al navegador) y lo reenvía al doPost de Apps Script.
+async function ventaManual(request, env) {
+  if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405);
+  if (!env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD || !env.ALLOWED_EMAILS || !env.SHEETS_API_URL || !env.SHEETS_API_KEY) {
+    return json({ error: 'not_configured' }, 503);
+  }
+  const identity = await verifyAccess(request, env).catch(() => null);
+  if (!identity) return json({ error: 'unauthorized' }, 401);
+
+  let body;
+  try { body = await request.json(); } catch { return json({ ok: false, error: 'json inválido' }, 400); }
+  if (!['venta_manual', 'anular_manual'].includes(body.action)) return json({ ok: false, error: 'acción desconocida' }, 400);
+  const payload = { ...body, key: env.SHEETS_API_KEY, usuario: identity.email };
+
+  // Apps Script responde 302 a googleusercontent; fetch lo sigue con GET y trae el JSON.
+  const r = await fetch(env.SHEETS_API_URL, {
+    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload), redirect: 'follow',
+  });
+  let out;
+  try { out = await r.json(); } catch { return json({ ok: false, error: 'respuesta inválida de Sheets', status: r.status }, 502); }
+  if (out.ok) await caches.default.delete(new Request('https://cache.internal/erp/ventas'));
+  return json(out, out.ok ? 200 : 400);
 }
 
 function withPrivateHeaders(res) {
