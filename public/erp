@@ -300,7 +300,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xs-tool:hover{background:#fff}
 .xs-tool.pri{background:linear-gradient(135deg,var(--x-ac),var(--x-ac2));border:0;color:#fff}
 .xs-main{flex:999 1 600px;min-width:0;display:flex;flex-direction:column;gap:18px}
-.xs-top{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 18px;border-radius:22px;background:var(--x-glass);border:1px solid var(--x-glassbd);box-shadow:var(--x-glasssh);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-family:var(--x-font);color:var(--x-tx)}
+.xs-top{position:relative;z-index:60;display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 18px;border-radius:22px;background:var(--x-glass);border:1px solid var(--x-glassbd);box-shadow:var(--x-glasssh);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-family:var(--x-font);color:var(--x-tx)}
 .xs-top h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em}
 .xs-top .sub{margin:3px 0 0;font-size:13px;color:var(--x-mu)}
 .xs-seg{display:flex;flex-wrap:wrap;gap:3px;padding:4px;border-radius:13px;background:#fff;border:1px solid #d9deeb}
@@ -328,7 +328,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xp-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .xp-h .note{font-size:12px;color:var(--x-mu)}
 .xk-l{font-size:13px;font-weight:600;color:var(--x-mu)}
-.xk-v{font-size:27px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.xk-v{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
 .xk-f{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;font-size:12px;color:var(--x-mu)}
 .xd{font-size:12px;font-weight:700;padding:3px 8px;border-radius:8px}
 .xd.up{color:var(--x-pos);background:var(--x-posbg)}
@@ -376,6 +376,35 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xempty{padding:24px;text-align:center;color:var(--x-mu);font-size:13px}
 .xfoot{font-size:12px;color:var(--x-mu);margin:0 4px 8px}
 @media (max-width:760px){.xs-side{max-width:none;position:static;min-height:0}.xg-2{grid-template-columns:1fr}}
+
+.xs-dwrap{position:relative}
+.xs-dbtn{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid #d9deeb;background:#fff;font:500 13px var(--x-font);color:var(--x-tx);cursor:pointer;white-space:nowrap}
+.xs-dbtn:hover{border-color:var(--x-ac)}
+.xs-dbtn b{font-weight:700}
+.xs-pop{position:absolute;z-index:500;top:calc(100% + 8px);left:0;background:#fff;border:1px solid #dfe4f0;border-radius:16px;box-shadow:0 18px 50px rgba(20,26,51,.22);font-family:var(--x-font);color:var(--x-tx)}
+.xs-pop-in{display:flex;flex-wrap:nowrap}
+.xs-pop{width:max-content;max-width:calc(100vw - 40px)}
+.xs-pop-l{display:flex;flex-direction:column;padding:8px;border-right:1px solid #eef0f6;min-width:210px;max-height:480px;overflow:auto}
+.xs-pop-l button{text-align:left;border:0;background:transparent;padding:9px 12px;border-radius:9px;font:500 13.5px var(--x-font);color:var(--x-tx);cursor:pointer}
+.xs-pop-l button:hover{background:#f2f4fa}
+.xs-pop-l button.on{background:rgba(var(--x-acRGB),.12);color:var(--x-ac);font-weight:700}
+.xs-pop-r{display:flex;flex-direction:column;gap:12px;padding:14px 16px;min-width:300px}
+.xs-pop-f{display:flex;gap:10px;align-items:flex-start}
+.xs-pop-cal{display:flex;gap:18px;align-items:flex-start}
+.xc{width:238px}
+.xc-t{text-align:center;font-weight:700;font-size:13.5px;margin-bottom:8px}
+.xc-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.xc-h{text-align:center;font-size:11px;color:var(--x-mu);padding:4px 0}
+.xc-d{height:32px;border:0;border-radius:8px;background:transparent;font:500 13px var(--x-font);color:var(--x-tx);cursor:pointer}
+.xc-d:hover{background:#eef1fb}
+.xc-d.in{background:rgba(var(--x-acRGB),.12);border-radius:0}
+.xc-d.bo{background:var(--x-ac);color:#fff;border-radius:8px}
+.xc-nav{border:1px solid #dfe4f0;background:#fff;border-radius:9px;width:32px;height:32px;cursor:pointer;font-size:18px;line-height:1;color:var(--x-tx)}
+.xs-pop-b{display:flex;align-items:center;gap:8px;border-top:1px solid #eef0f6;padding-top:12px}
+.xcmp{font-size:13px;color:var(--x-mu);margin:-4px 2px 0}
+.xcmp b{color:var(--x-tx)}
+@media (max-width:900px){.xs-pop-in{flex-wrap:wrap}.xs-pop-l{flex-direction:row;flex-wrap:wrap;max-height:none;border-right:0}}
+@media (max-width:760px){.xs-pop{position:fixed;left:8px;right:8px;top:70px;max-height:80vh;overflow:auto}.xs-pop-cal .xc:first-of-type{display:none}}
 </style>
 </head>
 <body>
@@ -415,7 +444,8 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
         <p class="sub" id="xs-sub">Cargando ventas…</p>
       </div>
       <div id="xs-filtros" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
-        <div class="xs-seg" role="group" aria-label="Período" id="xs-per"></div>
+        <div class="xs-dwrap"><button type="button" class="xs-dbtn" id="xs-btn-per" onclick="xAbrir('per')" aria-haspopup="dialog"></button></div>
+        <div class="xs-dwrap"><button type="button" class="xs-dbtn" id="xs-btn-cmp" onclick="xAbrir('cmp')" aria-haspopup="dialog"></button></div>
         <label class="xs-sel">Marca<select id="xs-marca" onchange="xFiltro()"><option value="">Todas</option><option>MemoKoala</option><option>Montana</option></select></label>
         <label class="xs-sel">Canal<select id="xs-canal" onchange="xFiltro()"><option value="">Todos</option></select></label>
       </div>
@@ -2413,8 +2443,6 @@ async function importarHistorialShopify(files){
 
 // ══ DASHBOARD DE ANÁLISIS ══════════════════════════════════
 // Todo se calcula en el navegador desde el Libro_Ventas (DATA) y la foto de stock (INV_SNAP).
-const XF={per:'30d',marca:'',canal:''};
-const X_PER=[['7d','7 días'],['30d','30 días'],['mes','Este mes'],['mesant','Mes anterior'],['90d','90 días'],['anio','Este año'],['12m','12 meses'],['todo','Todo']];
 const X_TITULOS={res:['Resumen','Cómo va el negocio y qué decidir hoy'],prod:['Productos','Qué reponer, empujar, liquidar o empaquetar'],cli:['Clientes','Quién compra y si vuelve a comprar'],canal:['Canales y marketing','Dónde se vende, de dónde llegan y cuánto cuesta cada canal'],geo:['Geografía','Regiones y comunas'],inv:['Inventario','Stock en ABEE, bodegas externas y descuadres'],pnl:['P&L','Estado de resultados mensual'],conv:['Conversión','Embudo de la tienda'],ventas:['Detalle de ventas','Vista anterior con todos los indicadores']};
 const X_REG={RM:'Metropolitana',VS:'Valparaíso',BI:'Biobío',LL:'Los Lagos',AN:'Antofagasta',LI:"O'Higgins",CO:'Coquimbo',ML:'Maule',AT:'Atacama',NB:'Ñuble',MA:'Magallanes',LR:'Los Ríos',AR:'Araucanía',AP:'Arica y Parinacota',TA:'Tarapacá',AI:'Aysén'};
 const X_REGNOM={'santiago':'RM','region metropolitana':'RM','metropolitana':'RM','region metropolitana de santiago':'RM','rm':'RM','valparaiso':'VS','biobio':'BI','bio bio':'BI','los lagos':'LL','antofagasta':'AN',"o'higgins":'LI','libertador general bernardo o\'higgins':'LI','coquimbo':'CO','maule':'ML','atacama':'AT','nuble':'NB','magallanes':'MA','magallanes y la antartica chilena':'MA','los rios':'LR','araucania':'AR','la araucania':'AR','arica y parinacota':'AP','tarapaca':'TA','aysen':'AI','aisen':'AI'};
@@ -2444,16 +2472,104 @@ function xFuente(f,canal){
   return 'Otros sitios';
 }
 
-function xRango(per){
-  const hoy=xIso(new Date());let a,b=hoy,pa,pb;
-  if(per==='todo'){const f=DATA.map(r=>r.fecha).filter(Boolean).sort();return{a:f[0]||hoy,b:hoy,pa:null,pb:null,txt:'Todo el historial'};}
-  if(per==='mes'){a=hoy.slice(0,8)+'01';const d=new Date(a+'T12:00:00');d.setMonth(d.getMonth()-1);pa=xIso(d);pb=xAdd(pa,xDias(a,b)-1);}
-  else if(per==='mesant'){const d=new Date(hoy.slice(0,8)+'01T12:00:00');d.setMonth(d.getMonth()-1);a=xIso(d);b=xAdd(hoy.slice(0,8)+'01',-1);const p=new Date(a+'T12:00:00');p.setMonth(p.getMonth()-1);pa=xIso(p);pb=xAdd(a,-1);}
-  else if(per==='anio'){a=hoy.slice(0,4)+'-01-01';pa=(+hoy.slice(0,4)-1)+'-01-01';pb=(+hoy.slice(0,4)-1)+hoy.slice(4);}
-  else{const n={'7d':7,'30d':30,'90d':90,'12m':365}[per]||30;a=xAdd(hoy,-(n-1));pb=xAdd(a,-1);pa=xAdd(pb,-(n-1));}
-  const fmt=s=>new Date(s+'T12:00:00').toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'});
-  return{a,b,pa,pb,txt:fmt(a)+' – '+fmt(b)+(pa?' · comparado con '+fmt(pa)+' – '+fmt(pb):'')};
+// ── Selector de fechas al estilo Shopify: período + "Comparar con" ──
+const X_PRESETS=[
+  ['hoy','Hoy'],['ayer','Ayer'],['7d','Últimos 7 días'],['30d','Últimos 30 días'],['90d','Últimos 90 días'],['365d','Últimos 365 días'],
+  ['ultmes','Último mes'],['12m','Últimos 12 meses'],['ultanio','Último año'],
+  ['semhoy','Semana hasta la fecha'],['meshoy','Mes hasta la fecha'],['trimhoy','Trimestre hasta la fecha'],['aniohoy','Año hasta la fecha'],['todo','Todo el historial']
+];
+const X_CMP=[['prev','Período anterior'],['anio','Año anterior'],['aniods','Año anterior (mismo día de la semana)'],['custom','Personalizado'],['none','Sin comparación']];
+function xPreset(k){
+  const hoy=xIso(new Date()),d=new Date(hoy+'T12:00:00');
+  const m1=(y,m)=>xIso(new Date(y,m,1,12));
+  switch(k){
+    case 'hoy':return[hoy,hoy];
+    case 'ayer':return[xAdd(hoy,-1),xAdd(hoy,-1)];
+    case '7d':return[xAdd(hoy,-6),hoy];
+    case '30d':return[xAdd(hoy,-29),hoy];
+    case '90d':return[xAdd(hoy,-89),hoy];
+    case '365d':return[xAdd(hoy,-364),hoy];
+    case 'ultmes':return[m1(d.getFullYear(),d.getMonth()-1),xAdd(m1(d.getFullYear(),d.getMonth()),-1)];
+    case '12m':return[m1(d.getFullYear(),d.getMonth()-12),xAdd(m1(d.getFullYear(),d.getMonth()),-1)];
+    case 'ultanio':return[(d.getFullYear()-1)+'-01-01',(d.getFullYear()-1)+'-12-31'];
+    case 'semhoy':return[xAdd(hoy,-((d.getDay()+6)%7)),hoy];
+    case 'meshoy':return[hoy.slice(0,8)+'01',hoy];
+    case 'trimhoy':return[m1(d.getFullYear(),Math.floor(d.getMonth()/3)*3),hoy];
+    case 'aniohoy':return[hoy.slice(0,4)+'-01-01',hoy];
+    case 'todo':{const f=DATA.map(r=>r.fecha).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)).sort();return[f[0]||hoy,hoy];}
+  }
+  return[xAdd(hoy,-29),hoy];
 }
+const XF=(()=>{const def={preset:'30d',a:null,b:null,cmp:'prev',ca:null,cb:null,marca:'',canal:''};try{const g=JSON.parse(localStorage.getItem('hb_fechas')||'null');if(g)return Object.assign(def,{preset:g.preset,a:g.a,b:g.b,cmp:g.cmp,ca:g.ca,cb:g.cb});}catch(e){}return def;})();
+function xGuardarFechas(){try{localStorage.setItem('hb_fechas',JSON.stringify({preset:XF.preset,a:XF.a,b:XF.b,cmp:XF.cmp,ca:XF.ca,cb:XF.cb}));}catch(e){}}
+const xFmt=(s,anio=true)=>new Date(s+'T12:00:00').toLocaleDateString('es-CL',anio?{day:'numeric',month:'short',year:'numeric'}:{day:'numeric',month:'short'});
+const xFmtR=(a,b)=>a===b?xFmt(a):(a.slice(0,4)===b.slice(0,4)?xFmt(a,false)+' – '+xFmt(b):xFmt(a)+' – '+xFmt(b));
+function xRango(){
+  let a,b;
+  if(XF.preset&&XF.preset!=='custom'){[a,b]=xPreset(XF.preset);}else{a=XF.a;b=XF.b;}
+  if(!a||!b){[a,b]=xPreset('30d');}
+  if(a>b)[a,b]=[b,a];
+  const n=xDias(a,b);let pa=null,pb=null;
+  const yr=s=>{const d=new Date(s+'T12:00:00');d.setFullYear(d.getFullYear()-1);return xIso(d);};
+  if(XF.cmp==='prev'){pb=xAdd(a,-1);pa=xAdd(pb,-(n-1));}
+  else if(XF.cmp==='anio'){pa=yr(a);pb=yr(b);}
+  else if(XF.cmp==='aniods'){pa=xAdd(a,-364);pb=xAdd(b,-364);}
+  else if(XF.cmp==='custom'&&XF.ca&&XF.cb){pa=XF.ca<=XF.cb?XF.ca:XF.cb;pb=XF.ca<=XF.cb?XF.cb:XF.ca;}
+  const etq=(X_PRESETS.find(p=>p[0]===XF.preset)||[,'Personalizado'])[1];
+  const cmpEtq=(X_CMP.find(c=>c[0]===XF.cmp)||[,''])[1];
+  return{a,b,pa,pb,etq,cmpEtq,txt:etq+': '+xFmtR(a,b)+(pa?' · comparado con '+cmpEtq.toLowerCase()+': '+xFmtR(pa,pb):' · sin comparación')};
+}
+
+// Popover del selector (un calendario de dos meses, como Shopify)
+let XP=null; // estado temporal mientras el popover está abierto
+function xAbrir(tipo){
+  const R=xRango();
+  XP={tipo,preset:tipo==='per'?XF.preset:XF.cmp,a:tipo==='per'?R.a:(R.pa||R.a),b:tipo==='per'?R.b:(R.pb||R.b),clic:0,mes:null};
+  XP.mes=(XP.b||xIso(new Date())).slice(0,7);
+  xPintarPop();
+}
+function xCerrar(){XP=null;const p=document.getElementById('xs-pop');if(p)p.remove();}
+function xPintarPop(){
+  let p=document.getElementById('xs-pop');
+  if(!p){p=document.createElement('div');p.id='xs-pop';p.className='xs-pop';p.setAttribute('role','dialog');p.setAttribute('aria-label',XP.tipo==='per'?'Elegir período':'Comparar con');document.getElementById(XP.tipo==='per'?'xs-btn-per':'xs-btn-cmp').parentElement.appendChild(p);}
+  const lista=XP.tipo==='per'?X_PRESETS.concat([['custom','Personalizado']]):X_CMP;
+  const izq=lista.map(([k,l])=>`<button type="button" class="${XP.preset===k?'on':''}" onclick="xElegir('${k}')">${l}</button>`).join('');
+  const m0=new Date(XP.mes+'-01T12:00:00');const m1=new Date(m0);m1.setMonth(m1.getMonth()-1);
+  const cal=d=>{const y=d.getFullYear(),m=d.getMonth();const ini=new Date(y,m,1,12),dias=new Date(y,m+1,0).getDate(),off=(ini.getDay()+6)%7;
+    let h=`<div class="xc"><div class="xc-t">${(t=>t.charAt(0).toUpperCase()+t.slice(1))(ini.toLocaleDateString('es-CL',{month:'long',year:'numeric'}))}</div><div class="xc-g">${['L','M','M','J','V','S','D'].map(x=>`<span class="xc-h">${x}</span>`).join('')}${'<span></span>'.repeat(off)}`;
+    for(let i=1;i<=dias;i++){const s=xIso(new Date(y,m,i,12));const en=XP.a&&XP.b&&s>=XP.a&&s<=XP.b,bo=s===XP.a||s===XP.b;h+=`<button type="button" class="xc-d${en?' in':''}${bo?' bo':''}" onclick="xDia('${s}')" aria-label="${xFmt(s)}">${i}</button>`;}
+    return h+'</div></div>';};
+  const noCal=XP.tipo==='cmp'&&XP.preset==='none';
+  p.innerHTML=`<div class="xs-pop-in">
+    <div class="xs-pop-l">${izq}</div>
+    <div class="xs-pop-r">${noCal?'<p class="xsmall" style="padding:20px">Las cifras se muestran sin comparar.</p>':`
+      <div class="xs-pop-f"><label class="xs-sel">Fecha de inicio<input type="date" value="${XP.a||''}" onchange="XP.a=this.value;XP.preset='custom';XP.mes=this.value.slice(0,7);xPintarPop()"></label><span style="padding-top:18px">→</span><label class="xs-sel">Fecha de término<input type="date" value="${XP.b||''}" onchange="XP.b=this.value;XP.preset='custom';XP.mes=this.value.slice(0,7);xPintarPop()"></label></div>
+      <div class="xs-pop-cal"><button type="button" class="xc-nav" aria-label="Mes anterior" onclick="xMes(-1)">‹</button>${cal(m1)}${cal(m0)}<button type="button" class="xc-nav" aria-label="Mes siguiente" onclick="xMes(1)">›</button></div>`}
+      <div class="xs-pop-b"><span class="xsmall">${noCal?'':XP.a&&XP.b?xFmtR(XP.a<=XP.b?XP.a:XP.b,XP.a<=XP.b?XP.b:XP.a)+' · '+xDias(XP.a<=XP.b?XP.a:XP.b,XP.a<=XP.b?XP.b:XP.a)+' días':''}</span><span style="flex:1"></span><button type="button" class="xs-tool" style="width:auto" onclick="xCerrar()">Cancelar</button><button type="button" class="xs-tool pri" style="width:auto" onclick="xAplicar()">Aplicar</button></div>
+    </div></div>`;
+  p.style.left='0';p.style.right='auto';
+  const r=p.getBoundingClientRect();if(r.right>window.innerWidth-12){p.style.left='auto';p.style.right='0';}
+}
+function xMes(n){const d=new Date(XP.mes+'-01T12:00:00');d.setMonth(d.getMonth()+n);XP.mes=xIso(d).slice(0,7);xPintarPop();}
+function xElegir(k){
+  XP.preset=k;
+  if(XP.tipo==='per'&&k!=='custom'){[XP.a,XP.b]=xPreset(k);XP.mes=XP.b.slice(0,7);}
+  if(XP.tipo==='cmp'&&k!=='custom'&&k!=='none'){const g={preset:XF.preset,a:XF.a,b:XF.b,cmp:XF.cmp};XF.cmp=k;const R=xRango();XP.a=R.pa;XP.b=R.pb;XF.cmp=g.cmp;XP.mes=(XP.b||XP.mes).slice(0,7);}
+  xPintarPop();
+}
+function xDia(s){
+  XP.preset='custom';
+  if(XP.clic%2===0){XP.a=s;XP.b=s;}else{if(s<XP.a){XP.b=XP.a;XP.a=s;}else XP.b=s;}
+  XP.clic++;xPintarPop();
+}
+function xAplicar(){
+  if(XP.tipo==='per'){XF.preset=XP.preset;if(XP.preset==='custom'){XF.a=XP.a<=XP.b?XP.a:XP.b;XF.b=XP.a<=XP.b?XP.b:XP.a;}}
+  else{XF.cmp=XP.preset;if(XP.preset==='custom'){XF.ca=XP.a;XF.cb=XP.b;}}
+  xGuardarFechas();xCerrar();xRender();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&XP)xCerrar();});
+document.addEventListener('mousedown',e=>{const p=document.getElementById('xs-pop');if(p&&!p.contains(e.target)&&!e.target.closest('.xs-dbtn'))xCerrar();});
+
 function xBase(){return DATA.filter(r=>r.vb>0&&(!XF.marca||r.marca===XF.marca)&&(!XF.canal||r.canal===XF.canal));}
 function xEn(rows,a,b){return rows.filter(r=>r.fecha>=a&&r.fecha<=b);}
 function xPedidos(rows){const o={};rows.forEach(r=>{const k=r.canal+'|'+r.orden;if(!o[k])o[k]={k,canal:r.canal,fecha:r.fecha,hora:r.hora,cli:r.cli,vb:0,mb:0,u:0,skus:new Set(),reg:xReg(r),ciudad:r.ciudad,fuente:r.fuente,pago:r.pago,desp:r.desp,ncomp:r.ncomp,marca:r.marca};const x=o[k];x.vb+=r.vb;x.mb+=r.mb;x.u+=r.qty;x.skus.add(r.sku);});return Object.values(o);}
@@ -2472,8 +2588,10 @@ function xHeader(){
   document.getElementById('xs-title').textContent=t[0];
   const an=['res','prod','cli','canal','geo'].includes(X_VISTA);
   document.getElementById('xs-filtros').style.display=an?'flex':'none';
-  document.getElementById('xs-sub').textContent=an&&DATA.length?xRango(XF.per).txt:t[1];
-  document.getElementById('xs-per').innerHTML=X_PER.map(([k,l])=>`<button type="button" class="${XF.per===k?'on':''}" onclick="XF.per='${k}';xRender()">${l}</button>`).join('');
+  document.getElementById('xs-sub').textContent=t[1];
+  if(an){const R=xRango();const ic='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+    document.getElementById('xs-btn-per').innerHTML=ic+'<span><b>'+escH(R.etq)+'</b> · '+xFmtR(R.a,R.b)+'</span>';
+    document.getElementById('xs-btn-cmp').innerHTML='<span>Comparar con: <b>'+escH(R.cmpEtq)+'</b>'+(R.pa?' · '+xFmtR(R.pa,R.pb):'')+'</span>';}
   const sc=document.getElementById('xs-canal');
   if(sc.options.length<=1&&DATA.length){[...new Set(DATA.map(r=>r.canal))].sort().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c==='ML'?'MercadoLibre':c;sc.appendChild(o);});}
 }
@@ -2508,7 +2626,7 @@ function xTendencia(rows,R,met){
   const line=prev?`<svg viewBox="0 0 ${labs.length} 100" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#f08a24" stroke-width="2" vector-effect="non-scaling-stroke" stroke-dasharray="4 3" points="${prev.map((v,i)=>(i+0.5)+','+(100-v/max*100)).join(' ')}"/></svg>`:'';
   const ax=[0,Math.floor(labs.length/3),Math.floor(2*labs.length/3),labs.length-1].filter((v,i,a)=>a.indexOf(v)===i).map(i=>`<span>${fl(labs[i])}</span>`).join('');
   return`<div class="xtrend" role="img" aria-label="Tendencia del período">${bars}${line}</div><div class="xaxis">${ax}</div>
-    <div class="xleg" style="margin-top:8px"><span><i style="background:linear-gradient(180deg,var(--x-ac2),var(--x-ac))"></i>${gran==='d'?'Por día':gran==='s'?'Por semana':'Por mes'}</span>${prev?'<span><i style="background:#f08a24"></i>Período anterior</span>':''}</div>`;
+    <div class="xleg" style="margin-top:8px"><span><i style="background:linear-gradient(180deg,var(--x-ac2),var(--x-ac))"></i>${gran==='d'?'Por día':gran==='s'?'Por semana':'Por mes'}</span>${prev?'<span><i style="background:#f08a24"></i>'+escH(R.cmpEtq)+' ('+xFmtR(R.pa,R.pb)+')</span>':''}</div>`;
 }
 let X_MET='vb';
 
@@ -2537,16 +2655,16 @@ function xAlertas(){
 
 // ── RESUMEN ──
 function xResumen(){
-  const R=xRango(XF.per),base=xBase(),cur=xEn(base,R.a,R.b),pre=R.pa?xEn(base,R.pa,R.pb):null;
+  const R=xRango(),base=xBase(),cur=xEn(base,R.a,R.b),pre=R.pa?xEn(base,R.pa,R.pb):null;
   const T=xTot(cur),P=pre?xTot(pre):null;
   const cli=xPedidos(cur).filter(p=>p.cli);const nuevos=cli.filter(p=>+p.ncomp===1).length,recur=cli.filter(p=>+p.ncomp>1).length;
   const k=(l,v,d,sub)=>`<article class="xp glass"><div class="xk-l">${l}</div><div class="xk-v">${v}</div><div class="xk-f">${d}<span>${sub}</span></div></article>`;
   const kp=[
-    k('Ventas',xM(T.vb),xDelta(T.vb,P&&P.vb),P?'antes '+xM(P.vb):''),
-    k('Margen bruto',xM(T.mb),`<span class="xd eq">${xP(T.mg)}</span>`,P?'antes '+xP(P.mg):''),
-    k('Después de comisiones y envíos',xM(T.contrib),xDelta(T.contrib,P&&P.contrib),'comisiones '+xM(T.com)+(T.envML?' · envío ML '+xM(T.envML):'')),
-    k('Pedidos',xN(T.ped),xDelta(T.ped,P&&P.ped),xN(T.u)+' unidades'),
-    k('Ticket promedio',xM(T.tk),xDelta(T.tk,P&&P.tk),P?'antes '+xM(P.tk):''),
+    k('Ventas',clp(T.vb),xDelta(T.vb,P&&P.vb),P?'vs '+clp(P.vb):''),
+    k('Margen bruto',clp(T.mb),xDelta(T.mb,P&&P.mb),xP(T.mg)+' de las ventas'+(P?' (antes '+xP(P.mg)+')':'')),
+    k('Después de comisiones y envíos',clp(T.contrib),xDelta(T.contrib,P&&P.contrib),(P?'vs '+clp(P.contrib)+' · ':'')+'comisiones '+clp(T.com)+(T.envML?' · envío ML '+clp(T.envML):'')),
+    k('Pedidos',xN(T.ped),xDelta(T.ped,P&&P.ped),(P?'vs '+xN(P.ped)+' · ':'')+xN(T.u)+' unidades'),
+    k('Ticket promedio',clp(T.tk),xDelta(T.tk,P&&P.tk),P?'vs '+clp(P.tk):''),
     k('Clientes',cli.length?xN(nuevos+recur):'–',`<span class="xd eq">${cli.length?xP(recur/(nuevos+recur||1),0):'–'} recurrentes</span>`,cli.length?xN(nuevos)+' nuevos':'sin dato de cliente')
   ].join('');
   const al=xAlertas();
@@ -2567,6 +2685,7 @@ function xResumen(){
   const gr=xGrupo(cur,r=>xReg(r));const rT=Object.entries(gr).map(([k,rs])=>[k,rs.reduce((s,r)=>s+r.vb,0)]).sort((a,b)=>b[1]-a[1]);const rMax=rT.length?rT[0][1]:1;const rTot=rT.reduce((s,x)=>s+x[1],0);
   const regH=rT.slice(0,8).map(([k,v])=>xHb(X_REG[k]||k,v,rMax,xM(v)+' · '+xP(v/(rTot||1),0))).join('')||'<div class="xempty">Sin región registrada en este período</div>';
   document.getElementById('view-res').innerHTML=`
+  <p class="xcmp">${R.pa?`Comparando <b>${xFmtR(R.a,R.b)}</b> (${xDias(R.a,R.b)} días) con <b>${xFmtR(R.pa,R.pb)}</b> (${R.cmpEtq.toLowerCase()}).`:`<b>${xFmtR(R.a,R.b)}</b> · sin comparación.`}</p>
   <section class="xg xg-k" aria-label="Indicadores">${kp}</section>
   <div class="xrow">
     <section class="xp" style="flex:2 1 560px">
@@ -2586,7 +2705,7 @@ function xResumen(){
 
 // ── PRODUCTOS ──
 function xProductos(){
-  const R=xRango(XF.per),base=xBase(),cur=xEn(base,R.a,R.b),pre=R.pa?xEn(base,R.pa,R.pb):[];
+  const R=xRango(),base=xBase(),cur=xEn(base,R.a,R.b),pre=R.pa?xEn(base,R.pa,R.pb):[];
   const hoy=xIso(new Date()),d90=xEn(DATA.filter(r=>r.vb>0),xAdd(hoy,-89),hoy);
   const g=xGrupo(cur,r=>r.sku),gp=xGrupo(pre,r=>r.sku),g90=xGrupo(d90,r=>r.sku);
   const ult={};DATA.forEach(r=>{if(r.vb>0&&(!ult[r.sku]||r.fecha>ult[r.sku]))ult[r.sku]=r.fecha;});
@@ -2635,7 +2754,7 @@ function xProductos(){
 
 // ── CLIENTES ──
 function xClientes(){
-  const R=xRango(XF.per),base=xBase();const todos=xPedidos(base).filter(p=>p.cli);
+  const R=xRango(),base=xBase();const todos=xPedidos(base).filter(p=>p.cli);
   const porCli=xGrupo(todos,p=>p.cli);
   const cur=xPedidos(xEn(base,R.a,R.b)),curCli=cur.filter(p=>p.cli);
   const nuevos=curCli.filter(p=>+p.ncomp===1||(!p.ncomp&&porCli[p.cli].length===1)).length,recur=curCli.length-nuevos;
@@ -2672,7 +2791,7 @@ function xClientes(){
 
 // ── CANALES Y MARKETING ──
 function xCanales(){
-  const R=xRango(XF.per),base=xBase(),cur=xEn(base,R.a,R.b);
+  const R=xRango(),base=xBase(),cur=xEn(base,R.a,R.b);
   const gc=xGrupo(cur,r=>r.canal);
   const filas=Object.entries(gc).map(([c,rs])=>{const t=xTot(rs);return{c,...t};}).sort((a,b)=>b.vb-a.vb);const tot=filas.reduce((s,f)=>s+f.vb,0);
   const tabla=`<div class="xtw"><table class="xt" style="min-width:820px"><thead><tr><th>Canal</th><th class="r">Ventas</th><th class="r">%</th><th class="r">Pedidos</th><th class="r">Ticket</th><th class="r">Margen bruto</th><th class="r">Comisiones</th><th class="r">Envío ML − Flex</th><th class="r">Queda</th><th class="r">% queda</th></tr></thead><tbody>${filas.map(f=>`<tr><td style="font-weight:700">${escH(f.c==='ML'?'MercadoLibre':f.c)}</td><td class="r">${xM(f.vb)}</td><td class="r">${xP(f.vb/(tot||1),0)}</td><td class="r">${xN(f.ped)}</td><td class="r">${xM(f.tk)}</td><td class="r">${xM(f.mb)} · ${xP(f.mg,0)}</td><td class="r">${xM(f.com)} · ${xP(f.com/(f.vb||1),1)}</td><td class="r">${xM(f.envML-f.flex)}</td><td class="r" style="font-weight:700">${xM(f.contrib)}</td><td class="r">${xP(f.contrib/(f.vb||1),0)}</td></tr>`).join('')}</tbody></table></div>`;
@@ -2715,7 +2834,7 @@ function xCanales(){
 
 // ── GEOGRAFÍA ──
 function xGeo(){
-  const R=xRango(XF.per),base=xBase(),cur=xEn(base,R.a,R.b),pre=R.pa?xEn(base,R.pa,R.pb):[];
+  const R=xRango(),base=xBase(),cur=xEn(base,R.a,R.b),pre=R.pa?xEn(base,R.pa,R.pb):[];
   const ped=xPedidos(cur);const conReg=ped.filter(p=>p.reg);
   const gr=xGrupo(conReg,p=>p.reg),gpr=xGrupo(xPedidos(pre).filter(p=>p.reg),p=>p.reg);
   const tot=conReg.reduce((s,p)=>s+p.vb,0);
