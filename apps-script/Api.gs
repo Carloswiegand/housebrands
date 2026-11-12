@@ -188,13 +188,19 @@ function enriquecerHistorico() {
   const n = hojaV.getLastRow() - 1;
   const base = hojaV.getRange(2, 1, n, 26 + H_EXTRA.length).getValues();
   const pendientes = {};   // 'canal|orden' → [índices de fila]
+  const truncadas = {};    // ML cargadas por Excel: N° con el último dígito en 0 (Excel guarda 15 dígitos)
+  const fechaTxt = v => v instanceof Date ? Utilities.formatDate(v, 'America/Santiago', 'yyyy-MM-dd') : String(v).slice(0, 10);
   base.forEach((r, i) => {
     if (r[26] !== '' && r[26] !== null) return;                       // ya tiene Hora
     if (r[5] !== 'Shopify' && r[5] !== 'ML') return;
     const k = r[5] + '|' + String(r[6]);
     (pendientes[k] = pendientes[k] || []).push(i);
+    if (r[5] === 'ML' && /^\d{16}$/.test(String(r[6])) && String(r[6]).slice(-1) === '0') {
+      const kt = String(r[6]).slice(0, 15) + '|' + fechaTxt(r[0]);
+      (truncadas[kt] = truncadas[kt] || []).push(i);
+    }
   });
-  let llenas = 0;
+  let llenas = 0, corregidas = 0;
   const aplicar = (k, extra, ciudad, region) => {
     (pendientes[k] || []).forEach(i => {
       for (let j = 0; j < H_EXTRA.length; j++) base[i][26 + j] = extra[j];
@@ -221,8 +227,20 @@ function enriquecerHistorico() {
   let cortado = false;
   for (const o of _mlOrdenes_(desde)) {
     if (Date.now() - t0 > 270000) { cortado = true; break; }
-    const k = 'ML|' + String(o.pack_id || o.id);
-    if (!pendientes[k]) continue;
+    const num = String(o.pack_id || o.id);
+    let k = 'ML|' + num;
+    if (!pendientes[k]) {
+      // ¿Está cargada con el N° truncado por Excel? Mismo prefijo de 15 dígitos y misma fecha.
+      const kt = num.slice(0, 15) + '|' + Utilities.formatDate(new Date(o.date_created), 'America/Santiago', 'yyyy-MM-dd');
+      const filas = truncadas[kt];
+      if (!filas || num.length !== 16) continue;
+      const kViejo = 'ML|' + num.slice(0, 15) + '0';
+      filas.forEach(i => { base[i][6] = Number(num); corregidas++; });
+      pendientes[k] = (pendientes[kViejo] || []).filter(i => filas.indexOf(i) !== -1);
+      if (pendientes[kViejo]) pendientes[kViejo] = pendientes[kViejo].filter(i => filas.indexOf(i) === -1);
+      if (pendientes[kViejo] && !pendientes[kViejo].length) delete pendientes[kViejo];
+      delete truncadas[kt];
+    }
     const env = _mlEnvio_(o.shipping && o.shipping.id, cache);
     const pago = (o.payments || [])[0] || {};
     const medio = String(pago.payment_type || '') + (Number(pago.installments) > 1 ? ' ' + pago.installments + ' cuotas' : '');
@@ -230,10 +248,11 @@ function enriquecerHistorico() {
       'MercadoLibre', '', '', medio, env.logistica, env.regionCod], env.ciudad, env.region);
   }
 
-  // Solo se escriben Ciudad/Región y las columnas nuevas (el resto de la fila no se toca).
+  // Solo se escriben N° de orden (ML corregidos), Ciudad/Región y las columnas nuevas.
+  if (corregidas) hojaV.getRange(2, 7, n, 1).setValues(base.map(r => [r[6]]));
   hojaV.getRange(2, 22, n, 2).setValues(base.map(r => [r[21], r[22]]));
   hojaV.getRange(2, 27, n, H_EXTRA.length).setValues(base.map(r => r.slice(26, 26 + H_EXTRA.length)));
-  const msg = llenas + ' líneas completadas; quedan ' + Object.keys(pendientes).length + ' órdenes sin datos en las APIs' + (cortado ? ' (corte por tiempo: volver a ejecutar)' : '');
+  const msg = llenas + ' líneas completadas, ' + corregidas + ' N° de orden ML corregidos; quedan ' + Object.keys(pendientes).length + ' órdenes sin datos en las APIs' + (cortado ? ' (corte por tiempo: volver a ejecutar)' : '');
   console.log(msg);
   return msg;
 }
