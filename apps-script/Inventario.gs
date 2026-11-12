@@ -135,9 +135,11 @@ function _stockShopify_() {
 }
 
 // Stock disponible por SKU en MercadoLibre (publicaciones activas y pausadas).
-// Varias publicaciones del mismo SKU comparten el stock de ABEE → se toma el mayor.
+// Varias publicaciones del mismo SKU comparten el stock de ABEE → se toma el mayor entre las
+// ACTIVAS (una pausada puede tener stock desactualizado); si no hay activas, entre las pausadas.
 function _stockML_() {
   const out = { stock: {}, nombre: {}, publicaciones: {} };
+  const activo = {};
   const uid = PropertiesService.getScriptProperties().getProperty('ML_USER_ID');
   const ids = [];
   ['active', 'paused'].forEach(status => {
@@ -152,7 +154,7 @@ function _stockML_() {
     return String((a && a.value_name) || x.seller_custom_field || '').trim();
   };
   for (let i = 0; i < ids.length; i += 20) {
-    const lote = _mlGet_('/items?ids=' + ids.slice(i, i + 20).join(',') + '&attributes=id,title,available_quantity,seller_custom_field,attributes,variations');
+    const lote = _mlGet_('/items?ids=' + ids.slice(i, i + 20).join(',') + '&attributes=id,title,status,available_quantity,seller_custom_field,attributes,variations');
     lote.forEach(r => {
       const it = r.body || {};
       const filas = (it.variations && it.variations.length)
@@ -161,6 +163,9 @@ function _stockML_() {
       filas.forEach(f => {
         if (!f.sku) return;
         const q = Number(f.q) || 0;
+        const act = it.status === 'active';
+        if (act && !activo[f.sku]) { activo[f.sku] = true; delete out.stock[f.sku]; }   // descarta lo leído de pausadas
+        if (!act && activo[f.sku]) { out.publicaciones[f.sku] = (out.publicaciones[f.sku] || 0) + 1; return; }
         out.stock[f.sku] = Math.max(out.stock[f.sku] === undefined ? -Infinity : out.stock[f.sku], q);
         out.nombre[f.sku] = out.nombre[f.sku] || it.title;
         out.publicaciones[f.sku] = (out.publicaciones[f.sku] || 0) + 1;
