@@ -58,7 +58,7 @@ function doPost(e) {
     if (body.action === 'metas_set') return json_(metasGuardar_(body.filas || []));
     if (body.action === 'gasto_add' || body.action === 'gasto_del') {
       const r = body.action === 'gasto_add' ? gastoDocAgregar_(body.doc || {}) : gastoDocBorrar_(body.id);
-      r.pnl = correr_('P&L', pnlSinPantalla_).ok;
+      r.pnl = pnlDiferir_();   // el P&L se regenera en segundo plano para no hacer esperar al usuario
       return json_(r);
     }
     return json_({ ok: false, error: 'acción desconocida' });
@@ -405,6 +405,18 @@ function configGuardar_(valores) {
 var PNL_SIN_PANTALLA = false;
 function pnlSinPantalla_() { PNL_SIN_PANTALLA = true; try { generarPnL(); } finally { PNL_SIN_PANTALLA = false; } }
 function pnlProgramado() { correr_('P&L', pnlSinPantalla_); }
+
+// P&L en segundo plano: un activador de una sola vez que corre ~15 s después de guardar.
+// Si se guardan varios gastos seguidos, queda uno solo pendiente.
+function pnlDiferir_() {
+  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'pnlDiferido').forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('pnlDiferido').timeBased().after(15 * 1000).create();
+  return 'programado';
+}
+function pnlDiferido() {
+  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'pnlDiferido').forEach(t => ScriptApp.deleteTrigger(t));
+  correr_('P&L', pnlSinPantalla_);
+}
 
 // Ejecutar una vez: regenera el P&L todas las noches (el último día del mes incluye los gastos fijos).
 function activarPnLDiario() {

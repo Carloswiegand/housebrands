@@ -3358,7 +3358,7 @@ async function gPost(body){const r=await fetch(API_VENTA,{method:'POST',headers:
 async function gGuardarGastos(btn){
   const msg=document.getElementById('g-gastos-msg');const[a,m]=G.gMes.split('-');const valores={};
   document.querySelectorAll('#g-gastos [data-g]').forEach(i=>{const t=i.value.replace(/[^\d]/g,'');valores[i.dataset.g]=t===''?'':+t;});
-  btn.disabled=true;msg.textContent='Guardando…';
+  G.gAviso='';btn.disabled=true;msg.textContent='Guardando…';
   try{await gPost({action:'gastos_set',mes:MES_N[m-1],anio:+a,valores});msg.textContent='Guardado. Regenerando P&L…';await gPost({action:'pnl_generar'});PNL={meses:[],rows:[]};pnlLoaded=false;await gLoadGastos(true);msg.textContent='Listo: gastos guardados y P&L actualizado.';}
   catch(e){msg.textContent='No se guardó: '+e.message;}finally{btn.disabled=false;}
 }
@@ -3542,7 +3542,7 @@ async function xGastos(){
         <label class="xlbl">IVA<input class="xinp" id="g-iva" inputmode="numeric" placeholder="$ (opcional)"></label>
       </div>
       <input type="hidden" id="g-rut"><input type="hidden" id="g-origen" value="Manual">
-      <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gGuardarDoc(this)">Guardar documento</button><span class="xsmall" id="g-msg"></span></div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gGuardarDoc(this)">Guardar documento</button><span class="xsmall" id="g-msg">${G.gAviso?escH(G.gAviso):''}</span></div>
       <p class="xsmall" style="margin-top:10px;line-height:1.5">Meta y Google no emiten factura chilena: usa el monto del recibo mensual. Si el recibo trae IVA, ingrésalo aparte para que el neto quede limpio. BP Consulting no se carga: se calcula solo (10 UF).</p></section>
     <section class="xp" style="flex:1 1 440px"><div class="xp-h"><h2>Real contra el flujo</h2><span class="note">${N?'escenario neutro · '+lbl(k):'sin flujo para este mes'}</span></div>
       <div class="xtw"><table class="xt"><thead><tr><th>Concepto</th><th class="r">Real</th><th class="r">Plan</th><th class="r">Diferencia</th></tr></thead><tbody>${rvp}</tbody></table></div>
@@ -3599,10 +3599,10 @@ async function gGuardarDoc(btn){
     docs=s.partes.map(([c,n])=>({...base,concepto:c,neto:Math.round(n),iva:Math.round(s.ivaTot*n/(totN||1))}));}
   else docs=[{...base,concepto:v('g-conc'),neto:num('g-neto'),iva:num('g-iva')}];
   if(!base.fecha||docs.some(d=>!(d.neto>0))){msg.textContent='Completa la fecha y un monto neto mayor a 0.';return;}
-  btn.disabled=true;msg.textContent='Guardando y actualizando el P&L…';
-  try{for(const d of docs)await gPost({action:'gasto_add',doc:d});G.gXmlSplit=null;G.gMes=v('g-mes');PNL={meses:[],rows:[]};pnlLoaded=false;
+  btn.disabled=true;msg.textContent='Guardando…';
+  try{for(const d of docs)await gPost({action:'gasto_add',doc:d});G.gAviso='Guardado. El P&L se recalcula solo en 1 a 2 minutos.';G.gXmlSplit=null;G.gMes=v('g-mes');PNL={meses:[],rows:[]};pnlLoaded=false;
     await Promise.all([gLoadGdet(true),gLoadGastos(true)]);xGastos();}
-  catch(e){msg.textContent='No se guardó: '+e.message;btn.disabled=false;}
+  catch(e){const red=/respuesta inválida|HTTP 5|Failed to fetch|network/i.test(e.message);msg.textContent=red?'La conexión se cortó y no sé si alcanzó a guardarse. Recarga la página y revisa la lista de documentos antes de volver a cargarlo.':'No se guardó: '+e.message;btn.disabled=false;}
 }
 async function gBorrarDoc(id){
   if(!confirm('¿Borrar este documento? El total del mes y el P&L se recalculan.'))return;

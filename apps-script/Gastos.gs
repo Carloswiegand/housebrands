@@ -35,6 +35,12 @@ function gastoDocAgregar_(d) {
   const datos = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, GDET_ENC.length).getValues() : [];
   const docu = String(d.documento || '').trim(), rut = String(d.rut || '').trim();
   if (docu && datos.some(r => String(r[7]) === docu && String(r[6]) === rut && r[4] === concepto)) throw new Error('ese documento ya está cargado para ' + concepto);
+  // Doble clic o reintento tras un error de red: mismo concepto, mes, fecha y neto cargado hace menos de 15 minutos.
+  const hace15 = Date.now() - 15 * 60 * 1000;
+  if (datos.some(r => r[4] === concepto && String(r[2]).toLowerCase() === mes && Number(r[3]) === anio && Number(r[8]) === neto &&
+      (r[1] instanceof Date ? Utilities.formatDate(r[1], 'America/Santiago', 'yyyy-MM-dd') : String(r[1]).slice(0, 10)) === String(d.fecha) && r[13] instanceof Date && r[13].getTime() > hace15)) {
+    return { ok: true, id: '', repetido: true };
+  }
   const id = 'G' + Utilities.formatDate(new Date(), 'America/Santiago', 'yyyyMMddHHmmss') + Math.floor(Math.random() * 90 + 10);
   h.appendRow([id, d.fecha, mes, anio, concepto, String(d.proveedor || '').slice(0, 80), rut, docu, neto, iva, total, String(d.origen || 'Manual').slice(0, 20), String(d.nota || '').slice(0, 200), new Date()]);
   _gastoRecalcular_(mes, anio, concepto);
