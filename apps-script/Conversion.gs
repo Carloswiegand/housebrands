@@ -15,6 +15,8 @@ function convActualizar() {
   const hoy = new Date();
   const meses = [new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1), new Date(hoy.getFullYear(), hoy.getMonth(), 1)];
   const filas = [], errores = [];
+  // Token nuevo en cada corrida: si se agregan permisos a la app, el token en caché no los tiene.
+  CacheService.getScriptCache().removeAll(SHOPIFY_TIENDAS.map(t => 'shopify_token_' + t.key));
   meses.forEach(ini => {
     const fin = new Date(ini.getFullYear(), ini.getMonth() + 1, 0);
     const hasta = fin > hoy ? hoy : fin;
@@ -74,11 +76,18 @@ function _convShopify_(t, desde, hasta) {
   return { sesiones: val('sessions'), carro: val('sessions_with_cart_additions'), checkout: val('sessions_that_reached_checkout'), compras: val('sessions_that_completed_checkout') };
 }
 
+// Visitas diarias de los últimos 62 días (time_window) sumadas dentro del rango.
 function _convMLVisitas_(desde, hasta) {
   const uid = PropertiesService.getScriptProperties().getProperty('ML_USER_ID');
-  const fin = new Date(hasta.getFullYear(), hasta.getMonth(), hasta.getDate() + 1);
-  const j = _mlGet_('/users/' + uid + '/items_visits?date_from=' + _convFecha_(desde) + 'T00:00:00.000-03:00&date_to=' + _convFecha_(fin) + 'T00:00:00.000-03:00');
-  return Number(j.total_visits) || 0;
+  const cache = CacheService.getScriptCache();
+  let dias = cache.get('ml_visitas_dia');
+  if (!dias) {
+    const j = _mlGet_('/users/' + uid + '/items_visits/time_window?last=62&unit=day');
+    dias = JSON.stringify((j.results || []).map(r => [String(r.date).slice(0, 10), Number(r.total) || 0]));
+    cache.put('ml_visitas_dia', dias, 300);
+  }
+  const a = _convFecha_(desde), b = _convFecha_(hasta);
+  return JSON.parse(dias).reduce((s, d) => s + (d[0] >= a && d[0] <= b ? d[1] : 0), 0);
 }
 
 // Pedidos únicos de ML en el Libro_Ventas dentro del rango.
