@@ -17,7 +17,7 @@
 // POST {key, action:'metas_set', filas}           → proyección del flujo (hoja Metas)
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 function doGet(e) {
@@ -54,6 +54,7 @@ function doPost(e) {
     if (body.action === 'imp_set') return json_(importacionGuardar_(body.imp || {}));
     if (body.action === 'gastos_set') return json_(gastosGuardar_(body.mes, body.anio, body.valores || {}));
     if (body.action === 'config_set') return json_(configGuardar_(body.valores || {}));
+    if (body.action === 'pref_set') return json_(prefGuardar_(body.clave, body.valor));
     if (body.action === 'metas_set') return json_(metasGuardar_(body.filas || []));
     if (body.action === 'gasto_add' || body.action === 'gasto_del') {
       const r = body.action === 'gasto_add' ? gastoDocAgregar_(body.doc || {}) : gastoDocBorrar_(body.id);
@@ -410,4 +411,22 @@ function activarPnLDiario() {
   ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'pnlProgramado').forEach(t => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger('pnlProgramado').timeBased().everyDays(1).atHour(23).nearMinute(30).create();
   console.log('P&L diario activado (23:30).');
+}
+
+// ── Preferencias de HB Control ────────────────────────────────
+// Hoja Preferencias: Clave | Valor (JSON) | Actualizado. Todo lo que antes quedaba solo en el navegador
+// (lista de cierre mensual, plazos de importación, evaluador del Scout) se guarda acá.
+function prefGuardar_(clave, valor) {
+  clave = String(clave || '').trim();
+  if (!/^[A-Za-z0-9_.-]{1,60}$/.test(clave)) throw new Error('clave inválida');
+  const txt = JSON.stringify(valor === undefined ? null : valor);
+  if (txt.length > 45000) throw new Error('valor demasiado grande');
+  const ss = SpreadsheetApp.getActive();
+  let h = ss.getSheetByName(API_HOJAS.prefs);
+  if (!h) { h = ss.insertSheet(API_HOJAS.prefs); h.appendRow(['Clave', 'Valor', 'Actualizado']); h.setFrozenRows(1); h.getRange(1, 1, 1, 3).setFontWeight('bold'); }
+  const claves = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, 1).getValues().map(r => String(r[0])) : [];
+  const i = claves.indexOf(clave);
+  const fila = [clave, txt, Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd HH:mm')];
+  if (i === -1) h.appendRow(fila); else h.getRange(i + 2, 1, 1, 3).setValues([fila]);
+  return { ok: true };
 }

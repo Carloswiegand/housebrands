@@ -2812,8 +2812,23 @@ const CSV_IMP='/erp/api/imp', CSV_SCOUT='/erp/api/scout', CSV_ESTADO='/erp/api/e
 // SKU antiguo → SKU nuevo que lo reemplaza (mismo producto, nueva etiqueta desde la importación de nov-2026)
 const SKU_SUCESOR={'SJ-JL801B':'OR-001','SJ-JL802B':'OR-002','SJ-AH209A':'MA-001','SJ-JL802C':'MA-002'};
 const G={ventPer:'90d',ventA:null,ventB:null,ventLim:100,imp:null,scout:null,estado:null,impSel:null,impEnvio:null,invSel:null,ventSel:null,ventCanal:'',ventQ:'',ventDias:90,pnlMes:null,convMes:null,scoutTab:'radar',scoutGrupo:'',invFiltro:'todos',invMarca:''};
-const gOpt=(k,d)=>{try{const v=localStorage.getItem('hb_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}};
-const gSet=(k,v)=>{try{localStorage.setItem('hb_'+k,JSON.stringify(v));}catch(e){}};
+// Preferencias guardadas en la hoja Preferencias (se ven desde cualquier computador).
+// localStorage queda solo como respaldo mientras carga la hoja o si no hay conexión.
+const PREFS_LOCAL=k=>/^(lead|seg|eval|tc|cierre_.+)$/.test(k);
+G.prefs=null;
+const gOpt=(k,d)=>{if(G.prefs&&Object.prototype.hasOwnProperty.call(G.prefs,k))return G.prefs[k];try{const v=localStorage.getItem('hb_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}};
+const gSet=(k,v)=>{try{localStorage.setItem('hb_'+k,JSON.stringify(v));}catch(e){}if(G.prefs)G.prefs[k]=v;gPost({action:'pref_set',clave:k,valor:v}).catch(e=>console.warn('pref no guardada',k,e.message));};
+async function gLoadPrefs(){
+  try{
+    const f=await gCsv('/erp/api/prefs');const p={};
+    f.slice(1).forEach(r=>{if(r[0])try{p[r[0]]=JSON.parse(r[1]);}catch(e){}});
+    G.prefs=p;
+    // Migración: lo que estaba solo en este navegador y no existe en la hoja se sube una vez.
+    try{for(let i=0;i<localStorage.length;i++){const lk=localStorage.key(i);if(!lk||!lk.startsWith('hb_'))continue;const k=lk.slice(3);if(!PREFS_LOCAL(k)||k in p)continue;const v=JSON.parse(localStorage.getItem(lk));p[k]=v;gPost({action:'pref_set',clave:k,valor:v}).catch(()=>{});}}catch(e){}
+    if(typeof xRender==='function')xRender();
+  }catch(e){console.warn('preferencias no cargadas',e.message);}
+}
+setTimeout(gLoadPrefs,0);
 const gHoy=()=>xIso(new Date());
 const gC=n=>(n<0?'−':'')+clp(Math.abs(n));
 const gF=s=>s?xFmt(s):'–';
