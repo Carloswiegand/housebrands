@@ -10,9 +10,12 @@
 // POST {key, action:'anular_manual', orden, canal} → mueve una venta manual a Ventas_Anuladas
 // POST {key, action:'imp_set', imp:{id,...}}      → crea o reemplaza una importación (hoja Importaciones)
 // POST {key, action:'sync'}                       → sincroniza Shopify, ML e inventario en el momento
+// POST {key, action:'gastos_set', mes, anio, valores} → gastos variables del mes (hoja Gastos_Variables)
+// POST {key, action:'config_set', valores}        → gastos fijos (hoja Config)
+// POST {key, action:'pnl_generar'}                → regenera la hoja P&L
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 function doGet(e) {
@@ -38,6 +41,7 @@ function doPost(e) {
   if (body.action === 'sync') {
     try { return json_(sincronizarAhora_()); } catch (err) { return json_({ ok: false, error: err.message }); }
   }
+  if (body.action === 'pnl_generar') return json_(correr_('P&L', pnlSinPantalla_));
 
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) return json_({ ok: false, error: 'ocupado, intenta de nuevo' });
@@ -46,6 +50,8 @@ function doPost(e) {
     if (body.action === 'anular_manual') return json_(anularManual_(body.orden, body.canal));
     if (body.action === 'enriquecer') return json_(enriquecerDesdeDatos_(body.canal, body.datos || {}));
     if (body.action === 'imp_set') return json_(importacionGuardar_(body.imp || {}));
+    if (body.action === 'gastos_set') return json_(gastosGuardar_(body.mes, body.anio, body.valores || {}));
+    if (body.action === 'config_set') return json_(configGuardar_(body.valores || {}));
     return json_({ ok: false, error: 'acción desconocida' });
   } catch (err) {
     return json_({ ok: false, error: err.message });
@@ -342,4 +348,58 @@ function activarSincronizacion() {
   ScriptApp.newTrigger('syncMLProgramado').timeBased().everyMinutes(15).create();
   ScriptApp.newTrigger('inventarioProgramado').timeBased().everyHours(1).create();
   console.log('Sincronización: Shopify y ML cada 15 min, inventario cada hora.');
+}
+
+// ── Gastos y P&L desde HB Control ─────────────────────────────
+// Variables (cambian cada mes, se cargan con la factura): hoja Gastos_Variables, una fila por mes.
+const GASTOS_VARIABLES = ['Meta Ads', 'Google Ads', 'ML Ads', 'ABEE Fulfillment', 'ABEE Envíos', 'The Link It', 'Remuneraciones', 'Otros Admin'];
+// Fijos (se repiten cada mes): hoja Config. Los usa PnL.gs.
+const GASTOS_FIJOS = ['Shopify MK fee mensual', 'Shopify MT fee mensual', 'Shopify comisión transacciones', 'Claude Pro', 'Google Workspace', 'Canva', 'BP Consulting'];
+const MESES_NOMBRE = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+function gastosGuardar_(mes, anio, valores) {
+  const m = MESES_NOMBRE.indexOf(String(mes || '').toLowerCase());
+  const a = Number(anio);
+  if (m === -1 || !(a >= 2024 && a <= 2035)) throw new Error('mes o año inválido');
+  const h = SpreadsheetApp.getActive().getSheetByName(API_HOJAS.gastos);
+  if (!h) throw new Error('no existe la hoja Gastos_Variables');
+  let enc = h.getRange(1, 1, 1, h.getLastColumn()).getValues()[0].map(x => String(x).trim());
+  Object.keys(valores).forEach(k => {
+    if (GASTOS_VARIABLES.indexOf(k) === -1) throw new Error('concepto no permitido: ' + k);
+    if (enc.indexOf(k) === -1) { h.getRange(1, enc.length + 1).setValue(k).setFontWeight('bold'); enc.push(k); }
+  });
+  const datos = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, 3).getValues() : [];
+  let fila = datos.findIndex(r => String(r[1]).trim().toLowerCase() === MESES_NOMBRE[m] && Number(r[2]) === a);
+  if (fila === -1) { fila = datos.length; h.getRange(fila + 2, 1, 1, 3).setValues([[m + 1, MESES_NOMBRE[m].charAt(0).toUpperCase() + MESES_NOMBRE[m].slice(1), a]]); }
+  Object.keys(valores).forEach(k => {
+    const v = valores[k];
+    h.getRange(fila + 2, enc.indexOf(k) + 1).setValue(v === '' || v === null ? '' : Math.round(Number(v) || 0));
+  });
+  return { ok: true, mes: MESES_NOMBRE[m], anio: a };
+}
+
+function configGuardar_(valores) {
+  const h = SpreadsheetApp.getActive().getSheetByName(API_HOJAS.config);
+  if (!h) throw new Error('no existe la hoja Config');
+  const datos = h.getDataRange().getValues();
+  Object.keys(valores).forEach(k => {
+    if (GASTOS_FIJOS.indexOf(k) === -1) throw new Error('concepto no permitido: ' + k);
+    const v = Number(valores[k]);
+    if (!isFinite(v) || v < 0) throw new Error('valor inválido en ' + k);
+    const i = datos.findIndex(r => String(r[0]).trim() === k);
+    if (i === -1) { h.appendRow([k, v]); datos.push([k, v]); } else h.getRange(i + 1, 2).setValue(v);
+  });
+  return { ok: true };
+}
+
+// generarPnL() muestra avisos en pantalla; aquí corre sin pantalla y deja pasar los errores.
+var PNL_SIN_PANTALLA = false;
+function pnlSinPantalla_() { PNL_SIN_PANTALLA = true; try { generarPnL(); } finally { PNL_SIN_PANTALLA = false; } }
+function pnlProgramado() { correr_('P&L', pnlSinPantalla_); }
+
+// Ejecutar una vez: regenera el P&L todas las noches (el último día del mes incluye los gastos fijos).
+function activarPnLDiario() {
+  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'pnlProgramado').forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('pnlProgramado').timeBased().everyDays(1).atHour(23).nearMinute(30).create();
+  console.log('P&L diario activado (23:30).');
 }

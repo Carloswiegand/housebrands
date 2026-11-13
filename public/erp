@@ -453,6 +453,40 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xmt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px;color:var(--x-mu)}
 .xmt b{display:block;font-size:14px;color:var(--x-tx);font-weight:600}
 .xform{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+
+#modal-venta{display:none;position:fixed;inset:0;z-index:300;background:rgba(20,26,51,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;overflow-y:auto;padding:32px 16px}
+.mv2{width:100%;max-width:1040px;background:#f7f8fc;border:1px solid #fff;border-radius:24px;box-shadow:0 30px 80px rgba(20,26,51,.3);font-family:var(--x-font);color:var(--x-tx);overflow:hidden}
+.mv2-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 22px;background:rgba(255,255,255,.8);border-bottom:1px solid #e6e9f2}
+.mv2-h h2{margin:0;font-size:20px;font-weight:650}
+.mv2-b{display:flex;flex-wrap:wrap;gap:18px;padding:18px 22px 22px}
+.mv2-l{flex:2 1 520px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.mv2-r{flex:1 1 300px;display:flex;flex-direction:column;gap:14px;position:sticky;top:0;align-self:flex-start}
+.mv2-s{background:#fff;border:1px solid #e2e7f3;border-radius:18px;padding:16px}
+.mv2-s h3,.mv2-sum h3{margin:0 0 10px;font-size:14px;font-weight:600}
+.mv2-sum{background:#fff;border:1px solid #e2e7f3;border-radius:18px;padding:16px;box-shadow:0 6px 20px rgba(30,40,90,.08)}
+.mv2-hist{background:rgba(255,255,255,.7);border:1px solid #e2e7f3;border-radius:18px;padding:14px}
+.mv-drop{display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;padding:20px;border:2px dashed #c9d1e8;border-radius:18px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s}
+.mv-drop:hover,.mv-drop:focus-visible,.mv-drop.on{border-color:var(--x-ac);background:rgba(var(--x-acRGB),.05);outline:none}
+.mvl{border:1px solid #e6e9f2;border-radius:14px;padding:12px;margin-bottom:10px;background:#fbfcff}
+.mvl-g{display:grid;grid-template-columns:150px 1fr;gap:10px}
+.mvl-f{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;font-size:12.5px;color:var(--x-mu);min-height:20px}
+.mvl-x{border:0;background:none;color:var(--x-neg);font:550 12.5px var(--x-font);cursor:pointer;padding:4px 6px}
+.mvq{display:flex;align-items:center;gap:4px}
+.mvq button{width:34px;height:38px;border-radius:10px;border:1px solid #d9deeb;background:#fff;font:550 16px var(--x-font);cursor:pointer;color:var(--x-tx)}
+.mvq input{text-align:center;min-width:0}
+.mvs-r{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;font-variant-numeric:tabular-nums}
+.mvs-t{font-size:16px;border-top:1px solid #e6e9f2;margin-top:4px;padding-top:9px}
+.mvs-sep{height:1px;background:#e6e9f2;margin:6px 0}
+.mvs-ok{margin-top:8px;font-size:12.5px;color:var(--x-pos);background:var(--x-posbg);border-radius:9px;padding:6px 9px}
+.mvs-bad{margin-top:8px;font-size:12.5px;color:var(--x-neg);background:var(--x-negbg);border-radius:9px;padding:6px 9px}
+.mvh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:8px 0;border-top:1px solid #eceff6;font-size:13px}
+.xhelp{padding:0;background:rgba(255,255,255,.7)}
+.xhelp summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:12px 18px;font-weight:550;font-size:13.5px}
+.xhelp summary::-webkit-details-marker{display:none}
+.xhelp-i{width:22px;height:22px;border-radius:50%;background:rgba(var(--x-acRGB),.12);color:var(--x-ac);display:inline-flex;align-items:center;justify-content:center;font-weight:650;font-size:12px}
+.xhelp dl{margin:0;padding:0 18px 16px;display:grid;grid-template-columns:minmax(150px,240px) 1fr;gap:8px 18px;font-size:13px;line-height:1.5}
+.xhelp dt{font-weight:600}.xhelp dd{margin:0;color:var(--x-mu)}
+@media (max-width:700px){.xhelp dl{grid-template-columns:1fr}.mvl-g{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -737,63 +771,41 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     </div>
   </div>
   <!-- MODAL VENTA MANUAL -->
-  <div id="modal-venta">
-    <div class="mv-box">
-      <div class="mv-head">
-        <span class="mv-title">Registrar venta manual</span>
-        <button class="mv-close" onclick="hideMV()">✕</button>
-      </div>
-      <div class="mv-body">
-        <!-- IMPORTAR FACTURA -->
-        <div class="mv-section-title">Importar factura o boleta (opcional)</div>
-        <div class="mv-field" style="margin-bottom:6px">
-          <label class="mv-label" for="mv-xml">Archivo XML del documento (el que entrega el SII o tu facturador)</label>
-          <input type="file" id="mv-xml" accept=".xml,text/xml,application/xml" class="mv-input" onchange="mvImportarXML(this.files[0])">
+  <div id="modal-venta" role="dialog" aria-modal="true" aria-labelledby="mv-tit" onclick="if(event.target===this)hideMV()">
+    <div class="mv2">
+      <header class="mv2-h"><div><h2 id="mv-tit">Nueva venta manual</h2><p class="xsmall">B2B con factura, HigoKids, boletas o ventas directas. Queda en el libro de ventas con su costo y margen.</p></div><button type="button" class="xbtn" onclick="hideMV()" aria-label="Cerrar">Cerrar</button></header>
+      <div class="mv2-b">
+        <div class="mv2-l">
+          <label id="mv-drop" class="mv-drop" tabindex="0" ondragover="event.preventDefault();this.classList.add('on')" ondragleave="this.classList.remove('on')" ondrop="mvDrop(event)">
+            <input type="file" id="mv-xml" accept=".xml,text/xml,application/xml" style="display:none" onchange="mvImportarXML(this.files[0])">
+            <b>Arrastra aquí el XML de la factura o boleta</b><span class="xsmall">o haz clic para elegirlo · completa fecha, folio, cliente y productos solo</span>
+          </label>
+          <div id="mv-xml-msg" class="xsmall" style="margin:-4px 0 4px"></div>
+          <section class="mv2-s"><h3>Canal</h3>
+            <div class="xchips" id="mv-canales"><button type="button" class="xchip" data-c="B2B" onclick="mvElegirCanal('B2B')">B2B con factura</button><button type="button" class="xchip" data-c="HigoKids" onclick="mvElegirCanal('HigoKids')">HigoKids</button><button type="button" class="xchip" data-c="Venta Directa" onclick="mvElegirCanal('Venta Directa')">Venta directa</button><button type="button" class="xchip" data-c="Venta Corporativa" onclick="mvElegirCanal('Venta Corporativa')">Corporativa</button><button type="button" class="xchip" data-c="Otro" onclick="mvElegirCanal('Otro')">Otro</button></div>
+            <select id="mv-canal" style="display:none" onchange="mvComisionAuto()"><option value="B2B">B2B</option><option value="HigoKids">HigoKids</option><option value="Venta Directa">Venta Directa</option><option value="Venta Corporativa">Venta Corporativa</option><option value="Otro">Otro</option></select>
+          </section>
+          <section class="mv2-s"><h3>Documento</h3>
+            <div class="xform">
+              <label class="xlbl">Fecha<input type="date" id="mv-fecha" class="xinp" onchange="mvComisionAuto()"></label>
+              <label class="xlbl">N° documento<input type="text" id="mv-doc" class="xinp" placeholder="FAC-1234 · BOL-567"></label>
+              <label class="xlbl">Cliente<input type="text" id="mv-cliente" class="xinp" placeholder="Razón social o nombre"></label>
+              <label class="xlbl">Envío cobrado (con IVA)<input type="number" id="mv-envio" class="xinp" value="0" min="0" oninput="mvTotal()"></label>
+              <label class="xlbl">Comisión del canal %<input type="number" id="mv-com-pct" class="xinp" value="0" step="0.01" min="0" max="100" oninput="mvTotal()"><span id="mv-com-nota" class="xsmall"></span></label>
+            </div>
+          </section>
+          <section class="mv2-s"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3>Productos</h3>
+            <div class="xchips" id="mv-marcas"><button type="button" class="xchip on" data-m="Todas" onclick="mvSetMarca('Todas')">Todas</button><button type="button" class="xchip" data-m="MemoKoala" onclick="mvSetMarca('MemoKoala')">MemoKoala</button><button type="button" class="xchip" data-m="Montana" onclick="mvSetMarca('Montana')">Montana</button></div></div>
+            <div id="mv-lineas"></div>
+            <button type="button" class="xbtn" onclick="mvAddLinea()">+ Agregar producto</button>
+          </section>
         </div>
-        <div id="mv-xml-msg" style="font-family:var(--mono);font-size:10px;color:var(--mid);margin-bottom:6px"></div>
-
-        <div class="mv-divider"></div>
-
-        <!-- ENCABEZADO ORDEN -->
-        <div class="mv-section-title">Datos de la venta</div>
-        <div class="mv-row3">
-          <div class="mv-field"><label class="mv-label" for="mv-fecha">Fecha</label><input type="date" id="mv-fecha" class="mv-input" onchange="mvComisionAuto()"></div>
-          <div class="mv-field"><label class="mv-label" for="mv-canal">Canal</label>
-            <select id="mv-canal" class="mv-select" onchange="mvComisionAuto()">
-              <option value="B2B">B2B con factura</option>
-              <option value="HigoKids">HigoKids Market</option>
-              <option value="Venta Directa">Venta directa (boleta)</option>
-              <option value="Venta Corporativa">Venta corporativa</option>
-              <option value="Otro">Otro</option>
-            </select>
-          </div>
-          <div class="mv-field"><label class="mv-label" for="mv-com-pct">Comisión del canal %</label><input type="number" id="mv-com-pct" class="mv-input" value="0" step="0.01" min="0" max="100"><div id="mv-com-nota" style="font-family:var(--mono);font-size:9px;color:var(--light);margin-top:3px"></div></div>
-        </div>
-        <div class="mv-row3">
-          <div class="mv-field"><label class="mv-label" for="mv-doc">N° documento</label><input type="text" id="mv-doc" class="mv-input" placeholder="FAC-1234 / BOL-567"></div>
-          <div class="mv-field"><label class="mv-label" for="mv-cliente">Cliente</label><input type="text" id="mv-cliente" class="mv-input" placeholder="Razón social o nombre"></div>
-          <div class="mv-field"><label class="mv-label" for="mv-envio">Envío cobrado (con IVA)</label><input type="number" id="mv-envio" class="mv-input" value="0" min="0" oninput="mvTotal()"></div>
-        </div>
-
-        <div class="mv-divider"></div>
-
-        <!-- MARCA -->
-        <div class="mv-section-title">Marca</div>
-        <div class="mv-marca-pills">
-          <button class="fpill mk" id="mv-m-mk" onclick="mvSetMarca('MemoKoala',this)">🐨 MemoKoala</button>
-          <button class="fpill mt" id="mv-m-mt" onclick="mvSetMarca('Montana',this)">🔪 Montana</button>
-          <button class="fpill on" id="mv-m-all" onclick="mvSetMarca('Todas',this)">Todas</button>
-        </div>
-
-        <!-- LÍNEAS DE PRODUCTO -->
-        <div class="mv-section-title">Productos</div>
-        <div class="mv-lineas" id="mv-lineas"></div>
-        <button class="mv-add-btn" onclick="mvAddLinea()">+ Agregar producto</button>
-
-        <div id="mv-total" style="font-family:var(--mono);font-size:11px;color:var(--dark);margin:8px 0"></div>
-        <button class="mv-submit" id="mv-submit" onclick="saveMV()">Registrar venta</button>
-        <div id="mv-status" role="status" style="font-family:var(--mono);font-size:11px;margin-top:8px"></div>
-        <div class="mv-list" id="mv-list"></div>
+        <aside class="mv2-r">
+          <div class="mv2-sum"><h3>Resumen</h3><div id="mv-sum"></div><div id="mv-total" hidden></div>
+            <button type="button" class="xbtn pri" id="mv-submit" style="width:100%;justify-content:center;margin-top:14px" onclick="saveMV()">Registrar venta</button>
+            <div id="mv-status" role="status" class="xsmall" style="margin-top:8px"></div></div>
+          <div id="mv-list" class="mv2-hist"></div>
+        </aside>
       </div>
     </div>
   </div>
@@ -1563,35 +1575,8 @@ const SKUS_MK=['MK-0001','MK-0002','MK-0003','MK-0004','TO04-4'];
 const SKUS_MT=['RW-11037A','RW-11037B','SJ-JL802B','SJ-JL802C','SJ-AH209A','SJ-AH209E','SJ-JL801B'];
 let mvMarca='Todas', mvLineas=[];
 
-function showMV(){
-  document.getElementById('modal-venta').style.display='block';
-  document.body.style.overflow='hidden';
-  // reset
-  mvMarca='Todas';
-  mvLineas=[];
-  // reset pills visualmente
-  ['mv-m-mk','mv-m-mt','mv-m-all'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.className='fpill'+(id==='mv-m-all'?' on':'');
-  });
-  document.getElementById('mv-m-all').className='fpill on';
-  document.getElementById('mv-m-mk').className='fpill mk';
-  document.getElementById('mv-m-mt').className='fpill mt';
-  mvReset();
-  document.getElementById('mv-status').textContent='';
-  renderMVList();
-}
 function hideMV(){document.getElementById('modal-venta').style.display='none';document.body.style.overflow='';}
-
-function mvSetMarca(m,el){
-  mvMarca=m;
-  document.querySelectorAll('.mv-marca-pills .fpill').forEach(p=>{
-    p.classList.remove('on');
-  });
-  el.classList.add('on');
-  // Re-render líneas para actualizar selectores
-  mvRenderLineas();
-}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('modal-venta').style.display==='flex')hideMV();});
 
 function mvGetSKUs(){
   if(mvMarca==='MemoKoala') return SKUS_MK;
@@ -1609,74 +1594,6 @@ function mvDelLinea(id){
   mvRenderLineas();
 }
 
-function mvRenderLineas(preset){
-  const cont=document.getElementById('mv-lineas');
-  if(!cont) return;
-  // Valores actuales (o los que trae una factura importada) antes de re-renderizar
-  const vals=preset||{};
-  if(!preset)cont.querySelectorAll('[data-linea-id]').forEach(el=>{
-    vals[el.dataset.lineaId]={
-      sku:el.querySelector('select')?.value??'',
-      qty:el.querySelector('.mv-qty-inp')?.value||'1',
-      precio:el.querySelector('.mv-precio-inp')?.value||'',
-    };
-  });
-  const skuList=mvGetSKUs();
-  cont.innerHTML=mvLineas.map(id=>{
-    const v=vals[id];
-    const selSku=v&&skuList.includes(v.sku)?v.sku:(v&&v.sku===''?'':skuList[0]);
-    const opts=`<option value=""${selSku===''?' selected':''}>— Elegir producto —</option>`+
-      skuList.map(s=>`<option value="${s}"${s===selSku?' selected':''}>${s} — ${NOMBRES[s]}</option>`).join('');
-    return`<div data-linea-id="${id}" style="background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px">
-      <div style="display:grid;grid-template-columns:2fr 80px 1fr${mvLineas.length>1?' 28px':''};gap:8px;align-items:end">
-        <div>
-          <label class="mv-label">Producto</label>
-          <select class="mv-select" style="font-size:11px">${opts}</select>
-        </div>
-        <div>
-          <label class="mv-label">Cant.</label>
-          <input type="number" class="mv-input mv-qty-inp" value="${v?.qty||1}" min="1" oninput="mvTotal()">
-        </div>
-        <div>
-          <label class="mv-label">Precio unit. (IVA inc.)</label>
-          <input type="number" class="mv-input mv-precio-inp" placeholder="49990" value="${v?.precio||''}" oninput="mvTotal()">
-        </div>
-        ${mvLineas.length>1?`<div style="display:flex;align-items:flex-end;padding-bottom:2px"><button onclick="mvDelLinea('${id}')" aria-label="Quitar línea" style="background:transparent;border:1px solid var(--neg-bg);color:var(--neg);border-radius:4px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">×</button></div>`:''}
-      </div>
-    </div>`;
-  }).join('');
-  mvTotal();
-}
-
-async function saveMV(){
-  const fecha=document.getElementById('mv-fecha').value;
-  const canal=document.getElementById('mv-canal').value;
-  const envio=parseFloat(document.getElementById('mv-envio').value)||0;
-  const comisionPct=parseFloat(document.getElementById('mv-com-pct').value)||0;
-  const documento=document.getElementById('mv-doc').value.trim();
-  const cliente=document.getElementById('mv-cliente').value.trim();
-  const st=document.getElementById('mv-status');
-  if(!fecha){st.innerHTML='<span style="color:var(--neg)">Indica la fecha de la venta.</span>';return;}
-  if(canal==='B2B'&&!documento){st.innerHTML='<span style="color:var(--neg)">Para B2B indica el N° de factura.</span>';return;}
-
-  const lineas=mvLeerLineas();
-  if(!lineas){st.innerHTML='<span style="color:var(--neg)">Completa producto, cantidad y precio en todas las líneas.</span>';return;}
-
-  const btn=document.getElementById('mv-submit');
-  btn.disabled=true;btn.textContent='Registrando…';st.textContent='';
-  try{
-    const r=await fetch(API_VENTA,{method:'POST',headers:{'content-type':'application/json'},
-      body:JSON.stringify({action:'venta_manual',venta:{fecha,canal,documento,cliente,comisionPct,envio,lineas}})});
-    const out=await r.json().catch(()=>({ok:false,error:'respuesta inválida'}));
-    if(!out.ok)throw new Error(out.error||('HTTP '+r.status));
-    st.innerHTML=`<span style="color:var(--pos)">Venta registrada: ${out.orden} · ${out.lineas} línea${out.lineas!==1?'s':''} · ${clp(out.total)}</span>`;
-    mvReset();
-    await recargarVentas();
-  }catch(e){
-    st.innerHTML=`<span style="color:var(--neg)">No se registró: ${escH(e.message)}</span>`;
-  }finally{btn.disabled=false;btn.textContent='Registrar venta';}
-}
-
 function mvLeerLineas(){
   const lineas=[];let ok=true;
   document.querySelectorAll('#mv-lineas [data-linea-id]').forEach(el=>{
@@ -1689,16 +1606,6 @@ function mvLeerLineas(){
   return ok&&lineas.length?lineas:null;
 }
 
-function mvTotal(){
-  const el=document.getElementById('mv-total');if(!el)return;
-  let t=0;
-  document.querySelectorAll('#mv-lineas [data-linea-id]').forEach(l=>{
-    t+=(parseInt(l.querySelector('.mv-qty-inp')?.value)||0)*(parseFloat(l.querySelector('.mv-precio-inp')?.value)||0);
-  });
-  t+=parseFloat(document.getElementById('mv-envio').value)||0;
-  el.textContent=t>0?'Total con IVA: '+clp(t)+(mvXmlTotal?(Math.abs(t-mvXmlTotal)>mvLineas.length+2?' · ⚠ el documento dice '+clp(mvXmlTotal):' · cuadra con el documento'):''):'';
-}
-
 function mvComisionAuto(){
   const canal=document.getElementById('mv-canal').value, fecha=document.getElementById('mv-fecha').value||'';
   const reglas=(COMISION_CANAL[canal]||[]).filter(r=>r.desde<=fecha).sort((a,b)=>a.desde.localeCompare(b.desde));
@@ -1706,6 +1613,7 @@ function mvComisionAuto(){
   const nota=document.getElementById('mv-com-nota');
   document.getElementById('mv-com-pct').value=r?r.pct:0;
   nota.textContent=r?r.nota:'';
+  mvPintarCanal();mvTotal();
 }
 
 function mvReset(){
@@ -1734,30 +1642,6 @@ async function anularMV(orden,canal){
     st.innerHTML=`<span style="color:var(--pos)">Venta ${escH(orden)} anulada.</span>`;
     await recargarVentas();
   }catch(e){st.innerHTML=`<span style="color:var(--neg)">No se anuló: ${escH(e.message)}</span>`;}
-}
-
-function renderMVList(){
-  const el=document.getElementById('mv-list');if(!el)return;
-  const manuales=DATA.filter(r=>r.manual);
-  if(!manuales.length){el.innerHTML='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--light)">Sin ventas manuales registradas</div>';return;}
-  const ordenes={};
-  manuales.forEach(e=>{
-    const key=e.orden+'|'+e.canal;
-    if(!ordenes[key])ordenes[key]={orden:e.orden,fecha:e.fecha,canal:e.canal,cliente:e.cliente,lineas:[]};
-    ordenes[key].lineas.push(e);
-  });
-  const lista=Object.values(ordenes).sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,10);
-  el.innerHTML=`<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-    <div style="font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.08em;margin-bottom:8px">Últimas ventas manuales (guardadas en el Libro_Ventas)</div>
-    ${lista.map(o=>`
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 10px;background:var(--bg);border-radius:5px;margin-bottom:4px">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--dark);line-height:1.6">
-          <strong>${escH(o.fecha)}</strong> · ${escH(o.canal)} · ${escH(o.orden)}${o.cliente?' · '+escH(o.cliente):''}<br>
-          ${o.lineas.map(l=>`${escH(l.sku)} ×${l.qty} ${clp(l.vb)}`).join(' · ')}
-        </div>
-        <button onclick="anularMV('${escH(o.orden)}','${escH(o.canal)}')" style="font-family:var(--mono);font-size:9px;color:var(--neg);cursor:pointer;padding:2px 8px;border:1px solid var(--neg-bg);border-radius:3px;flex-shrink:0;margin-left:8px;background:transparent">Anular</button>
-      </div>`).join('')}
-  </div>`;
 }
 
 // ── Importar DTE (XML del SII): fecha, folio, cliente, líneas con precio + IVA ──
@@ -2656,10 +2540,10 @@ function xFiltro(){XF.marca=document.getElementById('xs-marca').value;XF.canal=d
 function xRender(){
   xHeader();
   const gest={inv:xInventario,imp:xImportaciones,pnl:xPnlG,conv:xConvG,sis:xSistema,scout:xScout}[X_VISTA];
-  if(gest){Promise.resolve().then(gest).catch(e=>{document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';});return;}
+  if(gest){Promise.resolve().then(gest).then(()=>gAyuda(X_VISTA)).catch(e=>{document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';});return;}
   if(!DATA.length)return;
   const f={res:xResumen,prod:xProductos,cli:xClientes,canal:xCanales,geo:xGeo,ventas:xVentasG}[X_VISTA];
-  if(f){try{f();}catch(e){document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';}}
+  if(f){try{f();gAyuda(X_VISTA);}catch(e){document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';}}
 }
 function xEstilo(){
   const orden=['hibrido','vidrio'];const act=document.documentElement.dataset.estilo||'hibrido';const sig=orden[(orden.indexOf(act)+1)%orden.length];
@@ -2919,7 +2803,7 @@ function xGeo(){
 const CSV_IMP='/erp/api/imp', CSV_SCOUT='/erp/api/scout', CSV_ESTADO='/erp/api/estado';
 // SKU antiguo → SKU nuevo que lo reemplaza (mismo producto, nueva etiqueta desde la importación de nov-2026)
 const SKU_SUCESOR={'SJ-JL801B':'OR-001','SJ-JL802B':'OR-002','SJ-AH209A':'MA-001','SJ-JL802C':'MA-002'};
-const G={ventLim:100,imp:null,scout:null,estado:null,impSel:null,impEnvio:null,invSel:null,ventSel:null,ventCanal:'',ventQ:'',ventDias:90,pnlMes:null,convMes:null,scoutTab:'radar',scoutGrupo:'',invFiltro:'todos',invMarca:''};
+const G={ventPer:'90d',ventA:null,ventB:null,ventLim:100,imp:null,scout:null,estado:null,impSel:null,impEnvio:null,invSel:null,ventSel:null,ventCanal:'',ventQ:'',ventDias:90,pnlMes:null,convMes:null,scoutTab:'radar',scoutGrupo:'',invFiltro:'todos',invMarca:''};
 const gOpt=(k,d)=>{try{const v=localStorage.getItem('hb_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}};
 const gSet=(k,v)=>{try{localStorage.setItem('hb_'+k,JSON.stringify(v));}catch(e){}};
 const gHoy=()=>xIso(new Date());
@@ -3074,9 +2958,9 @@ async function xImportaciones(){
 const CANAL_TAG={Shopify:'b',ML:'y',B2B:'p',HigoKids:'n','Venta Directa':'g','Venta Corporativa':'p',Otro:'n'};
 const canalNom=c=>c==='ML'?'MercadoLibre':c;
 function gPedidosVentas(){
-  const hoy=gHoy(),desde=G.ventDias?xAdd(hoy,-(G.ventDias-1)):'0000';
+  const [desde,hasta]=G.ventPer==='custom'&&G.ventA&&G.ventB?[G.ventA<=G.ventB?G.ventA:G.ventB,G.ventA<=G.ventB?G.ventB:G.ventA]:xPreset(G.ventPer);
   const o={};
-  DATA.filter(r=>r.vb>0&&r.fecha>=desde).forEach(r=>{const k=r.canal+'|'+r.orden;const x=o[k]||(o[k]={k,canal:r.canal,orden:r.orden,fecha:r.fecha,hora:r.hora,marca:r.marca,cli:r.cli,cliente:r.cliente,ciudad:r.ciudad,reg:xReg(r),pago:r.pago,desp:r.desp,ncomp:r.ncomp,fuente:r.fuente,manual:r.manual,vb:0,mb:0,com:0,env:0,flex:0,lin:[]});
+  DATA.filter(r=>r.vb>0&&r.fecha>=desde&&r.fecha<=hasta).forEach(r=>{const k=r.canal+'|'+r.orden;const x=o[k]||(o[k]={k,canal:r.canal,orden:r.orden,fecha:r.fecha,hora:r.hora,marca:r.marca,cli:r.cli,cliente:r.cliente,ciudad:r.ciudad,reg:xReg(r),pago:r.pago,desp:r.desp,ncomp:r.ncomp,fuente:r.fuente,manual:r.manual,vb:0,mb:0,com:0,env:0,flex:0,lin:[]});
     x.vb+=r.vb;x.mb+=r.mb;x.com+=r.cargoMP;x.env+=r.envio;x.flex+=r.canal==='ML'?r.descto:0;x.lin.push(r);});
   let L=Object.values(o);
   if(G.ventCanal)L=L.filter(p=>p.canal===G.ventCanal);
@@ -3112,11 +2996,13 @@ function xVentasG(){
     <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
       <label class="xlbl" style="flex:1 1 260px">Buscar<input class="xinp" type="search" value="${escH(G.ventQ)}" placeholder="N° de pedido, producto, comuna o cliente" oninput="G.ventQ=this.value;clearTimeout(window._vq);window._vq=setTimeout(()=>{xVentasG();const i=document.querySelector('#view-ventas input[type=search]');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}},250)"></label>
       <div class="xchips">${['',...canales].map(c=>`<button type="button" class="xchip${G.ventCanal===c?' on':''}" onclick="G.ventCanal='${escH(c)}';xVentasG()">${c?escH(canalNom(c)):'Todos'}</button>`).join('')}</div>
-      <label class="xlbl">Período<select class="xinp" onchange="G.ventDias=+this.value;xVentasG()">${[[30,'Últimos 30 días'],[90,'Últimos 90 días'],[365,'Últimos 365 días'],[0,'Todo el historial']].map(([v,l])=>`<option value="${v}"${G.ventDias===v?' selected':''}>${l}</option>`).join('')}</select></label>
+      <label class="xlbl">Período<select class="xinp" onchange="G.ventPer=this.value;G.ventLim=100;if(this.value==='custom'&&!G.ventA){[G.ventA,G.ventB]=xPreset('30d');}xVentasG()">${X_PRESETS.concat([['custom','Personalizado']]).map(([v,l])=>`<option value="${v}"${G.ventPer===v?' selected':''}>${l}</option>`).join('')}</select></label>
+      ${G.ventPer==='custom'?`<label class="xlbl">Desde<input type="date" class="xinp" value="${G.ventA||''}" onchange="G.ventA=this.value;xVentasG()"></label><label class="xlbl">Hasta<input type="date" class="xinp" value="${G.ventB||''}" onchange="G.ventB=this.value;xVentasG()"></label>`:''}
       <button type="button" class="xbtn" onclick="gExportVentas()">Exportar CSV</button>
       <button type="button" class="xbtn pri" onclick="showMV()">+ Venta manual</button>
     </div>
     <div style="display:flex;gap:28px;flex-wrap:wrap;margin:16px 0 6px">
+      <div><div class="xsmall">Período</div><div class="xbig" style="font-size:20px">${(()=>{const r=G.ventPer==='custom'&&G.ventA&&G.ventB?[G.ventA,G.ventB].sort():xPreset(G.ventPer);return xFmtR(r[0],r[1]);})()}</div></div>
       <div><div class="xsmall">Pedidos</div><div class="xbig" style="font-size:20px">${xN(L.length)}</div></div>
       <div><div class="xsmall">Ventas</div><div class="xbig" style="font-size:20px">${clp(vb)}</div></div>
       <div><div class="xsmall">Margen bruto</div><div class="xbig" style="font-size:20px">${clp(mb)} · ${xP(vb?mb/vb:0)}</div></div>
@@ -3224,7 +3110,7 @@ async function gSincronizar(btn){
 }
 async function xSistema(){
   const el=document.getElementById('view-sis');
-  if(G.estado===null){el.innerHTML='<div class="xp xempty">Revisando el sistema…</div>';await Promise.all([gLoadEstado(),gLoadImp(),loadInvSnap().catch(()=>{})]);}
+  if(G.estado===null||!G.gastos){el.innerHTML='<div class="xp xempty">Revisando el sistema…</div>';await Promise.all([gLoadEstado(),gLoadImp(),loadInvSnap().catch(()=>{}),gLoadGastos()]);}
   const hoy=gHoy(),ahora=Date.now();
   const est={};(G.estado||[]).forEach(c=>{est[c[0]]={ok:c[1],err:c[2],det:c[3]};});
   const hace=s=>{if(!s)return'nunca';const t=new Date(s.replace(' ','T')+':00-03:00').getTime();const m=Math.max(0,Math.round((ahora-t)/6e4));return m<2?'hace un momento':m<60?'hace '+m+' min':m<2880?'hace '+Math.round(m/60)+' h':'hace '+Math.round(m/1440)+' días';};
@@ -3256,10 +3142,12 @@ async function xSistema(){
     ${con('Ventas MercadoLibre','Ventas MercadoLibre','cada 15 min · última venta '+ult('ML'),40)}
     ${con('Inventario Shopify + ML','Inventario','cada hora · foto '+(INV_FECHA||'–'),120)}
     ${con('Radar Scout','Scout semanal','cada lunes · búsquedas de MercadoLibre Chile',60*24*8)}
-    <div class="xrw"><span class="xdot ${pnlM?'wa':'er'}"></span><div style="flex:1"><b>Hoja P&L</b><div class="xsmall">último mes con datos: ${escH(pnlM||'–')} · se regenera al cerrar el mes</div></div></div>
+    ${con('Hoja P&L (regeneración)','P&L','cada noche 23:30 · también al guardar gastos',60*30)}
+    <div class="xrw"><span class="xdot of"></span><div style="flex:1"><b>Datos del P&L</b><div class="xsmall">último mes con ventas: ${escH(pnlM||'–')} · los gastos variables se cargan abajo</div></div></div>
     <div class="xrw"><span class="xdot of"></span><div style="flex:1"><b>Conversión</b><div class="xsmall">carga manual en la hoja Conversion</div></div></div>
     <p class="xsmall" style="margin-top:10px">Las ventas aparecen en el dashboard hasta 15 minutos después de la compra. "Sincronizar ahora" las trae al momento.</p></section>
   <section class="xp" style="flex:1 1 420px"><h2>Requiere atención</h2>${al.map(([c,t,x])=>`<div class="xrw"><span class="xtag ${c}">${t}</span><div style="flex:1">${escH(x)}</div></div>`).join('')}</section></div>
+  ${gGastosHtml()}
   <section class="xp"><div class="xp-h"><h2>Cierre de ${escH(nomC)}</h2><span class="note">marca cada paso al terminarlo</span></div>${cl}</section>`;
 }
 function gCierre(mes,k){const m=gOpt('cierre_'+mes,{});m[k]=!m[k];gSet('cierre_'+mes,m);xSistema();}
@@ -3334,6 +3222,195 @@ function gEvalCalc(){
     <tr><td>Precio de venta mínimo para 55% de margen</td><td class="r">${clp((costoIva)/(1-0.55-com/100-(canal==='shopify'?0.055:0)))}</td></tr>`;
 }
 
+
+// ══ AYUDA: cómo leer cada módulo ══════════════════════════════
+const AYUDA={
+res:{t:'Cómo leer el Resumen',p:[
+ ['Período y comparación','Arriba eliges el período (por ejemplo, últimos 30 días) y contra qué compararlo. Cada tarjeta muestra la cifra del período, el % de cambio y la cifra de antes. Verde = mejoró, rojo = empeoró.'],
+ ['Ventas','Todo lo que pagaron los clientes, con IVA, sin descontar nada.'],
+ ['Margen bruto','Ventas − costo de los productos (costo internado × 1,19 para comparar con precios con IVA). Es lo que queda para pagar logística, publicidad y la operación. Sobre 65% está sano en tus productos.'],
+ ['Después de comisiones y envíos','Margen bruto − comisión de Mercado Pago/ML − envíos que pagas en ML + bonificación Flex. Es la plata que realmente queda de cada venta antes de publicidad y gastos fijos.'],
+ ['Ticket promedio','Ventas ÷ pedidos. Cuánto gasta en promedio cada pedido; subirlo (packs, envío gratis sobre un monto) es la forma más barata de crecer.'],
+ ['Clientes recurrentes','% de pedidos hechos por alguien que ya había comprado antes.'],
+ ['Alertas','Lo que conviene mirar hoy: quiebres de stock, productos que caen, descuadres con ML y ventas sin costo.'],
+ ['Mapa de calor','Pedidos por día y franja horaria. Las celdas más oscuras son los mejores momentos para lanzar campañas o correos.']]},
+prod:{t:'Cómo leer Productos',p:[
+ ['Tabla','Cada producto con ventas, unidades, margen y cobertura de stock. Haz clic en los encabezados para ordenar.'],
+ ['Estacionalidad','Ventas de cada mes de los últimos 12: muestra en qué meses se vende más cada producto para preparar stock.'],
+ ['Compras cruzadas','Productos que aparecen juntos en el mismo pedido: candidatos para packs o para recomendar en la ficha.']]},
+cli:{t:'Cómo leer Clientes',p:[
+ ['Nuevos vs recurrentes','Un cliente recurrente es alguien que ya había comprado. Si la recurrencia es baja, conviene trabajar correo y postventa antes que más publicidad.'],
+ ['Cliente','Se identifica con un código anónimo (no guardamos correos). SH = Shopify, ML = MercadoLibre, MN = venta manual.']]},
+canal:{t:'Cómo leer Canales y marketing',p:[
+ ['Canal','Dónde se cerró la venta (Shopify, MercadoLibre, B2B, HigoKids…).'],
+ ['Fuente','De dónde llegó el cliente a la tienda (Google, Instagram, directo…). Solo existe para Shopify.'],
+ ['Costo del canal','Comisiones y envíos que se lleva cada canal. Sirve para comparar qué canal deja más por cada $100 vendidos.']]},
+geo:{t:'Cómo leer Geografía',p:[['Regiones y comunas','Dónde están tus compradores. Útil para segmentar campañas y para negociar despacho.']]},
+inv:{t:'Cómo leer Inventario',p:[
+ ['ABEE / ML / Externo','Unidades en la bodega de ABEE (lo que se puede vender), lo publicado en MercadoLibre y lo que está fuera de ABEE. Si ML está en rojo, ML muestra más de lo que hay: riesgo de vender algo que no existe.'],
+ ['Venta / semana','Promedio de unidades vendidas por semana en los últimos 90 días.'],
+ ['Cobertura','Cuántos días dura el stock actual al ritmo de venta actual. 30 días o menos es urgente.'],
+ ['Pedir antes de','Último día para pagar una compra nueva sin quedarte sin stock, considerando los días de importación y de seguridad (los editas arriba de la tabla).'],
+ ['Sugerido','Unidades a pedir para cubrir la importación más 90 días de venta, descontando lo que hay y lo que viene en camino.'],
+ ['Estados','En riesgo: se agota antes de que llegue nada. Llega lote: se agota pero viene una importación a tiempo. Pedir pronto: hay que comprar en los próximos 30 días. Sobrestock: más de 1 año de stock (capital inmovilizado).'],
+ ['Valor del stock','Unidades × costo internado sin IVA: cuánta plata tienes guardada en bodega.']]},
+imp:{t:'Cómo leer Importaciones',p:[
+ ['Etapas','Cada envío avanza de izquierda a derecha: cotización, pago inicial, producción, bodega de origen, tránsito, aduana y ABEE. Haz clic en una tarjeta para ver su detalle.'],
+ ['Costo internado','Todo lo que cuesta poner una unidad en ABEE, sin IVA: mercadería al dólar realmente pagado + flete + agente + gastos. El IVA de importación es crédito fiscal, no costo.'],
+ ['Dólar efectivo','Pesos que salieron de tu cuenta ÷ dólares de la factura. Incluye spread y comisiones del medio de pago.'],
+ ['Margen bruto','PVP − costo × 1,19, igual que en el resto del sistema.'],
+ ['Estimado vs real','Lo estimado viene de proformas y cotizaciones; se reemplaza por lo real cuando llegan las facturas. Para actualizar, pásame los documentos por el chat.']]},
+ventas:{t:'Cómo leer Ventas',p:[
+ ['Lista','Todos los pedidos de todos los canales, del más nuevo al más antiguo. Filtra por canal, período o busca por N° de pedido, producto, comuna o cliente.'],
+ ['Detalle','Al hacer clic en un pedido ves su margen y lo que se llevan la comisión y el envío. Las ventas manuales se pueden anular desde ahí.'],
+ ['Margen','Total del pedido − costo × 1,19.']]},
+pnl:{t:'Cómo leer el P&L',p:[
+ ['Qué es','El estado de resultados del mes: parte de lo vendido y va restando cada tipo de gasto hasta llegar a la utilidad.'],
+ ['La cascada (gráfico)','Léela de izquierda a derecha. La primera barra azul es la venta. Cada barra naranja es un gasto que "se come" una parte: costo de productos, logística, marketing, tecnología y administración. La barra azul del medio es el margen bruto (lo que queda tras el costo de productos). La última barra es lo que sobra: verde si ganaste, roja si perdiste. Mientras más alta una barra naranja, más pesa ese gasto.'],
+ ['Resultado neto','Lo que queda después de todos los gastos. Es la utilidad (o pérdida) del mes.'],
+ ['Margen de contribución','Margen bruto − logística − publicidad pagada (Meta, Google, ML Ads). Es lo que deja cada venta para pagar los gastos fijos. En %: de cada $100 vendidos, cuántos quedan para los fijos.'],
+ ['Venta por cada $1 de publicidad (ROAS/MER)','Ventas ÷ inversión en anuncios. $4,8 significa que cada $1 en anuncios trajo $4,8 en ventas. No incluye el fee de la agencia.'],
+ ['Punto de equilibrio','Lo que hay que vender al mes para no perder: gastos fijos (agencia, tecnología, administración) ÷ % de contribución. Vender más que eso es ganancia.'],
+ ['Gastos variables vs fijos','Variables: cambian con la venta o el mes (anuncios, ABEE, comisiones). Fijos: se pagan igual vendas o no (agencia, contador, Shopify). Se cargan en Estado del sistema.']]},
+conv:{t:'Cómo leer Conversión',p:[
+ ['Embudo','De cada 100 personas que entran a la tienda, cuántas agregan al carro, cuántas llegan a pagar y cuántas compran. Cada barra muestra el % que pasa al paso siguiente.'],
+ ['En rojo','Pasos bajo lo normal del mercado: ahí se está perdiendo la venta.'],
+ ['Referencias','Visita → carro 5–10%; carro → checkout 45–60%; checkout → compra 60–70%; visita → compra 2,5–3%.'],
+ ['Fuente','Hoy la hoja Conversion se llena a mano con los datos de Shopify Analytics y ML.']]},
+sis:{t:'Cómo leer Estado del sistema',p:[
+ ['Conexiones','Punto verde: la sincronización corrió bien hace poco. Amarillo: hace rato que no corre. Rojo: falló (se muestra el error).'],
+ ['Sincronizar ahora','Trae al momento las ventas de Shopify y ML y la foto de stock, sin esperar los 15 minutos.'],
+ ['Gastos del mes','Aquí cargas los gastos variables de cada mes cuando llega la factura (anuncios, ABEE, sueldos). Los fijos se cargan una vez y se repiten solos.'],
+ ['Cierre del mes','Lista de lo que falta para que el P&L del mes quede completo.']]},
+scout:{t:'Cómo leer el Scout',p:[
+ ['Radar','Las búsquedas más populares de MercadoLibre Chile, en general y en las categorías de tus marcas. "Sube", "Baja" o "Nueva" compara con la semana anterior. Mientras más semanas acumula, más confiable es la tendencia.'],
+ ['Competencia','Cuántos vendedores distintos aparecen en los primeros 50 resultados. Muchos vendedores = mercado saturado; pocos = espacio para entrar.'],
+ ['Evaluar producto','Calcula el costo internado, el margen bruto y el margen antes de publicidad de un producto que estás pensando traer. Sobre 55% después de ABEE y comisión deja espacio para publicidad.'],
+ ['Mis marcas','Precios y competencia de las búsquedas de MemoKoala y Montana en MercadoLibre.']]}
+};
+function gAyuda(v){
+  const a=AYUDA[v],el=document.getElementById('view-'+v);if(!a||!el||el.querySelector(':scope > .xhelp'))return;
+  const d=document.createElement('details');d.className='xp xhelp';if((G.ayudaAbierta||{})[v])d.open=true;
+  d.addEventListener('toggle',()=>{G.ayudaAbierta=G.ayudaAbierta||{};G.ayudaAbierta[v]=d.open;});
+  d.innerHTML=`<summary><span class="xhelp-i" aria-hidden="true">?</span>${escH(a.t)}</summary><dl>${a.p.map(([k,x])=>`<dt>${escH(k)}</dt><dd>${escH(x)}</dd>`).join('')}</dl>`;
+  el.prepend(d);
+}
+
+// ══ GASTOS (Estado del sistema) ════════════════════════════════
+const G_VAR=[['Meta Ads','Meta Ads (Facebook e Instagram)'],['Google Ads','Google Ads'],['ML Ads','MercadoLibre Ads'],['ABEE Fulfillment','ABEE · fulfillment'],['ABEE Envíos','ABEE · envíos'],['The Link It','The Link It · agencia (vacío = $800.000)'],['Remuneraciones','Remuneraciones'],['Otros Admin','Otros gastos de administración']];
+const G_FIJ=[['Shopify MK fee mensual','Shopify MemoKoala','USD al mes'],['Shopify MT fee mensual','Shopify Montana','USD al mes'],['Shopify comisión transacciones','Comisión Shopify por venta','fracción (0,02 = 2%)'],['Claude Pro','Claude','USD al mes'],['Google Workspace','Google Workspace','CLP al mes'],['Canva','Canva','CLP al año'],['BP Consulting','BP Consulting · contabilidad','UF al mes']];
+const MES_N=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+async function gLoadGastos(force){
+  if(G.gastos&&!force)return;
+  try{const [g,c]=await Promise.all([gCsv('/erp/api/gastos'),gCsv('/erp/api/config')]);
+    const enc=(g[0]||[]).map(x=>x.trim());G.gastos={};
+    g.slice(1).forEach(r=>{const m=MES_N.indexOf(String(r[1]||'').trim().toLowerCase()),a=+r[2];if(m<0||!a)return;const o={};enc.forEach((h,j)=>{if(j>2&&h)o[h]=r[j]===''?'':pn(r[j]);});G.gastos[a+'-'+(m+1)]=o;});
+    G.config={};c.forEach(r=>{if(r[0])G.config[r[0].trim()]=r[1];});
+  }catch(e){G.gastos={};G.config={};}
+}
+function gGastosHtml(){
+  const hoy=new Date();if(!G.gMes){const d=new Date(hoy.getFullYear(),hoy.getMonth()-1,1);G.gMes=d.getFullYear()+'-'+(d.getMonth()+1);}
+  const meses=[];for(let i=5;i>=0;i--){const d=new Date(hoy.getFullYear(),hoy.getMonth()-i,1);meses.push(d.getFullYear()+'-'+(d.getMonth()+1));}
+  const lbl=k=>{const[a,m]=k.split('-');return MES_N[m-1].slice(0,3)+' '+a.slice(2);};
+  const v=(G.gastos||{})[G.gMes]||{};
+  const cfg=G.config||{};
+  return`<section class="xp" id="g-gastos"><div class="xp-h"><h2>Gastos del mes</h2><span class="note">se usan en el P&L</span></div>
+    <p class="xsmall" style="margin:-4px 0 12px;line-height:1.5"><b>Variables</b>: cambian cada mes; se cargan cuando llega la factura o al cerrar el mes. Las comisiones de Mercado Pago y ML, los envíos de ML y el costo de los productos <b>no se cargan</b>: salen solos de cada venta.</p>
+    <div class="xchips" style="margin-bottom:12px">${meses.map(k=>`<button type="button" class="xchip${G.gMes===k?' on':''}" onclick="G.gMes='${k}';xSistema()">${lbl(k)}${(G.gastos||{})[k]?' ✓':''}</button>`).join('')}</div>
+    <div class="xform">${G_VAR.map(([k,l])=>`<label class="xlbl">${escH(l)}<input class="xinp" inputmode="numeric" data-g="${escH(k)}" value="${v[k]===undefined||v[k]===''?'':Math.round(v[k])}" placeholder="$"></label>`).join('')}</div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap"><button type="button" class="xbtn pri" onclick="gGuardarGastos(this)">Guardar gastos de ${lbl(G.gMes)}</button><button type="button" class="xbtn" onclick="gRegenerarPnL(this)">Regenerar P&L</button><span class="xsmall" id="g-gastos-msg"></span></div>
+    <h2 style="margin-top:22px;font-size:14px">Gastos fijos</h2>
+    <p class="xsmall" style="margin:4px 0 12px;line-height:1.5"><b>Fijos</b>: se pagan igual vendas o no. Se cargan una vez y el P&L los repite cada mes, convertidos con el dólar o la UF del mes. Solo cámbialos si cambia el plan o la tarifa. Aparecen en el mes en curso recién el último día del mes.</p>
+    <div class="xform">${G_FIJ.map(([k,l,u])=>`<label class="xlbl">${escH(l)} · ${escH(u)}<input class="xinp" inputmode="decimal" data-f="${escH(k)}" value="${cfg[k]!==undefined?escH(String(cfg[k])):''}"></label>`).join('')}</div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn" onclick="gGuardarFijos(this)">Guardar gastos fijos</button><span class="xsmall" id="g-fijos-msg"></span></div></section>`;
+}
+async function gPost(body){const r=await fetch(API_VENTA,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const j=await r.json().catch(()=>({ok:false,error:'respuesta inválida'}));if(!j.ok)throw new Error(j.error||'error');return j;}
+async function gGuardarGastos(btn){
+  const msg=document.getElementById('g-gastos-msg');const[a,m]=G.gMes.split('-');const valores={};
+  document.querySelectorAll('#g-gastos [data-g]').forEach(i=>{const t=i.value.replace(/[^\d]/g,'');valores[i.dataset.g]=t===''?'':+t;});
+  btn.disabled=true;msg.textContent='Guardando…';
+  try{await gPost({action:'gastos_set',mes:MES_N[m-1],anio:+a,valores});msg.textContent='Guardado. Regenerando P&L…';await gPost({action:'pnl_generar'});PNL={meses:[],rows:[]};pnlLoaded=false;await gLoadGastos(true);msg.textContent='Listo: gastos guardados y P&L actualizado.';}
+  catch(e){msg.textContent='No se guardó: '+e.message;}finally{btn.disabled=false;}
+}
+async function gGuardarFijos(btn){
+  const msg=document.getElementById('g-fijos-msg');const valores={};
+  document.querySelectorAll('#g-gastos [data-f]').forEach(i=>{const t=i.value.replace(',','.').trim();if(t!=='')valores[i.dataset.f]=+t;});
+  btn.disabled=true;msg.textContent='Guardando…';
+  try{await gPost({action:'config_set',valores});await gLoadGastos(true);msg.textContent='Guardado. Se aplica al regenerar el P&L.';}
+  catch(e){msg.textContent='No se guardó: '+e.message;}finally{btn.disabled=false;}
+}
+async function gRegenerarPnL(btn){
+  const msg=document.getElementById('g-gastos-msg');btn.disabled=true;msg.textContent='Regenerando P&L…';
+  try{const j=await gPost({action:'pnl_generar'});if(j.ok===false)throw new Error(j.error);PNL={meses:[],rows:[]};pnlLoaded=false;msg.textContent='P&L actualizado.';}
+  catch(e){msg.textContent='No se pudo: '+e.message;}finally{btn.disabled=false;}
+}
+
+// ══ VENTA MANUAL (modal nuevo) ═════════════════════════════════
+const MV_CANALES=[['B2B','B2B con factura'],['HigoKids','HigoKids'],['Venta Directa','Venta directa'],['Venta Corporativa','Corporativa'],['Otro','Otro']];
+function mvPintarCanal(){const v=document.getElementById('mv-canal').value;document.querySelectorAll('#mv-canales .xchip').forEach(b=>b.classList.toggle('on',b.dataset.c===v));}
+function mvElegirCanal(c){document.getElementById('mv-canal').value=c;mvComisionAuto();}
+function showMV(){
+  document.getElementById('modal-venta').style.display='flex';document.body.style.overflow='hidden';
+  mvMarca='Todas';mvLineas=[];mvPintarMarca();mvReset();document.getElementById('mv-status').textContent='';renderMVList();
+  setTimeout(()=>document.getElementById('mv-drop')?.focus(),50);
+}
+function mvPintarMarca(){document.querySelectorAll('#mv-marcas .xchip').forEach(b=>b.classList.toggle('on',b.dataset.m===mvMarca));}
+function mvSetMarca(m){mvMarca=m;mvPintarMarca();mvRenderLineas();}
+function mvUltimoPrecio(sku){const r=DATA.filter(x=>x.sku===sku&&x.canal==='Shopify'&&x.qty>0).sort((a,b)=>a.fecha<b.fecha?1:-1)[0];return r?Math.round(r.vb/r.qty):'';}
+function mvRenderLineas(preset){
+  const cont=document.getElementById('mv-lineas');if(!cont)return;
+  const vals=preset||{};
+  if(!preset)cont.querySelectorAll('[data-linea-id]').forEach(el=>{vals[el.dataset.lineaId]={sku:el.querySelector('select')?.value??'',qty:el.querySelector('.mv-qty-inp')?.value||'1',precio:el.querySelector('.mv-precio-inp')?.value||''};});
+  const skuList=mvGetSKUs();
+  cont.innerHTML=mvLineas.map((id,n)=>{
+    const v=vals[id];const sel=v&&skuList.includes(v.sku)?v.sku:(v&&v.sku===''?'':'');
+    const opts=`<option value=""${sel===''?' selected':''}>Elegir producto…</option>`+skuList.map(s=>`<option value="${s}"${s===sel?' selected':''}>${escH(NOMBRES[s])} · ${s}</option>`).join('');
+    return`<div class="mvl" data-linea-id="${id}">
+      <div class="mvl-g">
+        <label class="xlbl" style="grid-column:1/-1">Producto ${n+1}<select class="xinp" onchange="mvAlElegir(this)">${opts}</select></label>
+        <div class="xlbl">Cantidad<div class="mvq"><button type="button" aria-label="Menos" onclick="mvPaso(this,-1)">−</button><input type="number" class="xinp mv-qty-inp" value="${v?.qty||1}" min="1" oninput="mvTotal()"><button type="button" aria-label="Más" onclick="mvPaso(this,1)">+</button></div></div>
+        <label class="xlbl">Precio unitario con IVA<input type="number" class="xinp mv-precio-inp" placeholder="$" value="${v?.precio||''}" oninput="mvTotal()"></label>
+      </div>
+      <div class="mvl-f"><span class="mvl-m"></span>${mvLineas.length>1?`<button type="button" class="mvl-x" onclick="mvDelLinea('${id}')">Quitar</button>`:''}</div>
+    </div>`;}).join('');
+  mvTotal();
+}
+function mvAlElegir(sel){const p=sel.closest('.mvl').querySelector('.mv-precio-inp');if(sel.value&&!p.value){const u=mvUltimoPrecio(sel.value);if(u)p.value=u;}mvTotal();}
+function mvPaso(b,d){const i=b.parentElement.querySelector('input');i.value=Math.max(1,(+i.value||1)+d);mvTotal();}
+function mvTotal(){
+  const sum=document.getElementById('mv-sum');if(!sum)return;
+  const pct=(parseFloat(document.getElementById('mv-com-pct').value)||0)/100,envio=parseFloat(document.getElementById('mv-envio').value)||0;
+  let bruto=0,costo=0,u=0,sinCosto=false;
+  document.querySelectorAll('#mv-lineas [data-linea-id]').forEach(l=>{
+    const sku=l.querySelector('select')?.value,q=parseInt(l.querySelector('.mv-qty-inp')?.value)||0,p=parseFloat(l.querySelector('.mv-precio-inp')?.value)||0;
+    const c=COSTOS[sku]||0,b=q*p;bruto+=b;costo+=c*q;u+=q;if(sku&&!c)sinCosto=true;
+    const m=l.querySelector('.mvl-m');
+    if(m)m.innerHTML=sku&&b?`${clp(b)} · costo ${clp(c*q*IVA)} · margen <b style="color:${b-c*q*IVA>=0?'var(--x-pos)':'var(--x-neg)'}">${clp(b-c*q*IVA)} (${xP(b?(b-c*q*IVA)/b:0,0)})</b>`:sku?'Ingresa el precio':'';
+  });
+  const com=bruto*pct,mb=bruto-costo*IVA,total=bruto+envio;
+  const cuadre=mvXmlTotal?(Math.abs(total-mvXmlTotal)<=mvLineas.length+2?`<div class="mvs-ok">Cuadra con el documento (${clp(mvXmlTotal)})</div>`:`<div class="mvs-bad">El documento dice ${clp(mvXmlTotal)}: diferencia ${clp(total-mvXmlTotal)}</div>`):'';
+  sum.innerHTML=`<div class="mvs-r"><span>Productos (${u} u)</span><b>${clp(bruto)}</b></div>
+    ${envio?`<div class="mvs-r"><span>Envío cobrado</span><b>${clp(envio)}</b></div>`:''}
+    <div class="mvs-r mvs-t"><span>Total con IVA</span><b>${clp(total)}</b></div>
+    <div class="mvs-r"><span>Neto sin IVA</span><span>${clp(total/IVA)}</span></div>
+    <div class="mvs-sep"></div>
+    <div class="mvs-r"><span>Costo productos × 1,19</span><span>−${clp(costo*IVA)}</span></div>
+    <div class="mvs-r"><span>Margen bruto</span><b style="color:${mb>=0?'var(--x-pos)':'var(--x-neg)'}">${clp(mb)} · ${xP(bruto?mb/bruto:0,0)}</b></div>
+    ${com?`<div class="mvs-r"><span>Comisión del canal</span><span>−${clp(com)}</span></div><div class="mvs-r"><span>Después de comisión</span><b>${clp(mb-com)}</b></div>`:''}
+    ${sinCosto?'<div class="mvs-bad">Hay un producto sin costo cargado: la venta será rechazada.</div>':''}${cuadre}`;
+  const old=document.getElementById('mv-total');if(old)old.textContent='';
+}
+function renderMVList(){
+  const el=document.getElementById('mv-list');if(!el)return;
+  const o={};DATA.filter(r=>r.manual).forEach(e=>{const k=e.orden+'|'+e.canal;(o[k]=o[k]||{orden:e.orden,fecha:e.fecha,canal:e.canal,cliente:e.cliente,vb:0,u:0}).vb+=e.vb;o[k].u+=e.qty;});
+  const L=Object.values(o).sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,6);
+  el.innerHTML=L.length?`<div class="xsmall" style="margin-bottom:6px">Últimas ventas manuales</div>`+L.map(x=>`<div class="mvh"><div><b>${escH(x.orden)}</b> · ${escH(x.canal)}<div class="xsmall">${xFmt(x.fecha)}${x.cliente?' · '+escH(x.cliente):''} · ${x.u} u · ${clp(x.vb)}</div></div><button type="button" class="mvl-x" onclick="anularMV('${escH(x.orden)}','${escH(x.canal)}')">Anular</button></div>`).join(''):'<div class="xsmall">Aún no hay ventas manuales.</div>';
+}
+function mvDrop(e){e.preventDefault();document.getElementById('mv-drop').classList.remove('on');const f=e.dataTransfer.files[0];if(f)mvImportarXML(f);}
+
+
+// La ayuda se vuelve a insertar cada vez que una vista se redibuja sola (filtros, clics).
+['xInventario','xImportaciones','xVentasG','xPnlG','xConvG','xSistema','xScout'].forEach(n=>{const f=window[n];window[n]=function(){const r=f.apply(this,arguments);Promise.resolve(r).then(()=>gAyuda(X_VISTA));return r;};});
 // ── UTILS ─────────────────────────────────────────────
 const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
 const sum=(arr,k)=>arr.reduce((s,r)=>s+(r[k]||0),0);
