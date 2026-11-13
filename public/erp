@@ -3456,7 +3456,9 @@ async function gMetaMes(){
     // operación real: % de costo de productos y de logística del último mes cerrado del P&L
     const {meses,rows}=PNL;const fr=t=>rows.find(r=>r.concepto.toUpperCase().includes(t.toUpperCase()));
     const vb=fr('VENTA BRUTA TOTAL'),mbR=fr('MARGEN BRUTO TOTAL'),lgR=fr('TOTAL LOG');
-    const idx=meses.map((m,i)=>i).filter(i=>vb&&vb.mv[i]>0&&lgR&&Math.abs(lgR.mv[i])>0);const j=idx[idx.length-1];
+    // Se excluye el mes en curso y los meses sin las facturas de logística cargadas (logística < 3% de la venta).
+    const MC=['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'],hoyD=new Date(gHoy()+'T12:00:00'),curLbl=MC[hoyD.getMonth()]+'-'+String(hoyD.getFullYear()).slice(2);
+    const idx=meses.map((m,i)=>i).filter(i=>vb&&vb.mv[i]>0&&lgR&&String(meses[i]).toUpperCase()!==curLbl&&Math.abs(lgR.mv[i])/vb.mv[i]>=0.03);const j=idx[idx.length-1];
     let beReal=0,txtReal='';
     if(j!==undefined){const v=vb.mv[j],cPct=1-(mbR.mv[j]||0)/v,lPct=Math.abs(lgR.mv[j])/v;beReal=fijos/(1-cPct-lPct);
       txtReal=`Con tu operación real de ${escH(meses[j])} (costo ${xP(cPct,0)} + logística ${xP(lPct,0)}, el flujo supone ${xP(varPlan,0)}) necesitas <b>${clp(beReal)}</b>.`;}
