@@ -13,9 +13,11 @@
 // POST {key, action:'gastos_set', mes, anio, valores} → gastos variables del mes (hoja Gastos_Variables)
 // POST {key, action:'config_set', valores}        → gastos fijos (hoja Config)
 // POST {key, action:'pnl_generar'}                → regenera la hoja P&L
+// POST {key, action:'gasto_add', doc} / {action:'gasto_del', id} → documentos de gasto (Gastos.gs)
+// POST {key, action:'metas_set', filas}           → proyección del flujo (hoja Metas)
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 function doGet(e) {
@@ -52,6 +54,12 @@ function doPost(e) {
     if (body.action === 'imp_set') return json_(importacionGuardar_(body.imp || {}));
     if (body.action === 'gastos_set') return json_(gastosGuardar_(body.mes, body.anio, body.valores || {}));
     if (body.action === 'config_set') return json_(configGuardar_(body.valores || {}));
+    if (body.action === 'metas_set') return json_(metasGuardar_(body.filas || []));
+    if (body.action === 'gasto_add' || body.action === 'gasto_del') {
+      const r = body.action === 'gasto_add' ? gastoDocAgregar_(body.doc || {}) : gastoDocBorrar_(body.id);
+      r.pnl = correr_('P&L', pnlSinPantalla_).ok;
+      return json_(r);
+    }
     return json_({ ok: false, error: 'acción desconocida' });
   } catch (err) {
     return json_({ ok: false, error: err.message });

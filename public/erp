@@ -487,6 +487,11 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xhelp dl{margin:0;padding:0 18px 16px;display:grid;grid-template-columns:minmax(150px,240px) 1fr;gap:8px 18px;font-size:13px;line-height:1.5}
 .xhelp dt{font-weight:600}.xhelp dd{margin:0;color:var(--x-mu)}
 @media (max-width:700px){.xhelp dl{grid-template-columns:1fr}.mvl-g{grid-template-columns:1fr}}
+
+.mm-bar{position:relative;height:14px;border-radius:7px;background:var(--x-track);margin:10px 0 8px}
+.mm-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--x-ac)}
+.mm-bar i.p{background:rgba(var(--x-acRGB),.25)}
+.mm-k{position:absolute;top:-4px;bottom:-4px;width:3px;border-radius:2px;transform:translateX(-1px)}
 </style>
 </head>
 <body>
@@ -510,6 +515,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     <button type="button" class="xs-nav" id="tab-imp" onclick="goTab('imp')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 17h14l4-6h-6l-2-4H8M2 17l2 3h12"/></svg>Importaciones</button>
     <button type="button" class="xs-nav" id="tab-ventas" onclick="goTab('ventas')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg>Ventas</button>
     <button type="button" class="xs-nav" id="tab-pnl" onclick="goTab('pnl')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>P&amp;L</button>
+    <button type="button" class="xs-nav" id="tab-gas" onclick="goTab('gas')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l3 3v15H6zM9 9h6M9 13h6M9 17h4"/></svg>Gastos</button>
     <button type="button" class="xs-nav" id="tab-conv" onclick="goTab('conv')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg>Conversión</button>
     <button type="button" class="xs-nav" id="tab-sis" onclick="goTab('sis')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 8-6-16-3 8H2"/></svg>Estado del sistema</button>
     <div class="xs-sec">Oportunidades</div>
@@ -549,6 +555,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     <div id="view-imp" class="xv" style="display:none"></div>
     <div id="view-ventas" class="xv" style="display:none"></div>
     <div id="view-pnl" class="xv" style="display:none"></div>
+    <div id="view-gas" class="xv" style="display:none"></div>
     <div id="view-conv" class="xv" style="display:none"></div>
     <div id="view-sis" class="xv" style="display:none"></div>
     <div id="view-scout" class="xv" style="display:none"></div>
@@ -1054,7 +1061,7 @@ document.addEventListener('DOMContentLoaded',()=>initApp());
 // ── TABS ─────────────────────────────────────────────
 let pnlLoaded=false, convLoaded=false;
 function goTab(t){
-  ['res','prod','cli','canal','geo','inv','imp','ventas','pnl','conv','sis','scout'].forEach(x=>{
+  ['res','prod','cli','canal','geo','inv','imp','ventas','pnl','gas','conv','sis','scout'].forEach(x=>{
     const v=document.getElementById('view-'+x),b=document.getElementById('tab-'+x);
     if(v)v.style.display=x===t?(v.classList.contains('xv')?'flex':'block'):'none';
     if(b)b.classList.toggle('on',x===t);
@@ -2384,7 +2391,7 @@ async function importarHistorialShopify(files){
 
 // ══ DASHBOARD DE ANÁLISIS ══════════════════════════════════
 // Todo se calcula en el navegador desde el Libro_Ventas (DATA) y la foto de stock (INV_SNAP).
-const X_TITULOS={res:['Resumen','Cómo va el negocio y qué decidir hoy'],prod:['Productos','Qué reponer, empujar, liquidar o empaquetar'],cli:['Clientes','Quién compra y si vuelve a comprar'],canal:['Canales y marketing','Dónde se vende, de dónde llegan y cuánto cuesta cada canal'],geo:['Geografía','Regiones y comunas'],inv:['Inventario','Stock en ABEE y bodegas externas, y cuándo pedir'],imp:['Importaciones','Del pago inicial a ABEE, con costos reales'],ventas:['Ventas','Todos los pedidos de todos los canales'],pnl:['P&L','De la venta a la utilidad, mes a mes'],conv:['Conversión','Dónde se cae la venta'],sis:['Estado del sistema','Si los datos están al día y qué falta para cerrar el mes'],scout:['Scout','Radar de tendencias y evaluador de productos']};
+const X_TITULOS={res:['Resumen','Cómo va el negocio y qué decidir hoy'],prod:['Productos','Qué reponer, empujar, liquidar o empaquetar'],cli:['Clientes','Quién compra y si vuelve a comprar'],canal:['Canales y marketing','Dónde se vende, de dónde llegan y cuánto cuesta cada canal'],geo:['Geografía','Regiones y comunas'],inv:['Inventario','Stock en ABEE y bodegas externas, y cuándo pedir'],imp:['Importaciones','Del pago inicial a ABEE, con costos reales'],ventas:['Ventas','Todos los pedidos de todos los canales'],pnl:['P&L','De la venta a la utilidad, mes a mes'],gas:['Gastos','Facturas y comprobantes de cada mes, y gastos fijos'],conv:['Conversión','Dónde se cae la venta'],sis:['Estado del sistema','Si los datos están al día y qué falta para cerrar el mes'],scout:['Scout','Radar de tendencias y evaluador de productos']};
 const X_REG={RM:'Metropolitana',VS:'Valparaíso',BI:'Biobío',LL:'Los Lagos',AN:'Antofagasta',LI:"O'Higgins",CO:'Coquimbo',ML:'Maule',AT:'Atacama',NB:'Ñuble',MA:'Magallanes',LR:'Los Ríos',AR:'Araucanía',AP:'Arica y Parinacota',TA:'Tarapacá',AI:'Aysén'};
 const X_REGNOM={'santiago':'RM','region metropolitana':'RM','metropolitana':'RM','region metropolitana de santiago':'RM','rm':'RM','valparaiso':'VS','biobio':'BI','bio bio':'BI','los lagos':'LL','antofagasta':'AN',"o'higgins":'LI','libertador general bernardo o\'higgins':'LI','coquimbo':'CO','maule':'ML','atacama':'AT','nuble':'NB','magallanes':'MA','magallanes y la antartica chilena':'MA','los rios':'LR','araucania':'AR','la araucania':'AR','arica y parinacota':'AP','tarapaca':'TA','aysen':'AI','aisen':'AI'};
 const X_PAGO={account_money:'Dinero en cuenta ML',credit_card:'Tarjeta de crédito',debit_card:'Tarjeta de débito',prepaid_card:'Tarjeta prepago',digital_currency:'Mercado Crédito',ticket:'Efectivo','Mercado Pago Checkout Pro':'Mercado Pago (Checkout Pro)','Mercado Pago Tarjetas':'Mercado Pago (tarjetas)'};
@@ -2539,7 +2546,7 @@ function xHeader(){
 function xFiltro(){XF.marca=document.getElementById('xs-marca').value;XF.canal=document.getElementById('xs-canal').value;xRender();}
 function xRender(){
   xHeader();
-  const gest={inv:xInventario,imp:xImportaciones,pnl:xPnlG,conv:xConvG,sis:xSistema,scout:xScout}[X_VISTA];
+  const gest={gas:xGastos,inv:xInventario,imp:xImportaciones,pnl:xPnlG,conv:xConvG,sis:xSistema,scout:xScout}[X_VISTA];
   if(gest){Promise.resolve().then(gest).then(()=>gAyuda(X_VISTA)).catch(e=>{document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';});return;}
   if(!DATA.length)return;
   const f={res:()=>{xResumen();gMetaMes();},prod:xProductos,cli:xClientes,canal:xCanales,geo:xGeo,ventas:xVentasG}[X_VISTA];
@@ -3148,7 +3155,7 @@ async function xSistema(){
     ${con('Conversión','Conversión','cada hora · MercadoLibre automático; Shopify espera el permiso de reportes',150)}
     <p class="xsmall" style="margin-top:10px">Las ventas aparecen en el dashboard hasta 15 minutos después de la compra. "Sincronizar ahora" las trae al momento.</p></section>
   <section class="xp" style="flex:1 1 420px"><h2>Requiere atención</h2>${al.map(([c,t,x])=>`<div class="xrw"><span class="xtag ${c}">${t}</span><div style="flex:1">${escH(x)}</div></div>`).join('')}</section></div>
-  ${gGastosHtml()}
+  <section class="xp"><div class="xp-h"><h2>Gastos del mes</h2><button type="button" class="xbtn" onclick="goTab('gas')">Ir a Gastos</button></div><p class="xsmall">Las facturas y comprobantes de cada mes, y los gastos fijos, se cargan en el módulo Gastos.</p></section>
   <section class="xp"><div class="xp-h"><h2>Cierre de ${escH(nomC)}</h2><span class="note">marca cada paso al terminarlo</span></div>${cl}</section>`;
 }
 function gCierre(mes,k){const m=gOpt('cierre_'+mes,{});m[k]=!m[k];gSet('cierre_'+mes,m);xSistema();}
@@ -3278,6 +3285,13 @@ conv:{t:'Cómo leer Conversión',p:[
  ['En rojo','Pasos bajo lo normal del mercado: ahí se está perdiendo la venta.'],
  ['Referencias','Visita → carro 5–10%; carro → checkout 45–60%; checkout → compra 60–70%; visita → compra 2,5–3%.'],
  ['Fuente','MercadoLibre se actualiza solo cada hora (visitas por API y ventas del libro). Shopify se automatiza en cuanto la app tenga el permiso de reportes; mientras tanto, esos meses quedan con lo que se cargó a mano.']]},
+gas:{t:'Cómo leer Gastos',p:[
+ ['Qué se carga aquí','Los gastos que cambian cada mes y llegan con factura o comprobante: anuncios de Meta, Google y MercadoLibre, ABEE, The Link It, sueldos y otros. Cada documento suma al P&L del mes que elijas.'],
+ ['Qué NO se carga','El costo de los productos vendidos, las comisiones de Mercado Pago y ML y los envíos de ML salen solos de cada venta. BP Consulting, Shopify, Claude, Workspace y Canva son gastos fijos y se suman solos.'],
+ ['XML','Las facturas chilenas se arrastran como XML: se completan proveedor, folio y montos. La de ABEE se separa sola en fulfillment y envíos.'],
+ ['Mes del gasto','Una factura emitida en noviembre por el servicio de octubre se carga en octubre: elige el mes del gasto, no el de la factura.'],
+ ['Real contra el flujo','Compara lo gastado con lo planificado en el flujo de caja (escenario neutro). Rojo = sobre el plan.'],
+ ['Neto','Se carga el monto sin IVA: el IVA de las facturas chilenas es crédito fiscal, no gasto.']]},
 sis:{t:'Cómo leer Estado del sistema',p:[
  ['Conexiones','Punto verde: la sincronización corrió bien hace poco. Amarillo: hace rato que no corre. Rojo: falló (se muestra el error).'],
  ['Sincronizar ahora','Trae al momento las ventas de Shopify y ML y la foto de stock, sin esperar los 15 minutos.'],
@@ -3411,33 +3425,174 @@ function mvDrop(e){e.preventDefault();document.getElementById('mv-drop').classLi
 
 
 // La ayuda se vuelve a insertar cada vez que una vista se redibuja sola (filtros, clics).
-['xInventario','xImportaciones','xVentasG','xPnlG','xConvG','xSistema','xScout'].forEach(n=>{const f=window[n];window[n]=function(){const r=f.apply(this,arguments);Promise.resolve(r).then(()=>gAyuda(X_VISTA));return r;};});
+['xInventario','xImportaciones','xVentasG','xPnlG','xConvG','xSistema','xScout','xGastos'].forEach(n=>{const f=window[n];window[n]=function(){const r=f.apply(this,arguments);Promise.resolve(r).then(()=>gAyuda(X_VISTA));return r;};});
 
 // ══ META DEL MES: punto de equilibrio fijo arriba del Resumen ══
 // Se calcula con el último mes cerrado del P&L que ya tiene gastos fijos: gastos fijos ÷ % de contribución.
+
+// ══ METAS DEL FLUJO DE CAJA ═══════════════════════════════════
+async function gLoadMetas(force){
+  if(G.metas&&!force)return G.metas;
+  try{const f=await gCsv('/erp/api/metas');G.metas={};
+    f.slice(1).forEach(c=>{if(!/^\d{4}-\d{2}$/.test(c[0]))return;const n=i=>pn(c[i]);(G.metas[c[0]]=G.metas[c[0]]||{})[c[1]]={ventas:n(2),costo:parseFloat(c[3])||0,log:parseFloat(c[4])||0,pub:n(5),ag:n(6),ct:n(7),sh:n(8),tpl:n(9),sueldo:n(10),cuota:n(11)};});
+  }catch(e){G.metas={};}
+  return G.metas;
+}
+// Plan del mes (si el mes pasa el horizonte del flujo, se usa el último mes = régimen).
+function gPlan(mes,esc){const M=G.metas||{};if(M[mes]&&M[mes][esc])return M[mes][esc];const ks=Object.keys(M).sort();const k=ks.filter(x=>x<=mes).pop();return k&&M[k][esc]?M[k][esc]:null;}
+const gFijosPlan=p=>p.pub+p.ag+p.ct+p.sh+p.tpl+p.sueldo+p.cuota;
+
+// Meta del mes: punto de equilibrio y meta de venta según el flujo; además, corregido con la operación real.
 async function gMetaMes(){
   const el=document.getElementById('x-meta');if(!el)return;
   try{
+    await gLoadMetas();
     if(!PNL.rows.length){const r=await fetch(CSV_PNL);PNL=parsePnL(await r.text());pnlLoaded=true;}
+    const hoy=new Date(),mes=xIso(hoy).slice(0,7),ini=mes+'-01',dias=new Date(hoy.getFullYear(),hoy.getMonth()+1,0).getDate(),dia=hoy.getDate();
+    const mtd=DATA.filter(r=>r.vb>0&&r.fecha>=ini&&r.fecha<=gHoy()).reduce((s,r)=>s+r.vb,0),proy=mtd/dia*dias;
+    const N=gPlan(mes,'Neutro'),O=gPlan(mes,'Optimista'),P=gPlan(mes,'Pesimista');
+    if(!N){el.innerHTML='<div class="xsmall">Carga el flujo de caja para ver la meta del mes.</div>';return;}
+    const fijos=gFijosPlan(N),varPlan=(N.costo+N.log)/100,bePlan=fijos/(1-varPlan);
+    // operación real: % de costo de productos y de logística del último mes cerrado del P&L
     const {meses,rows}=PNL;const fr=t=>rows.find(r=>r.concepto.toUpperCase().includes(t.toUpperCase()));
-    const v=(t,j)=>{const r=fr(t);return r?Math.abs(r.mv[j]||0):0;};
-    const vb=fr('VENTA BRUTA TOTAL');const adm=fr('TOTAL ADMINISTRACI');
-    const cerrados=meses.map((m,i)=>i).filter(i=>vb&&vb.mv[i]>0&&adm&&Math.abs(adm.mv[i])>0&&(v('Meta Ads',i)+v('Google Ads',i)+v('MercadoLibre Ads',i))>0);
-    const j=cerrados[cerrados.length-1];if(j===undefined){el.innerHTML='<div class="xsmall">Falta cargar los gastos del último mes para calcular la meta.</div>';return;}
-    const venta=v('VENTA BRUTA TOTAL',j),mb=(fr('MARGEN BRUTO TOTAL')||{mv:[]}).mv[j]||0,log=v('TOTAL LOG',j),ads=v('Meta Ads',j)+v('Google Ads',j)+v('MercadoLibre Ads',j);
-    const fijos=v('The Link It',j)+v('TOTAL TECH',j)+v('TOTAL ADMINISTRACI',j);const cpct=venta?(mb-log-ads)/venta:0;
-    const eq=cpct>0?fijos/cpct:0;
-    const hoy=new Date(),ini=xIso(new Date(hoy.getFullYear(),hoy.getMonth(),1)),dias=new Date(hoy.getFullYear(),hoy.getMonth()+1,0).getDate(),dia=hoy.getDate();
-    const mtd=DATA.filter(r=>r.vb>0&&r.fecha>=ini&&r.fecha<=gHoy()).reduce((s,r)=>s+r.vb,0);
-    const proy=mtd/dia*dias,pct=eq?mtd/eq:0,ok=proy>=eq;
-    const metas=gOpt('metas',null);const mesK=ini.slice(0,7);const metaN=metas&&metas[mesK];
-    el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:22px;align-items:center">
-      <div style="flex:1 1 260px"><div class="xk-l">Meta mínima del mes · punto de equilibrio</div><div class="xk-v">${clp(eq)}</div><div class="xsmall" style="margin-top:4px">gastos fijos ${clp(fijos)} ÷ ${xP(cpct)} de contribución (base: ${escH(meses[j])})</div></div>
-      <div style="flex:2 1 360px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>Llevas <b>${clp(mtd)}</b> (${xP(pct,0)})</span><span>día ${dia} de ${dias}</span></div>
-        <div class="xbar" style="height:12px;margin:8px 0;position:relative"><i style="width:${Math.min(100,pct*100)}%;background:${ok?'var(--x-pos)':'#d99a00'}"></i><span style="position:absolute;left:${(dia/dias*100).toFixed(1)}%;top:-3px;bottom:-3px;width:2px;background:var(--x-tx)" title="Hoy"></span></div>
-        <div class="xsmall">A este ritmo cierras el mes en <b>${clp(proy)}</b>: ${ok?'<span style="color:var(--x-pos)">sobre el punto de equilibrio</span>':'<span style="color:var(--x-neg)">bajo el punto de equilibrio, faltan '+clp(eq-proy)+'</span>'}${metaN?` · meta escenario neutro ${clp(metaN)}`:''}</div></div></div>`;
+    const vb=fr('VENTA BRUTA TOTAL'),mbR=fr('MARGEN BRUTO TOTAL'),lgR=fr('TOTAL LOG');
+    const idx=meses.map((m,i)=>i).filter(i=>vb&&vb.mv[i]>0&&lgR&&Math.abs(lgR.mv[i])>0);const j=idx[idx.length-1];
+    let beReal=0,txtReal='';
+    if(j!==undefined){const v=vb.mv[j],cPct=1-(mbR.mv[j]||0)/v,lPct=Math.abs(lgR.mv[j])/v;beReal=fijos/(1-cPct-lPct);
+      txtReal=`Con tu operación real de ${escH(meses[j])} (costo ${xP(cPct,0)} + logística ${xP(lPct,0)}, el flujo supone ${xP(varPlan,0)}) necesitas <b>${clp(beReal)}</b>.`;}
+    const meta=N.ventas,tope=Math.max(meta,beReal,bePlan,O?O.ventas:0,proy)*1.05;
+    const pos=v=>Math.min(100,v/tope*100).toFixed(1);
+    const mk=(v,c,l)=>v?`<span class="mm-k" style="left:${pos(v)}%;background:${c}" title="${l}: ${clp(v)}"></span>`:'';
+    const ok=proy>=meta,okBe=proy>=Math.max(bePlan,beReal);
+    el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
+      <div style="flex:1 1 230px"><div class="xk-l">Meta de venta del mes · escenario neutro</div><div class="xk-v">${clp(meta)}</div>
+        <div class="xsmall" style="margin-top:4px;line-height:1.5">Optimista ${O?clp(O.ventas):'–'} · Pesimista ${P?clp(P.ventas):'–'}</div></div>
+      <div style="flex:1 1 230px"><div class="xk-l">Mínimo para no perder · punto de equilibrio</div><div class="xk-v">${clp(Math.max(bePlan,beReal))}</div>
+        <div class="xsmall" style="margin-top:4px;line-height:1.5">Según el flujo: ${clp(bePlan)} (gastos ${clp(fijos)}${N.sueldo?' con sueldo':''}${N.cuota?' y cuota':''}). ${txtReal}</div></div>
+      <div style="flex:2 1 380px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>Llevas <b>${clp(mtd)}</b> · ${xP(meta?mtd/meta:0,0)} de la meta</span><span>día ${dia} de ${dias}</span></div>
+        <div class="mm-bar"><i style="width:${pos(mtd)}%"></i><i class="p" style="width:${pos(proy)}%"></i>${mk(beReal||bePlan,'var(--x-neg)','Equilibrio')}${mk(P&&P.ventas,'#c98a00','Pesimista')}${mk(meta,'var(--x-tx)','Neutro')}${mk(O&&O.ventas,'var(--x-pos)','Optimista')}</div>
+        <div class="xleg" style="flex-wrap:wrap;gap:10px;margin-bottom:6px"><span><i style="background:var(--x-ac)"></i>vendido</span><span><i style="background:rgba(var(--x-acRGB),.25)"></i>proyección a fin de mes</span><span><i style="background:var(--x-neg)"></i>equilibrio</span><span><i style="background:#c98a00"></i>pesimista</span><span><i style="background:var(--x-tx)"></i>neutro</span><span><i style="background:var(--x-pos)"></i>optimista</span></div>
+        <div class="xsmall">A este ritmo cierras en <b>${clp(proy)}</b>: ${ok?'<span style="color:var(--x-pos)">sobre la meta neutra</span>':okBe?'<span style="color:#b37400">sobre el equilibrio pero bajo la meta neutra (faltan '+clp(meta-proy)+')</span>':'<span style="color:var(--x-neg)">bajo el punto de equilibrio: faltan '+clp(Math.max(bePlan,beReal)-proy)+'</span>'}.</div></div></div>`;
   }catch(e){el.innerHTML='<div class="xsmall">No se pudo calcular la meta: '+escH(e.message)+'</div>';}
 }
+
+// ══ MÓDULO GASTOS ═════════════════════════════════════════════
+const G_CONC=[['Meta Ads','Meta Ads (Facebook e Instagram)','pub'],['Google Ads','Google Ads','pub'],['ML Ads','MercadoLibre Ads','pub'],['ABEE Fulfillment','ABEE · fulfillment','tpl'],['ABEE Envíos','ABEE · envíos','tpl'],['The Link It','The Link It · agencia','ag'],['Remuneraciones','Remuneraciones','sueldo'],['Otros Admin','Otros gastos de administración','ct']];
+const G_ESPERADOS=['Meta Ads','Google Ads','ML Ads','ABEE Fulfillment','ABEE Envíos'];
+async function gLoadGdet(force){
+  if(G.gdet&&!force)return;
+  try{const f=await gCsv('/erp/api/gdet');G.gdet=f.slice(1).filter(c=>c[0]).map(c=>({id:c[0],fecha:c[1],mes:c[2],anio:+c[3],conc:c[4],prov:c[5],rut:c[6],doc:c[7],neto:pn(c[8]),iva:pn(c[9]),total:pn(c[10]),origen:c[11],nota:c[12]}));}
+  catch(e){G.gdet=[];}
+}
+function gMesSel(){const hoy=new Date();if(!G.gMes){const d=new Date(hoy.getFullYear(),hoy.getMonth()-1,1);G.gMes=d.getFullYear()+'-'+(d.getMonth()+1);}return G.gMes;}
+async function xGastos(){
+  const el=document.getElementById('view-gas');
+  if(!G.gdet||!G.gastos||!G.metas){el.innerHTML='<div class="xp xempty">Cargando gastos…</div>';await Promise.all([gLoadGdet(),gLoadGastos(),gLoadMetas()]);}
+  const hoy=new Date(),k=gMesSel(),[a,m]=k.split('-').map(Number),mesN=MES_N[m-1],mesIso=a+'-'+String(m).padStart(2,'0');
+  const meses=[];for(let i=5;i>=0;i--){const d=new Date(hoy.getFullYear(),hoy.getMonth()-i,1);meses.push(d.getFullYear()+'-'+(d.getMonth()+1));}
+  const lbl=x=>{const[y,mm]=x.split('-');return MES_N[mm-1].slice(0,3)+' '+y.slice(2);};
+  const docs=(G.gdet||[]).filter(d=>d.mes.toLowerCase()===mesN&&d.anio===a);
+  const vars=(G.gastos||{})[k]||{};
+  const tot=c=>{const v=vars[c];return v===undefined||v===''?null:+v;};
+  const N=gPlan(mesIso,'Neutro');
+  // real vs plan
+  const sum=cs=>cs.reduce((s,c)=>s+(tot(c)||0),0),hay=cs=>cs.some(c=>tot(c)!==null);
+  const filas=[['Publicidad (Meta, Google, ML Ads)',['Meta Ads','Google Ads','ML Ads'],N&&N.pub],['Agencia (The Link It)',['The Link It'],N&&N.ag,800000],['Bodega y despacho ABEE',['ABEE Fulfillment','ABEE Envíos'],N&&N.tpl],['Sueldos',['Remuneraciones'],N&&N.sueldo],['Otros de administración',['Otros Admin'],0]];
+  const rvp=filas.map(([l,cs,plan,def])=>{const r=hay(cs)?sum(cs):(def||null);const d=plan&&r!==null?r-plan:null;
+    return`<tr><td>${l}</td><td class="r">${r===null?'<span class="xph">sin cargar</span>':clp(r)+(hay(cs)?'':' <span class="sk">por defecto</span>')}</td><td class="r">${plan?clp(plan):'–'}</td><td class="r">${d===null?'–':`<span class="xd ${d>0?'dn':'up'}">${d>0?'+':''}${clp(d)}</span>`}</td></tr>`;}).join('');
+  const faltan=G_ESPERADOS.filter(c=>tot(c)===null);
+  const lista=docs.sort((x,y)=>x.fecha<y.fecha?1:-1).map(d=>`<tr><td>${xFmt(d.fecha,false)}</td><td><b>${escH(d.prov||'–')}</b><div class="sk">${escH(d.doc||'')}${d.rut?' · '+escH(d.rut):''}</div></td><td>${escH((G_CONC.find(c=>c[0]===d.conc)||[,d.conc])[1])}</td><td class="r">${clp(d.neto)}</td><td class="r">${d.iva?clp(d.iva):'–'}</td><td><span class="xtag ${d.origen==='XML'?'b':'n'}">${escH(d.origen||'')}</span></td><td><button type="button" class="mvl-x" onclick="gBorrarDoc('${escH(d.id)}')">Borrar</button></td></tr>`).join('');
+  const mesOpts=meses.map(x=>`<option value="${x}"${x===k?' selected':''}>${lbl(x)}</option>`).join('');
+  el.innerHTML=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="xsmall">Mes del gasto</span><div class="xchips">${meses.map(x=>`<button type="button" class="xchip${x===k?' on':''}" onclick="G.gMes='${x}';xGastos()">${lbl(x)}${(G.gastos||{})[x]&&G_ESPERADOS.every(c=>(G.gastos[x]||{})[c]!==undefined&&G.gastos[x][c]!=='')?' ✓':''}</button>`).join('')}</div></section>
+  <section class="xg xg-k">
+    ${gK('Gastos cargados del mes',clp(G_CONC.reduce((s,c)=>s+(tot(c[0])||0),0)),docs.length+' documento'+(docs.length!==1?'s':'')+' · los fijos se suman solos')}
+    ${gK('Falta cargar',faltan.length?faltan.length+' concepto'+(faltan.length!==1?'s':''):'Nada',faltan.length?faltan.join(', '):'Mes completo',faltan.length?'#b37400':'var(--x-pos)')}
+    ${gK('Publicidad del mes',clp(sum(['Meta Ads','Google Ads','ML Ads'])),N?'plan del flujo: '+clp(N.pub):'sin plan')}
+  </section>
+  <div class="xrow">
+    <section class="xp" style="flex:1 1 440px" id="g-nuevo"><div class="xp-h"><h2>Agregar documento</h2><span class="note">factura, boleta o comprobante</span></div>
+      <label class="mv-drop" tabindex="0" ondragover="event.preventDefault();this.classList.add('on')" ondragleave="this.classList.remove('on')" ondrop="event.preventDefault();this.classList.remove('on');gLeerXML(event.dataTransfer.files[0])">
+        <input type="file" accept=".xml,text/xml,application/xml" style="display:none" onchange="gLeerXML(this.files[0]);this.value=''">
+        <b>Arrastra el XML de la factura</b><span class="xsmall">ABEE, The Link It u otro proveedor chileno · completa proveedor, folio y montos solo</span></label>
+      <div id="g-xml-msg" class="xsmall" style="margin:8px 0"></div>
+      <div class="xform">
+        <label class="xlbl">Concepto<select class="xinp" id="g-conc">${G_CONC.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('')}</select></label>
+        <label class="xlbl">Mes del gasto<select class="xinp" id="g-mes">${mesOpts}</select></label>
+        <label class="xlbl">Fecha del documento<input type="date" class="xinp" id="g-fecha" value="${gHoy()}"></label>
+        <label class="xlbl">Proveedor<input class="xinp" id="g-prov" placeholder="Meta, Google, ABEE…"></label>
+        <label class="xlbl">N° documento<input class="xinp" id="g-doc" placeholder="Folio o N° de recibo"></label>
+        <label class="xlbl">Monto neto (sin IVA)<input class="xinp" id="g-neto" inputmode="numeric" placeholder="$"></label>
+        <label class="xlbl">IVA<input class="xinp" id="g-iva" inputmode="numeric" placeholder="$ (opcional)"></label>
+      </div>
+      <input type="hidden" id="g-rut"><input type="hidden" id="g-origen" value="Manual">
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gGuardarDoc(this)">Guardar documento</button><span class="xsmall" id="g-msg"></span></div>
+      <p class="xsmall" style="margin-top:10px;line-height:1.5">Meta y Google no emiten factura chilena: usa el monto del recibo mensual. Si el recibo trae IVA, ingrésalo aparte para que el neto quede limpio. BP Consulting no se carga: se calcula solo (10 UF).</p></section>
+    <section class="xp" style="flex:1 1 440px"><div class="xp-h"><h2>Real contra el flujo</h2><span class="note">${N?'escenario neutro · '+lbl(k):'sin flujo para este mes'}</span></div>
+      <div class="xtw"><table class="xt"><thead><tr><th>Concepto</th><th class="r">Real</th><th class="r">Plan</th><th class="r">Diferencia</th></tr></thead><tbody>${rvp}</tbody></table></div>
+      <p class="xsmall" style="margin-top:10px;line-height:1.5">Rojo = gastaste más de lo planificado. El flujo considera 3PL $150.000 al mes; ABEE real incluye fulfillment y envíos.</p></section>
+  </div>
+  <section class="xp"><div class="xp-h"><h2>Documentos de ${lbl(k)}</h2><span class="note">cada uno suma al P&L del mes</span></div>
+    <div class="xtw"><table class="xt" style="min-width:760px"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Concepto</th><th class="r">Neto</th><th class="r">IVA</th><th>Origen</th><th></th></tr></thead><tbody>${lista||'<tr><td colspan="7" class="xempty">Aún no hay documentos para este mes.</td></tr>'}</tbody></table></div></section>
+  ${gFijosHtml()}`;
+}
+function gFijosHtml(){
+  const cfg=G.config||{};
+  return`<section class="xp" id="g-gastos"><div class="xp-h"><h2>Gastos fijos</h2><span class="note">se repiten solos cada mes</span></div>
+    <p class="xsmall" style="margin:-4px 0 12px;line-height:1.5">Se pagan igual vendas o no. El P&L los suma cada mes convertidos con el dólar o la UF de ese mes (en el mes en curso aparecen el último día). Solo cámbialos si cambia el plan o la tarifa.</p>
+    <div class="xform">${G_FIJ.map(([k,l,u])=>`<label class="xlbl">${escH(l)} · ${escH(u)}<input class="xinp" inputmode="decimal" data-f="${escH(k)}" value="${cfg[k]!==undefined?escH(String(cfg[k])):''}"></label>`).join('')}</div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn" onclick="gGuardarFijos(this)">Guardar gastos fijos</button><button type="button" class="xbtn" onclick="gRegenerarPnL(this)">Regenerar P&L</button><span class="xsmall" id="g-fijos-msg"></span><span class="xsmall" id="g-gastos-msg"></span></div></section>`;
+}
+function gLeerXML(file){
+  const msg=document.getElementById('g-xml-msg');if(!file)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{
+    const x=new DOMParser().parseFromString(rd.result,'application/xml');if(x.getElementsByTagName('parsererror').length)throw new Error('no es un XML válido');
+    const doc=x.getElementsByTagNameNS('*','Documento')[0]||x;const t=(n,c)=>((c||doc).getElementsByTagNameNS('*',n)[0]?.textContent||'').trim();
+    const rut=t('RUTEmisor'),prov=t('RznSoc')||t('RznSocEmisor'),folio=t('Folio'),tipo=t('TipoDTE');
+    if(!folio)throw new Error('no encontré el folio');
+    const neto=parseFloat(t('MntNeto'))||0,exe=parseFloat(t('MntExe'))||0,iva=parseFloat(t('IVA'))||0;
+    if(/bp consulting/i.test(prov)){msg.innerHTML='<span style="color:#b37400">BP Consulting se calcula solo (10 UF al mes); no hace falta cargar su factura.</span>';return;}
+    const pref={'33':'FAC','34':'FAE','61':'NC','56':'ND'}[tipo]||('DTE'+tipo);
+    document.getElementById('g-prov').value=prov;document.getElementById('g-doc').value=pref+'-'+folio;document.getElementById('g-fecha').value=t('FchEmis');
+    document.getElementById('g-rut').value=rut;document.getElementById('g-origen').value='XML';
+    const signo=tipo==='61'?-1:1;
+    // ABEE: separa envíos de fulfillment según el detalle
+    if(/abee/i.test(prov)){
+      const det=[...doc.getElementsByTagNameNS('*','Detalle')].map(d=>({n:t('NmbItem',d),m:parseFloat(t('MontoItem',d))||0}));
+      const env=det.filter(d=>/env[ií]o|despacho|courier|flete|transporte|last ?mile/i.test(d.n)).reduce((s,d)=>s+d.m,0);
+      const ff=(neto+exe)-env;
+      G.gXmlSplit={rut,prov,doc:pref+'-'+folio,fecha:t('FchEmis'),partes:[['ABEE Fulfillment',ff*signo],['ABEE Envíos',env*signo]].filter(p=>p[1]),ivaTot:iva*signo};
+      msg.innerHTML=`ABEE ${pref}-${folio}: fulfillment ${clp(ff)} y envíos ${clp(env)} (neto). Revisa el mes del gasto y guarda: se cargan los dos conceptos.`;
+      document.getElementById('g-conc').value='ABEE Fulfillment';document.getElementById('g-neto').value=Math.round(ff*signo);document.getElementById('g-iva').value=Math.round(iva*signo);
+      return;
+    }
+    G.gXmlSplit=null;
+    if(/link ?it/i.test(prov))document.getElementById('g-conc').value='The Link It';
+    document.getElementById('g-neto').value=Math.round((neto+exe)*signo);document.getElementById('g-iva').value=Math.round(iva*signo);
+    msg.textContent=`${prov} ${pref}-${folio}: neto ${clp(neto+exe)}, IVA ${clp(iva)}. Elige el concepto y el mes del gasto, y guarda.`;
+  }catch(e){msg.innerHTML='<span style="color:var(--x-neg)">No pude leer el XML: '+escH(e.message)+'</span>';}};
+  rd.readAsText(file);
+}
+async function gGuardarDoc(btn){
+  const v=id=>document.getElementById(id).value.trim(),num=id=>+(v(id).replace(/[^\d-]/g,''))||0;
+  const msg=document.getElementById('g-msg');const[a,m]=v('g-mes').split('-').map(Number);
+  const base={fecha:v('g-fecha'),mes:MES_N[m-1],anio:a,proveedor:v('g-prov'),rut:v('g-rut'),documento:v('g-doc'),origen:v('g-origen')||'Manual'};
+  let docs;
+  if(G.gXmlSplit&&G.gXmlSplit.doc===v('g-doc')){const s=G.gXmlSplit;const totN=s.partes.reduce((x,p)=>x+p[1],0);
+    docs=s.partes.map(([c,n])=>({...base,concepto:c,neto:Math.round(n),iva:Math.round(s.ivaTot*n/(totN||1))}));}
+  else docs=[{...base,concepto:v('g-conc'),neto:num('g-neto'),iva:num('g-iva')}];
+  if(!base.fecha||docs.some(d=>!(d.neto>0))){msg.textContent='Completa la fecha y un monto neto mayor a 0.';return;}
+  btn.disabled=true;msg.textContent='Guardando y actualizando el P&L…';
+  try{for(const d of docs)await gPost({action:'gasto_add',doc:d});G.gXmlSplit=null;G.gMes=v('g-mes');PNL={meses:[],rows:[]};pnlLoaded=false;
+    await Promise.all([gLoadGdet(true),gLoadGastos(true)]);xGastos();}
+  catch(e){msg.textContent='No se guardó: '+e.message;btn.disabled=false;}
+}
+async function gBorrarDoc(id){
+  if(!confirm('¿Borrar este documento? El total del mes y el P&L se recalculan.'))return;
+  try{await gPost({action:'gasto_del',id});PNL={meses:[],rows:[]};pnlLoaded=false;await Promise.all([gLoadGdet(true),gLoadGastos(true)]);xGastos();}
+  catch(e){alert('No se borró: '+e.message);}
+}
+
 // ── UTILS ─────────────────────────────────────────────
 const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
 const sum=(arr,k)=>arr.reduce((s,r)=>s+(r[k]||0),0);
