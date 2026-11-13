@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HouseBrands · ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -22,13 +22,14 @@
   --shadow2:0 2px 8px rgba(28,43,58,.12);
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased;font-feature-settings:'tnum' 1,'cv11' 1}
+body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased;font-feature-settings:'tnum' 1,'cv11' 1;font-weight:450}
+b,strong,h1,h2,h3,h4,h5{font-weight:600}th{font-weight:550}
 
 /* LOGIN */
 #login{position:fixed;inset:0;z-index:999;background:var(--night);display:flex;align-items:center;justify-content:center}
 .lbox{width:340px;background:var(--surface);border-radius:12px;padding:36px 32px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:24px}
 .llogo{display:flex;align-items:center;gap:10px}
-.lmark{font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--night)}
+.lmark{font-size:18px;font-weight:550;letter-spacing:-.03em;color:var(--night)}
 .lmark b{color:var(--mid);font-weight:400}
 .ltag{font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.12em;margin-top:4px}
 .lfield label{font-family:var(--mono);font-size:9px;color:var(--mid);letter-spacing:.1em;display:block;margin-bottom:6px}
@@ -41,7 +42,7 @@ body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px
 /* APP */
 #app{display:none;min-height:100vh}
 .topbar{background:var(--night);height:52px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.06)}
-.tmark{font-size:15px;font-weight:600;letter-spacing:-.025em;color:#fff}
+.tmark{font-size:15px;font-weight:550;letter-spacing:-.025em;color:#fff}
 .tmark b{color:var(--light);font-weight:400}
 .terp{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.3);margin-left:10px;letter-spacing:.1em}
 .tright{display:flex;align-items:center;gap:8px}
@@ -79,7 +80,7 @@ body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px
 .kcard:hover{box-shadow:var(--shadow2)}
 .kcard-accent{position:absolute;top:0;left:0;right:0;height:3px}
 .kcard-label{font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.1em;margin-bottom:8px}
-.kcard-num{font-size:26px;font-weight:600;letter-spacing:-.04em;line-height:1;color:var(--night);margin-bottom:4px}
+.kcard-num{font-size:26px;font-weight:550;letter-spacing:-.04em;line-height:1;color:var(--night);margin-bottom:4px}
 .kcard-num.pos{color:var(--pos)}
 .kcard-num.neg{color:var(--neg)}
 .kcard-num.warn{color:var(--warn)}
@@ -96,7 +97,7 @@ body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px
 .gcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
 .gcard-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 .gcard-label{font-family:var(--mono);font-size:9px;color:var(--light);letter-spacing:.06em;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gcard-num{font-size:19px;font-weight:600;letter-spacing:-.03em;color:var(--night);line-height:1}
+.gcard-num{font-size:19px;font-weight:550;letter-spacing:-.03em;color:var(--night);line-height:1}
 .gcard-sub{font-family:var(--mono);font-size:9px;color:var(--light);margin-top:2px}
 
 /* CARD */
@@ -110,7 +111,7 @@ body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px
 .canal-item{margin-bottom:14px}
 .canal-item:last-child{margin-bottom:0}
 .canal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.canal-num{font-size:22px;font-weight:600;letter-spacing:-.04em;color:var(--night)}
+.canal-num{font-size:22px;font-weight:550;letter-spacing:-.04em;color:var(--night)}
 .canal-track{height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:3px}
 .canal-fill{height:100%;border-radius:3px}
 .canal-sub{font-family:var(--mono);font-size:9px;color:var(--light)}
@@ -141,7 +142,7 @@ tbody tr:hover td{background:var(--bg)}
 .mbar{width:40px;height:4px;background:var(--bg);border-radius:2px;overflow:hidden}
 .mfill{height:100%;border-radius:2px}
 .neg-v{color:var(--neg)}
-.pos-v{color:var(--pos);font-weight:600}
+.pos-v{color:var(--pos);font-weight:550}
 
 /* P&L */
 .pnl-periods{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;gap:6px;align-items:center}
@@ -152,20 +153,20 @@ tbody tr:hover td{background:var(--bg)}
 .pnl-tbl{border-collapse:collapse;width:100%;min-width:800px;font-size:11px}
 .pnl-tbl th{font-family:var(--mono);font-size:8px;color:var(--light);padding:7px 10px;text-align:right;border-bottom:1.5px solid var(--border);white-space:nowrap;background:var(--off);font-weight:500;letter-spacing:.06em;position:sticky;top:0;z-index:2}
 .pnl-tbl th:first-child{text-align:left;min-width:200px;position:sticky;left:0;z-index:3;background:var(--off)}
-.pnl-tbl th.th-tot{background:var(--night);color:rgba(255,255,255,.7);font-weight:600}
+.pnl-tbl th.th-tot{background:var(--night);color:rgba(255,255,255,.7);font-weight:550}
 .pnl-tbl td{font-family:var(--mono);font-size:10px;padding:6px 10px;text-align:right;border-bottom:1px solid var(--off);color:var(--dark)}
 .pnl-tbl td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1;color:var(--night);min-width:200px}
-.pnl-tbl td.td-tot{background:var(--night);color:#fff;font-weight:600}
+.pnl-tbl td.td-tot{background:var(--night);color:#fff;font-weight:550}
 .pnl-tbl tr:hover td{background:var(--bg)}
 .pnl-tbl tr:hover td:first-child{background:var(--bg)}
 .pnl-tbl tr:hover td.td-tot{background:var(--night)!important;color:#fff!important}
-.pnl-tbl tr.bold td{font-weight:700;color:var(--night)}
-.pnl-tbl tr.shdr td{font-family:var(--mono);font-size:8px;font-weight:600;letter-spacing:.1em;padding:5px 10px;border:none;color:#fff}
+.pnl-tbl tr.bold td{font-weight:600;color:var(--night)}
+.pnl-tbl tr.shdr td{font-family:var(--mono);font-size:8px;font-weight:550;letter-spacing:.1em;padding:5px 10px;border:none;color:#fff}
 .pnl-tbl tr.shdr td:first-child{position:sticky;left:0;z-index:1}
 .pnl-tbl tr.compact td{padding:4px 10px;font-size:9px;color:var(--mid)}
 .pnl-tbl tr.compact td:first-child{padding-left:20px;color:var(--mid)}
-.p-pos{color:var(--pos)!important;font-weight:600!important}
-.p-neg{color:var(--neg)!important;font-weight:600!important}
+.p-pos{color:var(--pos)!important;font-weight:550!important}
+.p-neg{color:var(--neg)!important;font-weight:550!important}
 
 /* INVENTARIO */
 .inv-fbar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
@@ -185,15 +186,15 @@ tbody tr:hover td{background:var(--bg)}
 .il-sku{font-family:var(--mono);font-size:9px;color:var(--light);line-height:1}
 .il-nom{font-size:12px;font-weight:500;color:var(--night);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
 .il-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
-.il-stock{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--night)}
+.il-stock{font-family:var(--mono);font-size:13px;font-weight:550;color:var(--night)}
 .il-stato{font-family:var(--mono);font-size:8px;padding:1px 6px;border-radius:3px;font-weight:500}
 .inv-detail{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;position:sticky;top:76px}
 .inv-detail-head{background:var(--night);padding:22px 24px}
 .inv-detail-badges{display:flex;gap:6px;margin-bottom:10px}
-.inv-detail-nom{font-size:18px;font-weight:600;color:#fff;letter-spacing:-.02em;margin-bottom:4px}
+.inv-detail-nom{font-size:18px;font-weight:550;color:#fff;letter-spacing:-.02em;margin-bottom:4px}
 .inv-detail-sku{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4)}
 .inv-detail-body{padding:22px 24px}
-.inv-big{font-size:52px;font-weight:700;letter-spacing:-.05em;line-height:1;color:var(--night)}
+.inv-big{font-size:52px;font-weight:600;letter-spacing:-.05em;line-height:1;color:var(--night)}
 .inv-big-lbl{font-family:var(--mono);font-size:10px;color:var(--light);margin-top:4px;margin-bottom:10px}
 .inv-edit-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;padding:10px 12px;background:var(--bg);border-radius:6px;border:1px solid var(--border)}
 .inv-edit-lbl{font-family:var(--mono);font-size:9px;color:var(--light);flex:1}
@@ -206,7 +207,7 @@ tbody tr:hover td{background:var(--bg)}
 .inv-spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .inv-spec{background:var(--bg);border-radius:6px;padding:12px 14px;border:1px solid var(--border)}
 .inv-spec-lbl{font-family:var(--mono);font-size:9px;color:var(--light);margin-bottom:5px}
-.inv-spec-val{font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--night);line-height:1}
+.inv-spec-val{font-size:18px;font-weight:550;letter-spacing:-.03em;color:var(--night);line-height:1}
 .inv-spec-sub{font-family:var(--mono);font-size:9px;color:var(--light);margin-top:3px}
 .inv-note{background:var(--warn-bg);border:1px solid #e8d090;border-radius:6px;padding:10px 14px;font-family:var(--mono);font-size:10px;color:var(--warn);margin-top:12px;line-height:1.5}
 .inv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;color:var(--light);font-family:var(--mono);font-size:11px;text-align:center;gap:8px}
@@ -269,7 +270,7 @@ tbody tr:hover td{background:var(--bg)}
 .cl-item:hover{background:var(--bg)}
 .cl-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
 .cl-item.done .cl-cb{background:var(--mk);border-color:var(--mk)}
-.cl-item.done .cl-cb::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+.cl-item.done .cl-cb::after{content:'✓';color:#fff;font-size:11px;font-weight:600}
 .cl-item.done .cl-lbl{text-decoration:line-through;color:var(--light)}
 .cl-lbl{font-size:12px;font-weight:500;color:var(--night);margin-bottom:2px}
 .cl-sub{font-family:var(--mono);font-size:10px;color:var(--light);line-height:1.5}
@@ -279,7 +280,7 @@ tbody tr:hover td{background:var(--bg)}
 
 /* ══ NUEVO MARCO (vidrio en el marco, datos sobre fondo sólido) ══ */
 :root{
-  --x-tx:#141a33;--x-mu:#4c5573;--x-ac:#3355f0;--x-ac2:#7a45f0;--x-acRGB:51,85,240;
+  --x-tx:#303030;--x-mu:#4c5573;--x-ac:#3355f0;--x-ac2:#7a45f0;--x-acRGB:51,85,240;
   --x-track:#edf0f8;--x-grid:#e6e9f2;--x-pos:#0b7a4b;--x-posbg:#e3f5ec;--x-neg:#b4410f;--x-negbg:#fbeadf;
   --x-panel:#ffffff;--x-panelbd:#e2e7f3;--x-panelsh:0 2px 10px rgba(30,40,90,.06);
   --x-glass:rgba(255,255,255,.62);--x-glassbd:rgba(255,255,255,.9);--x-glasssh:0 10px 30px rgba(60,72,140,.12);
@@ -290,32 +291,32 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xs-shell{display:flex;flex-wrap:wrap;gap:18px;padding:18px;max-width:1680px;margin:0 auto;align-items:flex-start}
 .xs-side{flex:1 1 200px;max-width:228px;position:sticky;top:18px;display:flex;flex-direction:column;gap:3px;padding:16px 12px;border-radius:24px;background:var(--x-glass);border:1px solid var(--x-glassbd);box-shadow:var(--x-glasssh);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-family:var(--x-font);color:var(--x-tx);min-height:calc(100vh - 36px);box-sizing:border-box}
 .xs-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 16px}
-.xs-logo{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;background:linear-gradient(135deg,var(--x-ac),var(--x-ac2))}
-.xs-sec{font-size:11px;font-weight:700;color:var(--x-mu);padding:12px 12px 4px}
-.xs-nav{display:flex;align-items:center;gap:10px;min-height:42px;padding:0 12px;border-radius:13px;border:0;background:transparent;color:var(--x-tx);font:600 14px var(--x-font);cursor:pointer;text-align:left;width:100%}
+.xs-logo{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:650;font-size:14px;color:#fff;background:linear-gradient(135deg,var(--x-ac),var(--x-ac2))}
+.xs-sec{font-size:11px;font-weight:600;color:var(--x-mu);padding:12px 12px 4px}
+.xs-nav{display:flex;align-items:center;gap:10px;min-height:42px;padding:0 12px;border-radius:13px;border:0;background:transparent;color:var(--x-tx);font:550 14px var(--x-font);cursor:pointer;text-align:left;width:100%}
 .xs-nav:hover{background:rgba(var(--x-acRGB),.08)}
 .xs-nav.on{background:var(--x-ac);color:#fff;box-shadow:0 6px 16px rgba(var(--x-acRGB),.3)}
 .xs-nav svg{flex-shrink:0}
-.xs-tool{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid rgba(20,26,51,.1);background:rgba(255,255,255,.6);color:var(--x-tx);font:600 13px var(--x-font);cursor:pointer;width:100%;box-sizing:border-box}
+.xs-tool{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid rgba(20,26,51,.1);background:rgba(255,255,255,.6);color:var(--x-tx);font:550 13px var(--x-font);cursor:pointer;width:100%;box-sizing:border-box}
 .xs-tool:hover{background:#fff}
 .xs-tool.pri{background:linear-gradient(135deg,var(--x-ac),var(--x-ac2));border:0;color:#fff}
 .xs-main{flex:999 1 600px;min-width:0;display:flex;flex-direction:column;gap:18px}
 .xs-top{position:relative;z-index:60;display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 18px;border-radius:22px;background:var(--x-glass);border:1px solid var(--x-glassbd);box-shadow:var(--x-glasssh);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-family:var(--x-font);color:var(--x-tx)}
-.xs-top h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.xs-top h1{margin:0;font-size:24px;font-weight:650;letter-spacing:-.02em}
 .xs-top .sub{margin:3px 0 0;font-size:13px;color:var(--x-mu)}
 .xs-seg{display:flex;flex-wrap:wrap;gap:3px;padding:4px;border-radius:13px;background:#fff;border:1px solid #d9deeb}
-.xs-seg button{min-height:34px;padding:0 12px;border:0;border-radius:9px;background:transparent;font:700 12px var(--x-font);color:var(--x-tx);cursor:pointer}
+.xs-seg button{min-height:34px;padding:0 12px;border:0;border-radius:9px;background:transparent;font:600 12px var(--x-font);color:var(--x-tx);cursor:pointer}
 .xs-seg button.on{background:var(--x-ac);color:#fff}
-.xs-sel{display:flex;flex-direction:column;gap:2px;font:600 11px var(--x-font);color:var(--x-mu)}
-.xs-sel select,.xs-sel input{min-height:38px;padding:0 10px;border-radius:11px;border:1px solid #d9deeb;background:#fff;font:600 13px var(--x-font);color:var(--x-tx)}
+.xs-sel{display:flex;flex-direction:column;gap:2px;font:550 11px var(--x-font);color:var(--x-mu)}
+.xs-sel select,.xs-sel input{min-height:38px;padding:0 10px;border-radius:11px;border:1px solid #d9deeb;background:#fff;font:550 13px var(--x-font);color:var(--x-tx)}
 .xs-chips{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
-.xs-chip{font:600 12px var(--x-font);color:var(--x-mu);background:rgba(255,255,255,.7);border:1px solid #dfe4f0;border-radius:9px;padding:6px 10px}
+.xs-chip{font:550 12px var(--x-font);color:var(--x-mu);background:rgba(255,255,255,.7);border:1px solid #dfe4f0;border-radius:9px;padding:6px 10px}
 /* vistas viejas dentro del marco */
 .xs-main .page{padding:0;max-width:none}
 .xs-main .fbar{border-radius:16px;border:1px solid var(--x-panelbd);margin-bottom:14px}
 /* tarjetas y paneles */
 .xv{font-family:var(--x-font);color:var(--x-tx);display:flex;flex-direction:column;gap:18px}
-.xv h2{margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em}
+.xv h2{margin:0;font-size:16px;font-weight:600;letter-spacing:-.01em}
 .xv .muted{color:var(--x-mu)}
 .xv .num{font-variant-numeric:tabular-nums}
 .xg{display:grid;gap:16px}
@@ -327,10 +328,10 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xp.glass{background:var(--x-glass);border-color:var(--x-glassbd);box-shadow:var(--x-glasssh);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .xp-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .xp-h .note{font-size:12px;color:var(--x-mu)}
-.xk-l{font-size:13px;font-weight:600;color:var(--x-mu)}
-.xk-v{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.xk-l{font-size:13px;font-weight:550;color:var(--x-mu)}
+.xk-v{font-size:24px;font-weight:650;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
 .xk-f{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;font-size:12px;color:var(--x-mu)}
-.xd{font-size:12px;font-weight:700;padding:3px 8px;border-radius:8px}
+.xd{font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px}
 .xd.up{color:var(--x-pos);background:var(--x-posbg)}
 .xd.dn{color:var(--x-neg);background:var(--x-negbg)}
 .xd.eq{color:var(--x-mu);background:var(--x-track)}
@@ -346,9 +347,9 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xhb .t{height:11px;border-radius:6px;background:var(--x-track);overflow:hidden}
 .xhb .f{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--x-ac),var(--x-ac2))}
 .xhb .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.xhb .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.xhb .v{text-align:right;font-weight:550;font-variant-numeric:tabular-nums;white-space:nowrap}
 .xheat{display:grid;gap:4px;font-size:12px}
-.xheat .c{height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+.xheat .c{height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px}
 .xheat .h{color:var(--x-mu);text-align:center;font-size:11px;padding-bottom:2px}
 .xheat .r{color:var(--x-mu);display:flex;align-items:center;font-size:12px;white-space:nowrap}
 .xal{padding:11px 13px;border-radius:13px;margin-bottom:8px}
@@ -358,12 +359,12 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xtw{overflow-x:auto}
 .xt{width:100%;border-collapse:collapse;font-size:13px}
 .xt th,.xt td{text-align:left;font-family:var(--x-font);text-transform:none;letter-spacing:normal;background:none}
-.xt th{text-align:left;font-weight:600;color:var(--x-mu);padding:8px 10px;white-space:nowrap;font-size:12px}
+.xt th{text-align:left;font-weight:550;color:var(--x-mu);padding:8px 10px;white-space:nowrap;font-size:12px}
 .xt th.s{cursor:pointer}.xt th.s:hover{color:var(--x-tx)}
 .xt td{font-size:13px;color:var(--x-tx);padding:9px 10px;border-top:1px solid var(--x-grid);vertical-align:middle}
 .xt th.r,.xt td.r,.xt .r{text-align:right;font-variant-numeric:tabular-nums}
 .xt .sk{font-size:11.5px;color:var(--x-mu)}
-.xtag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.xtag{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .xtag.r{color:var(--x-neg);background:var(--x-negbg)}.xtag.b{color:var(--x-ac);background:rgba(var(--x-acRGB),.1)}.xtag.g{color:var(--x-pos);background:var(--x-posbg)}.xtag.n{color:var(--x-mu);background:var(--x-track)}
 .xbar{height:8px;border-radius:4px;background:var(--x-track);min-width:60px}
 .xbar i{display:block;height:100%;border-radius:4px}
@@ -371,7 +372,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xstack .col{flex:1 1 0;display:flex;flex-direction:column-reverse;height:100%;justify-content:flex-start}
 .xstack .col i{display:block;width:100%}
 .xstack .col i:last-child{border-radius:5px 5px 0 0}
-.xbig{font-size:26px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.xbig{font-size:26px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .xsmall{font-size:12px;color:var(--x-mu)}
 .xempty{padding:24px;text-align:center;color:var(--x-mu);font-size:13px}
 .xfoot{font-size:12px;color:var(--x-mu);margin:0 4px 8px}
@@ -380,19 +381,19 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xs-dwrap{position:relative}
 .xs-dbtn{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid #d9deeb;background:#fff;font:500 13px var(--x-font);color:var(--x-tx);cursor:pointer;white-space:nowrap}
 .xs-dbtn:hover{border-color:var(--x-ac)}
-.xs-dbtn b{font-weight:700}
+.xs-dbtn b{font-weight:600}
 .xs-pop{position:absolute;z-index:500;top:calc(100% + 8px);left:0;background:#fff;border:1px solid #dfe4f0;border-radius:16px;box-shadow:0 18px 50px rgba(20,26,51,.22);font-family:var(--x-font);color:var(--x-tx)}
 .xs-pop-in{display:flex;flex-wrap:nowrap}
 .xs-pop{width:max-content;max-width:calc(100vw - 40px)}
 .xs-pop-l{display:flex;flex-direction:column;padding:8px;border-right:1px solid #eef0f6;min-width:210px;max-height:480px;overflow:auto}
 .xs-pop-l button{text-align:left;border:0;background:transparent;padding:9px 12px;border-radius:9px;font:500 13.5px var(--x-font);color:var(--x-tx);cursor:pointer}
 .xs-pop-l button:hover{background:#f2f4fa}
-.xs-pop-l button.on{background:rgba(var(--x-acRGB),.12);color:var(--x-ac);font-weight:700}
+.xs-pop-l button.on{background:rgba(var(--x-acRGB),.12);color:var(--x-ac);font-weight:600}
 .xs-pop-r{display:flex;flex-direction:column;gap:12px;padding:14px 16px;min-width:300px}
 .xs-pop-f{display:flex;gap:10px;align-items:flex-start}
 .xs-pop-cal{display:flex;gap:18px;align-items:flex-start}
 .xc{width:238px}
-.xc-t{text-align:center;font-weight:700;font-size:13.5px;margin-bottom:8px}
+.xc-t{text-align:center;font-weight:600;font-size:13.5px;margin-bottom:8px}
 .xc-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .xc-h{text-align:center;font-size:11px;color:var(--x-mu);padding:4px 0}
 .xc-d{height:32px;border:0;border-radius:8px;background:transparent;font:500 13px var(--x-font);color:var(--x-tx);cursor:pointer}
@@ -415,7 +416,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
   <aside class="xs-side" aria-label="Menú del ERP">
     <div class="xs-brand">
       <div class="xs-logo">HB</div>
-      <div><div style="font-weight:800;font-size:15px">HouseBrands</div><div style="font-size:12px;color:var(--x-mu)">ERP</div></div>
+      <div><div style="font-weight:650;font-size:15px">HouseBrands</div><div style="font-size:12px;color:var(--x-mu)">ERP</div></div>
     </div>
     <div class="xs-sec">Análisis</div>
     <button type="button" class="xs-nav on" id="tab-res" onclick="goTab('res')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>Resumen</button>
@@ -1418,7 +1419,7 @@ function rCanal(d){
     </div>`;
   }).join('')+`<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
     <div style="font-family:var(--mono);font-size:9px;color:var(--light);margin-bottom:4px">Envío cobrado clientes SH</div>
-    <div style="font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--warn)">${tot>0?(sum(d.filter(r=>r.canal==='Shopify'),'envioCobradoSH')/tot*100).toFixed(1):'0.0'}%</div>
+    <div style="font-size:18px;font-weight:550;letter-spacing:-.03em;color:var(--warn)">${tot>0?(sum(d.filter(r=>r.canal==='Shopify'),'envioCobradoSH')/tot*100).toFixed(1):'0.0'}%</div>
     <div style="font-family:var(--mono);font-size:9px;color:var(--light)">sobre venta bruta total · subsidio ABEE en P&L</div>
   </div>`;
 }
@@ -1442,14 +1443,14 @@ function rMix(d){
       <div>
         <div style="display:flex;justify-content:space-between;margin-bottom:3px">
           <span class="bdg b-mk">MemoKoala</span>
-          <span style="font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--mk)">${pMK}%</span>
+          <span style="font-size:18px;font-weight:550;letter-spacing:-.03em;color:var(--mk)">${pMK}%</span>
         </div>
         <div style="font-family:var(--mono);font-size:9px;color:var(--light)">${clp(vbMK)} · margen ${mrgMK}%</div>
       </div>
       <div>
         <div style="display:flex;justify-content:space-between;margin-bottom:3px">
           <span class="bdg b-mt">Montana</span>
-          <span style="font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--mt)">${pMT}%</span>
+          <span style="font-size:18px;font-weight:550;letter-spacing:-.03em;color:var(--mt)">${pMT}%</span>
         </div>
         <div style="font-family:var(--mono);font-size:9px;color:var(--light)">${clp(vbMT)} · margen ${mrgMT}%</div>
       </div>
@@ -1485,7 +1486,7 @@ function rSKU(d){
       <td>${clp(r.icn)}</td>
       <td style="color:var(--light)">${clp(r.cogs)}</td>
       <td class="pos-v">${clp(r.mb)}</td>
-      <td><div class="mrg-cell"><span style="color:${mc};font-weight:600;font-family:var(--mono);font-size:11px">${mp.toFixed(1)}%</span>
+      <td><div class="mrg-cell"><span style="color:${mc};font-weight:550;font-family:var(--mono);font-size:11px">${mp.toFixed(1)}%</span>
         <div class="mbar"><div class="mfill" style="width:${Math.min(100,mp).toFixed(0)}%;background:${mc}"></div></div>
       </div></td>
     </tr>`;
@@ -1897,7 +1898,7 @@ function renderPnL(){
     return`<div style="margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
         <span style="font-family:var(--mono);font-size:10px;color:var(--dark)">${g.icon} ${g.lbl}</span>
-        <span style="font-size:18px;font-weight:600;letter-spacing:-.03em;color:var(--night)">${pct}%</span>
+        <span style="font-size:18px;font-weight:550;letter-spacing:-.03em;color:var(--night)">${pct}%</span>
       </div>
       <div style="height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:3px">
         <div style="height:100%;width:${Math.min(100,parseFloat(pct))}%;background:var(--mid);border-radius:3px"></div>
@@ -1937,7 +1938,7 @@ function renderPnLTable(idxs,labels,rows){
   });
   const vbTot=fr('VENTA BRUTA TOTAL'),mbTot=fr('MARGEN BRUTO TOTAL');
   if(vbTot&&mbTot){
-    const vtds=idxs.map(i=>{const v=vbTot.mv[i]||0,m=mbTot.mv[i]||0,p=v>0?(m/v*100).toFixed(1):0;return`<td style="font-weight:600">${v?clp(v):'—'}${v?`<br><span style="font-size:9px;color:${parseFloat(p)>=65?'var(--pos)':parseFloat(p)>=45?'var(--warn)':'var(--neg)'}">${p}%</span>`:''}</td>`;}).join('');
+    const vtds=idxs.map(i=>{const v=vbTot.mv[i]||0,m=mbTot.mv[i]||0,p=v>0?(m/v*100).toFixed(1):0;return`<td style="font-weight:550">${v?clp(v):'—'}${v?`<br><span style="font-size:9px;color:${parseFloat(p)>=65?'var(--pos)':parseFloat(p)>=45?'var(--warn)':'var(--neg)'}">${p}%</span>`:''}</td>`;}).join('');
     const vtot=ps(vbTot.mv),mtot=ps(mbTot.mv),pp=vtot>0?(mtot/vtot*100).toFixed(1):0;
     html+=`<tr class="bold"><td>TOTAL CONSOLIDADO<br><span style="font-size:9px;color:var(--light);font-weight:400">Venta · Margen %</span></td>${vtds}<td class="td-tot">${clp(vtot)}<br><span style="font-size:9px;color:${parseFloat(pp)>=65?'#4acf80':'#f87171'}">${pp}%</span></td></tr>`;
   }
@@ -2310,7 +2311,7 @@ function renderConvFunnel(d, ses, car, pas, com){
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
         <span style="font-family:var(--mono);font-size:10px;color:var(--mid)">${s.lbl}</span>
         <div>
-          <span style="font-size:22px;font-weight:600;letter-spacing:-.04em;color:var(--night)">${s.val.toLocaleString('es-CL')}</span>
+          <span style="font-size:22px;font-weight:550;letter-spacing:-.04em;color:var(--night)">${s.val.toLocaleString('es-CL')}</span>
           <span style="font-family:var(--mono);font-size:9px;color:var(--light);margin-left:6px">${s.sub}</span>
         </div>
       </div>
@@ -2723,7 +2724,7 @@ function xProductos(){
   filas.sort((a,b)=>((a[xSort.k]>b[xSort.k])?1:(a[xSort.k]<b[xSort.k])?-1:0)*xSort.d);
   const th=(k,l,r)=>`<th class="s${r?' r':''}" onclick="xSort={k:'${k}',d:xSort.k==='${k}'?-xSort.d:-1};xRender()">${l}${xSort.k===k?(xSort.d<0?' ↓':' ↑'):''}</th>`;
   const tabla=`<div class="xtw"><table class="xt" style="min-width:880px"><thead><tr>${th('nom','Producto')}${th('ventas','Ventas',1)}${th('u','Unid.',1)}${th('delta','vs antes',1)}${th('mg','Margen',1)}${th('st','Stock',1)}${th('cob','Cobertura')}${th('dsu','Última venta',1)}<th>Sugerencia</th></tr></thead><tbody>${filas.map(f=>`<tr>
-    <td><div style="font-weight:700">${escH(f.nom)}</div><div class="sk">${escH(f.s)}</div></td>
+    <td><div style="font-weight:600">${escH(f.nom)}</div><div class="sk">${escH(f.s)}</div></td>
     <td class="r">${xM(f.ventas)}</td><td class="r">${xN(f.u)}</td><td class="r">${f.delta===null?'–':xDelta(f.ventas,f.pv)}</td><td class="r">${f.ventas?xP(f.mg,0):'–'}</td>
     <td class="r">${f.st<0?'–':xN(f.st)}</td>
     <td style="min-width:150px">${f.cob<0?'–':`<div style="display:flex;align-items:center;gap:8px"><div class="xbar" style="flex:1"><i style="width:${Math.min(100,Math.max(3,(f.cob===Infinity?365:f.cob)/365*100))}%;background:${f.cob<30?'var(--x-neg)':f.cob>300?'var(--x-ac2)':'var(--x-pos)'}"></i></div><span class="xsmall" style="width:64px;text-align:right">${f.cob===Infinity?'sin venta':f.cob>730?'+2 años':Math.round(f.cob)+' días'}</span></div>`}</td>
@@ -2794,7 +2795,7 @@ function xCanales(){
   const R=xRango(),base=xBase(),cur=xEn(base,R.a,R.b);
   const gc=xGrupo(cur,r=>r.canal);
   const filas=Object.entries(gc).map(([c,rs])=>{const t=xTot(rs);return{c,...t};}).sort((a,b)=>b.vb-a.vb);const tot=filas.reduce((s,f)=>s+f.vb,0);
-  const tabla=`<div class="xtw"><table class="xt" style="min-width:820px"><thead><tr><th>Canal</th><th class="r">Ventas</th><th class="r">%</th><th class="r">Pedidos</th><th class="r">Ticket</th><th class="r">Margen bruto</th><th class="r">Comisiones</th><th class="r">Envío ML − Flex</th><th class="r">Queda</th><th class="r">% queda</th></tr></thead><tbody>${filas.map(f=>`<tr><td style="font-weight:700">${escH(f.c==='ML'?'MercadoLibre':f.c)}</td><td class="r">${xM(f.vb)}</td><td class="r">${xP(f.vb/(tot||1),0)}</td><td class="r">${xN(f.ped)}</td><td class="r">${xM(f.tk)}</td><td class="r">${xM(f.mb)} · ${xP(f.mg,0)}</td><td class="r">${xM(f.com)} · ${xP(f.com/(f.vb||1),1)}</td><td class="r">${xM(f.envML-f.flex)}</td><td class="r" style="font-weight:700">${xM(f.contrib)}</td><td class="r">${xP(f.contrib/(f.vb||1),0)}</td></tr>`).join('')}</tbody></table></div>`;
+  const tabla=`<div class="xtw"><table class="xt" style="min-width:820px"><thead><tr><th>Canal</th><th class="r">Ventas</th><th class="r">%</th><th class="r">Pedidos</th><th class="r">Ticket</th><th class="r">Margen bruto</th><th class="r">Comisiones</th><th class="r">Envío ML − Flex</th><th class="r">Queda</th><th class="r">% queda</th></tr></thead><tbody>${filas.map(f=>`<tr><td style="font-weight:600">${escH(f.c==='ML'?'MercadoLibre':f.c)}</td><td class="r">${xM(f.vb)}</td><td class="r">${xP(f.vb/(tot||1),0)}</td><td class="r">${xN(f.ped)}</td><td class="r">${xM(f.tk)}</td><td class="r">${xM(f.mb)} · ${xP(f.mg,0)}</td><td class="r">${xM(f.com)} · ${xP(f.com/(f.vb||1),1)}</td><td class="r">${xM(f.envML-f.flex)}</td><td class="r" style="font-weight:600">${xM(f.contrib)}</td><td class="r">${xP(f.contrib/(f.vb||1),0)}</td></tr>`).join('')}</tbody></table></div>`;
   // evolución mensual por canal
   const meses=[];{const d=new Date();d.setDate(15);for(let i=11;i>=0;i--){const x=new Date(d);x.setMonth(d.getMonth()-i);meses.push(xIso(x).slice(0,7));}}
   const cols={Shopify:'var(--x-ac)',ML:'#f0b429','B2B':'var(--x-ac2)',HigoKids:'#2bb59a','Venta Directa':'#8a93b0'};
@@ -2816,10 +2817,10 @@ function xCanales(){
   const despH=dt.length?dt.map(([k,n])=>xHb(k,n,dt[0][1],n+' ped.')).join('')+`<p class="xsmall" style="margin-top:8px">Costo Colecta ${xM(envio)} · bonificación Flex ${xM(flex)}</p>`:'<div class="xempty">Sin pedidos de ML</div>';
   // comisión ML por producto
   const gm=xGrupo(mlRows,r=>r.sku);const cm=Object.entries(gm).map(([s,rs])=>{const v=rs.reduce((a,r)=>a+r.vb,0),c=rs.reduce((a,r)=>a+r.cargoMP,0);const ps2=rs.map(r=>r.cargoMP/r.vb);return{s,v,c,p:c/v,mn:Math.min(...ps2),mx:Math.max(...ps2),n:rs.length};}).sort((a,b)=>b.v-a.v);
-  const comH=cm.length?`<div class="xtw"><table class="xt"><thead><tr><th>Producto</th><th class="r">Ventas ML</th><th class="r">Comisión</th><th class="r">% efectivo</th><th class="r">Rango</th></tr></thead><tbody>${cm.map(x=>`<tr><td>${escH(NOMBRES[x.s]||x.s)}</td><td class="r">${xM(x.v)}</td><td class="r">${xM(x.c)}</td><td class="r" style="font-weight:700">${xP(x.p)}</td><td class="r">${xP(x.mn)} – ${xP(x.mx)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin ventas ML</div>';
+  const comH=cm.length?`<div class="xtw"><table class="xt"><thead><tr><th>Producto</th><th class="r">Ventas ML</th><th class="r">Comisión</th><th class="r">% efectivo</th><th class="r">Rango</th></tr></thead><tbody>${cm.map(x=>`<tr><td>${escH(NOMBRES[x.s]||x.s)}</td><td class="r">${xM(x.v)}</td><td class="r">${xM(x.c)}</td><td class="r" style="font-weight:600">${xP(x.p)}</td><td class="r">${xP(x.mn)} – ${xP(x.mx)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin ventas ML</div>';
   // cupones
   const cup=cur.filter(r=>r.canal==='Shopify'&&r.cupon);const gcu=xGrupo(cup,r=>String(r.cupon).toUpperCase());const ct=Object.entries(gcu).map(([k,rs])=>[k,new Set(rs.map(r=>r.orden)).size,rs.reduce((s,r)=>s+r.descto,0)]).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const cupH=ct.length?`<div class="xtw"><table class="xt"><thead><tr><th>Cupón</th><th class="r">Pedidos</th><th class="r">Descuento dado</th></tr></thead><tbody>${ct.map(([k,n,d])=>`<tr><td style="font-weight:700">${escH(k)}</td><td class="r">${n}</td><td class="r">${xM(d)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin cupones usados en el período</div>';
+  const cupH=ct.length?`<div class="xtw"><table class="xt"><thead><tr><th>Cupón</th><th class="r">Pedidos</th><th class="r">Descuento dado</th></tr></thead><tbody>${ct.map(([k,n,d])=>`<tr><td style="font-weight:600">${escH(k)}</td><td class="r">${n}</td><td class="r">${xM(d)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin cupones usados en el período</div>';
   document.getElementById('view-canal').innerHTML=`
   <section class="xp"><div class="xp-h"><h2>Cuánto deja cada canal</h2><span class="note">"Queda" = margen bruto − comisiones − envío Colecta + bonificación Flex</span></div>${tabla}</section>
   <section class="xp"><div class="xp-h"><h2>Ventas por canal, mes a mes</h2><span class="note">últimos 12 meses</span></div>${evo}</section>
@@ -2839,7 +2840,7 @@ function xGeo(){
   const gr=xGrupo(conReg,p=>p.reg),gpr=xGrupo(xPedidos(pre).filter(p=>p.reg),p=>p.reg);
   const tot=conReg.reduce((s,p)=>s+p.vb,0);
   const filas=Object.entries(gr).map(([k,l])=>{const v=l.reduce((s,p)=>s+p.vb,0);return{k,v,n:l.length,tk:v/l.length,pv:(gpr[k]||[]).reduce((s,p)=>s+p.vb,0),ml:l.filter(p=>p.canal==='ML').length};}).sort((a,b)=>b.v-a.v);
-  const tabla=filas.length?`<div class="xtw"><table class="xt" style="min-width:640px"><thead><tr><th>Región</th><th>Participación</th><th class="r">Ventas</th><th class="r">vs antes</th><th class="r">Pedidos</th><th class="r">Ticket</th><th class="r">% por ML</th></tr></thead><tbody>${filas.map(f=>`<tr><td style="font-weight:700">${escH(X_REG[f.k]||f.k)}</td><td style="min-width:140px"><div class="xbar"><i style="width:${Math.max(2,f.v/filas[0].v*100)}%;background:linear-gradient(90deg,var(--x-ac),var(--x-ac2))"></i></div></td><td class="r">${xM(f.v)} · ${xP(f.v/(tot||1),0)}</td><td class="r">${pre.length?xDelta(f.v,f.pv):'–'}</td><td class="r">${f.n}</td><td class="r">${xM(f.tk)}</td><td class="r">${xP(f.ml/f.n,0)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin región registrada en este período</div>';
+  const tabla=filas.length?`<div class="xtw"><table class="xt" style="min-width:640px"><thead><tr><th>Región</th><th>Participación</th><th class="r">Ventas</th><th class="r">vs antes</th><th class="r">Pedidos</th><th class="r">Ticket</th><th class="r">% por ML</th></tr></thead><tbody>${filas.map(f=>`<tr><td style="font-weight:600">${escH(X_REG[f.k]||f.k)}</td><td style="min-width:140px"><div class="xbar"><i style="width:${Math.max(2,f.v/filas[0].v*100)}%;background:linear-gradient(90deg,var(--x-ac),var(--x-ac2))"></i></div></td><td class="r">${xM(f.v)} · ${xP(f.v/(tot||1),0)}</td><td class="r">${pre.length?xDelta(f.v,f.pv):'–'}</td><td class="r">${f.n}</td><td class="r">${xM(f.tk)}</td><td class="r">${xP(f.ml/f.n,0)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin región registrada en este período</div>';
   const gcz=xGrupo(ped.filter(p=>p.ciudad),p=>String(p.ciudad).trim().toLowerCase().split(/\s+/).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '));
   const ct=Object.entries(gcz).map(([k,l])=>[k,l.length,l.reduce((s,p)=>s+p.vb,0)]).sort((a,b)=>b[2]-a[2]).slice(0,15);
   const comH=ct.length?ct.map(([k,n,v])=>xHb(k,v,ct[0][2],xM(v)+' · '+n+' ped.')).join(''):'<div class="xempty">Sin comuna registrada</div>';
