@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HouseBrands · ERP</title>
+<title>HB Control</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&display=swap" rel="stylesheet">
 <style>
@@ -406,6 +406,53 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xcmp b{color:var(--x-tx)}
 @media (max-width:900px){.xs-pop-in{flex-wrap:wrap}.xs-pop-l{flex-direction:row;flex-wrap:wrap;max-height:none;border-right:0}}
 @media (max-width:760px){.xs-pop{position:fixed;left:8px;right:8px;top:70px;max-height:80vh;overflow:auto}.xs-pop-cal .xc:first-of-type{display:none}}
+/* ══ GESTIÓN (HB Control) ══ */
+.xbtn{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 14px;border-radius:12px;border:1px solid #d9deeb;background:#fff;font:550 13px var(--x-font);color:var(--x-tx);cursor:pointer;white-space:nowrap;text-decoration:none}
+.xbtn:hover{border-color:var(--x-ac)}
+.xbtn.pri{background:linear-gradient(135deg,var(--x-ac),var(--x-ac2));border:0;color:#fff}
+.xbtn:disabled{opacity:.55;cursor:wait}
+.xchips{display:flex;gap:6px;flex-wrap:wrap}
+.xchip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:10px;border:1px solid #d9deeb;background:#fff;font:550 13px var(--x-font);color:var(--x-tx);cursor:pointer}
+.xchip.on{background:var(--x-ac);color:#fff;border-color:var(--x-ac)}
+.xinp{min-height:38px;padding:0 12px;border-radius:11px;border:1px solid #d9deeb;background:#fff;font:450 14px var(--x-font);color:var(--x-tx);box-sizing:border-box;width:100%}
+.xlbl{display:flex;flex-direction:column;gap:3px;font:500 12px var(--x-font);color:var(--x-mu)}
+.xtag.y{color:#7a4e00;background:#fdf1d6}.xtag.p{color:#6b2fc4;background:#efe6fd}
+.xt tr.sel td{background:rgba(var(--x-acRGB),.06)}
+.xt tr.clk{cursor:pointer}.xt tr.clk:hover td{background:rgba(var(--x-acRGB),.04)}
+.xt tr.grp td{background:#f6f8fd;font-weight:600}
+.xt tr.tot td{font-weight:650;border-top:2px solid #d9deeb}
+.xt tr.ind td:first-child{padding-left:26px}
+.xph{color:#7a4e00;background:#fdf1d6;border-radius:6px;padding:0 5px;font-weight:600}
+.xkan{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px}
+.xkan .col{flex:1 1 170px;min-width:170px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+.xkan .colh{font-size:12.5px;font-weight:550;color:var(--x-mu);display:flex;justify-content:space-between}
+.xkan .card{background:#fff;border:1px solid #e2e7f3;border-radius:14px;padding:12px;font-size:12.5px;box-shadow:0 2px 8px rgba(30,40,90,.06);cursor:pointer}
+.xkan .card.sel{border:2px solid var(--x-ac)}
+.xtl{display:flex;flex-direction:column;gap:14px}
+.xtl .st{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.xtl .dot{width:12px;height:12px;border-radius:50%;margin-top:3px;flex-shrink:0;background:#d9deeb}
+.xwf{display:flex;gap:10px;height:260px;border-bottom:1px solid var(--x-grid)}
+.xwf .c{flex:1 1 0;position:relative}
+.xwf .c i{position:absolute;left:8%;right:8%;border-radius:6px}
+.xwfl{display:flex;gap:10px;margin-top:8px}
+.xwfl div{flex:1 1 0;text-align:center;font-size:12px;color:var(--x-mu);line-height:1.35}
+.xwfl b{display:block;color:var(--x-tx);font-size:12.5px}
+.xfun{display:grid;grid-template-columns:130px minmax(0,1fr) 100px;gap:10px;align-items:center;margin-top:10px;font-size:13px}
+.xfun .t{height:26px;border-radius:7px;background:var(--x-track);position:relative;overflow:hidden}
+.xfun .t i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--x-ac);min-width:5px}
+.xfun .t i.w{background:var(--x-neg)}
+.xrw{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--x-grid);font-size:13px}
+.xrw:first-of-type{border-top:0}
+.xdot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.xdot.ok{background:var(--x-pos)}.xdot.wa{background:#d99a00}.xdot.er{background:var(--x-neg)}.xdot.of{background:#c4cad8}
+.xcb{width:20px;height:20px;border-radius:6px;border:2px solid #c4cad8;flex-shrink:0;cursor:pointer;background:#fff;padding:0}
+.xcb.on{background:var(--x-pos);border-color:var(--x-pos)}
+.xcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.xtc{background:#fff;border:1px solid #e2e7f3;border-radius:18px;padding:16px;box-shadow:0 2px 10px rgba(30,40,90,.06);display:flex;flex-direction:column;gap:8px}
+.xtc h3{margin:0;font-size:15px;font-weight:600}
+.xmt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px;color:var(--x-mu)}
+.xmt b{display:block;font-size:14px;color:var(--x-tx);font-weight:600}
+.xform{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
 </style>
 </head>
 <body>
@@ -413,10 +460,10 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 
 <div id="app">
 <div class="xs-shell">
-  <aside class="xs-side" aria-label="Menú del ERP">
+  <aside class="xs-side" aria-label="Menú de HB Control">
     <div class="xs-brand">
       <div class="xs-logo">HB</div>
-      <div><div style="font-weight:650;font-size:15px">HouseBrands</div><div style="font-size:12px;color:var(--x-mu)">ERP</div></div>
+      <div><div style="font-weight:650;font-size:15px">HB Control</div><div style="font-size:12px;color:var(--x-mu)">HouseBrands</div></div>
     </div>
     <div class="xs-sec">Análisis</div>
     <button type="button" class="xs-nav on" id="tab-res" onclick="goTab('res')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>Resumen</button>
@@ -426,14 +473,17 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     <button type="button" class="xs-nav" id="tab-geo" onclick="goTab('geo')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Geografía</button>
     <div class="xs-sec">Gestión</div>
     <button type="button" class="xs-nav" id="tab-inv" onclick="goTab('inv')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v13H4zM9 7V4h6v3"/></svg>Inventario</button>
+    <button type="button" class="xs-nav" id="tab-imp" onclick="goTab('imp')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 17h14l4-6h-6l-2-4H8M2 17l2 3h12"/></svg>Importaciones</button>
+    <button type="button" class="xs-nav" id="tab-ventas" onclick="goTab('ventas')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg>Ventas</button>
     <button type="button" class="xs-nav" id="tab-pnl" onclick="goTab('pnl')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>P&amp;L</button>
     <button type="button" class="xs-nav" id="tab-conv" onclick="goTab('conv')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg>Conversión</button>
-    <button type="button" class="xs-nav" id="tab-ventas" onclick="goTab('ventas')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg>Detalle de ventas</button>
+    <button type="button" class="xs-nav" id="tab-sis" onclick="goTab('sis')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 8-6-16-3 8H2"/></svg>Estado del sistema</button>
+    <div class="xs-sec">Oportunidades</div>
+    <button type="button" class="xs-nav" id="tab-scout" onclick="goTab('scout')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg>Scout</button>
     <div style="flex-grow:1;min-height:18px"></div>
     <div style="display:flex;flex-direction:column;gap:6px">
       <button type="button" class="xs-tool pri" onclick="showMV()">+ Venta manual</button>
       <label class="xs-tool" style="cursor:pointer" title="Completa hora, cliente, medio de pago y región de pedidos antiguos con el CSV exportado desde Shopify">Historial Shopify (CSV)<input type="file" accept=".csv,text/csv" multiple style="display:none" onchange="importarHistorialShopify(this.files);this.value=''"></label>
-      <button type="button" class="xs-tool" onclick="showCL()">Checklist</button>
       <button type="button" class="xs-tool" onclick="xEstilo()" id="xs-estilo">Estilo: híbrido</button>
       <button type="button" class="xs-tool" onclick="doLogout()">Salir</button>
     </div>
@@ -461,8 +511,16 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     <div id="view-cli" class="xv" style="display:none"></div>
     <div id="view-canal" class="xv" style="display:none"></div>
     <div id="view-geo" class="xv" style="display:none"></div>
+    <div id="view-inv" class="xv" style="display:none"></div>
+    <div id="view-imp" class="xv" style="display:none"></div>
+    <div id="view-ventas" class="xv" style="display:none"></div>
+    <div id="view-pnl" class="xv" style="display:none"></div>
+    <div id="view-conv" class="xv" style="display:none"></div>
+    <div id="view-sis" class="xv" style="display:none"></div>
+    <div id="view-scout" class="xv" style="display:none"></div>
+  <div id="legacy" style="display:none" aria-hidden="true">
   <!-- TAB VENTAS -->
-  <div id="view-ventas">
+  <div id="old-ventas">
     <div class="fbar">
       <span class="flbl">Año</span>
       <select class="fsel" id="f-anio" onchange="render()"><option value="0">Todos</option></select>
@@ -562,7 +620,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
   </div>
 
   <!-- TAB CONVERSIÓN -->
-  <div id="view-conv" style="display:none">
+  <div id="old-conv" style="display:none">
     <div id="conv-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando datos de conversión...</p></div>
     <div id="conv-dash" style="display:none">
       <!-- Filtros conversión -->
@@ -619,7 +677,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
   </div>
 
   <!-- TAB P&L -->
-  <div id="view-pnl" style="display:none">
+  <div id="old-pnl" style="display:none">
     <div class="pnl-periods" id="pnl-periods"></div>
     <div id="pnl-loading" class="spin" style="padding:80px 0"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><p>Cargando P&L...</p></div>
     <div id="pnl-dash" style="display:none">
@@ -647,7 +705,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
   </div>
 
   <!-- TAB INVENTARIO -->
-  <div id="view-inv" style="display:none">
+  <div id="old-inv" style="display:none">
     <div class="page">
       <div class="krow k4" id="inv-kgrid" style="margin-bottom:16px"></div>
       <div class="inv-fbar">
@@ -675,6 +733,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     </div>
   </div>
 
+  </div><!-- /legacy -->
     </div>
   </div>
   <!-- MODAL VENTA MANUAL -->
@@ -983,15 +1042,12 @@ document.addEventListener('DOMContentLoaded',()=>initApp());
 // ── TABS ─────────────────────────────────────────────
 let pnlLoaded=false, convLoaded=false;
 function goTab(t){
-  ['res','prod','cli','canal','geo','ventas','pnl','conv','inv'].forEach(x=>{
+  ['res','prod','cli','canal','geo','inv','imp','ventas','pnl','conv','sis','scout'].forEach(x=>{
     const v=document.getElementById('view-'+x),b=document.getElementById('tab-'+x);
     if(v)v.style.display=x===t?(v.classList.contains('xv')?'flex':'block'):'none';
     if(b)b.classList.toggle('on',x===t);
   });
   X_VISTA=t;
-  if(t==='pnl'&&!pnlLoaded)loadPnL();
-  if(t==='conv'&&!convLoaded)loadConv();
-  if(t==='inv')renderInv();
   xRender();
   window.scrollTo({top:0});
 }
@@ -2444,7 +2500,7 @@ async function importarHistorialShopify(files){
 
 // ══ DASHBOARD DE ANÁLISIS ══════════════════════════════════
 // Todo se calcula en el navegador desde el Libro_Ventas (DATA) y la foto de stock (INV_SNAP).
-const X_TITULOS={res:['Resumen','Cómo va el negocio y qué decidir hoy'],prod:['Productos','Qué reponer, empujar, liquidar o empaquetar'],cli:['Clientes','Quién compra y si vuelve a comprar'],canal:['Canales y marketing','Dónde se vende, de dónde llegan y cuánto cuesta cada canal'],geo:['Geografía','Regiones y comunas'],inv:['Inventario','Stock en ABEE, bodegas externas y descuadres'],pnl:['P&L','Estado de resultados mensual'],conv:['Conversión','Embudo de la tienda'],ventas:['Detalle de ventas','Vista anterior con todos los indicadores']};
+const X_TITULOS={res:['Resumen','Cómo va el negocio y qué decidir hoy'],prod:['Productos','Qué reponer, empujar, liquidar o empaquetar'],cli:['Clientes','Quién compra y si vuelve a comprar'],canal:['Canales y marketing','Dónde se vende, de dónde llegan y cuánto cuesta cada canal'],geo:['Geografía','Regiones y comunas'],inv:['Inventario','Stock en ABEE y bodegas externas, y cuándo pedir'],imp:['Importaciones','Del pago inicial a ABEE, con costos reales'],ventas:['Ventas','Todos los pedidos de todos los canales'],pnl:['P&L','De la venta a la utilidad, mes a mes'],conv:['Conversión','Dónde se cae la venta'],sis:['Estado del sistema','Si los datos están al día y qué falta para cerrar el mes'],scout:['Scout','Radar de tendencias y evaluador de productos']};
 const X_REG={RM:'Metropolitana',VS:'Valparaíso',BI:'Biobío',LL:'Los Lagos',AN:'Antofagasta',LI:"O'Higgins",CO:'Coquimbo',ML:'Maule',AT:'Atacama',NB:'Ñuble',MA:'Magallanes',LR:'Los Ríos',AR:'Araucanía',AP:'Arica y Parinacota',TA:'Tarapacá',AI:'Aysén'};
 const X_REGNOM={'santiago':'RM','region metropolitana':'RM','metropolitana':'RM','region metropolitana de santiago':'RM','rm':'RM','valparaiso':'VS','biobio':'BI','bio bio':'BI','los lagos':'LL','antofagasta':'AN',"o'higgins":'LI','libertador general bernardo o\'higgins':'LI','coquimbo':'CO','maule':'ML','atacama':'AT','nuble':'NB','magallanes':'MA','magallanes y la antartica chilena':'MA','los rios':'LR','araucania':'AR','la araucania':'AR','arica y parinacota':'AP','tarapaca':'TA','aysen':'AI','aisen':'AI'};
 const X_PAGO={account_money:'Dinero en cuenta ML',credit_card:'Tarjeta de crédito',debit_card:'Tarjeta de débito',prepaid_card:'Tarjeta prepago',digital_currency:'Mercado Crédito',ticket:'Efectivo','Mercado Pago Checkout Pro':'Mercado Pago (Checkout Pro)','Mercado Pago Tarjetas':'Mercado Pago (tarjetas)'};
@@ -2599,8 +2655,10 @@ function xHeader(){
 function xFiltro(){XF.marca=document.getElementById('xs-marca').value;XF.canal=document.getElementById('xs-canal').value;xRender();}
 function xRender(){
   xHeader();
+  const gest={inv:xInventario,imp:xImportaciones,pnl:xPnlG,conv:xConvG,sis:xSistema,scout:xScout}[X_VISTA];
+  if(gest){Promise.resolve().then(gest).catch(e=>{document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';});return;}
   if(!DATA.length)return;
-  const f={res:xResumen,prod:xProductos,cli:xClientes,canal:xCanales,geo:xGeo}[X_VISTA];
+  const f={res:xResumen,prod:xProductos,cli:xClientes,canal:xCanales,geo:xGeo,ventas:xVentasG}[X_VISTA];
   if(f){try{f();}catch(e){document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';}}
 }
 function xEstilo(){
@@ -2853,6 +2911,427 @@ function xGeo(){
   </section>
   <section class="xp"><div class="xp-h"><h2>Regiones</h2><span class="note">pedidos del período</span></div>${tabla}</section>
   <section class="xp"><div class="xp-h"><h2>Comunas con más ventas</h2><span class="note">top 15</span></div>${comH}</section>`;
+}
+
+
+// ══ GESTIÓN (HB Control) ══════════════════════════════════════
+// Inventario, Importaciones, Ventas, P&L, Conversión, Estado del sistema y Scout.
+const CSV_IMP='/erp/api/imp', CSV_SCOUT='/erp/api/scout', CSV_ESTADO='/erp/api/estado';
+// SKU antiguo → SKU nuevo que lo reemplaza (mismo producto, nueva etiqueta desde la importación de nov-2026)
+const SKU_SUCESOR={'SJ-JL801B':'OR-001','SJ-JL802B':'OR-002','SJ-AH209A':'MA-001','SJ-JL802C':'MA-002'};
+const G={ventLim:100,imp:null,scout:null,estado:null,impSel:null,impEnvio:null,invSel:null,ventSel:null,ventCanal:'',ventQ:'',ventDias:90,pnlMes:null,convMes:null,scoutTab:'radar',scoutGrupo:'',invFiltro:'todos',invMarca:''};
+const gOpt=(k,d)=>{try{const v=localStorage.getItem('hb_'+k);return v===null?d:JSON.parse(v);}catch(e){return d;}};
+const gSet=(k,v)=>{try{localStorage.setItem('hb_'+k,JSON.stringify(v));}catch(e){}};
+const gHoy=()=>xIso(new Date());
+const gC=n=>(n<0?'−':'')+clp(Math.abs(n));
+const gF=s=>s?xFmt(s):'–';
+const gK=(l,v,s,cls)=>`<article class="xp glass"><div class="xk-l">${l}</div><div class="xk-v"${cls?` style="color:${cls}"`:''}>${v}</div><div class="xk-f"><span>${s||''}</span></div></article>`;
+async function gCsv(url){const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);const t=await r.text();if(/^(missing sheet|unknown sheet|forbidden)/.test(t.trim()))return[];return t.split('\n').filter(l=>l.trim()).map(scsv);}
+
+// ── Importaciones: datos ──
+async function gLoadImp(force){
+  if(G.imp&&!force)return G.imp;
+  try{const f=await gCsv(CSV_IMP);G.imp=f.slice(1).map(c=>{try{const o=JSON.parse(c[2]);o._act=c[1];return o;}catch(e){return null;}}).filter(Boolean);}
+  catch(e){G.imp=[];}
+  return G.imp;
+}
+const IMP_ETAPAS=[['cotizacion','Cotización'],['pago','Pago inicial'],['produccion','En producción'],['origen','En bodega de origen'],['transito','En tránsito'],['aduana','En aduana'],['abee','En ABEE']];
+function gEnCamino(){ // unidades por SKU que aún no llegan a ABEE: {sku:[{u,eta,imp,via}]}
+  const o={};
+  (G.imp||[]).forEach(im=>(im.envios||[]).forEach(e=>{
+    if(e.etapa==='abee'||e.etapa==='cotizacion')return;
+    Object.entries(e.unidades||{}).forEach(([sku,u])=>{if(u>0)(o[sku]=o[sku]||[]).push({u,eta:e.eta||'',imp:im.id,via:e.via});});
+  }));
+  return o;
+}
+function gCostosImp(){ // costo estimado de SKUs nuevos que vienen en importaciones
+  const c={};(G.imp||[]).forEach(im=>(im.lineas||[]).forEach(l=>{if(l.sku&&l.costoEst)c[l.sku]=l.costoReal||l.costoEst;}));return c;
+}
+const gCosto=sku=>COSTOS[sku]||gCostosImp()[sku]||0;
+const gNombre=sku=>{if(NOMBRES[sku])return NOMBRES[sku];for(const im of (G.imp||[]))for(const l of (im.lineas||[]))if(l.sku===sku)return l.prod;return sku;};
+
+// ── INVENTARIO ──
+function gInvFilas(){
+  const hoy=gHoy(),lead=+gOpt('lead',75),seg=+gOpt('seg',30);
+  const v90={};xEn(DATA.filter(r=>r.vb>0),xAdd(hoy,-89),hoy).forEach(r=>{v90[r.sku]=(v90[r.sku]||0)+r.qty;});
+  const cam=gEnCamino();
+  const filas=[];const vistos=new Set();
+  Object.values(INV_SNAP||{}).forEach(s=>{
+    const suc=SKU_SUCESOR[s.sku];
+    const llegadas=[...(cam[s.sku]||[]),...(suc?cam[suc]||[]:[])];
+    if(suc)vistos.add(suc);vistos.add(s.sku);
+    const ventas=(v90[s.sku]||0)+(suc?v90[suc]||0:0);
+    filas.push({sku:s.sku,suc,nombre:NOMBRES[s.sku]||s.prod||s.sku,marca:/memo/i.test(s.marca||'')?'MemoKoala':'Montana',sh:s.sh,ml:s.ml,ext:s.ext||0,stock:Math.max(0,s.total||0),sync:s.estadoSync,ventas,llegadas});
+  });
+  Object.entries(cam).forEach(([sku,ll])=>{if(vistos.has(sku))return;filas.push({sku,suc:null,nombre:gNombre(sku),marca:'Montana',sh:0,ml:null,ext:0,stock:0,sync:'',ventas:v90[sku]||0,llegadas:ll,nuevo:true});});
+  return filas.map(f=>{
+    const dia=f.ventas/90,cam=f.llegadas.reduce((s,x)=>s+x.u,0);
+    const cob=dia>0?f.stock/dia:Infinity;
+    const quiebre=dia>0?xAdd(hoy,Math.floor(cob)):null;
+    const llegaAntes=f.llegadas.some(x=>x.eta&&quiebre&&x.eta<=quiebre);
+    const cobTot=dia>0?(f.stock+cam)/dia:Infinity;
+    const pedir=dia>0?xAdd(hoy,Math.floor(cobTot-lead-seg)):null;
+    const sug=dia>0?Math.max(0,Math.ceil((dia*(lead+90)-f.stock-cam)/5)*5):0;
+    let est='sano';
+    if(f.nuevo&&f.stock===0)est='nuevo';
+    else if(dia===0)est=f.stock>=30?'sobre':'sin';
+    else if(cob<30&&!llegaAntes)est='riesgo';
+    else if(cob<30&&llegaAntes)est='lote';
+    else if(pedir<=xAdd(hoy,30))est='pedir';
+    else if(cob>365)est='sobre';
+    const costo=gCosto(f.sku);
+    return{...f,dia,cam,cob,quiebre,pedir,sug,est,costo,valor:f.stock*costo};
+  });
+}
+const INV_EST={riesgo:['En riesgo','r'],lote:['Llega lote','b'],pedir:['Pedir pronto','y'],sano:['Sano','g'],sobre:['Sobrestock','p'],sin:['Sin ventas','n'],nuevo:['Nuevo · en camino','b']};
+async function xInventario(){
+  const el=document.getElementById('view-inv');
+  if(!INV_SNAP||!G.imp){el.innerHTML='<div class="xp xempty">Cargando stock e importaciones…</div>';try{await Promise.all([loadInvSnap(),gLoadImp()]);}catch(e){el.innerHTML='<div class="xp xempty">No se pudo cargar el stock: '+escH(e.message)+'</div>';return;}}
+  const F=gInvFilas(),lead=+gOpt('lead',75),seg=+gOpt('seg',30);
+  const cnt=k=>F.filter(f=>f.est===k).length;
+  const val=F.reduce((s,f)=>s+f.valor,0),sobre=F.filter(f=>f.est==='sobre').reduce((s,f)=>s+f.valor,0);
+  const riesgo=F.filter(f=>f.est==='riesgo'),pedir=F.filter(f=>f.est==='pedir');
+  const cam=F.reduce((s,f)=>s+f.cam,0),prox=F.flatMap(f=>f.llegadas).filter(x=>x.eta).sort((a,b)=>a.eta<b.eta?-1:1)[0];
+  const lista=F.filter(f=>(G.invFiltro==='todos'||f.est===G.invFiltro)&&(!G.invMarca||f.marca===G.invMarca)).sort((a,b)=>{const o=['riesgo','pedir','lote','nuevo','sano','sin','sobre'];return o.indexOf(a.est)-o.indexOf(b.est)||a.cob-b.cob;});
+  const fila=f=>{const e=INV_EST[f.est];const cobTxt=f.dia===0?'–':f.cob>730?'+2 años':Math.round(f.cob)+' días';const pct=f.dia===0?0:Math.min(100,f.cob/365*100);
+    const col=f.est==='riesgo'?'var(--x-neg)':f.est==='pedir'?'#c98a00':f.est==='sobre'?'var(--x-ac2)':'var(--x-pos)';
+    const ll=f.llegadas.length?f.llegadas.map(x=>'+'+x.u+(x.eta?' · '+xFmt(x.eta,false):'')).join('<br>'):'–';
+    const ped=f.est==='riesgo'?'<b style="color:var(--x-neg)">Atrasado</b>':f.est==='lote'?'Cubierto por el lote':f.pedir&&f.est!=='sobre'&&f.est!=='sin'?(f.pedir<=gHoy()?'<b>Pedir ya</b>':xFmt(f.pedir)):'–';
+    return`<tr class="clk${G.invSel===f.sku?' sel':''}" onclick="G.invSel='${f.sku}';xInventario()"><td><b>${escH(f.nombre)}</b><div class="sk">${f.sku}${f.suc?' → '+f.suc:''}</div></td>
+      <td class="r">${f.sh??'–'}</td><td class="r">${f.ml===null||f.ml===undefined?'–':(f.sync==='Revisar'?`<span class="xtag r">${f.ml}</span>`:f.ml)}</td><td class="r">${f.ext||0}</td>
+      <td class="r">${(f.dia*7).toFixed(1).replace('.',',')}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="xbar" style="flex:1"><i style="width:${pct}%;background:${col}"></i></div><span class="sk" style="width:62px">${cobTxt}</span></div></td>
+      <td class="r">${ll}</td><td>${ped}</td><td class="r">${f.sug&&['riesgo','pedir'].includes(f.est)?'<b>'+f.sug+' u</b>':'–'}</td><td><span class="xtag ${e[1]}">${e[0]}</span></td></tr>`;};
+  // proyección del producto seleccionado
+  const sel=F.find(f=>f.sku===G.invSel)||riesgo[0]||pedir[0]||F[0];
+  let proy='';
+  if(sel&&sel.dia>0){
+    const dias=150,pts=[];let st=sel.stock;const hoy=gHoy();let quiebre=null,sinStock=0;
+    for(let i=0;i<=dias;i++){const d=xAdd(hoy,i);sel.llegadas.forEach(x=>{if(x.eta===d)st+=x.u;});if(i>0)st=Math.max(0,st-sel.dia);if(st<=0){sinStock++;if(!quiebre)quiebre=d;}pts.push(st);}
+    const mx=Math.max(1,...pts),W=640,H=180;
+    const poly=pts.map((v,i)=>(40+i/dias*(W-50)).toFixed(1)+','+(H-v/mx*(H-20)).toFixed(1)).join(' ');
+    const marks=sel.llegadas.filter(x=>x.eta).map(x=>{const i=xDias(hoy,x.eta)-1;if(i<0||i>dias)return'';const X=40+i/dias*(W-50);return`<line x1="${X}" y1="10" x2="${X}" y2="${H}" stroke="#7a45f0" stroke-dasharray="4 3"/><text x="${X+4}" y="18" font-size="11" fill="#7a45f0">+${x.u} · ${xFmt(x.eta,false)}</text>`;}).join('');
+    proy=`<section class="xp" style="flex:2 1 520px"><div class="xp-h"><h2>Proyección · ${escH(sel.nombre)}</h2><span class="note">stock esperado día a día, con las llegadas</span></div>
+      <svg viewBox="0 0 ${W} ${H+24}" style="width:100%;height:auto" role="img" aria-label="Proyección de stock"><line x1="40" y1="${H}" x2="${W-10}" y2="${H}" stroke="#e6e9f2"/><polyline fill="none" stroke="#3355f0" stroke-width="3" points="${poly}"/>${marks}
+      <text x="40" y="${H+18}" font-size="11" fill="#4c5573">Hoy</text><text x="${W-60}" y="${H+18}" font-size="11" fill="#4c5573">${xFmt(xAdd(hoy,dias),false)}</text></svg>
+      <p class="xsmall" style="margin-top:8px">${quiebre?`Con ~${(sel.dia*7).toFixed(1).replace('.',',')} unidades por semana se agota el <b>${xFmt(quiebre)}</b>${sinStock>1?' y queda unos '+sinStock+' días sin stock en esta ventana':''}. Una compra pagada hoy llegaría cerca del ${xFmt(xAdd(hoy,lead))}.`:'No se agota en los próximos '+dias+' días.'}</p></section>`;
+  }
+  const cap=F.filter(f=>f.valor>0).sort((a,b)=>b.valor-a.valor),capMax=cap[0]?cap[0].valor:1;
+  const capH=cap.slice(0,6).map(f=>xHb(f.nombre,f.valor,capMax,clp(f.valor),f.est==='sobre'?'var(--x-ac2)':null,true)).join('');
+  const chips=[['todos','Todos',F.length],['riesgo','En riesgo',cnt('riesgo')],['pedir','Pedir pronto',cnt('pedir')],['lote','Llega lote',cnt('lote')+cnt('nuevo')],['sano','Sano',cnt('sano')],['sobre','Sobrestock',cnt('sobre')]];
+  el.innerHTML=`<section class="xg xg-k">
+    ${gK('Valor del stock',clp(val),'a costo internado, sin IVA · '+xN(F.reduce((s,f)=>s+f.stock,0))+' unidades · foto '+escH(INV_FECHA))}
+    ${gK('En riesgo de quiebre',riesgo.length+' producto'+(riesgo.length!==1?'s':''),riesgo.map(f=>escH(f.nombre)+' ('+Math.round(f.cob)+' días)').join(' · ')||'ninguno',riesgo.length?'var(--x-neg)':null)}
+    ${gK('Pedir pronto',pedir.length+' producto'+(pedir.length!==1?'s':''),pedir.map(f=>escH(f.nombre)).join(', ')||'nada por ahora')}
+    ${gK('Capital en sobrestock',clp(sobre),val?xP(sobre/val,0)+' del stock con más de 1 año de cobertura':'')}
+    ${gK('En camino',xN(cam)+' unidades',prox?'próxima llegada '+xFmt(prox.eta)+' · '+escH(prox.via||''):'sin importaciones en curso')}
+  </section>
+  <section class="xp"><div class="xp-h"><h2>Salud del stock y cuándo pedir</h2><span class="note">Importación <input type="number" min="10" max="200" value="${lead}" style="width:56px" class="xinp" onchange="gSet('lead',+this.value);xInventario()" aria-label="Días de importación"> días + <input type="number" min="0" max="120" value="${seg}" style="width:56px" class="xinp" onchange="gSet('seg',+this.value);xInventario()" aria-label="Días de seguridad"> días de seguridad · ventas de los últimos 90 días</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><div class="xchips">${chips.map(([k,l,n])=>`<button type="button" class="xchip${G.invFiltro===k?' on':''}" onclick="G.invFiltro='${k}';xInventario()">${l} ${n}</button>`).join('')}</div><span style="flex:1"></span>
+      <div class="xchips">${['','MemoKoala','Montana'].map(m=>`<button type="button" class="xchip${G.invMarca===m?' on':''}" onclick="G.invMarca='${m}';xInventario()">${m||'Ambas marcas'}</button>`).join('')}</div></div>
+    <div class="xtw"><table class="xt" style="min-width:1080px"><thead><tr><th>Producto</th><th class="r">ABEE</th><th class="r">ML</th><th class="r">Externo</th><th class="r">Venta / sem.</th><th>Cobertura</th><th class="r">En camino</th><th>Pedir antes de</th><th class="r">Sugerido</th><th>Estado</th></tr></thead>
+    <tbody>${lista.map(fila).join('')||'<tr><td colspan="10" class="xempty">Sin productos en este filtro</td></tr>'}</tbody></table></div>
+    <p class="xsmall" style="margin-top:10px">ML en rojo: MercadoLibre muestra más stock que ABEE (riesgo de vender lo que no hay). Externo: unidades fuera de ABEE anotadas en la hoja Stock_Externo.</p></section>
+  <div class="xrow">${proy}<section class="xp" style="flex:1 1 340px"><div class="xp-h"><h2>Dónde está el capital</h2><span class="note">a costo, sin IVA</span></div>${capH||'<div class="xempty">Sin datos</div>'}
+    ${sobre>0?`<p class="xsmall" style="margin-top:10px">Liquidar la mitad del sobrestock liberaría cerca de ${clp(sobre/2)} para reponer lo que sí rota.</p>`:''}</section></div>`;
+}
+
+// ── IMPORTACIONES ──
+async function xImportaciones(){
+  const el=document.getElementById('view-imp');
+  if(!G.imp){el.innerHTML='<div class="xp xempty">Cargando importaciones…</div>';await gLoadImp();}
+  const imps=G.imp||[];
+  if(!imps.length){el.innerHTML='<div class="xp xempty">Aún no hay importaciones registradas. Cuando hagas un pago inicial, pásame la proforma por el chat y queda cargada aquí.</div>';return;}
+  const tarjetas=[];imps.forEach(im=>(im.envios||[]).forEach(e=>tarjetas.push({im,e})));
+  if(!G.impSel){const t=tarjetas.find(t=>t.e.etapa!=='abee')||tarjetas[0];G.impSel=t.im.id;G.impEnvio=t.e.id;}
+  const kan=IMP_ETAPAS.map(([k,l])=>{const cs=tarjetas.filter(t=>t.e.etapa===k);return`<div class="col"><div class="colh"><span>${l}</span><span>${cs.length}</span></div>${cs.map(({im,e})=>{const u=Object.values(e.unidades||{}).reduce((s,x)=>s+x,0);
+    return`<div class="card${G.impSel===im.id&&G.impEnvio===e.id?' sel':''}" onclick="G.impSel='${escH(im.id)}';G.impEnvio='${escH(e.id)}';xImportaciones()" role="button" tabindex="0"><b>${escH(im.nombre||im.id)}</b><div class="xsmall">${escH(e.via||'')}</div><div style="margin-top:6px">${xN(u)} u · ${Object.keys(e.unidades||{}).length} SKUs</div>${e.eta?`<div style="margin-top:6px"><span class="xtag ${e.etapa==='abee'?'g':'b'}">${e.etapa==='abee'?'Llegó':'ETA'} ${xFmt(e.llegada||e.eta,false)}</span></div>`:''}</div>`;}).join('')}</div>`;}).join('');
+  const im=imps.find(i=>i.id===G.impSel)||imps[0],e=(im.envios||[]).find(x=>x.id===G.impEnvio)||(im.envios||[])[0]||{};
+  const lin=(im.lineas||[]).filter(l=>(e.unidades||{})[l.sku]).map(l=>{const u=e.unidades[l.sku];const c=e.id==='aereo'&&l.costoEstAereo?l.costoEstAereo:l.costoEst;const mg=l.pvp&&c?(l.pvp-c*IVA)/l.pvp:null;
+    return`<tr><td><b>${escH(l.sku)}</b><div class="sk">${escH(l.proveedorSku||'')}${l.reemplaza?' · antes '+escH(l.reemplaza):''}</div></td><td>${escH(l.prod)}</td><td class="r">${u}</td><td class="r">USD ${(+l.usd).toFixed(2).replace('.',',')}</td><td class="r">${c?clp(c):'<span class="xph">pendiente</span>'}${l.costoReal?'':'<div class="sk">estimado</div>'}</td><td class="r">${l.pvp?clp(l.pvp):'–'}</td><td class="r">${mg===null?'–':xP(mg)}</td></tr>`;}).join('');
+  const cos=(e.costos||[]).map(c=>`<tr><td>${escH(c.concepto)}</td><td>${escH(c.fuente||'')}</td><td class="r">${c.estimado===null||c.estimado===undefined||c.estimado===''?'<span class="xph">pendiente</span>':escH(String(c.estimado))}</td><td class="r">${c.real?escH(String(c.real)):'–'}</td></tr>`).join('');
+  const pagos=(im.pagos||[]).map(p=>`<tr><td>${gF(p.fecha)}</td><td>${escH(p.concepto)}</td><td class="r">${p.usd?'USD '+(+p.usd).toLocaleString('es-CL',{minimumFractionDigits:2}):''}</td><td class="r">${p.clp?clp(p.clp):'–'}</td><td class="r">${p.usd&&p.clp?'$'+(p.clp/p.usd).toFixed(2).replace('.',','):''}</td></tr>`).join('');
+  const tl=(im.eventos||[]).map(ev=>`<div class="st"><span class="dot" style="background:${ev.fecha&&ev.fecha<=gHoy()?'var(--x-pos)':'#d9deeb'}"></span><div><b>${escH(ev.txt)}</b><div class="xsmall">${gF(ev.fecha)}${ev.nota?' · '+escH(ev.nota):''}</div></div></div>`).join('');
+  const pend=(im.pendientes||[]).map(p=>`<li>${escH(p)}</li>`).join('');
+  el.innerHTML=`<section class="xkan" aria-label="Envíos por etapa">${kan}</section>
+  <div class="xrow"><section class="xp" style="flex:2 1 640px">
+    <div class="xp-h"><div><h2>${escH(im.nombre||im.id)} · ${escH(e.via||'')}</h2><div class="xsmall">PI ${escH(im.pi||im.id)} (${gF(im.fechaPI)}) · ${escH(im.proveedor||'')} · ${escH(im.incoterm||'')} · ${escH(im.origen||'')}${im.arancel!==undefined?' · arancel '+im.arancel+'%':''}</div></div>
+      <span class="xtag b">${(IMP_ETAPAS.find(x=>x[0]===e.etapa)||[,''])[1]}</span></div>
+    <div class="xsmall" style="margin-bottom:10px">${e.etd?'ETD '+gF(e.etd)+' · ':''}${e.eta?'ETA '+gF(e.eta):''}${e.ref?' · '+escH(e.ref):''}${e.nota?' · '+escH(e.nota):''}</div>
+    <div class="xtw"><table class="xt" style="min-width:720px"><thead><tr><th>SKU</th><th>Producto</th><th class="r">Unid.</th><th class="r">Precio proveedor</th><th class="r">Costo internado (sin IVA)</th><th class="r">PVP</th><th class="r">Margen bruto</th></tr></thead><tbody>${lin}</tbody></table></div>
+    <h2 style="margin-top:18px;font-size:14px">Costo de este envío</h2>
+    <div class="xtw"><table class="xt" style="min-width:560px"><thead><tr><th>Concepto</th><th>Fuente</th><th class="r">Estimado</th><th class="r">Real</th></tr></thead><tbody>${cos}</tbody></table></div>
+    <h2 style="margin-top:18px;font-size:14px">Pagos de la importación</h2>
+    <div class="xtw"><table class="xt" style="min-width:560px"><thead><tr><th>Fecha</th><th>Concepto</th><th class="r">USD</th><th class="r">Pagado (CLP)</th><th class="r">Dólar efectivo</th></tr></thead><tbody>${pagos}</tbody></table></div>
+    <p class="xsmall" style="margin-top:10px">Margen bruto = PVP − costo × 1,19. Costos según pesos realmente pagados y documentos oficiales; el IVA de importación es crédito fiscal y no suma al costo.</p>
+  </section>
+  <section class="xp" style="flex:1 1 320px"><div class="xp-h"><h2>Historial</h2><span class="note">actualizado ${escH(im._act||'')}</span></div><div class="xtl">${tl}</div>
+    ${pend?`<h2 style="margin-top:20px;font-size:14px">Pendiente</h2><ul class="xsmall" style="padding-left:18px;line-height:1.6">${pend}</ul>`:''}
+    <p class="xsmall" style="margin-top:16px;line-height:1.5">Para actualizar una importación (pagos, embarque, cotizaciones, llegada) pásame los documentos por el chat y la dejo cargada aquí.</p></section></div>`;
+}
+
+// ── VENTAS (todos los canales) ──
+const CANAL_TAG={Shopify:'b',ML:'y',B2B:'p',HigoKids:'n','Venta Directa':'g','Venta Corporativa':'p',Otro:'n'};
+const canalNom=c=>c==='ML'?'MercadoLibre':c;
+function gPedidosVentas(){
+  const hoy=gHoy(),desde=G.ventDias?xAdd(hoy,-(G.ventDias-1)):'0000';
+  const o={};
+  DATA.filter(r=>r.vb>0&&r.fecha>=desde).forEach(r=>{const k=r.canal+'|'+r.orden;const x=o[k]||(o[k]={k,canal:r.canal,orden:r.orden,fecha:r.fecha,hora:r.hora,marca:r.marca,cli:r.cli,cliente:r.cliente,ciudad:r.ciudad,reg:xReg(r),pago:r.pago,desp:r.desp,ncomp:r.ncomp,fuente:r.fuente,manual:r.manual,vb:0,mb:0,com:0,env:0,flex:0,lin:[]});
+    x.vb+=r.vb;x.mb+=r.mb;x.com+=r.cargoMP;x.env+=r.envio;x.flex+=r.canal==='ML'?r.descto:0;x.lin.push(r);});
+  let L=Object.values(o);
+  if(G.ventCanal)L=L.filter(p=>p.canal===G.ventCanal);
+  const q=xNorm(G.ventQ);
+  if(q)L=L.filter(p=>xNorm([p.orden,p.cli,p.cliente,p.ciudad,p.lin.map(l=>l.prod+' '+l.sku).join(' ')].join(' ')).includes(q));
+  return L.sort((a,b)=>(b.fecha+(b.hora||''))>(a.fecha+(a.hora||''))?1:-1);
+}
+function xVentasG(){
+  const el=document.getElementById('view-ventas');
+  const L=gPedidosVentas();
+  const vb=L.reduce((s,p)=>s+p.vb,0),mb=L.reduce((s,p)=>s+p.mb,0);
+  const canales=[...new Set(DATA.map(r=>r.canal))].sort();
+  const sel=L.find(p=>p.k===G.ventSel);
+  const lim=G.ventLim||100;const filas=L.slice(0,lim).map(p=>`<tr class="clk${G.ventSel===p.k?' sel':''}" data-k="${escH(p.k)}" onclick="G.ventSel=this.dataset.k;xVentasG()"><td><b>${escH(p.orden)}</b></td><td>${xFmt(p.fecha,false)}${p.hora?' · '+escH(p.hora.slice(0,5)):''}</td>
+    <td><span class="xtag ${CANAL_TAG[p.canal]||'n'}">${escH(canalNom(p.canal))}${p.canal==='Shopify'?' '+(p.marca==='MemoKoala'?'MK':'MT'):''}</span></td>
+    <td>${escH(p.cliente||p.cli||'–')}${+p.ncomp>1?`<div class="sk">${p.ncomp}ª compra</div>`:''}</td><td>${p.lin.map(l=>escH(l.prod||l.sku)+' ×'+l.qty).join('<br>')}</td>
+    <td class="r">${clp(p.vb)}</td><td class="r">${clp(p.mb)} · ${xP(p.vb?p.mb/p.vb:0,0)}</td><td>${escH([p.ciudad,p.reg].filter(Boolean).join(', ')||'–')}</td><td>${escH(X_PAGO[p.pago]||p.pago||'–')}${p.desp?`<div class="sk">${escH(p.desp)}</div>`:''}</td></tr>`).join('');
+  let det='';
+  if(sel){
+    const lin=sel.lin.map(l=>`<tr><td>${escH(l.prod||l.sku)} (${escH(l.sku)}) × ${l.qty}</td><td class="r">${clp(l.vb)}</td></tr>`).join('');
+    const costo=sel.lin.reduce((s,l)=>s+l.costoTotal,0);
+    det=`<section class="xp" style="flex:1 1 340px;max-width:460px;position:sticky;top:18px"><div class="xp-h"><h2>${escH(sel.orden)} · ${escH(canalNom(sel.canal))}</h2><span class="note">${gF(sel.fecha)}</span></div>
+      <table class="xt"><tbody>${lin}
+      <tr><td>Costo (${xN(costo)} × 1,19)</td><td class="r">−${clp(costo*IVA)}</td></tr>
+      <tr class="tot"><td>Margen bruto</td><td class="r">${clp(sel.mb)} · ${xP(sel.vb?sel.mb/sel.vb:0)}</td></tr>
+      ${sel.com?`<tr><td>Comisión ${sel.canal==='ML'?'MercadoLibre':sel.canal==='Shopify'?'Mercado Pago':'del canal'}</td><td class="r">−${clp(sel.com)}</td></tr>`:''}
+      ${sel.canal==='ML'&&sel.env?`<tr><td>Envío pagado a ML</td><td class="r">−${clp(sel.env)}</td></tr>`:''}
+      ${sel.flex?`<tr><td>Bonificación Flex</td><td class="r">+${clp(sel.flex)}</td></tr>`:''}
+      <tr class="tot"><td>Después de comisiones y envío</td><td class="r">${clp(sel.mb-sel.com-(sel.canal==='ML'?sel.env:0)+sel.flex)}</td></tr></tbody></table>
+      ${sel.manual?`<div style="margin-top:12px"><button type="button" class="xbtn" onclick="anularMV('${escH(sel.orden)}','${escH(sel.canal)}')">Anular venta manual</button></div>`:''}</section>`;
+  }
+  el.innerHTML=`<div class="xrow"><section class="xp" style="flex:3 1 720px">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
+      <label class="xlbl" style="flex:1 1 260px">Buscar<input class="xinp" type="search" value="${escH(G.ventQ)}" placeholder="N° de pedido, producto, comuna o cliente" oninput="G.ventQ=this.value;clearTimeout(window._vq);window._vq=setTimeout(()=>{xVentasG();const i=document.querySelector('#view-ventas input[type=search]');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}},250)"></label>
+      <div class="xchips">${['',...canales].map(c=>`<button type="button" class="xchip${G.ventCanal===c?' on':''}" onclick="G.ventCanal='${escH(c)}';xVentasG()">${c?escH(canalNom(c)):'Todos'}</button>`).join('')}</div>
+      <label class="xlbl">Período<select class="xinp" onchange="G.ventDias=+this.value;xVentasG()">${[[30,'Últimos 30 días'],[90,'Últimos 90 días'],[365,'Últimos 365 días'],[0,'Todo el historial']].map(([v,l])=>`<option value="${v}"${G.ventDias===v?' selected':''}>${l}</option>`).join('')}</select></label>
+      <button type="button" class="xbtn" onclick="gExportVentas()">Exportar CSV</button>
+      <button type="button" class="xbtn pri" onclick="showMV()">+ Venta manual</button>
+    </div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;margin:16px 0 6px">
+      <div><div class="xsmall">Pedidos</div><div class="xbig" style="font-size:20px">${xN(L.length)}</div></div>
+      <div><div class="xsmall">Ventas</div><div class="xbig" style="font-size:20px">${clp(vb)}</div></div>
+      <div><div class="xsmall">Margen bruto</div><div class="xbig" style="font-size:20px">${clp(mb)} · ${xP(vb?mb/vb:0)}</div></div>
+      <div><div class="xsmall">Ticket promedio</div><div class="xbig" style="font-size:20px">${clp(L.length?vb/L.length:0)}</div></div>
+    </div>
+    <div class="xtw"><table class="xt" style="min-width:980px"><thead><tr><th>Pedido</th><th>Fecha</th><th>Canal</th><th>Cliente</th><th>Productos</th><th class="r">Total</th><th class="r">Margen</th><th>Destino</th><th>Pago / despacho</th></tr></thead><tbody>${filas||'<tr><td colspan="9" class="xempty">Sin pedidos para este filtro</td></tr>'}</tbody></table></div>
+    ${L.length>lim?`<div style="margin-top:10px;display:flex;gap:10px;align-items:center"><button type="button" class="xbtn" onclick="G.ventLim=(G.ventLim||100)+200;xVentasG()">Mostrar más</button><span class="xsmall">${xN(lim)} de ${xN(L.length)} pedidos</span></div>`:''}
+    <p class="xsmall" style="margin-top:8px">Haz clic en un pedido para ver su detalle. Las ventas canceladas o devueltas salen solas del libro (hoja Ventas_Anuladas).</p></section>
+  ${det||'<section class="xp xempty" style="flex:1 1 340px;max-width:460px">Elige un pedido para ver su margen, comisiones y envío.</section>'}</div>`;
+}
+function gExportVentas(){
+  const L=gPedidosVentas();const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=[['Pedido','Fecha','Hora','Canal','Marca','Cliente','SKU','Producto','Cantidad','Total','Costo','Margen','Comuna','Región','Pago','Despacho']];
+  L.forEach(p=>p.lin.forEach(l=>rows.push([p.orden,p.fecha,p.hora,canalNom(p.canal),l.marca,p.cliente||p.cli,l.sku,l.prod,l.qty,l.vb,l.costoTotal,Math.round(l.mb),p.ciudad,p.reg,p.pago,p.desp])));
+  const b=new Blob(['﻿'+rows.map(r=>r.map(esc).join(';')).join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='ventas_'+gHoy()+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+
+// ── P&L ──
+async function xPnlG(){
+  const el=document.getElementById('view-pnl');
+  if(!PNL.rows.length){el.innerHTML='<div class="xp xempty">Cargando P&L…</div>';try{const r=await fetch(CSV_PNL);PNL=parsePnL(await r.text());pnlLoaded=true;}catch(e){el.innerHTML='<div class="xp xempty">No se pudo cargar el P&L.</div>';return;}}
+  const {meses,rows}=PNL;if(!rows.length){el.innerHTML='<div class="xp xempty">La hoja P&L está vacía.</div>';return;}
+  const fr=t=>rows.find(r=>r.concepto.toUpperCase().includes(t.toUpperCase()));
+  const vb=fr('VENTA BRUTA TOTAL');
+  const conVenta=meses.map((m,i)=>i).filter(i=>vb&&vb.mv[i]>0);
+  if(G.pnlMes===null||!conVenta.includes(G.pnlMes))G.pnlMes=conVenta[conVenta.length-1];
+  const i=G.pnlMes,pi=conVenta[conVenta.indexOf(i)-1];
+  const v=(t,j)=>{const r=fr(t);return r&&j!==undefined?(r.mv[j]||0):0;};
+  const ab=x=>Math.abs(x);
+  const M=j=>{const venta=v('VENTA BRUTA TOTAL',j),mb=v('MARGEN BRUTO TOTAL',j),log=ab(v('TOTAL LOG',j)),mkt=ab(v('TOTAL MARKETING',j)),tech=ab(v('TOTAL TECH',j)),adm=ab(v('TOTAL ADMINISTRACI',j)),res=v('RESULTADO NETO',j);
+    const ads=ab(v('Meta Ads',j))+ab(v('Google Ads',j))+ab(v('MercadoLibre Ads',j)),agencia=ab(v('The Link It',j));
+    const contrib=mb-log-ads,fijos=agencia+tech+adm;return{venta,mb,log,mkt,tech,adm,res,ads,agencia,contrib,fijos,cpct:venta?contrib/venta:0,eq:contrib>0?fijos/(contrib/venta):0};};
+  const C=M(i),P=pi!==undefined?M(pi):null;
+  const pct=x=>C.venta?xP(x/C.venta):'–';
+  // cascada
+  const segs=[['Venta bruta',C.venta,0,'#3355f0'],['Costo de productos',C.venta-C.mb,C.mb,'#e7a27b'],['Margen bruto',C.mb,0,'#5b74f3'],['Logística neta',C.log,C.mb-C.log,'#e7a27b'],['Marketing',C.mkt,C.mb-C.log-C.mkt,'#b4410f'],['Tecnología',C.tech,C.mb-C.log-C.mkt-C.tech,'#e7a27b'],['Administración',C.adm,C.res,'#e7a27b'],['Resultado',C.res,0,C.res>=0?'#0b7a4b':'#b4410f']];
+  const tope=Math.max(C.venta,1);
+  const wf=segs.map(([l,val,base,col])=>{const b=Math.max(0,Math.min(base,base+(val<0?val:0)));return`<div class="c"><i style="bottom:${(b/tope*100).toFixed(2)}%;height:${Math.max(0.6,ab(val)/tope*100).toFixed(2)}%;background:${col}"></i></div>`;}).join('');
+  const wl=segs.map(([l,val],k)=>`<div><b>${k===0||k===2||k===7?'':'−'}${clp(ab(val))}</b>${l}${k>0?' '+pct(ab(val)):''}</div>`).join('');
+  const d=(a,b,inv)=>P?xDelta(a,b,inv):'';
+  const fila=(t,cls,lbl)=>{const r=fr(t);if(!r)return'';const a=r.mv[i]||0,b=pi!==undefined?(r.mv[pi]||0):null;return`<tr class="${cls||''}"><td>${escH(lbl||r.concepto)}</td><td class="r">${b===null?'–':clp(b)}</td><td class="r">${clp(a)}</td><td class="r">${C.venta?xP(ab(a)/C.venta):'–'}</td></tr>`;};
+  const tabla=[['VENTA BRUTA TOTAL','grp','Venta bruta'],['Venta Bruta MemoKoala','ind','MemoKoala'],['Venta Bruta Montana','ind','Montana'],['MARGEN BRUTO TOTAL','grp','Margen bruto'],
+    ['TOTAL LOG','grp','Logística neta'],['ABEE — Fulfillment','ind'],['ABEE — Envíos','ind'],['Comisión MercadoPago','ind'],['Comisión ML','ind'],['ML Colecta','ind'],['ML FLEX','ind'],['Envío cobrado','ind'],
+    ['TOTAL MARKETING','grp','Marketing'],['The Link It','ind'],['Meta Ads','ind'],['Google Ads','ind'],['MercadoLibre Ads','ind'],
+    ['TOTAL TECH','grp','Tecnología y software'],['TOTAL ADMINISTRACI','grp','Administración'],['BP Consulting','ind'],['Remuneraciones','ind'],['RESULTADO NETO','tot','Resultado neto']].map(x=>fila(...x)).join('');
+  el.innerHTML=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="xsmall">Mes</span><div class="xchips">${conVenta.slice(-8).map(j=>`<button type="button" class="xchip${j===i?' on':''}" onclick="G.pnlMes=${j};xPnlG()">${escH(meses[j])}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">${P?'comparado con '+escH(meses[pi]):''}</span></section>
+  <section class="xg xg-k">
+    ${gK('Resultado neto',clp(C.res),(C.venta?xP(C.res/C.venta)+' de la venta':'')+(P?' · antes '+clp(P.res):''),C.res>=0?'var(--x-pos)':'var(--x-neg)')}
+    ${gK('Margen de contribución',clp(C.contrib),xP(C.cpct)+' · margen bruto − logística − publicidad pagada')}
+    ${gK('Venta por cada $1 de publicidad',C.ads?'$'+(C.venta/C.ads).toFixed(1).replace('.',','):'–',clp(C.venta)+' ÷ '+clp(C.ads)+' en Meta, Google y ML Ads (sin agencia)')}
+    ${gK('Punto de equilibrio',C.eq?xM(C.eq)+' / mes':'–','gastos fijos '+clp(C.fijos)+' ÷ '+xP(C.cpct)+' de contribución'+(C.eq?(C.venta>=C.eq?'. Este mes lo superó.':'. Este mes quedó bajo.'):''))}
+  </section>
+  <section class="xp"><div class="xp-h"><h2>De la venta a la utilidad · ${escH(meses[i])}</h2><span class="note">cada barra es el % de la venta bruta (con IVA)</span></div>
+    <div class="xwf" role="img" aria-label="Cascada del resultado">${wf}</div><div class="xwfl">${wl}</div>
+    ${C.venta&&C.agencia?`<p class="xsmall" style="margin-top:14px">Marketing se lleva ${pct(C.mkt)} de la venta; el fee de agencia (${clp(C.agencia)}) es ${pct(C.agencia)}${C.agencia>ab(v('Meta Ads',i))?', más que lo invertido en anuncios de Meta':''}.</p>`:''}</section>
+  <section class="xp"><div class="xp-h"><h2>Estado de resultados</h2><span class="note">% sobre venta bruta del mes</span></div>
+    <div class="xtw"><table class="xt" style="min-width:640px"><thead><tr><th>Concepto</th><th class="r">${P?escH(meses[pi]):''}</th><th class="r">${escH(meses[i])}</th><th class="r">% venta</th></tr></thead><tbody>${tabla}</tbody></table></div>
+    <p class="xsmall" style="margin-top:10px">Fuente: hoja P&L. Los gastos se cargan al cierre de cada mes (ver Estado del sistema).</p></section>`;
+}
+
+// ── CONVERSIÓN ──
+async function xConvG(){
+  const el=document.getElementById('view-conv');
+  if(!CONV_DATA.length){el.innerHTML='<div class="xp xempty">Cargando conversión…</div>';try{const r=await fetch(CSV_CONV);CONV_DATA=parseConv(await r.text());convLoaded=true;}catch(e){el.innerHTML='<div class="xp xempty">No se pudo cargar la conversión.</div>';return;}}
+  if(!CONV_DATA.length){el.innerHTML='<div class="xp xempty">Sin datos en la hoja Conversion.</div>';return;}
+  const per=[...new Set(CONV_DATA.map(r=>r.anio*100+r.mes))].sort();
+  if(!G.convMes||!per.includes(G.convMes))G.convMes=per[per.length-1];
+  const MN=['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const pl=p=>MN[p%100]+' '+Math.floor(p/100);
+  const rs=CONV_DATA.filter(r=>r.anio*100+r.mes===G.convMes);
+  const BM={carro:[5,10],chk:[45,60],compra:[60,70],conv:[2.5,3]};
+  const fun=r=>{const ml=/ML|Mercado/i.test(r.canal);const pc=(a,b)=>b?a/b*100:0;
+    const st=(l,n,p,mx,w)=>`<div class="xfun"><span>${l}</span><div class="t"><i class="${w?'w':''}" style="width:${Math.max(0.6,n/mx*100)}%"></i></div><span class="r"><b>${xN(n)}</b>${p!==null?' · '+p.toFixed(p<10?1:0).replace('.',',')+'%':''}</span></div>`;
+    const mx=r.sesiones||1;
+    if(ml)return`<section class="xp"><h2>${escH(r.canal==='ML'?'MercadoLibre':r.canal)}</h2>${st('Visitas',r.sesiones,null,mx)}${st('Ventas',r.compras,pc(r.compras,r.sesiones),mx)}<p class="xsmall" style="margin-top:12px">Conversión <b>${pc(r.compras,r.sesiones).toFixed(1).replace('.',',')}%</b></p></section>`;
+    const c1=pc(r.carro,r.sesiones),c2=pc(r.pasarela,r.carro),c3=pc(r.compras,r.pasarela),ct=pc(r.compras,r.sesiones);
+    return`<section class="xp"><h2>${escH(r.canal)}</h2>${st('Sesiones',r.sesiones,null,mx)}${st('Agregó al carro',r.carro,c1,mx,c1<BM.carro[0])}${st('Llegó al checkout',r.pasarela,c2,mx,c2<BM.chk[0])}${st('Compró',r.compras,c3,mx,c3<BM.compra[0])}
+      <p class="xsmall" style="margin-top:12px">Conversión total <b>${ct.toFixed(1).replace('.',',')}%</b> · referencia 2,5–3%${c2>90?' · el '+Math.round(c2)+'% carro→checkout sugiere botón "comprar ahora"':''}</p></section>`;};
+  const tiendas=rs.filter(r=>!/ML|Mercado/i.test(r.canal));
+  const pc=(a,b)=>b?a/b*100:0;
+  const peor=tiendas.map(r=>({r,c1:pc(r.carro,r.sesiones),c3:pc(r.compras,r.pasarela)})).sort((a,b)=>a.c1-b.c1)[0];
+  let insight='';
+  if(peor){const r=peor.r,obj=5,extra=Math.round(r.sesiones*obj/100*(r.carro?r.pasarela/r.carro:0.75)*(r.pasarela?r.compras/r.pasarela:0.5));
+    insight=peor.c1<BM.carro[0]?`<section class="xp glass" style="border-left:5px solid var(--x-neg)"><h2>El problema está en agregar al carro, no en el checkout</h2><p class="xsmall" style="font-size:13.5px;line-height:1.5;margin-top:6px">En ${escH(r.canal)} solo ${peor.c1.toFixed(1).replace('.',',')}% de las visitas agrega algo al carro; lo normal es 5–10%. Si llegara a 5% con el resto del embudo igual, ${pl(G.convMes)} habría cerrado con unas ${xN(extra)} compras en vez de ${xN(r.compras)}, sin gastar más en publicidad. Conviene trabajar la ficha de producto (fotos, precio con cuotas, despacho y reseñas) antes de subir la pauta.</p></section>`:'';}
+  const tabla=tiendas.map(r=>{const c=[pc(r.carro,r.sesiones),pc(r.pasarela,r.carro),pc(r.compras,r.pasarela),pc(r.compras,r.sesiones)];return c;});
+  const tag=(v,[a])=>`<span class="xd ${v>=a?'up':'dn'}">${v.toFixed(1).replace('.',',')}%</span>`;
+  const ref=tiendas.length?`<section class="xp"><h2>Contra la referencia del mercado</h2><div class="xtw"><table class="xt" style="margin-top:6px"><thead><tr><th>Paso</th>${tiendas.map(r=>`<th class="r">${escH(r.canal)}</th>`).join('')}<th class="r">Normal</th></tr></thead><tbody>
+    ${[['Visita → carro','carro','5–10%'],['Carro → checkout','chk','45–60%'],['Checkout → compra','compra','60–70%'],['Visita → compra','conv','2,5–3%']].map(([l,k,n],j)=>`<tr><td>${l}</td>${tabla.map(c=>`<td class="r">${tag(c[j],BM[k])}</td>`).join('')}<td class="r">${n}</td></tr>`).join('')}</tbody></table></div></section>`:'';
+  el.innerHTML=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="xsmall">Mes</span><div class="xchips">${per.slice(-8).map(p=>`<button type="button" class="xchip${p===G.convMes?' on':''}" onclick="G.convMes=${p};xConvG()">${pl(p)}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">Fuente: hoja Conversion (carga manual)</span></section>
+    ${insight}<div class="xg xg-3">${rs.map(fun).join('')}${ref}</div>`;
+}
+
+// ── ESTADO DEL SISTEMA ──
+async function gLoadEstado(){try{const f=await gCsv(CSV_ESTADO);G.estado=f.slice(1);}catch(e){G.estado=[];}}
+async function gSincronizar(btn){
+  btn.disabled=true;btn.textContent='Sincronizando…';
+  try{const r=await fetch(API_VENTA,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'sync'})});const j=await r.json();
+    if(j.error&&!j.resultados)throw new Error(j.error);
+    INV_SNAP=null;await Promise.all([loadVentas(),loadInvSnap().catch(()=>{}),gLoadEstado()]);
+    const malos=(j.resultados||[]).filter(x=>!x.ok);
+    btn.textContent=malos.length?'Con errores: '+malos.map(x=>x.proceso).join(', '):'Listo';
+  }catch(e){btn.textContent='Error: '+e.message;}
+  setTimeout(()=>{if(X_VISTA==='sis')xSistema();},1500);
+}
+async function xSistema(){
+  const el=document.getElementById('view-sis');
+  if(G.estado===null){el.innerHTML='<div class="xp xempty">Revisando el sistema…</div>';await Promise.all([gLoadEstado(),gLoadImp(),loadInvSnap().catch(()=>{})]);}
+  const hoy=gHoy(),ahora=Date.now();
+  const est={};(G.estado||[]).forEach(c=>{est[c[0]]={ok:c[1],err:c[2],det:c[3]};});
+  const hace=s=>{if(!s)return'nunca';const t=new Date(s.replace(' ','T')+':00-03:00').getTime();const m=Math.max(0,Math.round((ahora-t)/6e4));return m<2?'hace un momento':m<60?'hace '+m+' min':m<2880?'hace '+Math.round(m/60)+' h':'hace '+Math.round(m/1440)+' días';};
+  const ult=c=>{const r=DATA.filter(x=>x.canal===c).sort((a,b)=>(b.fecha+(b.hora||''))>(a.fecha+(a.hora||''))?1:-1)[0];return r?xFmt(r.fecha,false)+(r.hora?' '+r.hora.slice(0,5):''):'–';};
+  const con=(n,proc,desc,maxMin)=>{const e=est[proc];let cls='of',txt=desc;
+    if(e){const okT=e.ok?new Date(e.ok.replace(' ','T')+':00-03:00').getTime():0,erT=e.err?new Date(e.err.replace(' ','T')+':00-03:00').getTime():0;
+      if(erT>okT){cls='er';txt='Falló '+hace(e.err)+': '+e.det;}else{cls=(ahora-okT)/6e4>maxMin?'wa':'ok';txt=desc+' · última corrida '+hace(e.ok);}}
+    return`<div class="xrw"><span class="xdot ${cls}"></span><div style="flex:1"><b>${n}</b><div class="xsmall">${escH(txt)}</div></div></div>`;};
+  const ext=Object.values(INV_SNAP||{}).reduce((s,x)=>s+(x.ext||0),0);
+  const pnlM=PNL.meses.length?PNL.meses.filter((m,i)=>{const r=PNL.rows.find(x=>x.concepto.toUpperCase().includes('VENTA BRUTA TOTAL'));return r&&r.mv[i]>0;}).slice(-1)[0]:null;
+  const al=[];
+  const sinC=[...new Set(DATA.filter(r=>r.vb>0&&!(r.costoUnit>0)).map(r=>r.sku))];
+  if(sinC.length)al.push(['r','Costos',sinC.length+' SKU con ventas sin costo: '+sinC.join(', ')+'. El margen sale inflado.']);
+  const desc=Object.values(INV_SNAP||{}).filter(s=>s.estadoSync==='Revisar'&&s.ml>s.sh);
+  if(desc.length)al.push(['y','Stock',desc.length+' SKU con más stock en MercadoLibre que en ABEE: riesgo de vender lo que no hay.']);
+  const nuevos=[];(G.imp||[]).forEach(im=>(im.lineas||[]).forEach(l=>{if(!COSTOS[l.sku])nuevos.push(l.sku);}));
+  if(nuevos.length)al.push(['y','Costos','SKUs nuevos sin costo cargado en las ventas automáticas: '+[...new Set(nuevos)].join(', ')+'. Hay que cargarlos antes de que se venda la primera unidad.']);
+  if(!ext)al.push(['n','Stock','La hoja Stock_Externo está vacía: lo que tienes fuera de ABEE no se cuenta.']);
+  al.push(['r','Seguridad','El repositorio de GitHub es público. Se cambia en GitHub → Settings → General → Change visibility.']);
+  if(!al.length)al.push(['g','OK','Nada pendiente.']);
+  // cierre de mes (mes anterior)
+  const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-1);const mesC=xIso(d).slice(0,7);
+  const nomC=d.toLocaleDateString('es-CL',{month:'long',year:'numeric'});
+  const CL=[['ventas','Ventas Shopify y MercadoLibre','automático'],['manual','Ventas manuales (HIGO, B2B, directas)','cargadas desde Ventas'],['abee','ABEE · fulfillment y envíos','factura mensual'],['agencia','The Link It · agencia','factura mensual'],['admin','BP Consulting · administración','factura mensual'],['ads','Meta, Google y ML Ads','monto del mes'],['tech','Tecnología (Shopify, apps, dominios)','monto del mes'],['pnl','Regenerar hoja P&L','al tener todos los gastos']];
+  const marc=gOpt('cierre_'+mesC,{});
+  const cl=CL.map(([k,l,n])=>`<div class="xrw"><button type="button" class="xcb${marc[k]?' on':''}" aria-pressed="${!!marc[k]}" aria-label="${escH(l)}" onclick="gCierre('${mesC}','${k}')"></button><div style="flex:1"><b>${escH(l)}</b><div class="xsmall">${escH(n)}</div></div><span class="xtag ${marc[k]?'g':'n'}">${marc[k]?'Listo':'Falta'}</span></div>`).join('');
+  el.innerHTML=`<div class="xrow"><section class="xp" style="flex:1 1 420px"><div class="xp-h"><h2>Conexiones</h2><button type="button" class="xbtn pri" onclick="gSincronizar(this)">Sincronizar ahora</button></div>
+    ${con('Ventas Shopify','Ventas Shopify','cada 15 min · última venta '+ult('Shopify'),40)}
+    ${con('Ventas MercadoLibre','Ventas MercadoLibre','cada 15 min · última venta '+ult('ML'),40)}
+    ${con('Inventario Shopify + ML','Inventario','cada hora · foto '+(INV_FECHA||'–'),120)}
+    ${con('Radar Scout','Scout semanal','cada lunes · búsquedas de MercadoLibre Chile',60*24*8)}
+    <div class="xrw"><span class="xdot ${pnlM?'wa':'er'}"></span><div style="flex:1"><b>Hoja P&L</b><div class="xsmall">último mes con datos: ${escH(pnlM||'–')} · se regenera al cerrar el mes</div></div></div>
+    <div class="xrw"><span class="xdot of"></span><div style="flex:1"><b>Conversión</b><div class="xsmall">carga manual en la hoja Conversion</div></div></div>
+    <p class="xsmall" style="margin-top:10px">Las ventas aparecen en el dashboard hasta 15 minutos después de la compra. "Sincronizar ahora" las trae al momento.</p></section>
+  <section class="xp" style="flex:1 1 420px"><h2>Requiere atención</h2>${al.map(([c,t,x])=>`<div class="xrw"><span class="xtag ${c}">${t}</span><div style="flex:1">${escH(x)}</div></div>`).join('')}</section></div>
+  <section class="xp"><div class="xp-h"><h2>Cierre de ${escH(nomC)}</h2><span class="note">marca cada paso al terminarlo</span></div>${cl}</section>`;
+}
+function gCierre(mes,k){const m=gOpt('cierre_'+mes,{});m[k]=!m[k];gSet('cierre_'+mes,m);xSistema();}
+
+// ── SCOUT ──
+async function gLoadScout(){if(G.scout)return;try{const f=await gCsv(CSV_SCOUT);G.scout=f.slice(1).filter(c=>c[2]).map(c=>({fecha:c[0],grupo:c[1],kw:c[2],pos:pn(c[3])||null,res:pn(c[4])||null,p25:pn(c[5])||null,med:pn(c[6])||null,p75:pn(c[7])||null,vend:pn(c[8])||null}));}catch(e){G.scout=[];}}
+async function xScout(){
+  const el=document.getElementById('view-scout');
+  if(!G.scout){el.innerHTML='<div class="xp xempty">Cargando Scout…</div>';await gLoadScout();}
+  const tabs=[['radar','Radar'],['eval','Evaluar producto'],['marcas','Mis marcas']];
+  const head=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="xchips" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" aria-selected="${G.scoutTab===k}" class="xchip${G.scoutTab===k?' on':''}" onclick="G.scoutTab='${k}';xScout()">${l}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">Qué se busca en Chile, si hay espacio para entrar y cuánto dejaría cada unidad</span></section>`;
+  if(G.scoutTab==='eval'){el.innerHTML=head+gEvalHtml();gEvalCalc();return;}
+  const S=G.scout||[];
+  const fechas=[...new Set(S.map(r=>r.fecha))].sort(),ult=fechas[fechas.length-1],prev=fechas[fechas.length-2];
+  if(!ult){el.innerHTML=head+`<section class="xp xempty">El radar todavía no tiene datos. Corre todos los lunes con las búsquedas de MercadoLibre Chile; la primera foto aparece después de la próxima corrida. Mientras más semanas acumula, más confiable es la tendencia.</section>`;return;}
+  const esMarca=g=>/^Mis marcas/.test(g);
+  const grupos=[...new Set(S.filter(r=>r.fecha===ult&&!esMarca(r.grupo)).map(r=>r.grupo))];
+  if(G.scoutTab==='marcas'){
+    const rs=S.filter(r=>r.fecha===ult&&esMarca(r.grupo));
+    el.innerHTML=head+`<section class="xp"><div class="xp-h"><h2>Mis marcas · competencia en MercadoLibre</h2><span class="note">foto del ${gF(ult)}</span></div><div class="xtw"><table class="xt"><thead><tr><th>Búsqueda</th><th>Marca</th><th class="r">Publicaciones</th><th class="r">Vendedores en los primeros 50</th><th class="r">Precio p25</th><th class="r">Mediana</th><th class="r">p75</th></tr></thead><tbody>
+      ${rs.map(r=>`<tr><td><b>${escH(r.kw)}</b></td><td>${escH(r.grupo.replace('Mis marcas: ',''))}</td><td class="r">${r.res?xN(r.res):'–'}</td><td class="r">${r.vend||'–'}</td><td class="r">${r.p25?clp(r.p25):'–'}</td><td class="r">${r.med?clp(r.med):'–'}</td><td class="r">${r.p75?clp(r.p75):'–'}</td></tr>`).join('')}</tbody></table></div>
+      <p class="xsmall" style="margin-top:10px">Compara tu precio con la mediana: sobre el p75 compites por marca y calidad; bajo el p25 estás dejando margen en la mesa.</p></section>`;return;}
+  if(!G.scoutGrupo||!grupos.includes(G.scoutGrupo))G.scoutGrupo=grupos[0]||'';
+  const hist=kw=>fechas.map(f=>(S.find(r=>r.fecha===f&&r.grupo===G.scoutGrupo&&r.kw===kw)||{}).pos||null);
+  const cards=S.filter(r=>r.fecha===ult&&r.grupo===G.scoutGrupo).sort((a,b)=>(a.pos||99)-(b.pos||99)).map(r=>{
+    const antes=prev?S.find(x=>x.fecha===prev&&x.grupo===r.grupo&&x.kw===r.kw):null;
+    const tg=!prev?['n','Primera semana']:!antes?['g','Nueva']:antes.pos>r.pos?['g','Sube '+(antes.pos-r.pos)]:antes.pos<r.pos?['r','Baja '+(r.pos-antes.pos)]:['b','Estable'];
+    const h=hist(r.kw).filter(x=>x!==null);const pts=h.length>1?h.map((p,i)=>(i/(h.length-1)*280).toFixed(1)+','+(4+(p-1)/49*52).toFixed(1)).join(' '):'';
+    const comp=r.vend===null?'':r.vend>=35?'alta':r.vend>=20?'media':'baja';
+    return`<article class="xtc"><div style="display:flex;justify-content:space-between;gap:8px"><h3>${escH(r.kw)}</h3><span class="xtag ${tg[0]}">${tg[1]}</span></div>
+      ${pts?`<svg viewBox="0 0 280 60" style="width:100%;height:50px" aria-label="Posición en el ranking por semana"><polyline fill="none" stroke="#3355f0" stroke-width="2.5" points="${pts}"/></svg>`:''}
+      <div class="xmt"><div><b>#${r.pos||'–'}</b>en el ranking</div><div><b>${r.res?xN(r.res):'–'}</b>publicaciones</div><div><b>${r.med?clp(r.med):'–'}</b>precio mediano</div></div>
+      ${comp?`<div class="xsmall">Competencia ${comp}: ${r.vend} vendedores distintos en los primeros 50 resultados${r.p25?' · precios '+clp(r.p25)+' – '+clp(r.p75):''}</div>`:''}</article>`;}).join('');
+  el.innerHTML=head+`<section class="xp"><div class="xp-h"><h2>Radar de búsquedas · MercadoLibre Chile</h2><span class="note">foto del ${gF(ult)} · ${fechas.length} semana${fechas.length!==1?'s':''} acumulada${fechas.length!==1?'s':''}</span></div>
+    <div class="xchips" style="margin-bottom:14px">${grupos.map(g=>`<button type="button" class="xchip${G.scoutGrupo===g?' on':''}" onclick="G.scoutGrupo=this.dataset.g;xScout()" data-g="${escH(g)}">${escH(g.replace('Categoría: ',''))}</button>`).join('')}</div>
+    <div class="xcards">${cards||'<div class="xempty">Sin búsquedas en este grupo</div>'}</div></section>`;
+}
+function gEvalHtml(){
+  const v=gOpt('eval',{usd:8,tc:Math.round(+gOpt('tc',970)),flete:2500,arancel:0,pvp:34990,canal:'shopify',com:3.19});
+  const opt=(val,l,cur)=>`<option value="${val}"${String(cur)===String(val)?' selected':''}>${l}</option>`;
+  return`<div class="xrow"><section class="xp" style="flex:1 1 520px"><div class="xp-h"><h2>Evaluar producto</h2><span class="note">todo sin IVA salvo el precio de venta</span></div>
+    <div class="xform">
+      <label class="xlbl">Precio proveedor (USD por unidad, con caja)<input class="xinp" id="ev-usd" type="number" step="0.01" value="${v.usd}" oninput="gEvalCalc()"></label>
+      <label class="xlbl">Dólar efectivo pagado (CLP)<input class="xinp" id="ev-tc" type="number" value="${v.tc}" oninput="gEvalCalc()"></label>
+      <label class="xlbl">Flete, agente y gastos por unidad (CLP)<input class="xinp" id="ev-flete" type="number" value="${v.flete}" oninput="gEvalCalc()"></label>
+      <label class="xlbl">Origen y arancel<select class="xinp" id="ev-arancel" onchange="gEvalCalc()">${opt(0,'China u otro país con TLC · 0%',v.arancel)}${opt(6,'Sin tratado · 6%',v.arancel)}</select></label>
+      <label class="xlbl">Precio de venta (con IVA)<input class="xinp" id="ev-pvp" type="number" value="${v.pvp}" oninput="gEvalCalc()"></label>
+      <label class="xlbl">Canal<select class="xinp" id="ev-canal" onchange="gEvalCalc()">${opt('shopify','Shopify + ABEE',v.canal)}${opt('ml','MercadoLibre',v.canal)}</select></label>
+      <label class="xlbl">Comisión del canal (% sobre venta)<input class="xinp" id="ev-com" type="number" step="0.01" value="${v.com}" oninput="gEvalCalc()"></label>
+    </div>
+    <div class="xtw" style="margin-top:16px"><table class="xt"><tbody id="ev-out"></tbody></table></div>
+    <p class="xsmall" style="margin-top:10px;line-height:1.5">El costo se carga sin IVA y se multiplica por 1,19 porque el precio de venta incluye IVA; así ambos lados son comparables. El arancel es 0% con certificado de origen de un país con tratado (China incluida); sin tratado se paga 6% sobre el valor CIF. El IVA de importación es crédito fiscal y no se suma al costo.</p></section>
+    <section class="xp" style="flex:1 1 300px"><h2>Cómo leerlo</h2><ul class="xsmall" style="padding-left:18px;line-height:1.7;margin-top:8px"><li>Margen después de ABEE y comisión sobre 55%: deja espacio para publicidad.</li><li>Entre 40% y 55%: solo funciona con ventas orgánicas o en MercadoLibre.</li><li>Bajo 40%: no alcanza a pagar la publicidad de una marca nueva.</li></ul></section></div>`;
+}
+function gEvalCalc(){
+  const g=id=>+(document.getElementById(id)||{}).value||0;
+  const usd=g('ev-usd'),tc=g('ev-tc'),flete=g('ev-flete'),ar=g('ev-arancel'),pvp=g('ev-pvp'),com=g('ev-com'),canal=(document.getElementById('ev-canal')||{}).value;
+  gSet('eval',{usd,tc,flete,arancel:ar,pvp,canal,com});
+  const merc=usd*tc,aran=merc*ar/100,costo=merc+flete+aran,costoIva=costo*IVA;
+  const ful=canal==='shopify'?(pvp<43000?pvp*0.055:pvp*0.05+1980):0,comision=pvp*com/100;
+  const mb=pvp-costoIva,neto=mb-ful-comision;
+  const out=document.getElementById('ev-out');if(!out)return;
+  out.innerHTML=`<tr><td>Mercadería · USD ${usd.toFixed(2).replace('.',',')} × $${xN(tc)}</td><td class="r">${clp(merc)}</td></tr>
+    <tr><td>Flete, agente y gastos</td><td class="r">${clp(flete)}</td></tr>
+    <tr><td>Arancel ${ar}%</td><td class="r">${clp(aran)}</td></tr>
+    <tr class="tot"><td>Costo internado sin IVA</td><td class="r">${clp(costo)}</td></tr>
+    <tr><td>Costo para margen · × 1,19</td><td class="r">${clp(costoIva)}</td></tr>
+    <tr class="tot"><td>Margen bruto</td><td class="r">${clp(mb)} · ${xP(pvp?mb/pvp:0)}</td></tr>
+    ${ful?`<tr><td>Fulfillment ABEE · ${pvp<43000?'5,5%':'5% + $1.980'}</td><td class="r">−${clp(ful)}</td></tr>`:''}
+    <tr><td>Comisión del canal · ${String(com).replace('.',',')}%</td><td class="r">−${clp(comision)}</td></tr>
+    <tr class="tot"><td>Margen por unidad antes de publicidad</td><td class="r" style="color:${neto/pvp>=0.55?'var(--x-pos)':neto/pvp>=0.4?'#c98a00':'var(--x-neg)'}">${clp(neto)} · ${xP(pvp?neto/pvp:0)}</td></tr>
+    <tr><td>Precio de venta mínimo para 55% de margen</td><td class="r">${clp((costoIva)/(1-0.55-com/100-(canal==='shopify'?0.055:0)))}</td></tr>`;
 }
 
 // ── UTILS ─────────────────────────────────────────────

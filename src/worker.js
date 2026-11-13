@@ -12,7 +12,7 @@
 // Configuración (wrangler.jsonc → vars):  ACCESS_TEAM_DOMAIN, ACCESS_AUD, ALLOWED_EMAILS, SHEETS_API_URL
 // Secreto (dashboard / wrangler secret):   SHEETS_API_KEY
 
-const SHEETS = new Set(['ventas', 'pnl', 'conv', 'inv']);
+const SHEETS = new Set(['ventas', 'pnl', 'conv', 'inv', 'imp', 'scout', 'estado']);
 const CACHE_SECONDS = 60;
 
 export default {
@@ -68,7 +68,7 @@ async function ventaManual(request, env) {
 
   let body;
   try { body = await request.json(); } catch { return json({ ok: false, error: 'json inválido' }, 400); }
-  if (!['venta_manual', 'anular_manual', 'enriquecer'].includes(body.action)) return json({ ok: false, error: 'acción desconocida' }, 400);
+  if (!['venta_manual', 'anular_manual', 'enriquecer', 'imp_set', 'sync'].includes(body.action)) return json({ ok: false, error: 'acción desconocida' }, 400);
   const payload = { ...body, key: env.SHEETS_API_KEY, usuario: identity.email };
 
   // Apps Script responde 302 a googleusercontent; fetch lo sigue con GET y trae el JSON.
@@ -77,7 +77,10 @@ async function ventaManual(request, env) {
   });
   let out;
   try { out = await r.json(); } catch { return json({ ok: false, error: 'respuesta inválida de Sheets', status: r.status }, 502); }
-  if (out.ok) await caches.default.delete(new Request('https://cache.internal/erp/ventas'));
+  if (out.ok || body.action === 'sync') {
+    const purgar = body.action === 'imp_set' ? ['imp'] : body.action === 'sync' ? ['ventas', 'inv', 'estado'] : ['ventas'];
+    await Promise.all(purgar.map(s => caches.default.delete(new Request('https://cache.internal/erp/' + s))));
+  }
   return json(out, out.ok ? 200 : 400);
 }
 

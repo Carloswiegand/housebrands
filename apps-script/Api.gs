@@ -8,9 +8,11 @@
 // GET  ?sheet=ventas|pnl|conv|inv&key=...   → CSV de la hoja
 // POST {key, action:'venta_manual', venta}  → agrega una venta manual al Libro_Ventas
 // POST {key, action:'anular_manual', orden, canal} → mueve una venta manual a Ventas_Anuladas
+// POST {key, action:'imp_set', imp:{id,...}}      → crea o reemplaza una importación (hoja Importaciones)
+// POST {key, action:'sync'}                       → sincroniza Shopify, ML e inventario en el momento
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 function doGet(e) {
@@ -32,6 +34,10 @@ function doPost(e) {
   try { body = JSON.parse((e && e.postData && e.postData.contents) || '{}'); } catch (err) { return json_({ ok: false, error: 'json inválido' }); }
   const clave = PropertiesService.getScriptProperties().getProperty('API_KEY');
   if (!clave || body.key !== clave) return json_({ ok: false, error: 'forbidden' });
+  // Cada sincronización toma su propio candado; por eso va antes del candado general.
+  if (body.action === 'sync') {
+    try { return json_(sincronizarAhora_()); } catch (err) { return json_({ ok: false, error: err.message }); }
+  }
 
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) return json_({ ok: false, error: 'ocupado, intenta de nuevo' });
@@ -39,6 +45,7 @@ function doPost(e) {
     if (body.action === 'venta_manual') return json_(ventaManual_(body.venta || {}));
     if (body.action === 'anular_manual') return json_(anularManual_(body.orden, body.canal));
     if (body.action === 'enriquecer') return json_(enriquecerDesdeDatos_(body.canal, body.datos || {}));
+    if (body.action === 'imp_set') return json_(importacionGuardar_(body.imp || {}));
     return json_({ ok: false, error: 'acción desconocida' });
   } catch (err) {
     return json_({ ok: false, error: err.message });
@@ -277,4 +284,62 @@ function enriquecerHistorico() {
   const msg = llenas + ' líneas completadas, ' + corregidas + ' N° de orden ML corregidos; quedan ' + Object.keys(pendientes).length + ' órdenes sin datos en las APIs' + (cortado ? ' (corte por tiempo: volver a ejecutar)' : '');
   console.log(msg);
   return msg;
+}
+
+// ── Importaciones ─────────────────────────────────────────────
+// Una fila por importación: ID | Actualizado | JSON con todo el detalle
+// (proveedor, pagos, envíos, líneas por SKU, costos estimados y reales, fechas).
+function importacionGuardar_(imp) {
+  const id = String(imp.id || '').trim();
+  if (!/^[A-Za-z0-9._-]{3,60}$/.test(id)) throw new Error('id de importación inválido');
+  const ss = SpreadsheetApp.getActive();
+  let h = ss.getSheetByName(API_HOJAS.imp);
+  if (!h) { h = ss.insertSheet(API_HOJAS.imp); h.appendRow(['ID', 'Actualizado', 'JSON']); h.setFrozenRows(1); }
+  const txt = JSON.stringify(imp);
+  if (txt.length > 45000) throw new Error('importación demasiado grande');
+  const ids = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, 1).getValues().map(r => String(r[0])) : [];
+  const i = ids.indexOf(id);
+  const fila = [id, Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd HH:mm'), txt];
+  if (i === -1) h.appendRow(fila); else h.getRange(i + 2, 1, 1, 3).setValues([fila]);
+  return { ok: true, id: id, nueva: i === -1 };
+}
+
+// ── Sincronización y estado ───────────────────────────────────
+// Registra cada corrida en la hoja Estado_Sync (Proceso | Última corrida OK | Último error | Detalle).
+function registrarEstado_(proceso, ok, detalle) {
+  const ss = SpreadsheetApp.getActive();
+  let h = ss.getSheetByName(API_HOJAS.estado);
+  if (!h) { h = ss.insertSheet(API_HOJAS.estado); h.appendRow(['Proceso', 'Última corrida OK', 'Último error', 'Detalle']); h.setFrozenRows(1); }
+  const ahora = Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd HH:mm');
+  const nombres = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, 1).getValues().map(r => r[0]) : [];
+  let i = nombres.indexOf(proceso);
+  if (i === -1) { h.appendRow([proceso, '', '', '']); i = nombres.length; }
+  const fila = i + 2;
+  if (ok) h.getRange(fila, 2).setValue(ahora); else h.getRange(fila, 3).setValue(ahora);
+  h.getRange(fila, 4).setValue(String(detalle || '').slice(0, 300));
+}
+
+function correr_(proceso, fn) {
+  try { fn(); registrarEstado_(proceso, true, 'OK'); return { proceso: proceso, ok: true }; }
+  catch (err) { registrarEstado_(proceso, false, err.message); return { proceso: proceso, ok: false, error: err.message }; }
+}
+
+// Funciones que llaman los activadores (en vez de llamar directo a syncShopify/syncML/snapshotInventario)
+function syncShopifyProgramado() { correr_('Ventas Shopify', syncShopify); }
+function syncMLProgramado() { correr_('Ventas MercadoLibre', syncML); }
+function inventarioProgramado() { correr_('Inventario', snapshotInventario); }
+
+function sincronizarAhora_() {
+  const r = [correr_('Ventas Shopify', syncShopify), correr_('Ventas MercadoLibre', syncML), correr_('Inventario', snapshotInventario)];
+  return { ok: r.every(x => x.ok), resultados: r };
+}
+
+// Ejecutar una vez: deja Shopify y ML cada 15 minutos e inventario cada hora, con registro de estado.
+function activarSincronizacion() {
+  const viejas = ['syncShopify', 'syncML', 'snapshotInventario', 'syncShopifyProgramado', 'syncMLProgramado', 'inventarioProgramado'];
+  ScriptApp.getProjectTriggers().filter(t => viejas.indexOf(t.getHandlerFunction()) !== -1).forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('syncShopifyProgramado').timeBased().everyMinutes(15).create();
+  ScriptApp.newTrigger('syncMLProgramado').timeBased().everyMinutes(15).create();
+  ScriptApp.newTrigger('inventarioProgramado').timeBased().everyHours(1).create();
+  console.log('Sincronización: Shopify y ML cada 15 min, inventario cada hora.');
 }
