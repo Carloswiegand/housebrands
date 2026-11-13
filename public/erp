@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HouseBrands · ERP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -16,13 +16,13 @@
   --pos:#1a7a45;--pos-bg:#E8F8EE;--neg:#c0392b;--neg-bg:#FDECEA;
   --warn:#b07d10;--warn-bg:#FDF6E3;--sh:#2563a8;--sh-bg:#EBF2FA;
   --ml:#9a6f00;--ml-bg:#FDF6E3;
-  --f:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --f:'Inter',system-ui,sans-serif;--mono:'Inter',system-ui,sans-serif;
   --r:8px;--r2:5px;
   --shadow:0 1px 3px rgba(28,43,58,.08),0 4px 12px rgba(28,43,58,.05);
   --shadow2:0 2px 8px rgba(28,43,58,.12);
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--night);font-family:var(--f);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased;font-feature-settings:'tnum' 1,'cv11' 1}
 
 /* LOGIN */
 #login{position:fixed;inset:0;z-index:999;background:var(--night);display:flex;align-items:center;justify-content:center}
@@ -283,7 +283,7 @@ tbody tr:hover td{background:var(--bg)}
   --x-track:#edf0f8;--x-grid:#e6e9f2;--x-pos:#0b7a4b;--x-posbg:#e3f5ec;--x-neg:#b4410f;--x-negbg:#fbeadf;
   --x-panel:#ffffff;--x-panelbd:#e2e7f3;--x-panelsh:0 2px 10px rgba(30,40,90,.06);
   --x-glass:rgba(255,255,255,.62);--x-glassbd:rgba(255,255,255,.9);--x-glasssh:0 10px 30px rgba(60,72,140,.12);
-  --x-font:'Manrope',system-ui,sans-serif;
+  --x-font:'Inter',system-ui,sans-serif;
 }
 html[data-estilo="vidrio"]{--x-panel:rgba(255,255,255,.55);--x-panelbd:rgba(255,255,255,.85);--x-panelsh:0 10px 30px rgba(60,72,140,.12)}
 body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%),radial-gradient(1000px 800px at 100% 10%,#f0e6ff 0%,transparent 55%),#f4f6fb;background-attachment:fixed}
