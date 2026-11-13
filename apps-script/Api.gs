@@ -336,7 +336,7 @@ function syncMLProgramado() { correr_('Ventas MercadoLibre', syncML); }
 function inventarioProgramado() { correr_('Inventario', snapshotInventario); }
 
 function sincronizarAhora_() {
-  const r = [correr_('Ventas Shopify', syncShopify), correr_('Ventas MercadoLibre', syncML), correr_('Inventario', snapshotInventario)];
+  const r = [correr_('Ventas Shopify', syncShopify), correr_('Ventas MercadoLibre', syncML), correr_('Inventario', snapshotInventario), correr_('Conversión', convActualizar)];
   return { ok: r.every(x => x.ok), resultados: r };
 }
 

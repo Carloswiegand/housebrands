@@ -2542,7 +2542,7 @@ function xRender(){
   const gest={inv:xInventario,imp:xImportaciones,pnl:xPnlG,conv:xConvG,sis:xSistema,scout:xScout}[X_VISTA];
   if(gest){Promise.resolve().then(gest).then(()=>gAyuda(X_VISTA)).catch(e=>{document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';});return;}
   if(!DATA.length)return;
-  const f={res:xResumen,prod:xProductos,cli:xClientes,canal:xCanales,geo:xGeo,ventas:xVentasG}[X_VISTA];
+  const f={res:()=>{xResumen();gMetaMes();},prod:xProductos,cli:xClientes,canal:xCanales,geo:xGeo,ventas:xVentasG}[X_VISTA];
   if(f){try{f();gAyuda(X_VISTA);}catch(e){document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';}}
 }
 function xEstilo(){
@@ -2628,6 +2628,7 @@ function xResumen(){
   const gr=xGrupo(cur,r=>xReg(r));const rT=Object.entries(gr).map(([k,rs])=>[k,rs.reduce((s,r)=>s+r.vb,0)]).sort((a,b)=>b[1]-a[1]);const rMax=rT.length?rT[0][1]:1;const rTot=rT.reduce((s,x)=>s+x[1],0);
   const regH=rT.slice(0,8).map(([k,v])=>xHb(X_REG[k]||k,v,rMax,xM(v)+' · '+xP(v/(rTot||1),0))).join('')||'<div class="xempty">Sin región registrada en este período</div>';
   document.getElementById('view-res').innerHTML=`
+  <section class="xp glass" id="x-meta"><div class="xsmall">Calculando la meta del mes…</div></section>
   <p class="xcmp">${R.pa?`Comparando <b>${xFmtR(R.a,R.b)}</b> (${xDias(R.a,R.b)} días) con <b>${xFmtR(R.pa,R.pb)}</b> (${R.cmpEtq.toLowerCase()}).`:`<b>${xFmtR(R.a,R.b)}</b> · sin comparación.`}</p>
   <section class="xg xg-k" aria-label="Indicadores">${kp}</section>
   <div class="xrow">
@@ -3092,7 +3093,7 @@ async function xConvG(){
   const tag=(v,[a])=>`<span class="xd ${v>=a?'up':'dn'}">${v.toFixed(1).replace('.',',')}%</span>`;
   const ref=tiendas.length?`<section class="xp"><h2>Contra la referencia del mercado</h2><div class="xtw"><table class="xt" style="margin-top:6px"><thead><tr><th>Paso</th>${tiendas.map(r=>`<th class="r">${escH(r.canal)}</th>`).join('')}<th class="r">Normal</th></tr></thead><tbody>
     ${[['Visita → carro','carro','5–10%'],['Carro → checkout','chk','45–60%'],['Checkout → compra','compra','60–70%'],['Visita → compra','conv','2,5–3%']].map(([l,k,n],j)=>`<tr><td>${l}</td>${tabla.map(c=>`<td class="r">${tag(c[j],BM[k])}</td>`).join('')}<td class="r">${n}</td></tr>`).join('')}</tbody></table></div></section>`:'';
-  el.innerHTML=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="xsmall">Mes</span><div class="xchips">${per.slice(-8).map(p=>`<button type="button" class="xchip${p===G.convMes?' on':''}" onclick="G.convMes=${p};xConvG()">${pl(p)}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">Fuente: hoja Conversion (carga manual)</span></section>
+  el.innerHTML=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span class="xsmall">Mes</span><div class="xchips">${per.slice(-8).map(p=>`<button type="button" class="xchip${p===G.convMes?' on':''}" onclick="G.convMes=${p};xConvG()">${pl(p)}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">Se actualiza sola cada hora (MercadoLibre); Shopify pendiente de permiso de reportes</span></section>
     ${insight}<div class="xg xg-3">${rs.map(fun).join('')}${ref}</div>`;
 }
 
@@ -3144,7 +3145,7 @@ async function xSistema(){
     ${con('Radar Scout','Scout semanal','cada lunes · búsquedas de MercadoLibre Chile',60*24*8)}
     ${con('Hoja P&L (regeneración)','P&L','cada noche 23:30 · también al guardar gastos',60*30)}
     <div class="xrw"><span class="xdot of"></span><div style="flex:1"><b>Datos del P&L</b><div class="xsmall">último mes con ventas: ${escH(pnlM||'–')} · los gastos variables se cargan abajo</div></div></div>
-    <div class="xrw"><span class="xdot of"></span><div style="flex:1"><b>Conversión</b><div class="xsmall">carga manual en la hoja Conversion</div></div></div>
+    ${con('Conversión','Conversión','cada hora · MercadoLibre automático; Shopify espera el permiso de reportes',150)}
     <p class="xsmall" style="margin-top:10px">Las ventas aparecen en el dashboard hasta 15 minutos después de la compra. "Sincronizar ahora" las trae al momento.</p></section>
   <section class="xp" style="flex:1 1 420px"><h2>Requiere atención</h2>${al.map(([c,t,x])=>`<div class="xrw"><span class="xtag ${c}">${t}</span><div style="flex:1">${escH(x)}</div></div>`).join('')}</section></div>
   ${gGastosHtml()}
@@ -3276,7 +3277,7 @@ conv:{t:'Cómo leer Conversión',p:[
  ['Embudo','De cada 100 personas que entran a la tienda, cuántas agregan al carro, cuántas llegan a pagar y cuántas compran. Cada barra muestra el % que pasa al paso siguiente.'],
  ['En rojo','Pasos bajo lo normal del mercado: ahí se está perdiendo la venta.'],
  ['Referencias','Visita → carro 5–10%; carro → checkout 45–60%; checkout → compra 60–70%; visita → compra 2,5–3%.'],
- ['Fuente','Hoy la hoja Conversion se llena a mano con los datos de Shopify Analytics y ML.']]},
+ ['Fuente','MercadoLibre se actualiza solo cada hora (visitas por API y ventas del libro). Shopify se automatiza en cuanto la app tenga el permiso de reportes; mientras tanto, esos meses quedan con lo que se cargó a mano.']]},
 sis:{t:'Cómo leer Estado del sistema',p:[
  ['Conexiones','Punto verde: la sincronización corrió bien hace poco. Amarillo: hace rato que no corre. Rojo: falló (se muestra el error).'],
  ['Sincronizar ahora','Trae al momento las ventas de Shopify y ML y la foto de stock, sin esperar los 15 minutos.'],
@@ -3411,6 +3412,32 @@ function mvDrop(e){e.preventDefault();document.getElementById('mv-drop').classLi
 
 // La ayuda se vuelve a insertar cada vez que una vista se redibuja sola (filtros, clics).
 ['xInventario','xImportaciones','xVentasG','xPnlG','xConvG','xSistema','xScout'].forEach(n=>{const f=window[n];window[n]=function(){const r=f.apply(this,arguments);Promise.resolve(r).then(()=>gAyuda(X_VISTA));return r;};});
+
+// ══ META DEL MES: punto de equilibrio fijo arriba del Resumen ══
+// Se calcula con el último mes cerrado del P&L que ya tiene gastos fijos: gastos fijos ÷ % de contribución.
+async function gMetaMes(){
+  const el=document.getElementById('x-meta');if(!el)return;
+  try{
+    if(!PNL.rows.length){const r=await fetch(CSV_PNL);PNL=parsePnL(await r.text());pnlLoaded=true;}
+    const {meses,rows}=PNL;const fr=t=>rows.find(r=>r.concepto.toUpperCase().includes(t.toUpperCase()));
+    const v=(t,j)=>{const r=fr(t);return r?Math.abs(r.mv[j]||0):0;};
+    const vb=fr('VENTA BRUTA TOTAL');const adm=fr('TOTAL ADMINISTRACI');
+    const cerrados=meses.map((m,i)=>i).filter(i=>vb&&vb.mv[i]>0&&adm&&Math.abs(adm.mv[i])>0&&(v('Meta Ads',i)+v('Google Ads',i)+v('MercadoLibre Ads',i))>0);
+    const j=cerrados[cerrados.length-1];if(j===undefined){el.innerHTML='<div class="xsmall">Falta cargar los gastos del último mes para calcular la meta.</div>';return;}
+    const venta=v('VENTA BRUTA TOTAL',j),mb=(fr('MARGEN BRUTO TOTAL')||{mv:[]}).mv[j]||0,log=v('TOTAL LOG',j),ads=v('Meta Ads',j)+v('Google Ads',j)+v('MercadoLibre Ads',j);
+    const fijos=v('The Link It',j)+v('TOTAL TECH',j)+v('TOTAL ADMINISTRACI',j);const cpct=venta?(mb-log-ads)/venta:0;
+    const eq=cpct>0?fijos/cpct:0;
+    const hoy=new Date(),ini=xIso(new Date(hoy.getFullYear(),hoy.getMonth(),1)),dias=new Date(hoy.getFullYear(),hoy.getMonth()+1,0).getDate(),dia=hoy.getDate();
+    const mtd=DATA.filter(r=>r.vb>0&&r.fecha>=ini&&r.fecha<=gHoy()).reduce((s,r)=>s+r.vb,0);
+    const proy=mtd/dia*dias,pct=eq?mtd/eq:0,ok=proy>=eq;
+    const metas=gOpt('metas',null);const mesK=ini.slice(0,7);const metaN=metas&&metas[mesK];
+    el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:22px;align-items:center">
+      <div style="flex:1 1 260px"><div class="xk-l">Meta mínima del mes · punto de equilibrio</div><div class="xk-v">${clp(eq)}</div><div class="xsmall" style="margin-top:4px">gastos fijos ${clp(fijos)} ÷ ${xP(cpct)} de contribución (base: ${escH(meses[j])})</div></div>
+      <div style="flex:2 1 360px"><div style="display:flex;justify-content:space-between;font-size:13px"><span>Llevas <b>${clp(mtd)}</b> (${xP(pct,0)})</span><span>día ${dia} de ${dias}</span></div>
+        <div class="xbar" style="height:12px;margin:8px 0;position:relative"><i style="width:${Math.min(100,pct*100)}%;background:${ok?'var(--x-pos)':'#d99a00'}"></i><span style="position:absolute;left:${(dia/dias*100).toFixed(1)}%;top:-3px;bottom:-3px;width:2px;background:var(--x-tx)" title="Hoy"></span></div>
+        <div class="xsmall">A este ritmo cierras el mes en <b>${clp(proy)}</b>: ${ok?'<span style="color:var(--x-pos)">sobre el punto de equilibrio</span>':'<span style="color:var(--x-neg)">bajo el punto de equilibrio, faltan '+clp(eq-proy)+'</span>'}${metaN?` · meta escenario neutro ${clp(metaN)}`:''}</div></div></div>`;
+  }catch(e){el.innerHTML='<div class="xsmall">No se pudo calcular la meta: '+escH(e.message)+'</div>';}
+}
 // ── UTILS ─────────────────────────────────────────────
 const clp=n=>'$'+Math.round(n).toLocaleString('es-CL');
 const sum=(arr,k)=>arr.reduce((s,r)=>s+(r[k]||0),0);
