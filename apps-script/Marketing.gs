@@ -199,16 +199,26 @@ function _mkSitemap_(base) {
   return urls.map(x => typeof x === 'string' ? { u: x, t: 'Otro' } : x).filter(x => !vistos[x.u] && (vistos[x.u] = 1));
 }
 
+// fetchAll en paralelo; si Google corta alguna conexión ("Dirección no disponible"), se reintenta una por una
+function _mkTodos_(pedidos) {
+  try { return UrlFetchApp.fetchAll(pedidos); }
+  catch (e) {
+    return pedidos.map(p => { try { const u = p.url; const o = Object.assign({}, p); delete o.url; return UrlFetchApp.fetch(u, o); } catch (x) { Utilities.sleep(500); return null; } });
+  }
+}
+
 function _mkIndexacion_(m) {
   const lista = [{ u: m.url + '/', t: 'Inicio' }].concat(_mkSitemap_(m.url)).slice(0, MKT_MAX_INSPECCION);
   const tok = ScriptApp.getOAuthToken(); const hoy = _smFecha_(); const filas = [];
   for (let i = 0; i < lista.length; i += 20) {
     const grupo = lista.slice(i, i + 20);
-    const resp = UrlFetchApp.fetchAll(grupo.map(x => ({
+    const pedidos = grupo.map(x => ({
       url: 'https://searchconsole.googleapis.com/v1/urlInspection/index:inspect', method: 'post', contentType: 'application/json', muteHttpExceptions: true,
       headers: { Authorization: 'Bearer ' + tok }, payload: JSON.stringify({ inspectionUrl: x.u, siteUrl: m.sitio, languageCode: 'es' })
-    })));
+    }));
+    const resp = _mkTodos_(pedidos);
     resp.forEach((r, k) => {
+      if (!r) return;
       let j = {}; try { j = JSON.parse(r.getContentText()); } catch (e) { }
       if (r.getResponseCode() >= 300) { if (i === 0 && k === 0) throw new Error((j.error && j.error.message) || 'HTTP ' + r.getResponseCode()); return; }
       const s = (j.inspectionResult && j.inspectionResult.indexStatusResult) || {};
@@ -226,10 +236,12 @@ function _mkVelocidad_(m) {
   const urls = [m.url + '/'].concat(pags.filter(u => u.replace(/\/$/, '') !== m.url).slice(0, 1));
   const pedidos = [];
   urls.forEach(u => ['mobile', 'desktop'].forEach(s => pedidos.push({ u: u, s: s })));
-  const resp = UrlFetchApp.fetchAll(pedidos.map(p => ({ url: 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=performance&strategy=' + p.s + '&url=' + encodeURIComponent(p.u), muteHttpExceptions: true })));
-  const hoy = _smFecha_(); const filas = [];
+  const tok = ScriptApp.getOAuthToken();
+  const resp = _mkTodos_(pedidos.map(p => ({ url: 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=performance&strategy=' + p.s + '&url=' + encodeURIComponent(p.u), muteHttpExceptions: true, headers: { Authorization: 'Bearer ' + tok } })));
+  const hoy = _smFecha_(); const filas = []; let error = '';
   resp.forEach((r, i) => {
-    if (r.getResponseCode() !== 200) return;
+    if (!r) { error = error || 'conexión cortada'; return; }
+    if (r.getResponseCode() !== 200) { if (!error) { let j = {}; try { j = JSON.parse(r.getContentText()); } catch (e) { } error = (j.error && j.error.message) || 'HTTP ' + r.getResponseCode(); } return; }
     const j = JSON.parse(r.getContentText());
     const lh = j.lighthouseResult || {}; const au = lh.audits || {};
     const ex = (j.loadingExperience && j.loadingExperience.metrics) || {};
@@ -240,6 +252,7 @@ function _mkVelocidad_(m) {
     filas.push([hoy, m.marca, pedidos[i].u, pedidos[i].s === 'mobile' ? 'Móvil' : 'Computador', Math.round(((lh.categories || {}).performance || {}).score * 100) || '', _mkR_(lcp, 1), inp, _mkR_(cls, 2), real]);
   });
   if (filas.length) h.getRange(h.getLastRow() + 1, 1, filas.length, filas[0].length).setNumberFormat('@').setValues(filas.map(r => r.map(String)));
+  if (!filas.length) throw new Error(error || 'sin respuesta');
   return filas.length;
 }
 
@@ -247,7 +260,7 @@ function marketingSemanal() {
   const err = [];
   MKT_MARCAS.forEach(m => {
     try { _mkIndexacion_(m); } catch (e) { err.push(m.marca + ' · Indexación: ' + e.message); }
-    try { if (!_mkVelocidad_(m)) err.push(m.marca + ' · PageSpeed sin respuesta'); } catch (e) { err.push(m.marca + ' · PageSpeed: ' + e.message); }
+    try { _mkVelocidad_(m); } catch (e) { err.push(m.marca + ' · PageSpeed: ' + e.message); }
   });
   if (err.length) throw new Error(err.join(' / ').slice(0, 900));
 }
