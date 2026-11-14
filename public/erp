@@ -3181,9 +3181,11 @@ async function gLoadScout(){if(G.scout)return;try{const f=await gCsv(CSV_SCOUT);
 async function xScout(){
   const el=document.getElementById('view-scout');
   if(!G.scout){el.innerHTML='<div class="xp xempty">Cargando Scout…</div>';await gLoadScout();}
-  const tabs=[['radar','Radar'],['oport','Oportunidades'],['seg','Seguimiento'],['eval','Evaluar producto'],['marcas','Mis marcas']];
+  const tabs=[['radar','Radar ML'],['amazon','Amazon'],['oport','Oportunidades'],['seg','Seguimiento'],['pedir','Pedir análisis'],['eval','Evaluar producto'],['marcas','Mis marcas']];
   const head=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="xchips" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" aria-selected="${G.scoutTab===k}" class="xchip${G.scoutTab===k?' on':''}" onclick="G.scoutTab='${k}';xScout()">${l}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">Qué se busca en Chile, si hay espacio para entrar y cuánto dejaría cada unidad</span></section>`;
   if(G.scoutTab==='eval'){el.innerHTML=head+gEvalHtml();gEvalCalc();return;}
+  if(G.scoutTab==='amazon'){if(!G.amz){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadAmazon();}el.innerHTML=head+gScoutAmazon();return;}
+  if(G.scoutTab==='pedir'){if(!G.solic){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadSolic();}el.innerHTML=head+gScoutPedir();return;}
   if(G.scoutTab==='oport'||G.scoutTab==='seg'){if(!G.ideas){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadIdeas();}el.innerHTML=head+(G.scoutTab==='oport'?gScoutOpor():gScoutSeg());return;}
   const S=G.scout||[];
   const fechas=[...new Set(S.map(r=>r.fecha))].sort(),ult=fechas[fechas.length-1],prev=fechas[fechas.length-2];
@@ -3265,6 +3267,58 @@ function gScoutSeg(){
     <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gIdeaAdd(this)">Agregar a seguimiento</button><span class="xsmall" id="si-msg"></span></div></section>
   <section class="xp"><div class="xp-h"><h2>Ideas en seguimiento</h2><span class="note">${I.length} en total</span></div>
     ${I.length?`<div class="xtw"><table class="xt"><thead><tr><th>Idea</th><th>Rubro</th><th>Marca</th><th>Desde</th><th>Plazo</th><th class="r">Productos en Chile (inicio → hoy)</th><th>Evolución</th><th class="r">Tendencia CL</th><th>Veredicto</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table></div>`:'<div class="xempty">Todavía no hay ideas. Agrega la primera arriba o espera las brechas que detecta el radar multipaís.</div>'}</section>`;
+}
+// ── Scout: Amazon y pedidos de análisis ──
+async function gLoadAmazon(force){
+  const f=await gCsv('/erp/api/amazon'+(force?'?x='+Date.now():'')).catch(()=>[]);
+  G.amz=f.slice(1).filter(r=>r[5]).map(r=>({fecha:r[0],mer:r[1],lista:r[2],cat:r[3],pos:pn(r[4]),asin:r[5],tit:r[6],precio:r[7],rating:pn(r[8])||null,res:pn(r[9])||null,prev:pn(r[10])||null,cambio:r[11],marca:r[12],gen:r[13],tipo:r[14]}));
+}
+async function gLoadSolic(force){
+  const f=await gCsv('/erp/api/solic'+(force?'?x='+Date.now():'')).catch(()=>[]);
+  G.solic=f.slice(1).filter(r=>r[0]).map(r=>({id:r[0],fecha:r[1],tipo:r[2],pedido:r[3],estado:r[4],res:r[5],act:r[6]}));
+}
+function gScoutAmazon(){
+  const A=G.amz||[];
+  if(!A.length)return`<section class="xp xempty">Todavía no hay datos de Amazon. La tarea programada "Scout Amazon y análisis" lee cada lunes los Más vendidos y los Nuevos lanzamientos de Amazon EE.UU., México y España desde tu Chrome; necesita el computador encendido con Chrome abierto.</section>`;
+  const fechas=[...new Set(A.map(r=>r.fecha))].sort(),ult=fechas[fechas.length-1];
+  const U=A.filter(r=>r.fecha===ult);
+  const mers=[...new Set(U.map(r=>r.mer))];if(!G.amzMer||!mers.includes(G.amzMer))G.amzMer=mers[0];
+  const listas=[...new Set(U.filter(r=>r.mer===G.amzMer).map(r=>r.lista))];if(!G.amzLista||!listas.includes(G.amzLista))G.amzLista=listas[0];
+  const cats=[...new Set(U.filter(r=>r.mer===G.amzMer&&r.lista===G.amzLista).map(r=>r.cat))];if(!G.amzCat||!cats.includes(G.amzCat))G.amzCat=cats[0];
+  if(G.amzMarcas===undefined)G.amzMarcas=true;
+  const okGen=r=>!G.amzMarcas||r.gen!=='Sí';
+  const sube=U.filter(r=>okGen(r)&&r.gen==='No'&&(r.cambio==='Nuevo'||(+r.cambio||0)>=5)).sort((a,b)=>(b.cambio==='Nuevo'?99:+b.cambio)-(a.cambio==='Nuevo'?99:+a.cambio)).slice(0,15);
+  const chip=(arr,cur,set)=>arr.map(v=>`<button type="button" class="xchip${v===cur?' on':''}" onclick="${set}=this.dataset.v;xScout()" data-v="${escH(v)}">${escH(v)}</button>`).join('');
+  const tag=c=>c==='Nuevo'?'<span class="xtag g">Nuevo</span>':(+c>0?`<span class="xtag g">▲ ${c}</span>`:+c<0?`<span class="xtag r">▼ ${-c}</span>`:'<span class="xtag b">=</span>');
+  const filas=U.filter(r=>r.mer===G.amzMer&&r.lista===G.amzLista&&r.cat===G.amzCat&&okGen(r)).sort((a,b)=>a.pos-b.pos);
+  return`<section class="xp"><div class="xp-h"><h2>Lo que más sube esta semana · solo marcas</h2><span class="note">foto del ${gF(ult)} · ${fechas.length} semana${fechas.length!==1?'s':''}</span></div>
+    ${sube.length?`<div class="xtw"><table class="xt"><thead><tr><th>Cambio</th><th>Producto</th><th>Marca</th><th>Tipo</th><th>Dónde</th><th class="r">Puesto</th><th class="r">Reseñas</th></tr></thead><tbody>${sube.map(r=>`<tr><td>${tag(r.cambio)}</td><td><a href="https://www.amazon.${r.mer==='EE.UU.'?'com':r.mer==='México'?'com.mx':'es'}/dp/${escH(r.asin)}" target="_blank" rel="noopener">${escH(r.tit.slice(0,90))}</a></td><td>${escH(r.marca||'–')}</td><td>${escH(r.tipo||'–')}</td><td class="xsmall">${escH(r.mer+' · '+r.cat)}</td><td class="r">#${r.pos}</td><td class="r">${r.res?xN(r.res):'–'}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Se calcula desde la segunda semana de datos, comparando puestos.</div>'}</section>
+  <section class="xp"><div class="xp-h"><h2>Rankings de Amazon</h2><label class="xsmall" style="display:flex;gap:6px;align-items:center"><input type="checkbox" ${G.amzMarcas?'checked':''} onchange="G.amzMarcas=this.checked;xScout()"> ocultar genéricos</label></div>
+    <div class="xchips" style="margin-bottom:8px">${chip(mers,G.amzMer,'G.amzMer')}</div>
+    <div class="xchips" style="margin-bottom:8px">${chip(listas,G.amzLista,'G.amzLista')}</div>
+    <div class="xchips" style="margin-bottom:14px">${chip(cats,G.amzCat,'G.amzCat')}</div>
+    <div class="xtw"><table class="xt"><thead><tr><th class="r">#</th><th>Cambio</th><th>Producto</th><th>Marca</th><th>Precio</th><th class="r">Rating</th><th class="r">Reseñas</th></tr></thead><tbody>
+    ${filas.map(r=>`<tr><td class="r">${r.pos}</td><td>${tag(r.cambio)}</td><td><a href="https://www.amazon.${r.mer==='EE.UU.'?'com':r.mer==='México'?'com.mx':'es'}/dp/${escH(r.asin)}" target="_blank" rel="noopener">${escH(r.tit.slice(0,100))}</a>${r.gen==='Sí'?' <span class="xtag r">genérico</span>':''}</td><td>${escH(r.marca||'–')}</td><td>${escH(r.precio||'–')}</td><td class="r">${r.rating||'–'}</td><td class="r">${r.res?xN(r.res):'–'}</td></tr>`).join('')}</tbody></table></div>
+    <p class="xsmall" style="margin-top:10px">Precios como los muestra Amazon al navegar desde Chile. La marca y si es genérico los clasifica la tarea programada para lo que sube; el resto queda sin clasificar.</p></section>`;
+}
+function gScoutPedir(){
+  const S=(G.solic||[]).slice().sort((a,b)=>b.id>a.id?1:-1);
+  const tag=e=>e==='Listo'?'g':e==='En proceso'?'b':'n';
+  return`<section class="xp"><div class="xp-h"><h2>Pedir un análisis</h2><span class="note">se responde en la próxima corrida diaria (8:17)</span></div>
+    <div class="xform"><label class="xlbl">Tipo<select class="xinp" id="sp-tipo"><option>Producto</option><option>Nicho</option><option>Categoría</option></select></label>
+    <label class="xlbl" style="grid-column:1/-1">Qué quieres que analice<textarea class="xinp" id="sp-txt" rows="3" placeholder="ej. ¿Conviene traer una lonchera térmica para bebé? Comparar con Amazon EE.UU. y lo que hay en MercadoLibre Chile"></textarea></label></div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gSolicitar(this)">Enviar pedido</button><span class="xsmall" id="sp-msg"></span></div>
+    <p class="xsmall" style="margin-top:10px">El análisis cruza Amazon (EE.UU., México y España), MercadoLibre Chile y otros países, competencia, precios de referencia y margen estimado con tus costos, y termina con una recomendación. Si lo necesitas antes, pídelo directo en el chat.</p></section>
+  <section class="xp"><div class="xp-h"><h2>Pedidos</h2><span class="note">${S.length}</span></div>
+    ${S.length?S.map(s=>`<details class="xp" style="margin:8px 0;padding:12px"${s.estado==='Listo'&&s===S[0]?' open':''}><summary style="cursor:pointer"><span class="xtag ${tag(s.estado)}">${escH(s.estado)}</span> <b>${escH(s.tipo)}:</b> ${escH(s.pedido.slice(0,120))} <span class="xsmall">· ${gF(s.fecha)}</span></summary>
+      ${s.res?`<div class="xsmall" style="white-space:pre-wrap;line-height:1.55;margin-top:10px">${escH(s.res)}</div>`:'<div class="xsmall" style="margin-top:8px">Todavía sin respuesta.</div>'}</details>`).join(''):'<div class="xempty">Todavía no hay pedidos.</div>'}</section>`;
+}
+async function gSolicitar(btn){
+  const tipo=document.getElementById('sp-tipo').value,pedido=document.getElementById('sp-txt').value.trim(),msg=document.getElementById('sp-msg');
+  if(pedido.length<3){msg.textContent='Escribe qué quieres que analice.';return;}
+  btn.disabled=true;msg.textContent='Enviando…';
+  try{await gPost({action:'solicitud_add',solicitud:{tipo,pedido}});await gLoadSolic(true);xScout();}
+  catch(e){msg.textContent='No se envió: '+e.message;btn.disabled=false;}
 }
 async function gIdeaAdd(btn){
   const v=id=>document.getElementById(id).value.trim(),msg=document.getElementById('si-msg');
@@ -3386,6 +3440,8 @@ scout:{t:'Cómo leer el Scout',p:[
  ['Radar','Las búsquedas más populares de MercadoLibre Chile, en general y en las categorías de tus marcas. "Sube", "Baja" o "Nueva" compara con la semana anterior. Mientras más semanas acumula, más confiable es la tendencia.'],
  ['Competencia','Cuántas marcas distintas aparecen entre los primeros 50 productos del catálogo de MercadoLibre para esa búsqueda: menos de 15 = baja, 15 a 29 = media, 30 o más = alta. MercadoLibre no entrega precios a esta app, así que los precios se revisan a mano.'],
  ['Radar por país','Además de Chile, el radar mira cada lunes las tendencias de Argentina, México y Colombia en 7 rubros (bebé, cocina, hogar, decoración, mascotas, adulto mayor y parrilla). Elige el país arriba de los rubros.'],
+ ['Amazon','Los Más vendidos y Nuevos lanzamientos de Amazon EE.UU., México y España por categoría, leídos cada lunes desde tu Chrome. "Lo que más sube" muestra los productos de marca (no genéricos) que ganaron 5 puestos o más o que entraron al ranking esa semana.'],
+ ['Pedir análisis','Escribe un producto, nicho o categoría y se analiza en la próxima corrida diaria: Amazon, MercadoLibre, competencia, precios y margen estimado, con recomendación.'],
  ['Oportunidades','Búsquedas en tendencia 2 semanas seguidas en otro país y que no aparecen en Chile, con la competencia que hoy tienen en el catálogo chileno. Pocas marcas en Chile = espacio para entrar antes de que llegue la tendencia.'],
  ['Seguimiento','Cada oportunidad, y cada idea que agregues a mano (de Amazon, TikTok o una feria), queda con una hipótesis y un plazo. Todos los lunes se mide en Chile: si entra a las tendencias o su catálogo crece 30%, se cumplió; si vence el plazo, no se cumplió. La tasa de acierto dice cuánto confiar en cada fuente.'],
  ['Evaluar producto','Calcula el costo internado, el margen bruto y el margen antes de publicidad de un producto que estás pensando traer. Sobre 55% después de ABEE y comisión deja espacio para publicidad.'],
