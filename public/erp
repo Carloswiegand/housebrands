@@ -3304,7 +3304,7 @@ function gScoutAmazon(){
 function gScoutPedir(){
   const S=(G.solic||[]).slice().sort((a,b)=>b.id>a.id?1:-1);
   const tag=e=>e==='Listo'?'g':e==='En proceso'?'b':'n';
-  return`<section class="xp"><div class="xp-h"><h2>Pedir un análisis</h2><span class="note">se responde en la próxima corrida diaria (8:17)</span></div>
+  return`<section class="xp"><div class="xp-h"><h2>Pedir un análisis</h2><span class="note">se responde en la próxima corrida diaria (10:00)</span></div>
     <div class="xform"><label class="xlbl">Tipo<select class="xinp" id="sp-tipo"><option>Producto</option><option>Nicho</option><option>Categoría</option></select></label>
     <label class="xlbl" style="grid-column:1/-1">Qué quieres que analice<textarea class="xinp" id="sp-txt" rows="3" placeholder="ej. ¿Conviene traer una lonchera térmica para bebé? Comparar con Amazon EE.UU. y lo que hay en MercadoLibre Chile"></textarea></label></div>
     <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gSolicitar(this)">Enviar pedido</button><span class="xsmall" id="sp-msg"></span></div>
