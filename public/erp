@@ -3339,7 +3339,7 @@ async function xMkt(){
     k('Veces que apareciste',xN(im1),xDelta(im1,im0),'impresiones en Google'),
     k('Posición promedio',p1?String(p1.toFixed(1)).replace('.',','):'–',p0?xDelta(p1,p0,true):'',p0?'antes '+p0.toFixed(1).replace('.',','):''),
     k('Sesiones en la tienda',xN(se1),xDelta(se1,se0),xN(or1)+' desde búsqueda orgánica'),
-    k('Compras según Analytics',xN(co1),xDelta(co1,co0),in1?xM(in1):''),
+    k('Compras según Analytics',xN(co1),xDelta(co1,co0),in1?'ingresos '+xN(in1)+' en la moneda de Analytics':''),
     k('Clics gratis en Shopping',sc1?xN(sc1):'–',sc0?xDelta(sc1,sc0):'','fichas de Merchant Center')
   ].join('');
   const al=gMktAlertas(M,mk);
