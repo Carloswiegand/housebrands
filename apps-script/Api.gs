@@ -17,7 +17,7 @@
 // POST {key, action:'metas_set', filas}           → proyección del flujo (hoja Metas)
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 function doGet(e) {
@@ -55,6 +55,8 @@ function doPost(e) {
     if (body.action === 'gastos_set') return json_(gastosGuardar_(body.mes, body.anio, body.valores || {}));
     if (body.action === 'config_set') return json_(configGuardar_(body.valores || {}));
     if (body.action === 'pref_set') return json_(prefGuardar_(body.clave, body.valor));
+    if (body.action === 'scout_idea_add') return json_(scoutIdeaAgregar_(body.idea || {}));
+    if (body.action === 'scout_idea_set') return json_(scoutIdeaActualizar_(body.idea || {}));
     if (body.action === 'metas_set') return json_(metasGuardar_(body.filas || []));
     if (body.action === 'gasto_add' || body.action === 'gasto_del') {
       const r = body.action === 'gasto_add' ? gastoDocAgregar_(body.doc || {}) : gastoDocBorrar_(body.id);

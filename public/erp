@@ -3180,9 +3180,10 @@ async function gLoadScout(){if(G.scout)return;try{const f=await gCsv(CSV_SCOUT);
 async function xScout(){
   const el=document.getElementById('view-scout');
   if(!G.scout){el.innerHTML='<div class="xp xempty">Cargando Scout…</div>';await gLoadScout();}
-  const tabs=[['radar','Radar'],['eval','Evaluar producto'],['marcas','Mis marcas']];
+  const tabs=[['radar','Radar'],['oport','Oportunidades'],['seg','Seguimiento'],['eval','Evaluar producto'],['marcas','Mis marcas']];
   const head=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="xchips" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" aria-selected="${G.scoutTab===k}" class="xchip${G.scoutTab===k?' on':''}" onclick="G.scoutTab='${k}';xScout()">${l}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">Qué se busca en Chile, si hay espacio para entrar y cuánto dejaría cada unidad</span></section>`;
   if(G.scoutTab==='eval'){el.innerHTML=head+gEvalHtml();gEvalCalc();return;}
+  if(G.scoutTab==='oport'||G.scoutTab==='seg'){if(!G.ideas){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadIdeas();}el.innerHTML=head+(G.scoutTab==='oport'?gScoutOpor():gScoutSeg());return;}
   const S=G.scout||[];
   const fechas=[...new Set(S.map(r=>r.fecha))].sort(),ult=fechas[fechas.length-1],prev=fechas[fechas.length-2];
   if(!ult){el.innerHTML=head+`<section class="xp xempty">El radar todavía no tiene datos. Corre todos los lunes con las búsquedas de MercadoLibre Chile; la primera foto aparece después de la próxima corrida. Mientras más semanas acumula, más confiable es la tendencia.</section>`;return;}
@@ -3193,7 +3194,11 @@ async function xScout(){
     el.innerHTML=head+`<section class="xp"><div class="xp-h"><h2>Mis marcas · competencia en MercadoLibre</h2><span class="note">foto del ${gF(ult)}</span></div><div class="xtw"><table class="xt"><thead><tr><th>Búsqueda</th><th>Marca</th><th class="r">Productos en catálogo</th><th class="r">Marcas distintas en los primeros 50</th><th>Marcas que más aparecen</th></tr></thead><tbody>
       ${rs.map(r=>`<tr><td><b>${escH(r.kw)}</b></td><td>${escH(r.grupo.replace('Mis marcas: ',''))}</td><td class="r">${r.res?xN(r.res):'–'}</td><td class="r">${r.vend||'–'}</td><td>${escH(r.top||'–')}</td></tr>`).join('')}</tbody></table></div>
       <p class="xsmall" style="margin-top:10px">Sube semana a semana la cantidad de marcas = está entrando competencia. MercadoLibre no entrega precios a esta app: revisa los precios a mano en mercadolibre.cl ordenando por más vendidos.</p></section>`;return;}
-  if(!G.scoutGrupo||!grupos.includes(G.scoutGrupo))G.scoutGrupo=grupos[0]||'';
+  const paisDe=g=>{const m=g.match(/^(Chile|Argentina|México|Colombia) · /);return m?m[1]:'Chile';};
+  const paises=['Chile','Argentina','México','Colombia'].filter(p=>grupos.some(g=>paisDe(g)===p));
+  if(!G.scoutPais||!paises.includes(G.scoutPais))G.scoutPais=paises[0]||'Chile';
+  const gruposP=grupos.filter(g=>paisDe(g)===G.scoutPais);
+  if(!G.scoutGrupo||!gruposP.includes(G.scoutGrupo))G.scoutGrupo=gruposP[0]||'';
   const hist=kw=>fechas.map(f=>(S.find(r=>r.fecha===f&&r.grupo===G.scoutGrupo&&r.kw===kw)||{}).pos||null);
   const cards=S.filter(r=>r.fecha===ult&&r.grupo===G.scoutGrupo).sort((a,b)=>(a.pos||99)-(b.pos||99)).map(r=>{
     const antes=prev?S.find(x=>x.fecha===prev&&x.grupo===r.grupo&&x.kw===r.kw):null;
@@ -3205,8 +3210,72 @@ async function xScout(){
       <div class="xmt"><div><b>#${r.pos||'–'}</b>en el ranking</div><div><b>${r.res?xN(r.res):'–'}</b>productos en catálogo</div><div><b>${r.vend||'–'}</b>marcas en el top 50</div></div>
       ${comp?`<div class="xsmall">Competencia ${comp}${r.top?' · lideran: '+escH(r.top):''}</div>`:''}</article>`;}).join('');
   el.innerHTML=head+`<section class="xp"><div class="xp-h"><h2>Radar de búsquedas · MercadoLibre Chile</h2><span class="note">foto del ${gF(ult)} · ${fechas.length} semana${fechas.length!==1?'s':''} acumulada${fechas.length!==1?'s':''}</span></div>
-    <div class="xchips" style="margin-bottom:14px">${grupos.map(g=>`<button type="button" class="xchip${G.scoutGrupo===g?' on':''}" onclick="G.scoutGrupo=this.dataset.g;xScout()" data-g="${escH(g)}">${escH(g.replace('Categoría: ',''))}</button>`).join('')}</div>
+    ${paises.length>1?`<div class="xchips" style="margin-bottom:8px">${paises.map(p=>`<button type="button" class="xchip${G.scoutPais===p?' on':''}" onclick="G.scoutPais='${p}';G.scoutGrupo='';xScout()">${p}</button>`).join('')}</div>`:''}
+    <div class="xchips" style="margin-bottom:14px">${gruposP.map(g=>`<button type="button" class="xchip${G.scoutGrupo===g?' on':''}" onclick="G.scoutGrupo=this.dataset.g;xScout()" data-g="${escH(g)}">${escH(g.replace('Categoría: ','').replace(/^(Chile|Argentina|México|Colombia) · /,''))}</button>`).join('')}</div>
     <div class="xcards">${cards||'<div class="xempty">Sin búsquedas en este grupo</div>'}</div></section>`;
+}
+// ── Scout: oportunidades y seguimiento de ideas ──
+const SM_RUBROS_UI=['Bebé','Cocina','Hogar','Decoración','Mascotas','Adulto mayor','Parrilla','Otro'];
+async function gLoadIdeas(force){
+  if(G.ideas&&!force)return;
+  const q=s=>gCsv('/erp/api/'+s+(force?'?x='+Date.now():'')).catch(()=>[]);
+  const [i,s,o]=await Promise.all([q('ideas'),q('seg'),q('opor')]);
+  G.ideas=i.slice(1).filter(r=>r[0]).map(r=>({id:r[0],creada:r[1],kw:r[2],rubro:r[3],origen:r[4],hip:r[5],marca:r[6],plazo:r[7],baseP:pn(r[8]),baseM:pn(r[9]),estado:r[10],ver:r[11],fver:r[12],notas:r[13]}));
+  G.seg=s.slice(1).filter(r=>r[1]).map(r=>({fecha:r[0],id:r[1],pos:pn(r[3])||null,prod:pn(r[4])||null,marcas:pn(r[5])||null}));
+  G.opor=o.slice(1).filter(r=>r[2]).map(r=>({fecha:r[0],rubro:r[1],kw:r[2],donde:r[3],sem:pn(r[4]),prod:pn(r[5])||null,marcas:pn(r[6])||null,top:r[7]||''}));
+}
+function gScoutOpor(){
+  const O=(G.opor||[]).slice().sort((a,b)=>b.fecha<a.fecha?-1:b.fecha>a.fecha?1:(a.prod||0)-(b.prod||0));
+  if(!O.length)return`<section class="xp xempty">Todavía no hay brechas. El radar multipaís compara cada lunes las tendencias de Argentina, México y Colombia con las de Chile, rubro por rubro. Una búsqueda aparece aquí cuando lleva 2 semanas seguidas en tendencia afuera y no en Chile.</section>`;
+  const est=kw=>{const i=(G.ideas||[]).find(x=>x.kw.toLowerCase()===kw.toLowerCase());return i?(i.ver||i.estado):'';};
+  return`<section class="xp"><div class="xp-h"><h2>Oportunidades · en tendencia afuera, no en Chile</h2><span class="note">${O.length} detectadas</span></div>
+  <div class="xtw"><table class="xt"><thead><tr><th>Búsqueda</th><th>Rubro</th><th>Dónde está en tendencia</th><th class="r">Productos en Chile</th><th class="r">Marcas en Chile</th><th>Marcas que lideran en Chile</th><th>Detectada</th><th>Seguimiento</th></tr></thead><tbody>
+  ${O.map(r=>`<tr><td><b>${escH(r.kw)}</b></td><td>${escH(r.rubro)}</td><td>${escH(r.donde)}</td><td class="r">${r.prod?xN(r.prod):'–'}</td><td class="r">${r.marcas||'–'}</td><td class="xsmall">${escH(r.top||'–')}</td><td>${gF(r.fecha)}</td><td><span class="xtag b">${escH(est(r.kw)||'–')}</span></td></tr>`).join('')}</tbody></table></div>
+  <p class="xsmall" style="margin-top:10px">Pocos productos y pocas marcas en Chile = espacio para entrar antes de que llegue la tendencia. Cada brecha queda en Seguimiento con una hipótesis a 12 semanas: así se mide si se cumplió.</p></section>`;
+}
+function gScoutSeg(){
+  const I=G.ideas||[],S=G.seg||[];
+  const ult=id=>{const h=S.filter(s=>s.id===id).sort((a,b)=>a.fecha<b.fecha?-1:1);return{h,u:h[h.length-1]};};
+  const activas=I.filter(i=>['En seguimiento','Evaluando'].includes(i.estado)&&!i.ver).length,si=I.filter(i=>i.ver==='Se cumplió').length,no=I.filter(i=>i.ver==='No se cumplió').length;
+  const opt=(arr,cur)=>arr.map(v=>`<option${v===cur?' selected':''}>${escH(v)}</option>`).join('');
+  const filas=I.slice().sort((a,b)=>(a.ver?1:0)-(b.ver?1:0)||(b.creada>a.creada?1:-1)).map(i=>{
+    const {h,u}=ult(i.id);const act=u&&u.prod?u.prod:null,cre=i.baseP&&act?act/i.baseP-1:null;
+    const pts=h.filter(x=>x.prod).map(x=>x.prod);const sp=pts.length>1?(()=>{const mn=Math.min(...pts),mx=Math.max(...pts)||1;return`<svg viewBox="0 0 80 22" style="width:80px;height:22px"><polyline fill="none" stroke="#3355f0" stroke-width="2" points="${pts.map((p,k)=>(k/(pts.length-1)*78+1).toFixed(1)+','+(20-(mx===mn?9:(p-mn)/(mx-mn)*18)).toFixed(1)).join(' ')}"/></svg>`;})():'';
+    const tag=i.ver==='Se cumplió'?'g':i.ver==='No se cumplió'?'r':'b';
+    return`<tr><td><b>${escH(i.kw)}</b><div class="xsmall">${escH(i.origen||'')}</div></td><td>${escH(i.rubro||'–')}</td><td>${escH(i.marca||'–')}</td><td>${gF(i.creada)}</td><td>${gF(i.plazo)}</td>
+      <td class="r">${i.baseP?xN(i.baseP):'–'} → ${act?xN(act):'–'}${cre!==null?`<div class="xsmall" style="color:${cre>=0.3?'var(--x-pos)':cre<0?'var(--x-neg)':'inherit'}">${cre>=0?'+':''}${xP(cre,0)}</div>`:''}</td><td>${sp}</td><td class="r">${u&&u.pos?'#'+u.pos:'–'}</td>
+      <td><span class="xtag ${tag}">${escH(i.ver||'En curso')}</span></td>
+      <td><select class="xinp" style="padding:4px 6px" onchange="gIdeaSet('${escH(i.id)}',{estado:this.value})">${opt(['En seguimiento','Evaluando','Descartada','Importada'],i.estado)}</select></td></tr>`;}).join('');
+  return`<div class="xrow"><section class="xp" style="flex:1 1 100%"><div class="xkpis" style="display:flex;gap:28px;flex-wrap:wrap">
+    <div><div class="xk-l">En seguimiento</div><div class="xk-v">${activas}</div></div>
+    <div><div class="xk-l">Se cumplieron</div><div class="xk-v" style="color:var(--x-pos)">${si}</div></div>
+    <div><div class="xk-l">No se cumplieron</div><div class="xk-v" style="color:var(--x-neg)">${no}</div></div>
+    <div><div class="xk-l">Tasa de acierto</div><div class="xk-v">${si+no?xP(si/(si+no),0):'–'}</div></div></div>
+    <p class="xsmall" style="margin-top:8px">Cada idea se mide todos los lunes en Chile: si entra a las tendencias de MercadoLibre o su catálogo crece 30% antes del plazo, se cumplió. La tasa de acierto te dice cuánto confiar en cada fuente.</p></section></div>
+  <section class="xp"><div class="xp-h"><h2>Agregar idea a seguimiento</h2><span class="note">de Amazon, TikTok, una feria o lo que veas</span></div>
+    <div class="xform">
+      <label class="xlbl">Búsqueda o producto (como lo buscaría alguien en Chile)<input class="xinp" id="si-kw" placeholder="ej. comedero automatico gato"></label>
+      <label class="xlbl">Rubro<select class="xinp" id="si-rubro">${opt(SM_RUBROS_UI,'')}</select></label>
+      <label class="xlbl">Marca destino<select class="xinp" id="si-marca">${opt(['MemoKoala','Montana','Marca nueva'],'Marca nueva')}</select></label>
+      <label class="xlbl">Dónde lo viste<input class="xinp" id="si-origen" placeholder="ej. Amazon EE.UU. · Movers & Shakers"></label>
+      <label class="xlbl">Plazo para verificar (semanas)<input class="xinp" id="si-plazo" type="number" value="12" min="4" max="52"></label>
+      <label class="xlbl">Hipótesis (opcional)<input class="xinp" id="si-hip" placeholder="ej. llega a Chile antes del verano"></label>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gIdeaAdd(this)">Agregar a seguimiento</button><span class="xsmall" id="si-msg"></span></div></section>
+  <section class="xp"><div class="xp-h"><h2>Ideas en seguimiento</h2><span class="note">${I.length} en total</span></div>
+    ${I.length?`<div class="xtw"><table class="xt"><thead><tr><th>Idea</th><th>Rubro</th><th>Marca</th><th>Desde</th><th>Plazo</th><th class="r">Productos en Chile (inicio → hoy)</th><th>Evolución</th><th class="r">Tendencia CL</th><th>Veredicto</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table></div>`:'<div class="xempty">Todavía no hay ideas. Agrega la primera arriba o espera las brechas que detecta el radar multipaís.</div>'}</section>`;
+}
+async function gIdeaAdd(btn){
+  const v=id=>document.getElementById(id).value.trim(),msg=document.getElementById('si-msg');
+  const idea={keyword:v('si-kw'),rubro:v('si-rubro'),marca:v('si-marca'),origen:v('si-origen')||'Manual',plazoDias:(+v('si-plazo')||12)*7,hipotesis:v('si-hip')};
+  if(idea.keyword.length<3){msg.textContent='Escribe la búsqueda o el producto.';return;}
+  btn.disabled=true;msg.textContent='Midiendo en el catálogo de Chile…';
+  try{await gPost({action:'scout_idea_add',idea});await gLoadIdeas(true);xScout();}
+  catch(e){msg.textContent='No se agregó: '+e.message;btn.disabled=false;}
+}
+async function gIdeaSet(id,cambios){
+  try{await gPost({action:'scout_idea_set',idea:{id,...cambios}});await gLoadIdeas(true);xScout();}
+  catch(e){alert('No se guardó: '+e.message);}
 }
 function gEvalHtml(){
   const v=gOpt('eval',{usd:8,tc:Math.round(+gOpt('tc',970)),flete:2500,arancel:0,pvp:34990,canal:'shopify',com:3.19});
@@ -3315,6 +3384,9 @@ sis:{t:'Cómo leer Estado del sistema',p:[
 scout:{t:'Cómo leer el Scout',p:[
  ['Radar','Las búsquedas más populares de MercadoLibre Chile, en general y en las categorías de tus marcas. "Sube", "Baja" o "Nueva" compara con la semana anterior. Mientras más semanas acumula, más confiable es la tendencia.'],
  ['Competencia','Cuántas marcas distintas aparecen entre los primeros 50 productos del catálogo de MercadoLibre para esa búsqueda: menos de 15 = baja, 15 a 29 = media, 30 o más = alta. MercadoLibre no entrega precios a esta app, así que los precios se revisan a mano.'],
+ ['Radar por país','Además de Chile, el radar mira cada lunes las tendencias de Argentina, México y Colombia en 7 rubros (bebé, cocina, hogar, decoración, mascotas, adulto mayor y parrilla). Elige el país arriba de los rubros.'],
+ ['Oportunidades','Búsquedas en tendencia 2 semanas seguidas en otro país y que no aparecen en Chile, con la competencia que hoy tienen en el catálogo chileno. Pocas marcas en Chile = espacio para entrar antes de que llegue la tendencia.'],
+ ['Seguimiento','Cada oportunidad, y cada idea que agregues a mano (de Amazon, TikTok o una feria), queda con una hipótesis y un plazo. Todos los lunes se mide en Chile: si entra a las tendencias o su catálogo crece 30%, se cumplió; si vence el plazo, no se cumplió. La tasa de acierto dice cuánto confiar en cada fuente.'],
  ['Evaluar producto','Calcula el costo internado, el margen bruto y el margen antes de publicidad de un producto que estás pensando traer. Sobre 55% después de ABEE y comisión deja espacio para publicidad.'],
  ['Mis marcas','Competencia en las búsquedas de MemoKoala y Montana: productos en catálogo, marcas distintas y las marcas que más aparecen.']]}
 };
