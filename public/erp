@@ -3176,7 +3176,7 @@ async function xSistema(){
 function gCierre(mes,k){const m=gOpt('cierre_'+mes,{});m[k]=!m[k];gSet('cierre_'+mes,m);xSistema();}
 
 // ── SCOUT ──
-async function gLoadScout(){if(G.scout)return;try{const f=await gCsv(CSV_SCOUT);G.scout=f.slice(1).filter(c=>c[2]).map(c=>({fecha:c[0],grupo:c[1],kw:c[2],pos:pn(c[3])||null,res:pn(c[4])||null,p25:pn(c[5])||null,med:pn(c[6])||null,p75:pn(c[7])||null,vend:pn(c[8])||null}));}catch(e){G.scout=[];}}
+async function gLoadScout(){if(G.scout)return;try{const f=await gCsv(CSV_SCOUT);G.scout=f.slice(1).filter(c=>c[2]).map(c=>({fecha:c[0],grupo:c[1],kw:c[2],pos:pn(c[3])||null,res:pn(c[4])||null,p25:pn(c[5])||null,med:pn(c[6])||null,p75:pn(c[7])||null,vend:pn(c[8])||null,top:c[9]||''}));}catch(e){G.scout=[];}}
 async function xScout(){
   const el=document.getElementById('view-scout');
   if(!G.scout){el.innerHTML='<div class="xp xempty">Cargando Scout…</div>';await gLoadScout();}
@@ -3190,20 +3190,20 @@ async function xScout(){
   const grupos=[...new Set(S.filter(r=>r.fecha===ult&&!esMarca(r.grupo)).map(r=>r.grupo))];
   if(G.scoutTab==='marcas'){
     const rs=S.filter(r=>r.fecha===ult&&esMarca(r.grupo));
-    el.innerHTML=head+`<section class="xp"><div class="xp-h"><h2>Mis marcas · competencia en MercadoLibre</h2><span class="note">foto del ${gF(ult)}</span></div><div class="xtw"><table class="xt"><thead><tr><th>Búsqueda</th><th>Marca</th><th class="r">Publicaciones</th><th class="r">Vendedores en los primeros 50</th><th class="r">Precio p25</th><th class="r">Mediana</th><th class="r">p75</th></tr></thead><tbody>
-      ${rs.map(r=>`<tr><td><b>${escH(r.kw)}</b></td><td>${escH(r.grupo.replace('Mis marcas: ',''))}</td><td class="r">${r.res?xN(r.res):'–'}</td><td class="r">${r.vend||'–'}</td><td class="r">${r.p25?clp(r.p25):'–'}</td><td class="r">${r.med?clp(r.med):'–'}</td><td class="r">${r.p75?clp(r.p75):'–'}</td></tr>`).join('')}</tbody></table></div>
-      <p class="xsmall" style="margin-top:10px">Compara tu precio con la mediana: sobre el p75 compites por marca y calidad; bajo el p25 estás dejando margen en la mesa.</p></section>`;return;}
+    el.innerHTML=head+`<section class="xp"><div class="xp-h"><h2>Mis marcas · competencia en MercadoLibre</h2><span class="note">foto del ${gF(ult)}</span></div><div class="xtw"><table class="xt"><thead><tr><th>Búsqueda</th><th>Marca</th><th class="r">Productos en catálogo</th><th class="r">Marcas distintas en los primeros 50</th><th>Marcas que más aparecen</th></tr></thead><tbody>
+      ${rs.map(r=>`<tr><td><b>${escH(r.kw)}</b></td><td>${escH(r.grupo.replace('Mis marcas: ',''))}</td><td class="r">${r.res?xN(r.res):'–'}</td><td class="r">${r.vend||'–'}</td><td>${escH(r.top||'–')}</td></tr>`).join('')}</tbody></table></div>
+      <p class="xsmall" style="margin-top:10px">Sube semana a semana la cantidad de marcas = está entrando competencia. MercadoLibre no entrega precios a esta app: revisa los precios a mano en mercadolibre.cl ordenando por más vendidos.</p></section>`;return;}
   if(!G.scoutGrupo||!grupos.includes(G.scoutGrupo))G.scoutGrupo=grupos[0]||'';
   const hist=kw=>fechas.map(f=>(S.find(r=>r.fecha===f&&r.grupo===G.scoutGrupo&&r.kw===kw)||{}).pos||null);
   const cards=S.filter(r=>r.fecha===ult&&r.grupo===G.scoutGrupo).sort((a,b)=>(a.pos||99)-(b.pos||99)).map(r=>{
     const antes=prev?S.find(x=>x.fecha===prev&&x.grupo===r.grupo&&x.kw===r.kw):null;
     const tg=!prev?['n','Primera semana']:!antes?['g','Nueva']:antes.pos>r.pos?['g','Sube '+(antes.pos-r.pos)]:antes.pos<r.pos?['r','Baja '+(r.pos-antes.pos)]:['b','Estable'];
     const h=hist(r.kw).filter(x=>x!==null);const pts=h.length>1?h.map((p,i)=>(i/(h.length-1)*280).toFixed(1)+','+(4+(p-1)/49*52).toFixed(1)).join(' '):'';
-    const comp=r.vend===null?'':r.vend>=35?'alta':r.vend>=20?'media':'baja';
+    const comp=r.vend===null?'':r.vend>=30?'alta':r.vend>=15?'media':'baja';
     return`<article class="xtc"><div style="display:flex;justify-content:space-between;gap:8px"><h3>${escH(r.kw)}</h3><span class="xtag ${tg[0]}">${tg[1]}</span></div>
       ${pts?`<svg viewBox="0 0 280 60" style="width:100%;height:50px" aria-label="Posición en el ranking por semana"><polyline fill="none" stroke="#3355f0" stroke-width="2.5" points="${pts}"/></svg>`:''}
-      <div class="xmt"><div><b>#${r.pos||'–'}</b>en el ranking</div><div><b>${r.res?xN(r.res):'–'}</b>publicaciones</div><div><b>${r.med?clp(r.med):'–'}</b>precio mediano</div></div>
-      ${comp?`<div class="xsmall">Competencia ${comp}: ${r.vend} vendedores distintos en los primeros 50 resultados${r.p25?' · precios '+clp(r.p25)+' – '+clp(r.p75):''}</div>`:''}</article>`;}).join('');
+      <div class="xmt"><div><b>#${r.pos||'–'}</b>en el ranking</div><div><b>${r.res?xN(r.res):'–'}</b>productos en catálogo</div><div><b>${r.vend||'–'}</b>marcas en el top 50</div></div>
+      ${comp?`<div class="xsmall">Competencia ${comp}${r.top?' · lideran: '+escH(r.top):''}</div>`:''}</article>`;}).join('');
   el.innerHTML=head+`<section class="xp"><div class="xp-h"><h2>Radar de búsquedas · MercadoLibre Chile</h2><span class="note">foto del ${gF(ult)} · ${fechas.length} semana${fechas.length!==1?'s':''} acumulada${fechas.length!==1?'s':''}</span></div>
     <div class="xchips" style="margin-bottom:14px">${grupos.map(g=>`<button type="button" class="xchip${G.scoutGrupo===g?' on':''}" onclick="G.scoutGrupo=this.dataset.g;xScout()" data-g="${escH(g)}">${escH(g.replace('Categoría: ',''))}</button>`).join('')}</div>
     <div class="xcards">${cards||'<div class="xempty">Sin búsquedas en este grupo</div>'}</div></section>`;
@@ -3314,9 +3314,9 @@ sis:{t:'Cómo leer Estado del sistema',p:[
  ['Cierre del mes','Lista de lo que falta para que el P&L del mes quede completo.']]},
 scout:{t:'Cómo leer el Scout',p:[
  ['Radar','Las búsquedas más populares de MercadoLibre Chile, en general y en las categorías de tus marcas. "Sube", "Baja" o "Nueva" compara con la semana anterior. Mientras más semanas acumula, más confiable es la tendencia.'],
- ['Competencia','Cuántos vendedores distintos aparecen en los primeros 50 resultados. Muchos vendedores = mercado saturado; pocos = espacio para entrar.'],
+ ['Competencia','Cuántas marcas distintas aparecen entre los primeros 50 productos del catálogo de MercadoLibre para esa búsqueda: menos de 15 = baja, 15 a 29 = media, 30 o más = alta. MercadoLibre no entrega precios a esta app, así que los precios se revisan a mano.'],
  ['Evaluar producto','Calcula el costo internado, el margen bruto y el margen antes de publicidad de un producto que estás pensando traer. Sobre 55% después de ABEE y comisión deja espacio para publicidad.'],
- ['Mis marcas','Precios y competencia de las búsquedas de MemoKoala y Montana en MercadoLibre.']]}
+ ['Mis marcas','Competencia en las búsquedas de MemoKoala y Montana: productos en catálogo, marcas distintas y las marcas que más aparecen.']]}
 };
 function gAyuda(v){
   const a=AYUDA[v],el=document.getElementById('view-'+v);if(!a||!el||el.querySelector(':scope > .xhelp'))return;

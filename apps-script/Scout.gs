@@ -10,7 +10,7 @@
 // =============================================================
 
 const H_SCOUT = 'Scout_Tendencias';
-const SCOUT_ENC = ['Fecha', 'Grupo', 'Keyword', 'Posición', 'Resultados', 'Precio p25', 'Precio mediana', 'Precio p75', 'Vendedores'];
+const SCOUT_ENC = ['Fecha', 'Grupo', 'Keyword', 'Posición', 'Resultados', 'Precio p25', 'Precio mediana', 'Precio p75', 'Vendedores', 'Marcas top'];
 const SCOUT_MIS_MARCAS = [
   ['MemoKoala', 'silla de comer portatil bebe'],
   ['MemoKoala', 'mecedora bebe'],
@@ -28,7 +28,7 @@ function scoutSemanal() {
   const filas = [];
   const medir = (grupo, kw, pos) => {
     const m = _scoutMedir_(kw);
-    filas.push([fecha, grupo, kw, pos, m.total, m.p25, m.med, m.p75, m.vendedores]);
+    filas.push([fecha, grupo, kw, pos, m.total, m.p25, m.med, m.p75, m.vendedores, m.top]);
   };
 
   // 1. Tendencias generales de ML Chile
@@ -53,6 +53,7 @@ function scoutSemanal() {
   const ss = SpreadsheetApp.getActive();
   let h = ss.getSheetByName(H_SCOUT);
   if (!h) { h = ss.insertSheet(H_SCOUT); h.appendRow(SCOUT_ENC); h.setFrozenRows(1); }
+  h.getRange(1, 1, 1, SCOUT_ENC.length).setValues([SCOUT_ENC]);   // agrega columnas nuevas al encabezado
   if (filas.length) h.getRange(h.getLastRow() + 1, 1, filas.length, SCOUT_ENC.length).setValues(filas);
   return filas.length;
 }
@@ -66,15 +67,23 @@ function _scoutTrends_(categoria) {
   } catch (e) { return []; }
 }
 
-// Resultados totales, rango de precios (p25, mediana, p75) y vendedores distintos en los primeros 50 resultados.
+// Competencia medida en el catálogo de MercadoLibre (/products/search). La búsqueda pública
+// (/sites/MLC/search) y los rankings de más vendidos (/highlights) responden 403 para esta app desde 2025,
+// así que no hay precios por API: se registran vacíos y se revisan a mano.
+//   Resultados = productos de catálogo activos para la búsqueda
+//   Vendedores = marcas distintas entre los primeros 50 productos (columna reutilizada)
+//   Marcas top = las 5 marcas que más se repiten en esos 50
 function _scoutMedir_(kw) {
-  const vacio = { total: '', p25: '', med: '', p75: '', vendedores: '' };
+  const vacio = { total: '', p25: '', med: '', p75: '', vendedores: '', top: '' };
   try {
-    const j = _mlGet_('/sites/MLC/search?limit=50&q=' + encodeURIComponent(kw));
-    const precios = (j.results || []).map(r => Number(r.price)).filter(p => p > 0).sort((a, b) => a - b);
-    const q = f => precios.length ? Math.round(precios[Math.min(precios.length - 1, Math.floor(f * precios.length))]) : '';
-    const vend = new Set((j.results || []).map(r => r.seller && r.seller.id).filter(Boolean));
-    return { total: (j.paging && j.paging.total) || '', p25: q(0.25), med: q(0.5), p75: q(0.75), vendedores: vend.size || '' };
+    const j = _mlGet_('/products/search?status=active&site_id=MLC&limit=50&q=' + encodeURIComponent(kw));
+    const cuenta = {};
+    (j.results || []).forEach(r => {
+      const b = ((r.attributes || []).find(a => a.id === 'BRAND') || {}).value_name;
+      if (b && !/gen[eé]ric|sin marca/i.test(b)) cuenta[b] = (cuenta[b] || 0) + 1;
+    });
+    const top = Object.keys(cuenta).sort((a, b) => cuenta[b] - cuenta[a]).slice(0, 5).join(' · ');
+    return { total: (j.paging && j.paging.total) || '', p25: '', med: '', p75: '', vendedores: Object.keys(cuenta).length || '', top: top };
   } catch (e) { return vacio; }
 }
 
