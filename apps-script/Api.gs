@@ -37,8 +37,14 @@ function doGet(e) {
 function doPost(e) {
   let body;
   try { body = JSON.parse((e && e.postData && e.postData.contents) || '{}'); } catch (err) { return json_({ ok: false, error: 'json inválido' }); }
-  const clave = PropertiesService.getScriptProperties().getProperty('API_KEY');
-  if (!clave || body.key !== clave) return json_({ ok: false, error: 'forbidden' });
+  const props = PropertiesService.getScriptProperties();
+  const clave = props.getProperty('API_KEY');
+  // Clave del Scout: solo permite cargar datos de Amazon y responder pedidos de análisis. La usa la tarea
+  // programada que corre en el Chrome del dueño (ver ScoutAmazon.gs); no sirve para nada más.
+  const claveScout = props.getProperty('SCOUT_KEY');
+  const accScout = ['amazon_add', 'amazon_clasificar', 'solicitud_set'];
+  const esScout = claveScout && body.key === claveScout && accScout.indexOf(body.action) !== -1;
+  if (!esScout && (!clave || body.key !== clave)) return json_({ ok: false, error: 'forbidden' });
   // Cada sincronización toma su propio candado; por eso va antes del candado general.
   if (body.action === 'sync') {
     try { return json_(sincronizarAhora_()); } catch (err) { return json_({ ok: false, error: err.message }); }

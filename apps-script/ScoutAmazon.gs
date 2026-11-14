@@ -112,3 +112,12 @@ function solicitudActualizar_(d) {
   h.getRange(i + 2, 7).setValue(Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd HH:mm'));
   return { ok: true };
 }
+
+// Ejecutar una vez (o para rotarla): crea la clave del Scout y la deja en la hoja Preferencias (scout_key),
+// donde la lee la tarea programada desde HB Control (protegido por Cloudflare Access).
+function scoutCrearClave() {
+  const k = Utilities.getUuid().replace(/-/g, '');
+  PropertiesService.getScriptProperties().setProperty('SCOUT_KEY', k);
+  prefGuardar_('scout_key', k);
+  console.log('Clave del Scout creada y guardada en Preferencias.');
+}
