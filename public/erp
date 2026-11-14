@@ -2523,7 +2523,7 @@ document.addEventListener('mousedown',e=>{const p=document.getElementById('xs-po
 
 function xBase(){return DATA.filter(r=>r.vb>0&&(!XF.marca||r.marca===XF.marca)&&(!XF.canal||r.canal===XF.canal));}
 function xEn(rows,a,b){return rows.filter(r=>r.fecha>=a&&r.fecha<=b);}
-function xPedidos(rows){const o={};rows.forEach(r=>{const k=r.canal+'|'+r.orden;if(!o[k])o[k]={k,canal:r.canal,fecha:r.fecha,hora:r.hora,cli:r.cli,vb:0,mb:0,u:0,skus:new Set(),reg:xReg(r),ciudad:r.ciudad,fuente:r.fuente,pago:r.pago,desp:r.desp,ncomp:r.ncomp,marca:r.marca};const x=o[k];x.vb+=r.vb;x.mb+=r.mb;x.u+=r.qty;x.skus.add(r.sku);});return Object.values(o);}
+function xPedidos(rows){const o={};rows.forEach(r=>{const k=r.canal+'|'+r.orden;if(!o[k])o[k]={k,canal:r.canal,fecha:r.fecha,hora:r.hora,cli:r.cli,vb:0,mb:0,u:0,skus:new Set(),reg:xReg(r),ciudad:r.ciudad,fuente:r.fuente,camp:r.camp,pago:r.pago,desp:r.desp,ncomp:r.ncomp,marca:r.marca};const x=o[k];x.vb+=r.vb;x.mb+=r.mb;x.u+=r.qty;x.skus.add(r.sku);});return Object.values(o);}
 function xTot(rows){const p=xPedidos(rows);const vb=rows.reduce((s,r)=>s+r.vb,0),mb=rows.reduce((s,r)=>s+r.mb,0);
   const com=rows.reduce((s,r)=>s+(r.canal==='Shopify'||r.canal==='ML'||r.canal==='HigoKids'?r.cargoMP:0),0);
   const envML=rows.reduce((s,r)=>s+(r.canal==='ML'?r.envio:0),0),flex=rows.reduce((s,r)=>s+(r.canal==='ML'?r.descto:0),0);
@@ -2744,8 +2744,41 @@ function xClientes(){
 }
 
 // ── CANALES Y MARKETING ──
+
+// ── Atribución por pedido (Shopify): origen y etiqueta de campaña (UTM) de cada pedido ──
+function xOrigen(p){
+  const c=xNorm(p.camp),f=xFuente(p.fuente,'Shopify');
+  if(/^(facebook|fb|instagram|ig|meta|an)\s*\/\s*(paid|cpc|ads?|paidsocial|paid_social)\b/.test(c))return 'Meta · anuncios';
+  if(/^(facebook|fb|instagram|ig|meta)\s*\/\s*social\b/.test(c))return 'Meta · etiqueta "social"';
+  if(/^google\s*\/\s*(cpc|paid|ppc)\b/.test(c))return 'Google Ads';
+  if(/^google\s*\/\s*product_sync/.test(c))return 'Google Shopping gratis';
+  if(/^(klaviyo|email|mailchimp|shopify_email)\b/.test(c))return 'Email';
+  if(c)return 'Otra campaña etiquetada';
+  if(f==='Instagram'||f==='Facebook')return 'Meta · sin etiqueta de campaña';
+  if(f==='Google')return 'Google orgánico';
+  return f;
+}
+function xCampLbl(c){const p=String(c||'').split('/').map(x=>x.trim());const src={facebook:'Facebook',fb:'Facebook',ig:'Instagram',instagram:'Instagram',google:'Google'}[xNorm(p[0])]||p[0];const id=p.slice(2).join(' / ');return src+(p[1]?' · '+p[1]:'')+(id?' · '+(/^\d{10,}$/.test(id)?'campaña …'+id.slice(-6):id):'');}
+function xAtribucion(cur,pre){
+  const ps=xPedidos(cur.filter(r=>r.canal==='Shopify')),pp=xPedidos(pre.filter(r=>r.canal==='Shopify'));
+  if(!ps.length)return'<section class="xp"><div class="xp-h"><h2>Qué trajo cada venta</h2></div><div class="xempty">Sin pedidos de Shopify en el período.</div></section>';
+  const g=xGrupo(ps,xOrigen),ga=xGrupo(pp,xOrigen);const tot=ps.length;
+  const filas=Object.entries(g).map(([o,l])=>({o,n:l.length,vb:l.reduce((s,p)=>s+p.vb,0),mb:l.reduce((s,p)=>s+p.mb,0),na:(ga[o]||[]).length})).sort((a,b)=>b.vb-a.vb);
+  const meta=filas.filter(f=>f.o.startsWith('Meta')).reduce((s,f)=>({n:s.n+f.n,vb:s.vb+f.vb}),{n:0,vb:0});
+  const vbT=ps.reduce((s,p)=>s+p.vb,0);
+  const tag=o=>o==='Meta · etiqueta "social"'||o==='Meta · sin etiqueta de campaña'?' <span class="xtag y" title="Probablemente es un anuncio sin la etiqueta paid: Analytics lo cuenta como orgánico">revisar etiqueta</span>':'';
+  const t1=`<div class="xtw"><table class="xt"><thead><tr><th>Origen</th><th class="r">Pedidos</th><th class="r">% de los pedidos</th><th class="r">Ventas</th><th class="r">Margen bruto</th><th class="r">Ticket</th><th class="r">Pedidos período anterior</th></tr></thead><tbody>${filas.map(f=>`<tr><td><b>${escH(f.o)}</b>${tag(f.o)}</td><td class="r">${f.n}</td><td class="r">${xP(f.n/tot,0)}</td><td class="r">${xM(f.vb)}</td><td class="r">${xM(f.mb)}</td><td class="r">${xM(f.vb/f.n)}</td><td class="r">${pp.length?f.na+' '+xDelta(f.n,f.na):'–'}</td></tr>`).join('')}</tbody></table></div>`;
+  const conC=ps.filter(p=>p.camp);const gc=xGrupo(conC,p=>p.marca+'|'+p.camp);
+  const cf=Object.entries(gc).map(([k,l])=>{const [m,c]=k.split('|');return{m,c,n:l.length,vb:l.reduce((s,p)=>s+p.vb,0),mb:l.reduce((s,p)=>s+p.mb,0),f0:l.map(p=>p.fecha).sort()[0],f1:l.map(p=>p.fecha).sort().pop()};}).sort((a,b)=>b.vb-a.vb);
+  const t2=cf.length?`<div class="xtw"><table class="xt"><thead><tr><th>Campaña</th><th>Marca</th><th>Origen</th><th class="r">Pedidos</th><th class="r">Ventas</th><th class="r">Margen bruto</th><th>Pedidos entre</th></tr></thead><tbody>${cf.slice(0,15).map(x=>`<tr><td title="${escH(x.c)}">${escH(xCampLbl(x.c))}</td><td>${escH(x.m)}</td><td>${escH(xOrigen({camp:x.c}))}</td><td class="r">${x.n}</td><td class="r">${xM(x.vb)}</td><td class="r">${xM(x.mb)}</td><td class="xsmall">${gF(x.f0)}${x.f1!==x.f0?' – '+gF(x.f1):''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Ningún pedido del período trae etiqueta de campaña.</div>';
+  return`<section class="xp"><div class="xp-h"><h2>Qué trajo cada venta (Shopify)</h2><span class="note">origen y etiqueta de campaña de cada pedido · ${tot} pedidos</span></div>
+    <p class="xsmall" style="font-size:13px;margin-bottom:10px">Meta trajo <b>${meta.n} de ${tot} pedidos (${xP(meta.n/tot,0)})</b> y <b>${xM(meta.vb)}</b> en ventas (${xP(vbT?meta.vb/vbT:0,0)} de la tienda web).</p>${t1}
+    <p class="xsmall" style="margin-top:8px">Fuente: Shopify, que registra la visita que llevó a cada compra. Es más confiable que Analytics, que deja muchas compras "sin asignar" y le da a Meta bastante menos de lo que trae. Cuando se conecte Meta Ads, aquí aparecerán el gasto, el costo por compra y los nombres de las campañas.</p></section>
+  <section class="xp"><div class="xp-h"><h2>Campañas que trajeron ventas</h2><span class="note">pedidos con etiqueta de campaña (UTM)</span></div>${t2}
+    <p class="xsmall" style="margin-top:8px">Meta solo entrega el número de la campaña en el enlace; el nombre aparecerá al conectar Meta Ads. Una campaña con etiqueta "social" en vez de "paid" se cuenta como orgánica en Analytics: conviene corregir la etiqueta en el anuncio.</p></section>`;
+}
 function xCanales(){
-  const R=xRango(),base=xBase(),cur=xEn(base,R.a,R.b);
+  const R=xRango(),base=xBase(),cur=xEn(base,R.a,R.b),pre=R.pa?xEn(base,R.pa,R.pb):[];
   const gc=xGrupo(cur,r=>r.canal);
   const filas=Object.entries(gc).map(([c,rs])=>{const t=xTot(rs);return{c,...t};}).sort((a,b)=>b.vb-a.vb);const tot=filas.reduce((s,f)=>s+f.vb,0);
   const tabla=`<div class="xtw"><table class="xt" style="min-width:820px"><thead><tr><th>Canal</th><th class="r">Ventas</th><th class="r">%</th><th class="r">Pedidos</th><th class="r">Ticket</th><th class="r">Margen bruto</th><th class="r">Comisiones</th><th class="r">Envío ML − Flex</th><th class="r">Queda</th><th class="r">% queda</th></tr></thead><tbody>${filas.map(f=>`<tr><td style="font-weight:600">${escH(f.c==='ML'?'MercadoLibre':f.c)}</td><td class="r">${xM(f.vb)}</td><td class="r">${xP(f.vb/(tot||1),0)}</td><td class="r">${xN(f.ped)}</td><td class="r">${xM(f.tk)}</td><td class="r">${xM(f.mb)} · ${xP(f.mg,0)}</td><td class="r">${xM(f.com)} · ${xP(f.com/(f.vb||1),1)}</td><td class="r">${xM(f.envML-f.flex)}</td><td class="r" style="font-weight:600">${xM(f.contrib)}</td><td class="r">${xP(f.contrib/(f.vb||1),0)}</td></tr>`).join('')}</tbody></table></div>`;
@@ -2776,6 +2809,7 @@ function xCanales(){
   const cupH=ct.length?`<div class="xtw"><table class="xt"><thead><tr><th>Cupón</th><th class="r">Pedidos</th><th class="r">Descuento dado</th></tr></thead><tbody>${ct.map(([k,n,d])=>`<tr><td style="font-weight:600">${escH(k)}</td><td class="r">${n}</td><td class="r">${xM(d)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin cupones usados en el período</div>';
   document.getElementById('view-canal').innerHTML=`
   <section class="xp"><div class="xp-h"><h2>Cuánto deja cada canal</h2><span class="note">"Queda" = margen bruto − comisiones − envío Colecta + bonificación Flex</span></div>${tabla}</section>
+  ${xAtribucion(cur,pre)}
   <section class="xp"><div class="xp-h"><h2>Ventas por canal, mes a mes</h2><span class="note">últimos 12 meses</span></div>${evo}</section>
   <div class="xg xg-2">
     <section class="xp"><div class="xp-h"><h2>De dónde llegan (Shopify)</h2><span class="note">fuente de la visita</span></div>${fuenteH}</section>
