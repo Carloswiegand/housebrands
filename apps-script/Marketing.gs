@@ -276,3 +276,15 @@ function marketingProbar() {
   console.log(out.join('\n'));
   return out;
 }
+
+// Ejecutar una vez: la Merchant API exige registrar el proyecto de Google Cloud del script en cada cuenta
+// de Merchant Center (lo hace un administrador de la cuenta). Esperar 5 minutos antes de usarla.
+function marketingRegistrarMerchant() {
+  const email = Session.getEffectiveUser().getEmail();
+  const out = MKT_MARCAS.map(m => {
+    try { _mkPedir_('https://merchantapi.googleapis.com/accounts/v1/accounts/' + m.mc + '/developerRegistration:registerGcp', { developerEmail: email }); return m.marca + ': registrado'; }
+    catch (e) { return m.marca + ': ' + e.message; }
+  });
+  console.log(out.join('\n'));
+  return out;
+}
