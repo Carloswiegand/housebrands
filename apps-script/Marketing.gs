@@ -148,7 +148,7 @@ function _mkMarca_(m) {
 
   // Merchant Center: estado de productos y clics gratuitos en Shopping
   try {
-    const prods = _mkMerchant_(m.mc, 'SELECT offer_id, title, aggregated_reporting_context_status, item_issues FROM product_view');
+    const prods = _mkMerchant_(m.mc, 'SELECT id, offer_id, title, aggregated_reporting_context_status, item_issues FROM product_view');
     _mkReemplazar_('Mkt_Shopping', m.marca, prods.map(x => {
       const p = x.productView || {};
       const prob = (p.itemIssues || []).map(i => {
@@ -271,7 +271,7 @@ function marketingProbar() {
     const t = (n, f) => { try { f(); out.push(m.marca + ' ' + n + ': OK'); } catch (e) { out.push(m.marca + ' ' + n + ': ' + e.message); } };
     t('Search Console', () => _mkGsc_(m.sitio, { startDate: _mkFecha_(10), endDate: _mkFecha_(3), dimensions: ['date'], rowLimit: 5 }));
     t('Analytics', () => _mkGa4_(m.ga4, { dateRanges: [{ startDate: '7daysAgo', endDate: 'yesterday' }], metrics: [{ name: 'sessions' }] }));
-    t('Merchant', () => _mkMerchant_(m.mc, 'SELECT offer_id FROM product_view'));
+    t('Merchant', () => _mkMerchant_(m.mc, 'SELECT id, offer_id FROM product_view'));
   });
   console.log(out.join('\n'));
   return out;
