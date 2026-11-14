@@ -10,8 +10,9 @@
 //     registra sola como idea en seguimiento.
 //  3. Seguimiento: cada idea activa se mide en Chile (posición en tendencias, productos y marcas en el
 //     catálogo) → hoja Scout_Seguimiento. Veredicto automático:
-//       "Se cumplió"    = entró a las tendencias de Chile o su catálogo creció ≥ 30% sobre la base.
-//       "No se cumplió" = llegó el plazo sin cumplirse.
+//       "Se cumplió"    = entró a las tendencias de Chile (si no estaba al empezar), sigue en ellas al vencer el
+//                        plazo (si ya estaba), o su catálogo creció ≥ 30% (solo bajo el tope de 10.000 productos).
+//       "No se cumplió" = llegó el plazo sin cumplirse. La primera medición es la base: no da veredicto.
 //
 // Hoja Scout_Ideas: ID | Creada | Keyword | Rubro | Origen | Hipótesis | Marca destino | Plazo |
 //   Base productos CL | Base marcas CL | Estado | Veredicto | Fecha veredicto | Notas
@@ -32,6 +33,7 @@ const SM_TOP = 20;              // búsquedas por rubro y país
 const SM_MAX_BRECHAS = 15;      // brechas nuevas medidas por semana (cada una es una llamada al catálogo)
 const SM_PLAZO_DIAS = 84;       // 12 semanas para que la hipótesis se cumpla
 const SM_CRECIMIENTO = 1.3;     // +30% de productos en el catálogo chileno = se cumplió
+const SM_TOPE_CATALOGO = 10000; // el catálogo no cuenta más allá de 10.000: sobre eso solo vale la regla de tendencias
 
 const H_IDEAS = 'Scout_Ideas';
 const IDEAS_ENC = ['ID', 'Creada', 'Keyword', 'Rubro', 'Origen', 'Hipótesis', 'Marca destino', 'Plazo', 'Base productos CL', 'Base marcas CL', 'Estado', 'Veredicto', 'Fecha veredicto', 'Notas'];
@@ -166,6 +168,9 @@ function scoutSeguimiento_(ahora) {
   try { _mlGet_('/trends/MLC').forEach((x, i) => { const n = _smNorm_(x.keyword); if (!posCL[n]) posCL[n] = i + 1; }); } catch (e) {}
   Object.keys(ahora || {}).forEach(r => (ahora[r].MLC || []).forEach((kw, i) => { const n = _smNorm_(kw); if (!posCL[n] || posCL[n] > i + 1) posCL[n] = i + 1; }));
   const hS = _smHoja_(H_SEG, SEG_ENC);
+  // Primera medición de cada idea: su punto de partida en las tendencias chilenas
+  const primera = {};
+  _smDatos_(hS, SEG_ENC.length).forEach(s => { if (!(s[1] in primera)) primera[s[1]] = { pos: Number(s[3]) || 0 }; });
   const fecha = _smFecha_(), hoy = new Date(), filas = [];
   ideas.forEach((r, i) => {
     if (['En seguimiento', 'Evaluando'].indexOf(String(r[10])) === -1) return;
@@ -175,15 +180,18 @@ function scoutSeguimiento_(ahora) {
     if (!pos) Object.keys(posCL).forEach(k => { if (k.indexOf(n) !== -1 && (!pos || posCL[k] < pos)) pos = posCL[k]; });
     const m = _scoutMedir_(r[2]);
     filas.push([fecha, r[0], r[2], pos, m.total || '', m.vendedores || '']);
-    if (!r[11]) {
-      const base = Number(r[8]) || 0;
-      const plazo = r[7] instanceof Date ? r[7] : new Date(String(r[7]) + 'T12:00:00');
-      let v = '';
-      if (pos) v = 'Se cumplió';
-      else if (base > 0 && Number(m.total) >= base * SM_CRECIMIENTO) v = 'Se cumplió';
-      else if (hoy >= plazo) v = 'No se cumplió';
-      if (v) hI.getRange(i + 2, 12, 1, 2).setValues([[v, fecha]]);
-    }
+    if (r[11]) return;
+    const ini = primera[r[0]];
+    if (!ini) return;                                    // primera medición: es la base, todavía no hay veredicto
+    const base = Number(r[8]) || 0;
+    const plazo = r[7] instanceof Date ? r[7] : new Date(String(r[7]) + 'T12:00:00');
+    const vencio = hoy >= plazo;
+    let v = '';
+    if (!ini.pos && pos) v = 'Se cumplió';                               // no estaba en tendencias de Chile y entró
+    else if (ini.pos && vencio) v = pos ? 'Se cumplió' : 'No se cumplió'; // ya estaba: se cumple si sigue al vencer el plazo
+    else if (base > 0 && base < SM_TOPE_CATALOGO && Number(m.total) >= base * SM_CRECIMIENTO) v = 'Se cumplió';
+    else if (vencio) v = 'No se cumplió';
+    if (v) hI.getRange(i + 2, 12, 1, 2).setValues([[v, fecha]]);
   });
   if (filas.length) hS.getRange(hS.getLastRow() + 1, 1, filas.length, SEG_ENC.length).setValues(filas);
   return filas.length;
