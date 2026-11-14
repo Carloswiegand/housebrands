@@ -180,7 +180,7 @@ function marketingActualizar() {
   if (err.length) throw new Error(err.join(' / ').slice(0, 900));
 }
 
-// ── Revisión semanal: indexación de las URLs del sitemap y velocidad ──
+// ── Revisión semanal: indexación de las URLs del sitemap ──
 function _mkSitemap_(base) {
   const urls = [];
   const leer = u => { try { const r = UrlFetchApp.fetch(u, { muteHttpExceptions: true }); return r.getResponseCode() === 200 ? r.getContentText() : ''; } catch (e) { return ''; } };
@@ -260,7 +260,7 @@ function marketingSemanal() {
   const err = [];
   MKT_MARCAS.forEach(m => {
     try { _mkIndexacion_(m); } catch (e) { err.push(m.marca + ' · Indexación: ' + e.message); }
-    try { _mkVelocidad_(m); } catch (e) { err.push(m.marca + ' · PageSpeed: ' + e.message); }
+    // PageSpeed quedó fuera por decisión del dueño (usa el informe de velocidad de Shopify); _mkVelocidad_ queda disponible
   });
   if (err.length) throw new Error(err.join(' / ').slice(0, 900));
 }
@@ -269,7 +269,7 @@ function marketingSemanal() {
 function marketingProgramado() { correr_('Marketing', marketingActualizar); }
 function marketingSemanalProgramado() { correr_('Marketing semanal', marketingSemanal); }
 
-// Ejecutar una vez: Marketing todos los días 7:00 y la revisión de indexación y velocidad los lunes 7:30.
+// Ejecutar una vez: Marketing todos los días 7:00 y la revisión de indexación los lunes 7:30.
 function activarMarketing() {
   ScriptApp.getProjectTriggers().filter(t => ['marketingProgramado', 'marketingSemanalProgramado'].indexOf(t.getHandlerFunction()) !== -1).forEach(t => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger('marketingProgramado').timeBased().everyDays(1).atHour(7).nearMinute(0).inTimezone('America/Santiago').create();

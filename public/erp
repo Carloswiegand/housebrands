@@ -3324,7 +3324,7 @@ async function xMkt(){
   if(!G.mkt){el.innerHTML='<div class="xp xempty">Cargando marketing…</div>';await gLoadMkt();}
   const M=G.mkt;const marcas=['MemoKoala','Montana'];if(!G.mktMarca)G.mktMarca='MemoKoala';const mk=G.mktMarca;
   const head=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="xchips" role="tablist">${marcas.map(m=>`<button type="button" role="tab" aria-selected="${m===mk}" class="xchip${m===mk?' on':''}" onclick="G.mktMarca='${m}';xMkt()">${m}</button>`).join('')}</div>
-    <button type="button" class="xbtn" id="mkt-act" onclick="gMktActualizar(this)" style="margin-left:auto">Actualizar ahora</button><span class="xsmall" id="mkt-msg">Se actualiza sola todos los días a las 7:00; indexación y velocidad, los lunes.</span></section>`;
+    <button type="button" class="xbtn" id="mkt-act" onclick="gMktActualizar(this)" style="margin-left:auto">Actualizar ahora</button><span class="xsmall" id="mkt-msg">Se actualiza sola todos los días a las 7:00; la indexación, los lunes.</span></section>`;
   const D=M.dia.filter(r=>r.m===mk).sort((a,b)=>a.f<b.f?-1:1);
   if(!D.length){el.innerHTML=head+`<section class="xp xempty">Todavía no hay datos de ${mk}. Se cargan desde Search Console, Analytics y Merchant Center en la próxima corrida diaria, o con "Actualizar ahora".</section>`;return;}
   const fin=D[D.length-1].f;const ultGsc=D.filter(r=>r.cl!==null).map(r=>r.f).pop()||fin;
@@ -3373,7 +3373,7 @@ async function xMkt(){
   const vTab=`<section class="xp"><div class="xp-h"><h2>Velocidad del sitio</h2><span class="note">${fv?'PageSpeed · '+gF(fv):'los lunes'}</span></div>${fv?`<div class="xtw"><table class="xt"><thead><tr><th>Página</th><th>Dispositivo</th><th class="r">Puntaje</th><th class="r">Carga principal</th><th class="r">Respuesta al tocar</th><th class="r">Saltos</th></tr></thead><tbody>${V.filter(r=>r.f===fv).map(r=>`<tr><td>${escH(mkCorta(r.u))}</td><td>${r.disp}</td><td class="r"><span class="xd ${r.pts>=90?'up':r.pts>=50?'eq':'dn'}">${r.pts??'–'}</span></td><td class="r">${r.lcp!==null?String(r.lcp).replace('.',',')+' s':'–'}</td><td class="r">${r.inp!==null?r.inp+' ms':'–'}</td><td class="r">${r.cls!==null?String(r.cls).replace('.',','):'–'}</td></tr>`).join('')}</tbody></table></div><p class="xsmall" style="margin-top:8px">Metas de Google: carga principal bajo 2,5 s, respuesta al tocar bajo 200 ms, saltos bajo 0,1. ${V.some(r=>r.f===fv&&r.real==='Sí')?'Con datos de visitas reales de Chrome.':'Sin datos reales de Chrome todavía (poco tráfico): es una medición de laboratorio.'}</p>`:'<div class="xempty">La primera medición sale el próximo lunes.</div>'}</section>`;
   el.innerHTML=head+`<div class="xg xg-k">${kp}</div>
     <div class="xrow"><section class="xp" style="flex:2 1 520px"><div class="xp-h"><h2>Últimos 90 días</h2><span class="note">datos hasta ${gF(fin)}</span></div>${gMktLinea(D,R)}</section><section class="xp" style="flex:1 1 300px"><div class="xp-h"><h2>Qué revisar</h2></div>${alH}</section></div>
-    ${qTab}<div class="xg xg-2">${pTab}${cTab}</div>${iTab}<div class="xg xg-2">${sTab}${vTab}</div>`;
+    ${qTab}<div class="xg xg-2">${pTab}${cTab}</div>${iTab}${sTab}`;
 }
 async function gMktActualizar(btn){
   const msg=document.getElementById('mkt-msg');btn.disabled=true;msg.textContent='Consultando a Google (toma 1 minuto)…';
@@ -3563,13 +3563,13 @@ sis:{t:'Cómo leer Estado del sistema',p:[
  ['Gastos del mes','Aquí cargas los gastos variables de cada mes cuando llega la factura (anuncios, ABEE, sueldos). Los fijos se cargan una vez y se repiten solos.'],
  ['Cierre del mes','Lista de lo que falta para que el P&L del mes quede completo.']]},
 mkt:{t:'Cómo leer Sitios web y SEO',p:[
- ['De dónde salen los datos','Search Console (cómo te encuentran en Google), Analytics 4 (qué hacen en la tienda), Merchant Center (tus productos en Google Shopping) y PageSpeed (velocidad). Se actualiza todos los días a las 7:00; la revisión de indexación y velocidad corre los lunes.'],
+ ['De dónde salen los datos','Search Console (cómo te encuentran en Google), Analytics 4 (qué hacen en la tienda) y Merchant Center (tus productos en Google Shopping). Se actualiza todos los días a las 7:00; la revisión de indexación corre los lunes.'],
  ['Clics, impresiones y CTR','Impresiones = veces que apareciste en Google. Clics = veces que entraron. CTR = clics ÷ impresiones. Google entrega los datos con 2 a 3 días de atraso, por eso la comparación usa los últimos 28 días con datos contra los 28 anteriores.'],
  ['Posición promedio','Lugar promedio en los resultados de Google (1 = primero). Bajar el número es bueno. Entre 4 y 15 estás cerca: mejorar el título y el texto de esa página suele subir bastante los clics.'],
  ['Compras según Analytics','Analytics suele contar menos compras que Shopify (bloqueadores, cookies rechazadas). Úsalo para comparar canales entre sí, no para cuadrar ventas: las ventas reales están en Resumen.'],
  ['Indexación','Cada lunes se revisa en Search Console cada página del sitemap. Una página de producto o colección que no está indexada no puede aparecer en Google. Prioriza esas antes que las páginas de blog.'],
  ['Shopping','Estado de cada producto en Merchant Center y los clics gratis que entregan las fichas de Google. Un producto "No aprobado" no aparece en Shopping.'],
- ['Velocidad','Puntaje de 0 a 100 en celular y computador. Bajo 50 en celular afecta posiciones y conversión.']]},
+ ['Velocidad','No se mide aquí: usa el informe de velocidad de Shopify (Analytics → Informes → Velocidad de la tienda).']]},
 scout:{t:'Cómo leer el Scout',p:[
  ['Radar','Las búsquedas más populares de MercadoLibre Chile, en general y en las categorías de tus marcas. "Sube", "Baja" o "Nueva" compara con la semana anterior. Mientras más semanas acumula, más confiable es la tendencia.'],
  ['Competencia','Cuántas marcas distintas aparecen entre los primeros 50 productos del catálogo de MercadoLibre para esa búsqueda: menos de 15 = baja, 15 a 29 = media, 30 o más = alta. MercadoLibre no entrega precios a esta app, así que los precios se revisan a mano.'],
