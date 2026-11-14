@@ -3279,7 +3279,7 @@ async function gLoadSolic(force){
 }
 function gScoutAmazon(){
   const A=G.amz||[];
-  if(!A.length)return`<section class="xp xempty">Todavía no hay datos de Amazon. La tarea programada "Scout Amazon y análisis" lee cada lunes los Más vendidos y los Nuevos lanzamientos de Amazon EE.UU., México y España desde tu Chrome; necesita el computador encendido con Chrome abierto.</section>`;
+  if(!A.length)return`<section class="xp xempty"><p>Todavía no hay datos de Amazon. La tarea programada "Scout Amazon y análisis" lee cada lunes los Más vendidos y los Nuevos lanzamientos de Amazon EE.UU., México y España desde tu Chrome; necesita el computador encendido con Chrome abierto.</p><button type="button" class="xbtn" id="amz-abrir" onclick="gAbrirAmazon()">Abrir Amazon para actualizar</button>${(G.amzLog||[]).length?`<p class="xsmall">${G.amzLog.map(escH).join(' · ')}</p>`:''}</section>`;
   const fechas=[...new Set(A.map(r=>r.fecha))].sort(),ult=fechas[fechas.length-1];
   const U=A.filter(r=>r.fecha===ult);
   const mers=[...new Set(U.map(r=>r.mer))];if(!G.amzMer||!mers.includes(G.amzMer))G.amzMer=mers[0];
@@ -3293,7 +3293,7 @@ function gScoutAmazon(){
   const filas=U.filter(r=>r.mer===G.amzMer&&r.lista===G.amzLista&&r.cat===G.amzCat&&okGen(r)).sort((a,b)=>a.pos-b.pos);
   return`<section class="xp"><div class="xp-h"><h2>Lo que más sube esta semana · solo marcas</h2><span class="note">foto del ${gF(ult)} · ${fechas.length} semana${fechas.length!==1?'s':''}</span></div>
     ${sube.length?`<div class="xtw"><table class="xt"><thead><tr><th>Cambio</th><th>Producto</th><th>Marca</th><th>Tipo</th><th>Dónde</th><th class="r">Puesto</th><th class="r">Reseñas</th></tr></thead><tbody>${sube.map(r=>`<tr><td>${tag(r.cambio)}</td><td><a href="https://www.amazon.${r.mer==='EE.UU.'?'com':r.mer==='México'?'com.mx':'es'}/dp/${escH(r.asin)}" target="_blank" rel="noopener">${escH(r.tit.slice(0,90))}</a></td><td>${escH(r.marca||'–')}</td><td>${escH(r.tipo||'–')}</td><td class="xsmall">${escH(r.mer+' · '+r.cat)}</td><td class="r">#${r.pos}</td><td class="r">${r.res?xN(r.res):'–'}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Se calcula desde la segunda semana de datos, comparando puestos.</div>'}</section>
-  <section class="xp"><div class="xp-h"><h2>Rankings de Amazon</h2><label class="xsmall" style="display:flex;gap:6px;align-items:center"><input type="checkbox" ${G.amzMarcas?'checked':''} onchange="G.amzMarcas=this.checked;xScout()"> ocultar genéricos</label></div>
+  <section class="xp"><div class="xp-h"><h2>Rankings de Amazon</h2><div style="display:flex;gap:12px;align-items:center"><button type="button" class="xbtn" id="amz-abrir" onclick="gAbrirAmazon()">Abrir Amazon para actualizar</button><label class="xsmall" style="display:flex;gap:6px;align-items:center"><input type="checkbox" ${G.amzMarcas?'checked':''} onchange="G.amzMarcas=this.checked;xScout()"> ocultar genéricos</label></div></div>${(G.amzLog||[]).length?`<p class="xsmall">${G.amzLog.map(escH).join(' · ')}</p>`:''}
     <div class="xchips" style="margin-bottom:8px">${chip(mers,G.amzMer,'G.amzMer')}</div>
     <div class="xchips" style="margin-bottom:8px">${chip(listas,G.amzLista,'G.amzLista')}</div>
     <div class="xchips" style="margin-bottom:14px">${chip(cats,G.amzCat,'G.amzCat')}</div>
@@ -3313,6 +3313,19 @@ function gScoutPedir(){
     ${S.length?S.map(s=>`<details class="xp" style="margin:8px 0;padding:12px"${s.estado==='Listo'&&s===S[0]?' open':''}><summary style="cursor:pointer"><span class="xtag ${tag(s.estado)}">${escH(s.estado)}</span> <b>${escH(s.tipo)}:</b> ${escH(s.pedido.slice(0,120))} <span class="xsmall">· ${gF(s.fecha)}</span></summary>
       ${s.res?`<div class="xsmall" style="white-space:pre-wrap;line-height:1.55;margin-top:10px">${escH(s.res)}</div>`:'<div class="xsmall" style="margin-top:8px">Todavía sin respuesta.</div>'}</details>`).join(''):'<div class="xempty">Todavía no hay pedidos.</div>'}</section>`;
 }
+// Recepción de rankings de Amazon: HB Control abre la pestaña de Amazon (gAbrirAmazon) y la tarea programada
+// lee ahí los rankings; la pestaña los envía con postMessage y aquí se guardan, un mercado por mensaje.
+G.amzLog=[];
+window.addEventListener('message',async e=>{
+  if(!/^https:\/\/www\.amazon\.(com|com\.mx|es)$/.test(e.origin))return;
+  const d=e.data||{};if(d.tipo!=='hb-amazon'||!Array.isArray(d.filas)||!d.filas.length)return;
+  const merc=e.origin.endsWith('.mx')?'México':e.origin.endsWith('.es')?'España':'EE.UU.';
+  const filas=d.filas.filter(f=>f&&f.mercado===merc);
+  try{const r=await gPost({action:'amazon_add',filas,fecha:gHoy()});G.amzLog.push(merc+': '+r.filas+' productos guardados');}
+  catch(x){G.amzLog.push(merc+': error '+x.message);}
+  G.amz=null;if(G.scoutTab==='amazon'&&X_VISTA==='scout')xScout();
+});
+function gAbrirAmazon(){G.amzVentana=window.open('https://www.amazon.com/gp/bestsellers/','hbamz');}
 async function gSolicitar(btn){
   const tipo=document.getElementById('sp-tipo').value,pedido=document.getElementById('sp-txt').value.trim(),msg=document.getElementById('sp-msg');
   if(pedido.length<3){msg.textContent='Escribe qué quieres que analice.';return;}

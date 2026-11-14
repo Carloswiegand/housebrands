@@ -3,9 +3,10 @@
 // Rankings de Amazon (EE.UU., México, España) y pedidos de análisis del Scout.
 //
 // Los datos de Amazon no se pueden leer desde Apps Script (Amazon bloquea a los servidores). Los carga
-// la tarea programada "Scout Amazon y análisis", que corre en el Chrome del dueño: lee los Más vendidos y
-// los Nuevos lanzamientos por categoría y los envía con la acción amazon_add. Después clasifica marca,
-// genérico y tipo de producto de lo que más sube (acción amazon_clasificar).
+// la tarea programada "Scout Amazon y análisis", que corre en el Chrome del dueño: HB Control abre una
+// pestaña de Amazon, la tarea lee ahí los Más vendidos y los Nuevos lanzamientos por categoría y la
+// pestaña se los envía a HB Control (postMessage), que los guarda con la acción amazon_add. Después la
+// tarea clasifica marca, genérico y tipo de producto de lo que más sube (acción amazon_clasificar).
 //
 // Hoja Scout_Amazon (últimas 8 semanas; lo anterior pasa a Scout_Amazon_Hist):
 //   Fecha | Mercado | Lista | Categoría | Posición | ASIN | Producto | Precio | Rating | Reseñas |
@@ -31,8 +32,9 @@ function amazonAgregar_(filas, fecha) {
   fecha = /^\d{4}-\d{2}-\d{2}$/.test(String(fecha || '')) ? fecha : _smFecha_();
   const h = _smHoja_(H_AMZ, AMZ_ENC);
   const datos = _smDatos_(h, AMZ_ENC.length);
-  // Si ya se cargó esta fecha (reintento), se reemplaza
-  const resto = datos.filter(r => _amzFecha_(r[0]) !== fecha);
+  // Si ya se cargó esta fecha para estos mercados (reintento), se reemplaza; los otros mercados del día se mantienen
+  const mercados = new Set(filas.map(f => String(f.mercado || '')));
+  const resto = datos.filter(r => !(_amzFecha_(r[0]) === fecha && mercados.has(String(r[1]))));
   const fechasPrev = [...new Set(resto.map(r => _amzFecha_(r[0])))].filter(f => f < fecha).sort();
   const fPrev = fechasPrev[fechasPrev.length - 1];
   const prev = {}, clasif = {};
@@ -113,11 +115,3 @@ function solicitudActualizar_(d) {
   return { ok: true };
 }
 
-// Ejecutar una vez (o para rotarla): crea la clave del Scout y la deja en la hoja Preferencias (scout_key),
-// donde la lee la tarea programada desde HB Control (protegido por Cloudflare Access).
-function scoutCrearClave() {
-  const k = Utilities.getUuid().replace(/-/g, '');
-  PropertiesService.getScriptProperties().setProperty('SCOUT_KEY', k);
-  prefGuardar_('scout_key', k);
-  console.log('Clave del Scout creada y guardada en Preferencias.');
-}
