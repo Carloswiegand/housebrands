@@ -355,7 +355,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
 .xal{padding:11px 13px;border-radius:13px;margin-bottom:8px}
 .xal b{display:block;font-size:13.5px}
 .xal span{display:block;font-size:12.5px;margin-top:2px;line-height:1.45;opacity:.88}
-.xal.r{background:var(--x-negbg)}.xal.b{background:rgba(var(--x-acRGB),.09)}.xal.g{background:var(--x-posbg)}
+.xal.r{background:var(--x-negbg)}.xal.y{background:#fdf1d6}.xal.b{background:rgba(var(--x-acRGB),.09)}.xal.g{background:var(--x-posbg)}
 .xtw{overflow-x:auto}
 .xt{width:100%;border-collapse:collapse;font-size:13px}
 .xt th,.xt td{text-align:left;font-family:var(--x-font);text-transform:none;letter-spacing:normal;background:none}
@@ -509,6 +509,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     <button type="button" class="xs-nav" id="tab-prod" onclick="goTab('prod')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7"/></svg>Productos</button>
     <button type="button" class="xs-nav" id="tab-cli" onclick="goTab('cli')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-8 0v1M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>Clientes</button>
     <button type="button" class="xs-nav" id="tab-canal" onclick="goTab('canal')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Canales y marketing</button>
+    <button type="button" class="xs-nav" id="tab-mkt" onclick="goTab('mkt')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>Sitios web y SEO</button>
     <button type="button" class="xs-nav" id="tab-geo" onclick="goTab('geo')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Geografía</button>
     <div class="xs-sec">Gestión</div>
     <button type="button" class="xs-nav" id="tab-inv" onclick="goTab('inv')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v13H4zM9 7V4h6v3"/></svg>Inventario</button>
@@ -559,6 +560,7 @@ body{background:radial-gradient(1200px 700px at 8% 0%,#e2eaff 0%,transparent 60%
     <div id="view-conv" class="xv" style="display:none"></div>
     <div id="view-sis" class="xv" style="display:none"></div>
     <div id="view-scout" class="xv" style="display:none"></div>
+    <div id="view-mkt" class="xv" style="display:none"></div>
   <div id="legacy" style="display:none" aria-hidden="true">
   <!-- TAB VENTAS -->
   <div id="old-ventas">
@@ -1061,7 +1063,7 @@ document.addEventListener('DOMContentLoaded',()=>initApp());
 // ── TABS ─────────────────────────────────────────────
 let pnlLoaded=false, convLoaded=false;
 function goTab(t){
-  ['res','prod','cli','canal','geo','inv','imp','ventas','pnl','gas','conv','sis','scout'].forEach(x=>{
+  ['res','prod','cli','canal','mkt','geo','inv','imp','ventas','pnl','gas','conv','sis','scout'].forEach(x=>{
     const v=document.getElementById('view-'+x),b=document.getElementById('tab-'+x);
     if(v)v.style.display=x===t?(v.classList.contains('xv')?'flex':'block'):'none';
     if(b)b.classList.toggle('on',x===t);
@@ -2391,7 +2393,7 @@ async function importarHistorialShopify(files){
 
 // ══ DASHBOARD DE ANÁLISIS ══════════════════════════════════
 // Todo se calcula en el navegador desde el Libro_Ventas (DATA) y la foto de stock (INV_SNAP).
-const X_TITULOS={res:['Resumen','Cómo va el negocio y qué decidir hoy'],prod:['Productos','Qué reponer, empujar, liquidar o empaquetar'],cli:['Clientes','Quién compra y si vuelve a comprar'],canal:['Canales y marketing','Dónde se vende, de dónde llegan y cuánto cuesta cada canal'],geo:['Geografía','Regiones y comunas'],inv:['Inventario','Stock en ABEE y bodegas externas, y cuándo pedir'],imp:['Importaciones','Del pago inicial a ABEE, con costos reales'],ventas:['Ventas','Todos los pedidos de todos los canales'],pnl:['P&L','De la venta a la utilidad, mes a mes'],gas:['Gastos','Facturas y comprobantes de cada mes, y gastos fijos'],conv:['Conversión','Dónde se cae la venta'],sis:['Estado del sistema','Si los datos están al día y qué falta para cerrar el mes'],scout:['Scout','Radar de tendencias y evaluador de productos']};
+const X_TITULOS={res:['Resumen','Cómo va el negocio y qué decidir hoy'],prod:['Productos','Qué reponer, empujar, liquidar o empaquetar'],cli:['Clientes','Quién compra y si vuelve a comprar'],canal:['Canales y marketing','Dónde se vende, de dónde llegan y cuánto cuesta cada canal'],geo:['Geografía','Regiones y comunas'],inv:['Inventario','Stock en ABEE y bodegas externas, y cuándo pedir'],imp:['Importaciones','Del pago inicial a ABEE, con costos reales'],ventas:['Ventas','Todos los pedidos de todos los canales'],pnl:['P&L','De la venta a la utilidad, mes a mes'],gas:['Gastos','Facturas y comprobantes de cada mes, y gastos fijos'],conv:['Conversión','Dónde se cae la venta'],sis:['Estado del sistema','Si los datos están al día y qué falta para cerrar el mes'],scout:['Scout','Radar de tendencias y evaluador de productos'],mkt:['Sitios web y SEO','Google: búsquedas, visitas, Shopping, indexación y velocidad de cada marca']};
 const X_REG={RM:'Metropolitana',VS:'Valparaíso',BI:'Biobío',LL:'Los Lagos',AN:'Antofagasta',LI:"O'Higgins",CO:'Coquimbo',ML:'Maule',AT:'Atacama',NB:'Ñuble',MA:'Magallanes',LR:'Los Ríos',AR:'Araucanía',AP:'Arica y Parinacota',TA:'Tarapacá',AI:'Aysén'};
 const X_REGNOM={'santiago':'RM','region metropolitana':'RM','metropolitana':'RM','region metropolitana de santiago':'RM','rm':'RM','valparaiso':'VS','biobio':'BI','bio bio':'BI','los lagos':'LL','antofagasta':'AN',"o'higgins":'LI','libertador general bernardo o\'higgins':'LI','coquimbo':'CO','maule':'ML','atacama':'AT','nuble':'NB','magallanes':'MA','magallanes y la antartica chilena':'MA','los rios':'LR','araucania':'AR','la araucania':'AR','arica y parinacota':'AP','tarapaca':'TA','aysen':'AI','aisen':'AI'};
 const X_PAGO={account_money:'Dinero en cuenta ML',credit_card:'Tarjeta de crédito',debit_card:'Tarjeta de débito',prepaid_card:'Tarjeta prepago',digital_currency:'Mercado Crédito',ticket:'Efectivo','Mercado Pago Checkout Pro':'Mercado Pago (Checkout Pro)','Mercado Pago Tarjetas':'Mercado Pago (tarjetas)'};
@@ -2547,7 +2549,7 @@ function xHeader(){
 function xFiltro(){XF.marca=document.getElementById('xs-marca').value;XF.canal=document.getElementById('xs-canal').value;xRender();}
 function xRender(){
   xHeader();
-  const gest={gas:xGastos,inv:xInventario,imp:xImportaciones,pnl:xPnlG,conv:xConvG,sis:xSistema,scout:xScout}[X_VISTA];
+  const gest={gas:xGastos,inv:xInventario,imp:xImportaciones,pnl:xPnlG,conv:xConvG,sis:xSistema,scout:xScout,mkt:xMkt}[X_VISTA];
   if(gest){Promise.resolve().then(gest).then(()=>gAyuda(X_VISTA)).catch(e=>{document.getElementById('view-'+X_VISTA).innerHTML='<div class="xp xempty">No se pudo dibujar esta vista: '+escH(e.message)+'</div>';});return;}
   if(!DATA.length)return;
   const f={res:()=>{xResumen();gMetaMes();},prod:xProductos,cli:xClientes,canal:xCanales,geo:xGeo,ventas:xVentasG}[X_VISTA];
@@ -3268,6 +3270,117 @@ function gScoutSeg(){
   <section class="xp"><div class="xp-h"><h2>Ideas en seguimiento</h2><span class="note">${I.length} en total</span></div>
     ${I.length?`<div class="xtw"><table class="xt"><thead><tr><th>Idea</th><th>Rubro</th><th>Marca</th><th>Desde</th><th>Plazo</th><th class="r">Productos en Chile (inicio → hoy)</th><th>Evolución</th><th class="r">Tendencia CL</th><th>Veredicto</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table></div>`:'<div class="xempty">Todavía no hay ideas. Agrega la primera arriba o espera las brechas que detecta el radar multipaís.</div>'}</section>`;
 }
+// ── Marketing web: Search Console, Analytics, Merchant Center y velocidad ──
+const MKT_HOJAS=['mktd','mktq','mktp','mktc','mkts','mkti','mktv'];
+async function gLoadMkt(force){
+  const q=force?'?x='+Date.now():'';
+  const [d,q1,p,c,s,i,v]=await Promise.all(MKT_HOJAS.map(h=>gCsv('/erp/api/'+h+q).catch(()=>[])));
+  const n=x=>x===''||x===undefined?null:+x;
+  G.mkt={
+    dia:d.slice(1).filter(r=>r[0]).map(r=>({f:r[0],m:r[1],cl:n(r[2]),im:n(r[3]),ctr:n(r[4]),pos:n(r[5]),ses:n(r[6]),usu:n(r[7]),org:n(r[8]),comp:n(r[9]),ing:n(r[10]),scl:n(r[11]),sim:n(r[12])})),
+    q:q1.slice(1).filter(r=>r[1]).map(r=>({m:r[0],k:r[1],cl:+r[2],im:+r[3],ctr:+r[4],pos:+r[5],cla:+r[6]||0,posa:n(r[7])})),
+    pag:p.slice(1).filter(r=>r[1]).map(r=>({m:r[0],u:r[1],cl:+r[2],im:+r[3],ctr:+r[4],pos:+r[5],cla:+r[6]||0})),
+    can:c.slice(1).filter(r=>r[1]).map(r=>({m:r[0],c:r[1],ses:+r[2],sesa:+r[3],comp:+r[4],ing:+r[5]})),
+    shop:s.slice(1).filter(r=>r[1]).map(r=>({m:r[0],id:r[1],t:r[2],est:r[3],prob:r[4]})),
+    idx:i.slice(1).filter(r=>r[1]).map(r=>({m:r[0],u:r[1],tipo:r[2],ver:r[3],est:r[4],rast:r[5],can:r[6],rev:r[7]})),
+    vel:v.slice(1).filter(r=>r[2]).map(r=>({f:r[0],m:r[1],u:r[2],disp:r[3],pts:n(r[4]),lcp:n(r[5]),inp:n(r[6]),cls:n(r[7]),real:r[8]}))
+  };
+}
+const MKT_EST={APPROVED:'Aprobado',ELIGIBLE:'Aprobado',ELIGIBLE_LIMITED:'Limitado',PENDING:'En revisión',NOT_ELIGIBLE_OR_DISAPPROVED:'No aprobado',DISAPPROVED:'No aprobado'};
+const MKT_IDX={PASS:'Indexada',PARTIAL:'Indexada con avisos',FAIL:'No indexada',NEUTRAL:'No indexada',VERDICT_UNSPECIFIED:'Sin dato'};
+const mkCorta=u=>{try{const x=new URL(u);return (x.pathname.replace(/\/$/,'')||'/')+(x.search||'');}catch(e){return u;}};
+function gMktAlertas(M,marca){
+  const al=[];const D=M.dia.filter(r=>r.m===marca);
+  const conCl=D.filter(r=>r.cl!==null).map(r=>r.f).sort();const ult=conCl[conCl.length-1];
+  if(ult){const suma=(a,b,k)=>D.filter(r=>r.f>=a&&r.f<=b).reduce((s,r)=>s+(r[k]||0),0);
+    const a1=xAdd(ult,-27),b0=xAdd(ult,-28),a0=xAdd(ult,-55);
+    const c1=suma(a1,ult,'cl'),c0=suma(a0,b0,'cl');
+    if(c0>=30&&c1<c0*0.8)al.push({c:'r',t:'Bajan los clics desde Google',x:`${xN(c1)} en los últimos 28 días contra ${xN(c0)} los 28 anteriores (${xP(c1/c0-1,0)}).`});
+    if(c0>=30&&c1>c0*1.25)al.push({c:'g',t:'Suben los clics desde Google',x:`${xN(c1)} contra ${xN(c0)} (+${xP(c1/c0-1,0)}).`});}
+  const I=M.idx.filter(r=>r.m===marca);
+  if(I.length){const no=I.filter(r=>r.ver!=='PASS');const prodNo=no.filter(r=>r.tipo==='Producto'||r.tipo==='Colección'||r.tipo==='Inicio');
+    if(prodNo.length)al.push({c:'r',t:`${prodNo.length} páginas que venden no están en Google`,x:prodNo.slice(0,4).map(r=>mkCorta(r.u)).join(', ')+(prodNo.length>4?'…':'')+'. Revisa la tabla de indexación.'});}
+  const S=M.shop.filter(r=>r.m===marca);const malos=S.filter(r=>!/APPROVED|^ELIGIBLE$/.test(r.est)||/DISAPPROVED|NOT_ELIGIBLE/.test(r.prob));
+  if(malos.length)al.push({c:'r',t:`${malos.length} producto${malos.length>1?'s':''} con problemas en Shopping`,x:malos.slice(0,3).map(r=>r.t).join(', ')});
+  const V=M.vel.filter(r=>r.m===marca);const fv=[...new Set(V.map(r=>r.f))].sort().pop();
+  V.filter(r=>r.f===fv&&r.disp==='Móvil'&&r.pts!==null&&r.pts<50).forEach(r=>al.push({c:'y',t:`Página lenta en celular: ${mkCorta(r.u)}`,x:`Puntaje ${r.pts}/100${r.lcp?', el contenido principal aparece en '+String(r.lcp).replace('.',',')+' s (Google pide menos de 2,5 s)':''}.`}));
+  const op=M.q.filter(r=>r.m===marca&&r.im>=100&&r.pos>=4&&r.pos<=15).sort((a,b)=>b.im-a.im).slice(0,3);
+  if(op.length)al.push({c:'b',t:'Búsquedas casi en la primera posición',x:op.map(r=>`"${r.k}" (posición ${String(r.pos).replace('.',',')}, ${xN(r.im)} impresiones)`).join(' · ')+'. Mejorar título y contenido de esa página puede subir los clics.'});
+  return al;
+}
+function gMktLinea(D,R){
+  const dias=[];let f=R.a;while(f<=R.b){dias.push(f);f=xAdd(f,1);}
+  const by={};D.forEach(r=>{by[r.f]=r;});
+  const cl=dias.map(d=>(by[d]||{}).cl),ses=dias.map(d=>(by[d]||{}).org);
+  const mx=Math.max(1,...cl.filter(x=>x!==null&&x!==undefined),...ses.filter(x=>x!==null&&x!==undefined));
+  const W=640,H=150;const x=i=>(i/(dias.length-1||1)*W).toFixed(1),y=v=>(H-6-(v/mx)*(H-16)).toFixed(1);
+  const pl=arr=>arr.map((v,i)=>v===null||v===undefined?null:x(i)+','+y(v)).filter(Boolean).join(' ');
+  const meses=dias.map((d,i)=>d.slice(8)==='01'?`<text x="${x(i)}" y="${H+14}" font-size="11" fill="currentColor" opacity=".55">${['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][+d.slice(5,7)-1]}</text>`:'').join('');
+  return`<svg viewBox="0 0 ${W} ${H+18}" style="width:100%;height:auto;color:var(--x-mu)" role="img" aria-label="Clics desde Google y sesiones orgánicas por día"><polyline fill="none" stroke="#3355f0" stroke-width="2" points="${pl(cl)}"/><polyline fill="none" stroke="#1f9d6b" stroke-width="2" stroke-dasharray="4 3" points="${pl(ses)}"/>${meses}<text x="0" y="12" font-size="11" fill="currentColor" opacity=".55">${xN(mx)}</text></svg>
+  <div class="xsmall" style="display:flex;gap:16px;margin-top:4px"><span><b style="color:#3355f0">━</b> Clics desde Google (Search Console)</span><span><b style="color:#1f9d6b">┅</b> Sesiones orgánicas (Analytics)</span></div>`;
+}
+async function xMkt(){
+  const el=document.getElementById('view-mkt');
+  if(!G.mkt){el.innerHTML='<div class="xp xempty">Cargando marketing…</div>';await gLoadMkt();}
+  const M=G.mkt;const marcas=['MemoKoala','Montana'];if(!G.mktMarca)G.mktMarca='MemoKoala';const mk=G.mktMarca;
+  const head=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="xchips" role="tablist">${marcas.map(m=>`<button type="button" role="tab" aria-selected="${m===mk}" class="xchip${m===mk?' on':''}" onclick="G.mktMarca='${m}';xMkt()">${m}</button>`).join('')}</div>
+    <button type="button" class="xbtn" id="mkt-act" onclick="gMktActualizar(this)" style="margin-left:auto">Actualizar ahora</button><span class="xsmall" id="mkt-msg">Se actualiza sola todos los días a las 7:00; indexación y velocidad, los lunes.</span></section>`;
+  const D=M.dia.filter(r=>r.m===mk).sort((a,b)=>a.f<b.f?-1:1);
+  if(!D.length){el.innerHTML=head+`<section class="xp xempty">Todavía no hay datos de ${mk}. Se cargan desde Search Console, Analytics y Merchant Center en la próxima corrida diaria, o con "Actualizar ahora".</section>`;return;}
+  const fin=D[D.length-1].f;const ultGsc=D.filter(r=>r.cl!==null).map(r=>r.f).pop()||fin;
+  const per=(b,k,dias)=>{const a=xAdd(b,-(dias-1));return D.filter(r=>r.f>=a&&r.f<=b).reduce((s,r)=>s+(r[k]||0),0);};
+  const sum=(k,b)=>[per(b,k,28),per(xAdd(b,-28),k,28)];
+  const [cl1,cl0]=sum('cl',ultGsc),[im1,im0]=sum('im',ultGsc),[se1,se0]=sum('ses',fin),[or1,or0]=sum('org',fin),[co1,co0]=sum('comp',fin),[in1,in0]=sum('ing',fin),[sc1,sc0]=sum('scl',fin);
+  const posP=b=>{const a=xAdd(b,-27);const rs=D.filter(r=>r.f>=a&&r.f<=b&&r.pos&&r.im);const t=rs.reduce((s,r)=>s+r.im,0);return t?rs.reduce((s,r)=>s+r.pos*r.im,0)/t:null;};
+  const p1=posP(ultGsc),p0=posP(xAdd(ultGsc,-28));
+  const k=(l,v,d,sub)=>`<article class="xp glass"><div class="xk-l">${l}</div><div class="xk-v">${v}</div><div class="xk-f">${d}<span>${sub}</span></div></article>`;
+  const kp=[
+    k('Clics desde Google',xN(cl1),xDelta(cl1,cl0),'vs '+xN(cl0)+' · CTR '+(im1?xP(cl1/im1):'–')),
+    k('Veces que apareciste',xN(im1),xDelta(im1,im0),'impresiones en Google'),
+    k('Posición promedio',p1?String(p1.toFixed(1)).replace('.',','):'–',p0?xDelta(p1,p0,true):'',p0?'antes '+p0.toFixed(1).replace('.',','):''),
+    k('Sesiones en la tienda',xN(se1),xDelta(se1,se0),xN(or1)+' desde búsqueda orgánica'),
+    k('Compras según Analytics',xN(co1),xDelta(co1,co0),in1?xM(in1):''),
+    k('Clics gratis en Shopping',sc1?xN(sc1):'–',sc0?xDelta(sc1,sc0):'','fichas de Merchant Center')
+  ].join('');
+  const al=gMktAlertas(M,mk);
+  const alH=al.length?al.map(a=>`<div class="xal ${a.c==='r'?'r':a.c==='g'?'g':a.c==='y'?'y':'b'}"><b>${escH(a.t)}</b><span>${escH(a.x)}</span></div>`).join(''):'<div class="xempty">Sin alertas.</div>';
+  const R={a:xAdd(fin,-89),b:fin};
+  // consultas
+  if(!G.mktQ)G.mktQ='top';
+  let Q=M.q.filter(r=>r.m===mk);
+  Q=G.mktQ==='op'?Q.filter(r=>r.pos>=4&&r.pos<=20&&r.im>=30).sort((a,b)=>b.im-a.im):G.mktQ==='sube'?Q.filter(r=>r.cl>r.cla).sort((a,b)=>(b.cl-b.cla)-(a.cl-a.cla)):Q.sort((a,b)=>b.cl-a.cl||b.im-a.im);
+  const qBtn=(k2,l)=>`<button type="button" class="xchip${G.mktQ===k2?' on':''}" onclick="G.mktQ='${k2}';xMkt()">${l}</button>`;
+  const qTab=`<section class="xp"><div class="xp-h"><h2>Qué buscan para llegar a ${mk}</h2><div class="xchips">${qBtn('top','Más clics')}${qBtn('op','Casi en primera página')}${qBtn('sube','Las que suben')}</div></div>
+    ${Q.length?`<div class="xtw"><table class="xt"><thead><tr><th>Búsqueda</th><th class="r">Clics</th><th class="r">Impresiones</th><th class="r">CTR</th><th class="r">Posición</th><th class="r">Clics antes</th></tr></thead><tbody>${Q.slice(0,25).map(r=>`<tr><td>${escH(r.k)}</td><td class="r">${xN(r.cl)}</td><td class="r">${xN(r.im)}</td><td class="r">${String(r.ctr).replace('.',',')}%</td><td class="r">${String(r.pos).replace('.',',')}${r.posa?` <span class="xsmall">(${String(r.posa).replace('.',',')})</span>`:''}</td><td class="r">${xN(r.cla)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin búsquedas en esta vista.</div>'}
+    <p class="xsmall" style="margin-top:8px">Últimos 28 días con datos contra los 28 anteriores. Posición entre paréntesis = la de antes. Google tarda 2 a 3 días en entregar los datos.</p></section>`;
+  const P=M.pag.filter(r=>r.m===mk).sort((a,b)=>b.cl-a.cl).slice(0,15);
+  const pTab=`<section class="xp"><div class="xp-h"><h2>Páginas que más tráfico traen desde Google</h2></div>${P.length?`<div class="xtw"><table class="xt"><thead><tr><th>Página</th><th class="r">Clics</th><th class="r">Antes</th><th class="r">Posición</th></tr></thead><tbody>${P.map(r=>`<tr><td><a href="${escH(r.u)}" target="_blank" rel="noopener">${escH(mkCorta(r.u))}</a></td><td class="r">${xN(r.cl)}</td><td class="r">${xN(r.cla)}</td><td class="r">${String(r.pos).replace('.',',')}</td></tr>`).join('')}</tbody></table></div>`:'<div class="xempty">Sin datos.</div>'}</section>`;
+  const C=M.can.filter(r=>r.m===mk);const mxC=Math.max(1,...C.map(r=>r.ses));
+  const NC={'Paid Social':'Redes pagadas (Meta)','Organic Social':'Redes sin pagar','Organic Search':'Google orgánico','Paid Search':'Google Ads búsqueda','Direct':'Directo','Display':'Display','Referral':'Otros sitios','Cross-network':'Google Ads (PMax)','Email':'Email','Organic Shopping':'Shopping gratis','Paid Shopping':'Shopping pagado','Unassigned':'Sin asignar','Paid Other':'Otros pagados','Organic Video':'Video orgánico','Paid Video':'Video pagado'};
+  const cTab=`<section class="xp"><div class="xp-h"><h2>De dónde llegan las visitas</h2><span class="note">Analytics · últimos 28 días</span></div>${C.length?C.map(r=>xHb(NC[r.c]||r.c,r.ses,mxC,`${xN(r.ses)} ${r.sesa?xDelta(r.ses,r.sesa):''}${r.comp?' · '+r.comp+' compra'+(r.comp>1?'s':''):''}`)).join(''):'<div class="xempty">Sin datos de Analytics.</div>'}</section>`;
+  const I=M.idx.filter(r=>r.m===mk);
+  let iTab='';
+  if(I.length){const cnt={};I.forEach(r=>{const e=MKT_IDX[r.ver]||r.ver||'Sin dato';cnt[e]=(cnt[e]||0)+1;});
+    const no=I.filter(r=>r.ver!=='PASS').sort((a,b)=>(a.tipo==='Producto'?0:a.tipo==='Colección'?1:2)-(b.tipo==='Producto'?0:b.tipo==='Colección'?1:2));
+    iTab=`<section class="xp"><div class="xp-h"><h2>¿Están tus páginas en Google?</h2><span class="note">${I.length} páginas del sitemap revisadas el ${gF(I[0].rev)}</span></div>
+    <div class="xchips" style="margin-bottom:10px">${Object.entries(cnt).map(([e,n])=>`<span class="xtag ${e==='Indexada'?'g':e==='No indexada'?'r':'n'}">${e}: ${n}</span>`).join(' ')}</div>
+    ${no.length?`<div class="xtw"><table class="xt"><thead><tr><th>Página</th><th>Tipo</th><th>Por qué no está</th><th>Último rastreo</th></tr></thead><tbody>${no.slice(0,40).map(r=>`<tr><td><a href="${escH(r.u)}" target="_blank" rel="noopener">${escH(mkCorta(r.u))}</a></td><td>${escH(r.tipo)}</td><td>${escH(r.est||'–')}</td><td>${r.rast?gF(r.rast):'nunca'}</td></tr>`).join('')}</tbody></table></div>${no.length>40?`<p class="xsmall">y ${no.length-40} más en la hoja Mkt_Indexacion.</p>`:''}`:'<div class="xempty">Todas las páginas revisadas están en Google.</div>'}
+    <p class="xsmall" style="margin-top:8px">"Rastreada: actualmente sin indexar" = Google la vio y decidió no mostrarla (contenido pobre o duplicado). "Descubierta: actualmente sin indexar" = todavía no la visita. "Página alternativa con etiqueta canónica" es normal en variantes de producto.</p></section>`;}
+  else iTab=`<section class="xp xempty">La revisión de indexación corre los lunes a las 7:30: revisa una por una las páginas del sitemap en Search Console.</section>`;
+  const S=M.shop.filter(r=>r.m===mk);
+  const sTab=`<section class="xp"><div class="xp-h"><h2>Productos en Google Shopping</h2><span class="note">Merchant Center</span></div>${S.length?`<div class="xtw"><table class="xt"><thead><tr><th>Producto</th><th>Estado</th><th>Problemas</th></tr></thead><tbody>${S.map(r=>{const e=MKT_EST[r.est]||r.est||'–';return`<tr><td>${escH(r.t)}</td><td><span class="xtag ${e==='Aprobado'?'g':e==='No aprobado'?'r':'y'}">${escH(e)}</span></td><td class="xsmall">${escH(r.prob||'–')}</td></tr>`;}).join('')}</tbody></table></div>`:'<div class="xempty">Sin productos leídos de Merchant Center.</div>'}</section>`;
+  const V=M.vel.filter(r=>r.m===mk);const fv=[...new Set(V.map(r=>r.f))].sort().pop();
+  const vTab=`<section class="xp"><div class="xp-h"><h2>Velocidad del sitio</h2><span class="note">${fv?'PageSpeed · '+gF(fv):'los lunes'}</span></div>${fv?`<div class="xtw"><table class="xt"><thead><tr><th>Página</th><th>Dispositivo</th><th class="r">Puntaje</th><th class="r">Carga principal</th><th class="r">Respuesta al tocar</th><th class="r">Saltos</th></tr></thead><tbody>${V.filter(r=>r.f===fv).map(r=>`<tr><td>${escH(mkCorta(r.u))}</td><td>${r.disp}</td><td class="r"><span class="xd ${r.pts>=90?'up':r.pts>=50?'eq':'dn'}">${r.pts??'–'}</span></td><td class="r">${r.lcp!==null?String(r.lcp).replace('.',',')+' s':'–'}</td><td class="r">${r.inp!==null?r.inp+' ms':'–'}</td><td class="r">${r.cls!==null?String(r.cls).replace('.',','):'–'}</td></tr>`).join('')}</tbody></table></div><p class="xsmall" style="margin-top:8px">Metas de Google: carga principal bajo 2,5 s, respuesta al tocar bajo 200 ms, saltos bajo 0,1. ${V.some(r=>r.f===fv&&r.real==='Sí')?'Con datos de visitas reales de Chrome.':'Sin datos reales de Chrome todavía (poco tráfico): es una medición de laboratorio.'}</p>`:'<div class="xempty">La primera medición sale el próximo lunes.</div>'}</section>`;
+  el.innerHTML=head+`<div class="xg xg-k">${kp}</div>
+    <div class="xrow"><section class="xp" style="flex:2 1 520px"><div class="xp-h"><h2>Últimos 90 días</h2><span class="note">datos hasta ${gF(fin)}</span></div>${gMktLinea(D,R)}</section><section class="xp" style="flex:1 1 300px"><div class="xp-h"><h2>Qué revisar</h2></div>${alH}</section></div>
+    ${qTab}<div class="xg xg-2">${pTab}${cTab}</div>${iTab}<div class="xg xg-2">${sTab}${vTab}</div>`;
+}
+async function gMktActualizar(btn){
+  const msg=document.getElementById('mkt-msg');btn.disabled=true;msg.textContent='Consultando a Google (toma 1 minuto)…';
+  try{const r=await gPost({action:'mkt_sync'});await gLoadMkt(true);xMkt();setTimeout(()=>{const m=document.getElementById('mkt-msg');if(m)m.textContent=r.error?'Terminó con avisos: '+r.error:'Actualizado.';},50);}
+  catch(e){msg.textContent='No se pudo actualizar: '+e.message;btn.disabled=false;}
+}
+
 // ── Scout: Amazon y pedidos de análisis ──
 async function gLoadAmazon(force){
   const f=await gCsv('/erp/api/amazon'+(force?'?x='+Date.now():'')).catch(()=>[]);
@@ -3449,6 +3562,14 @@ sis:{t:'Cómo leer Estado del sistema',p:[
  ['Sincronizar ahora','Trae al momento las ventas de Shopify y ML y la foto de stock, sin esperar los 15 minutos.'],
  ['Gastos del mes','Aquí cargas los gastos variables de cada mes cuando llega la factura (anuncios, ABEE, sueldos). Los fijos se cargan una vez y se repiten solos.'],
  ['Cierre del mes','Lista de lo que falta para que el P&L del mes quede completo.']]},
+mkt:{t:'Cómo leer Sitios web y SEO',p:[
+ ['De dónde salen los datos','Search Console (cómo te encuentran en Google), Analytics 4 (qué hacen en la tienda), Merchant Center (tus productos en Google Shopping) y PageSpeed (velocidad). Se actualiza todos los días a las 7:00; la revisión de indexación y velocidad corre los lunes.'],
+ ['Clics, impresiones y CTR','Impresiones = veces que apareciste en Google. Clics = veces que entraron. CTR = clics ÷ impresiones. Google entrega los datos con 2 a 3 días de atraso, por eso la comparación usa los últimos 28 días con datos contra los 28 anteriores.'],
+ ['Posición promedio','Lugar promedio en los resultados de Google (1 = primero). Bajar el número es bueno. Entre 4 y 15 estás cerca: mejorar el título y el texto de esa página suele subir bastante los clics.'],
+ ['Compras según Analytics','Analytics suele contar menos compras que Shopify (bloqueadores, cookies rechazadas). Úsalo para comparar canales entre sí, no para cuadrar ventas: las ventas reales están en Resumen.'],
+ ['Indexación','Cada lunes se revisa en Search Console cada página del sitemap. Una página de producto o colección que no está indexada no puede aparecer en Google. Prioriza esas antes que las páginas de blog.'],
+ ['Shopping','Estado de cada producto en Merchant Center y los clics gratis que entregan las fichas de Google. Un producto "No aprobado" no aparece en Shopping.'],
+ ['Velocidad','Puntaje de 0 a 100 en celular y computador. Bajo 50 en celular afecta posiciones y conversión.']]},
 scout:{t:'Cómo leer el Scout',p:[
  ['Radar','Las búsquedas más populares de MercadoLibre Chile, en general y en las categorías de tus marcas. "Sube", "Baja" o "Nueva" compara con la semana anterior. Mientras más semanas acumula, más confiable es la tendencia.'],
  ['Competencia','Cuántas marcas distintas aparecen entre los primeros 50 productos del catálogo de MercadoLibre para esa búsqueda: menos de 15 = baja, 15 a 29 = media, 30 o más = alta. MercadoLibre no entrega precios a esta app, así que los precios se revisan a mano.'],

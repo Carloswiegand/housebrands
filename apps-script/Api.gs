@@ -17,7 +17,7 @@
 // POST {key, action:'metas_set', filas}           → proyección del flujo (hoja Metas)
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades', amazon: 'Scout_Amazon', solic: 'Scout_Solicitudes' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades', amazon: 'Scout_Amazon', solic: 'Scout_Solicitudes', mktd: 'Mkt_Diario', mktq: 'Mkt_Consultas', mktp: 'Mkt_Paginas', mktc: 'Mkt_Canales', mkts: 'Mkt_Shopping', mkti: 'Mkt_Indexacion', mktv: 'Mkt_Velocidad' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 function doGet(e) {
@@ -44,6 +44,7 @@ function doPost(e) {
     try { return json_(sincronizarAhora_()); } catch (err) { return json_({ ok: false, error: err.message }); }
   }
   if (body.action === 'pnl_generar') return json_(correr_('P&L', pnlSinPantalla_));
+  if (body.action === 'mkt_sync') { const r = correr_('Marketing', marketingActualizar); return json_({ ok: true, error: r.ok ? '' : r.error }); }
 
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) return json_({ ok: false, error: 'ocupado, intenta de nuevo' });
