@@ -134,7 +134,8 @@ function _cMlGet_(path, crudo) {
     Utilities.sleep(12500);
     const r = UrlFetchApp.fetch(ML_API + path, { headers: { Authorization: 'Bearer ' + _mlToken_() }, muteHttpExceptions: true });
     const c = r.getResponseCode();
-    if (c === 200) return crudo ? r : JSON.parse(r.getContentText());
+    // los id de 16+ dígitos (orden, operación) se leen como texto para no perder precisión
+    if (c === 200) return crudo ? r : JSON.parse(r.getContentText().replace(/"(order_id|operation_id|shipping_id|detail_id|pack_id)":(\d{15,})/g, '"$1":"$2"'));
     if (c !== 429 && c !== 206) throw new Error('ML ' + path.split('?')[0] + ' HTTP ' + c);
     Utilities.sleep(30000);
   }
