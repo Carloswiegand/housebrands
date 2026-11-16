@@ -90,6 +90,8 @@ function doPost(e) {
     if (body.action === 'solicitud_add') return json_(solicitudAgregar_(body.solicitud || {}));
     if (body.action === 'solicitud_set') return json_(solicitudActualizar_(body.solicitud || {}));
     if (body.action === 'benchmark_add') return json_(benchmarkAgregar_(body.filas || [], body.fecha));
+    if (body.action === 'contab_subir') return json_(contabSubir_(body));
+    if (body.action === 'contab_borrador') return json_(contabBorrador_(body.mes));
     if (body.action === 'metas_set') return json_(metasGuardar_(body.filas || []));
     if (body.action === 'gasto_add' || body.action === 'gasto_del') {
       const r = body.action === 'gasto_add' ? gastoDocAgregar_(body.doc || {}) : gastoDocBorrar_(body.id);

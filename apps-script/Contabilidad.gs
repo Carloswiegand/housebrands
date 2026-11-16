@@ -422,6 +422,8 @@ function _cBorrador_(mes, filas, notaExtra) {
 // notaExtra: texto opcional que va en el correo (p. ej. un pago duplicado).
 function contabPreparar(mes, notaExtra) {
   mes = _cMes_(mes);
+  const props = PropertiesService.getScriptProperties();
+  if (notaExtra) props.setProperty('CONTAB_NOTA_' + mes, notaExtra); else notaExtra = props.getProperty('CONTAB_NOTA_' + mes) || '';
   const carpeta = _cCarpeta_(mes);
   const filas = _cCorreo_(mes, carpeta);
 
@@ -447,6 +449,55 @@ function contabPreparar(mes, notaExtra) {
     enlace: 'https://mail.google.com/mail/u/0/#drafts', nota: b.adjuntos + ' adjuntos · ' + b.mb + ' MB' + (b.omitidos.length ? ' · no cupieron: ' + b.omitidos.join(', ') : '') + '. Revisar y enviar.' });
   _cChecklist_(mes, filas, carpeta);
   return { mes: mes, carpeta: carpeta.getUrl(), borrador: b };
+}
+
+// ── Documentos bajados desde el navegador (Bci, Mercado Pago) ──
+// HB Control abre el portal; el archivo llega por postMessage y se guarda aquí en la carpeta del mes.
+// d: { mes:'2026-10', item:<ítem manual del checklist>, nombre, tipo (MIME), b64 }
+
+function contabSubir_(d) {
+  const mes = String(d.mes || '');
+  if (!/^\d{4}-\d{2}$/.test(mes)) throw new Error('mes inválido');
+  const item = String(d.item || '');
+  if (!CONTAB_MANUAL.some(m => m[1] === item)) throw new Error('ítem desconocido: ' + item);
+  const nombre = String(d.nombre || '').replace(/[\\/:*?"<>|]/g, '-').trim().slice(0, 120);
+  if (!nombre || !d.b64) throw new Error('falta el archivo');
+  const bytes = Utilities.base64Decode(String(d.b64));
+  if (bytes.length > 20 * 1024 * 1024) throw new Error('archivo de más de 20 MB');
+  const final = _cPrefijo_(mes) + nombre;
+  const f = _cGuardar_(_cCarpeta_(mes), Utilities.newBlob(bytes, String(d.tipo || 'application/octet-stream'), final), final);
+
+  const h = _cHoja_(H_CONTAB, CONTAB_ENC);
+  const v = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, CONTAB_ENC.length).getDisplayValues() : [];
+  const i = v.findIndex(r => r[0] === mes && r[2] === item);
+  const ahora = Utilities.formatDate(new Date(), CONTAB_TZ, 'yyyy-MM-dd HH:mm');
+  if (i >= 0) {
+    const previos = String(v[i][4] || '').split(' | ').filter(n => n && n !== final);
+    const lista = previos.concat([final]);
+    h.getRange(i + 2, 4, 1, 5).setValues([['Listo', lista.join(' | '), lista.length === 1 ? 'https://drive.google.com/file/d/' + f.getId() + '/view' : _cCarpeta_(mes).getUrl(), 'Bajado desde el portal.', ahora]]);
+  }
+  return { ok: true, nombre: final, bytes: bytes.length };
+}
+
+// Re-arma el borrador del mes con lo que hay en el checklist (después de subir documentos a mano).
+function contabBorrador_(mes) {
+  if (!/^\d{4}-\d{2}$/.test(String(mes || ''))) throw new Error('mes inválido');
+  const carpeta = _cCarpeta_(mes);
+  const ids = {};
+  const it = carpeta.getFiles();
+  while (it.hasNext()) { const f = it.next(); ids[f.getName()] = f.getId(); }
+  const h = _cHoja_(H_CONTAB, CONTAB_ENC);
+  const v = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, CONTAB_ENC.length).getDisplayValues() : [];
+  const filas = v.filter(r => r[0] === mes && r[1] !== 'Correo').map(r => ({
+    grupo: r[1], item: r[2], estado: r[3], nota: r[6], enlace: r[5], adjuntar: true,
+    archivos: String(r[4] || '').split(' | ').filter(n => n && ids[n]).map(n => ({ nombre: n, id: ids[n], protegido: /\.xml$/i.test(n) || r[3] === 'Protegido' })),
+  }));
+  if (!filas.length) throw new Error('el mes ' + mes + ' no se ha preparado');
+  const b = _cBorrador_(mes, filas, PropertiesService.getScriptProperties().getProperty('CONTAB_NOTA_' + mes) || '');
+  filas.push({ grupo: 'Correo', item: 'Borrador para Sandra y Ambrosio', estado: 'Listo', archivos: [], adjuntar: false,
+    enlace: 'https://mail.google.com/mail/u/0/#drafts', nota: b.adjuntos + ' adjuntos · ' + b.mb + ' MB' + (b.omitidos.length ? ' · no cupieron: ' + b.omitidos.join(', ') : '') + '. Revisar y enviar.' });
+  _cChecklist_(mes, filas, carpeta);
+  return { ok: true, adjuntos: b.adjuntos, mb: b.mb };
 }
 
 function contabProgramado() { correr_('Contabilidad', () => contabPreparar()); }
