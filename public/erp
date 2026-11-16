@@ -3421,7 +3421,10 @@ async function gLoadAmazon(force){
   G.amz=f.slice(1).filter(r=>r[5]).map(r=>({fecha:r[0],mer:r[1],lista:r[2],cat:r[3],pos:pn(r[4]),asin:r[5],tit:r[6],precio:r[7],rating:pn(r[8])||null,res:pn(r[9])||null,prev:pn(r[10])||null,cambio:r[11],marca:r[12],gen:r[13],tipo:r[14]}));
 }
 async function gLoadSolic(force){
-  const f=await gCsv('/erp/api/solic'+(force?'?x='+Date.now():'')).catch(()=>[]);
+  // Un error de carga no es lo mismo que "sin pedidos": se guarda aparte para mostrarlo
+  G.solicErr='';
+  let f=[];
+  try{f=await gCsv('/erp/api/solic'+(force?'?x='+Date.now():''));}catch(e){G.solicErr=e.message||'error';}
   G.solic=f.slice(1).filter(r=>r[0]).map(r=>({id:r[0],fecha:r[1],tipo:r[2],pedido:r[3],estado:r[4],res:r[5],act:r[6]}));
 }
 function gScoutAmazon(){
@@ -3458,7 +3461,7 @@ function gScoutPedir(){
     <p class="xsmall" style="margin-top:10px">El análisis cruza Amazon (EE.UU., México y España), MercadoLibre Chile y otros países, competencia, precios de referencia y margen estimado con tus costos, y termina con una recomendación. Si lo necesitas antes, pídelo directo en el chat.</p></section>
   <section class="xp"><div class="xp-h"><h2>Pedidos</h2><span class="note">${S.length}</span></div>
     ${S.length?S.map(s=>`<details class="xp" style="margin:8px 0;padding:12px"${s.estado==='Listo'&&s===S[0]?' open':''}><summary style="cursor:pointer"><span class="xtag ${tag(s.estado)}">${escH(s.estado)}</span> <b>${escH(s.tipo)}:</b> ${escH(s.pedido.slice(0,120))} <span class="xsmall">· ${gF(s.fecha)}</span></summary>
-      ${s.res?`<div class="xsmall" style="white-space:pre-wrap;line-height:1.55;margin-top:10px">${escH(s.res)}</div>`:'<div class="xsmall" style="margin-top:8px">Todavía sin respuesta.</div>'}</details>`).join(''):'<div class="xempty">Todavía no hay pedidos.</div>'}</section>`;
+      ${s.res?`<div class="xsmall" style="white-space:pre-wrap;line-height:1.55;margin-top:10px">${escH(s.res)}</div>`:'<div class="xsmall" style="margin-top:8px">Todavía sin respuesta.</div>'}</details>`).join(''):(G.solicErr?`<div class="xal r"><b>No se pudo cargar pedidos</b><span>${escH(G.solicErr)}. Los pedidos ya enviados no se perdieron: están en la hoja Scout_Solicitudes.</span></div><button type="button" class="xbtn" onclick="G.solic=null;xScout()">Reintentar</button>`:'<div class="xempty">Sin pedidos.</div>')}</section>`;
 }
 // Recepción de rankings de Amazon: HB Control abre la pestaña de Amazon (gAbrirAmazon) y la tarea programada
 // lee ahí los rankings; la pestaña los envía con postMessage y aquí se guardan, un mercado por mensaje.

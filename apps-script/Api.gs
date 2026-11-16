@@ -20,6 +20,25 @@
 const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades', amazon: 'Scout_Amazon', solic: 'Scout_Solicitudes', mktd: 'Mkt_Diario', mktq: 'Mkt_Consultas', mktp: 'Mkt_Paginas', mktc: 'Mkt_Canales', mkts: 'Mkt_Shopping', mkti: 'Mkt_Indexacion', mktv: 'Mkt_Velocidad' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
+// Encabezado de cada hoja que se crea a demanda (null = la hoja debe existir siempre)
+function encabezadoADemanda_(clave) {
+  const mkt = typeof MKT_ENC !== 'undefined' ? MKT_ENC : {};
+  const mapa = {
+    solic: typeof SOL_ENC !== 'undefined' ? SOL_ENC : null,
+    amazon: typeof AMZ_ENC !== 'undefined' ? AMZ_ENC : null,
+    ideas: typeof IDEAS_ENC !== 'undefined' ? IDEAS_ENC : null,
+    seg: typeof SEG_ENC !== 'undefined' ? SEG_ENC : null,
+    opor: typeof OPOR_ENC !== 'undefined' ? OPOR_ENC : null,
+    scout: typeof SCOUT_ENC !== 'undefined' ? SCOUT_ENC : null,
+    gdet: typeof GDET_ENC !== 'undefined' ? GDET_ENC : null,
+    metas: typeof METAS_ENC !== 'undefined' ? METAS_ENC : null,
+    prefs: ['Clave', 'Valor', 'Actualizado'],
+    mktd: mkt.Mkt_Diario || null, mktq: mkt.Mkt_Consultas || null, mktp: mkt.Mkt_Paginas || null, mktc: mkt.Mkt_Canales || null,
+    mkts: mkt.Mkt_Shopping || null, mkti: mkt.Mkt_Indexacion || null, mktv: mkt.Mkt_Velocidad || null
+  };
+  return mapa[clave] || null;
+}
+
 function doGet(e) {
   const clave = PropertiesService.getScriptProperties().getProperty('API_KEY');
   const p = (e && e.parameter) || {};
@@ -28,7 +47,13 @@ function doGet(e) {
   const nombre = API_HOJAS[p.sheet];
   if (!nombre) return texto_('unknown sheet');
   const hoja = SpreadsheetApp.getActive().getSheetByName(nombre);
-  if (!hoja) return texto_('missing sheet');
+  if (!hoja) {
+    // Las hojas que se crean con la primera escritura (Scout, pedidos, marketing, preferencias) responden
+    // solo con su encabezado mientras no existan: "sin datos" no es un error.
+    const enc = encabezadoADemanda_(p.sheet);
+    if (!enc) return texto_('missing sheet');
+    return ContentService.createTextOutput(enc.map(celdaCsv_).join(',')).setMimeType(ContentService.MimeType.CSV);
+  }
   const filas = hoja.getDataRange().getDisplayValues();
   const csv = filas.map(f => f.map(celdaCsv_).join(',')).join('\n');
   return ContentService.createTextOutput(csv).setMimeType(ContentService.MimeType.CSV);
