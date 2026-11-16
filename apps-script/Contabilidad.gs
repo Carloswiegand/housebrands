@@ -77,7 +77,11 @@ function _cPrefijo_(mes) {   // "10 Oct26 "
 function _cHoja_(nombre, enc) {
   const ss = SpreadsheetApp.getActive();
   let h = ss.getSheetByName(nombre);
-  if (!h) { h = ss.insertSheet(nombre); h.appendRow(enc); h.setFrozenRows(1); h.getRange(1, 1, 1, enc.length).setFontWeight('bold'); }
+  if (!h) {
+    h = ss.insertSheet(nombre);
+    h.getRange('A:A').setNumberFormat('@');   // "2026-10" como texto, no como fecha
+    h.appendRow(enc); h.setFrozenRows(1); h.getRange(1, 1, 1, enc.length).setFontWeight('bold');
+  }
   return h;
 }
 function _cCarpeta_(mes) {
