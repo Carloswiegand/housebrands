@@ -49,7 +49,7 @@ const CONTAB_MANUAL = [
   ['Banco', 'Cartola Excel BCI', 'Descargar desde Bci Pyme (www.bci.cl/pyme) con el botón Abrir Bci Pyme de HB Control.'],
   ['Banco', 'Estados de cuenta tarjeta nacional e internacional', 'Llegan por correo con clave: abrir, guardar sin clave en la carpeta del mes. Sandra saca de aquí los cargos de Meta y Google Ads.'],
   ['MercadoLibre', 'Estado de cuenta Mercado Pago', 'Descargar desde Mercado Pago → Reportes.'],
-  ['MercadoLibre', 'Reporte de pagos de facturas ML', 'Descargar desde Facturación de MercadoLibre.'],
+  ['MercadoLibre', 'Reporte de pagos de facturas ML', 'MercadoLibre → Facturación → Tarifas y pagos → mes → Ir al detalle → Reportes → Pagos de facturas.'],
 ];
 
 // Nombre de archivo → ítem manual del checklist (para lo que se sube a la carpeta del mes).
@@ -58,6 +58,7 @@ const CONTAB_PATRONES = [
   ['Estados de cuenta tarjeta nacional e internacional', /estado.?de.?cuenta.?(nacional|internacional)|tarjeta/i],
   ['Estado de cuenta Mercado Pago', /mercado.?pago|account.?(statement|money)|release|liquidaci/i],
   ['Reporte de pagos de facturas ML', /pagos.?(de.?)?facturas/i],
+  ['Reportes Excel de facturación ML (portal)', /reporte_(facturacion|notas)/i],
 ];
 
 // ── Utilidades ──────────────────────────────────────────────
