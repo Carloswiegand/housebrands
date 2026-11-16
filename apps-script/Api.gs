@@ -17,7 +17,7 @@
 // POST {key, action:'metas_set', filas}           → proyección del flujo (hoja Metas)
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades', amazon: 'Scout_Amazon', solic: 'Scout_Solicitudes', mktd: 'Mkt_Diario', mktq: 'Mkt_Consultas', mktp: 'Mkt_Paginas', mktc: 'Mkt_Canales', mkts: 'Mkt_Shopping', mkti: 'Mkt_Indexacion', mktv: 'Mkt_Velocidad', bench: 'Scout_Benchmark' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades', amazon: 'Scout_Amazon', solic: 'Scout_Solicitudes', mktd: 'Mkt_Diario', mktq: 'Mkt_Consultas', mktp: 'Mkt_Paginas', mktc: 'Mkt_Canales', mkts: 'Mkt_Shopping', mkti: 'Mkt_Indexacion', mktv: 'Mkt_Velocidad', bench: 'Scout_Benchmark', contab: 'Contab_Checklist' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 // Encabezado de cada hoja que se crea a demanda (null = la hoja debe existir siempre)
@@ -34,6 +34,7 @@ function encabezadoADemanda_(clave) {
     gdet: typeof GDET_ENC !== 'undefined' ? GDET_ENC : null,
     metas: typeof METAS_ENC !== 'undefined' ? METAS_ENC : null,
     prefs: ['Clave', 'Valor', 'Actualizado'],
+    contab: typeof CONTAB_ENC !== 'undefined' ? CONTAB_ENC : null,
     mktd: mkt.Mkt_Diario || null, mktq: mkt.Mkt_Consultas || null, mktp: mkt.Mkt_Paginas || null, mktc: mkt.Mkt_Canales || null,
     mkts: mkt.Mkt_Shopping || null, mkti: mkt.Mkt_Indexacion || null, mktv: mkt.Mkt_Velocidad || null
   };
@@ -89,6 +90,8 @@ function doPost(e) {
     if (body.action === 'solicitud_add') return json_(solicitudAgregar_(body.solicitud || {}));
     if (body.action === 'solicitud_set') return json_(solicitudActualizar_(body.solicitud || {}));
     if (body.action === 'benchmark_add') return json_(benchmarkAgregar_(body.filas || [], body.fecha));
+    if (body.action === 'contab_subir') return json_(contabSubir_(body));
+    if (body.action === 'contab_borrador') return json_(contabBorrador_(body.mes));
     if (body.action === 'metas_set') return json_(metasGuardar_(body.filas || []));
     if (body.action === 'gasto_add' || body.action === 'gasto_del') {
       const r = body.action === 'gasto_add' ? gastoDocAgregar_(body.doc || {}) : gastoDocBorrar_(body.id);
