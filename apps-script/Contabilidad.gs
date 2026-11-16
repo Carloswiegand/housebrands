@@ -260,16 +260,24 @@ function _cAbee_(mes, archivosAbee) {
 function _cFoto_(hasta) {   // { sku: {producto, abee} } de la última foto con fecha <= hasta
   const h = SpreadsheetApp.getActive().getSheetByName(H_INVENTARIO);
   if (!h || h.getLastRow() < 2) return { fecha: '', stock: {} };
-  const v = h.getRange(2, 1, h.getLastRow() - 1, ENC_INVENTARIO.length).getDisplayValues();
+  const v = h.getRange(2, 1, h.getLastRow() - 1, ENC_INVENTARIO.length).getValues().map(r => { r[0] = _cIso_(r[0]); return r; });
   const tope = Utilities.formatDate(hasta, CONTAB_TZ, 'yyyy-MM-dd');
   const fechas = v.map(r => r[0]).filter(f => f && f <= tope).sort();
   const fecha = fechas[fechas.length - 1] || '';
   const stock = {};
   v.filter(r => r[0] === fecha).forEach(r => {
-    const num = s => Number(String(s).replace(/\./g, '').replace(',', '.')) || 0;
-    stock[r[1]] = { producto: r[2], abee: num(r[10]) - num(r[9]) };   // Stock total − externo
+    stock[String(r[1]).trim()] = { producto: r[2], abee: (Number(r[10]) || 0) - (Number(r[9]) || 0) };   // Stock total − externo
   });
   return { fecha: fecha, stock: stock };
+}
+
+// Fecha de la hoja (Date o texto "2026-11-16" / "16-11-2026" / "16/11/2026") → "2026-11-16"
+function _cIso_(x) {
+  if (x instanceof Date) return Utilities.formatDate(x, CONTAB_TZ, 'yyyy-MM-dd');
+  const s = String(x || '').trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return m[1] + '-' + m[2] + '-' + m[3];
+  m = s.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/); if (m) return m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
+  return '';
 }
 
 function _cInventario_(mes) {
@@ -280,15 +288,16 @@ function _cInventario_(mes) {
   const previo = {};
   datos.filter(r => String(r[0]) === ant).forEach(r => { previo[r[1]] = Number(r[7]) || 0; });
 
-  const ventas = {};
+  const ventas = {}, nombres = {};
   const lv = SpreadsheetApp.getActive().getSheetByName('Libro_Ventas');
   const vv = lv.getRange(2, 1, Math.max(lv.getLastRow() - 1, 1), 10).getValues();
   vv.forEach(r => {
     if (Number(r[1]) !== m || Number(r[3]) !== a) return;
     const sku = String(r[7]).trim(); if (!sku) return;
+    if (r[8]) nombres[sku] = String(r[8]);
     const o = ventas[sku] = ventas[sku] || { ml: 0, sh: 0, otro: 0 };
     const q = Number(r[9]) || 0, canal = String(r[5]);
-    if (/mercado/i.test(canal)) o.ml += q; else if (/shopify/i.test(canal)) o.sh += q; else o.otro += q;
+    if (/mercado|^ml$/i.test(canal)) o.ml += q; else if (/shopify/i.test(canal)) o.sh += q; else o.otro += q;
   });
 
   const fotoIni = _cFoto_(_cFecha_(mes, 0, 0)), fotoFin = _cFoto_(_cFecha_(mes, 1, 0));
@@ -298,7 +307,7 @@ function _cInventario_(mes) {
     const ini = previo[sku] !== undefined ? previo[sku] : ((fotoIni.stock[sku] || {}).abee || 0);
     const fin = ini - v.ml - v.sh - v.otro, costo = Number(COSTOS_SKU[sku]) || 0;
     const abee = fotoFin.stock[sku] ? fotoFin.stock[sku].abee : '';
-    const prod = (fotoFin.stock[sku] || fotoIni.stock[sku] || {}).producto || '';
+    const prod = (fotoFin.stock[sku] || fotoIni.stock[sku] || {}).producto || nombres[sku] || '';
     return [mes, sku, prod, ini, v.ml, v.sh, v.otro, fin, costo, fin * costo, abee, abee === '' ? '' : abee - fin];
   });
   // reemplaza las filas del mes
@@ -333,6 +342,7 @@ function _cExcel_(mes, carpeta, inv, abeeFila, ml) {
     const ha = tmp.insertSheet('ABEE');
     const abee = _cHoja_(H_CONTAB_ABEE, CONTAB_ABEE_ENC);
     const hist = abee.getLastRow() > 1 ? abee.getRange(2, 1, abee.getLastRow() - 1, CONTAB_ABEE_ENC.length).getDisplayValues().filter(r => r[0] <= mes).sort((p, q) => p[0] < q[0] ? -1 : 1) : [];
+    ha.getRange('A:A').setNumberFormat('@');
     ha.getRange(1, 1, 1, CONTAB_ABEE_ENC.length).setValues([CONTAB_ABEE_ENC]).setFontWeight('bold');
     if (hist.length) {
       const num = s => Number(String(s).replace(/\./g, '').replace(',', '.')) || 0;
@@ -349,6 +359,7 @@ function _cExcel_(mes, carpeta, inv, abeeFila, ml) {
     [['ML', 'Detalle cargos ML'], ['MP', 'Detalle cargos MP']].forEach(([g, nom]) => {
       const hd = tmp.insertSheet(nom);
       const enc = ['Fecha', 'Documento', 'Detalle', 'Tipo', 'Monto cargo', 'Cargo sin descuento', 'Descuento', 'Orden', 'Canal', 'Monto venta'];
+      hd.getRange('B:B').setNumberFormat('@'); hd.getRange('H:H').setNumberFormat('@');   // n° de orden sin redondear
       hd.getRange(1, 1, 1, enc.length).setValues([enc]).setFontWeight('bold');
       let det = [];
       try { det = _cMlDetalle_(ml.clave, g); } catch (e) { hd.getRange(3, 1).setValue('No se pudo leer el detalle: ' + e.message); }
@@ -399,7 +410,9 @@ function _cBorrador_(mes, filas, notaExtra) {
     (faltan.length ? '\nQueda pendiente:\n' + faltan.join('\n') + '\n' : '') +
     (omitidos.length ? '\nNo alcanzaron a ir adjuntos (límite de tamaño): ' + omitidos.join(', ') + '\n' : '') +
     '\nSaludos,\nCarlos';
-  const d = GmailApp.createDraft(CONTAB_PARA, 'Información ' + nombre + ' — Housebrands Commerce SpA', cuerpo, { attachments: adj });
+  const asunto = 'Información ' + nombre + ' — Housebrands Commerce SpA';
+  GmailApp.getDrafts().filter(x => x.getMessage().getSubject() === asunto).forEach(x => x.deleteDraft());   // al volver a correr, reemplaza el borrador
+  const d = GmailApp.createDraft(CONTAB_PARA, asunto, cuerpo, { attachments: adj });
   return { id: d.getId(), adjuntos: adj.length, mb: Math.round(peso / 1048576 * 10) / 10, omitidos: omitidos };
 }
 
