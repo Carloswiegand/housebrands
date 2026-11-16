@@ -3425,7 +3425,8 @@ async function gLoadBench(force){
 function gScoutBench(){
   const B=G.bench||[];
   if(G.benchErr)return`<section class="xp"><div class="xal r"><b>No se pudo cargar el benchmark</b><span>${escH(G.benchErr)}</span></div><button type="button" class="xbtn" onclick="G.bench=null;xScout()">Reintentar</button></section>`;
-  if(!B.length)return'<section class="xp xempty">Sin datos todavía. La tarea programada toma una foto del catálogo de Builder y UnionX el primer lunes de cada mes.</section>';
+  const abrir=`<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="xbtn" id="bench-builder" onclick="gAbrirBench('https://buildershop.com/')">Abrir Builder para actualizar</button><button type="button" class="xbtn" id="bench-unionx" onclick="gAbrirBench('https://unionx.cl/')">Abrir UnionX para actualizar</button></div>${(G.benchLog||[]).length?`<p class="xsmall">${G.benchLog.map(escH).join(' · ')}</p>`:''}`;
+  if(!B.length)return`<section class="xp xempty"><p>Sin datos todavía. La tarea programada toma una foto del catálogo de Builder y UnionX el primer lunes de cada mes.</p>${abrir}</section>`;
   const emps=[...new Set(B.map(r=>r.emp))];if(!G.benchEmp||!emps.includes(G.benchEmp))G.benchEmp=emps[0];
   const R=B.filter(r=>r.emp===G.benchEmp);const fechas=[...new Set(R.map(r=>r.fecha))].sort();const ult=fechas[fechas.length-1],ant=fechas[fechas.length-2];
   if(G.benchPropias===undefined)G.benchPropias=true;
@@ -3437,6 +3438,7 @@ function gScoutBench(){
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"><div class="xchips">${emps.map(e=>chip(e===G.benchEmp,`G.benchEmp='${e}'`,escH(e))).join('')}</div><div class="xchips">${chip(G.benchPropias,'G.benchPropias=true','Solo marcas propias')}${chip(!G.benchPropias,'G.benchPropias=false','Incluir distribuidas')}</div></div>
     <div class="xtw"><table class="xt"><thead><tr><th>Marca</th><th>Qué vende</th><th>Productos activos</th><th class="r">Cambio</th><th class="r">Nuevos en 6 meses</th><th class="r">Precio mediano</th></tr></thead><tbody>
     ${U.map(r=>{const p=prev[r.marca.toLowerCase()];const d=p===undefined?(ant?'<span class="xtag b">Nueva</span>':'–'):r.prod-p===0?'=':(r.prod>p?'+':'')+(r.prod-p);return`<tr><td><b>${escH(r.marca)}</b>${r.propia==='No'?' <span class="xtag n">distribuida</span>':''}</td><td class="xsmall">${escH(r.cats||'–')}</td><td style="min-width:160px">${xHb('',r.prod,mx,String(r.prod))}</td><td class="r">${d}</td><td class="r">${r.nuevos?`<span class="xtag ${r.nuevos/r.prod>=0.15?'g':'n'}">${r.nuevos}</span>`:'0'}</td><td class="r">${r.precio?xM(r.precio):'–'}</td></tr>`;}).join('')}</tbody></table></div>
+    <div style="margin-top:12px">${abrir}</div>
     <p class="xsmall" style="margin-top:10px">${U.length} marcas · ${xN(tot)} productos. Más productos = la empresa amplió esa marca porque le funcionó; muchos productos nuevos en 6 meses = sigue apostando por ella. Una marca que se queda en 2 a 5 productos sin novedades probablemente no prendió. Ojo: la cantidad de productos mide la apuesta, no las ventas.</p></section>`;
 }
 // ── Scout: Amazon y pedidos de análisis ──
@@ -3500,6 +3502,18 @@ window.addEventListener('message',async e=>{
   G.amz=null;if(G.scoutTab==='amazon'&&X_VISTA==='scout')xScout();
 });
 function gAbrirAmazon(){G.amzVentana=window.open('https://www.amazon.com/gp/bestsellers/','hbamz');}
+// Benchmark: HB Control abre la tienda (Builder o UnionX); ahí se lee /products.json y la pestaña envía
+// el resumen por marca con postMessage. Se guarda con benchmark_add (un mensaje por empresa).
+const BENCH_TIENDAS={'https://buildershop.com':'Builder','https://unionx.cl':'UnionX'};
+function gAbrirBench(url){window.open(url,'hbbench');}
+G.benchLog=[];
+window.addEventListener('message',async e=>{
+  const emp=BENCH_TIENDAS[e.origin];if(!emp)return;
+  const d=e.data||{};if(d.tipo!=='hb-bench'||!Array.isArray(d.filas)||!d.filas.length)return;
+  const filas=d.filas.filter(f=>f&&f.empresa===emp);
+  try{const r=await gPost({action:'benchmark_add',filas});G.benchLog.push(emp+': '+r.filas+' marcas guardadas');G.bench=null;}
+  catch(err){G.benchLog.push(emp+': error '+err.message);}
+});
 async function gSolicitar(btn){
   const tipo=document.getElementById('sp-tipo').value,pedido=document.getElementById('sp-txt').value.trim(),msg=document.getElementById('sp-msg');
   if(pedido.length<3){msg.textContent='Escribe qué quieres que analice.';return;}
