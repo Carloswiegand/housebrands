@@ -3217,10 +3217,11 @@ async function gLoadScout(){if(G.scout)return;try{const f=await gCsv(CSV_SCOUT);
 async function xScout(){
   const el=document.getElementById('view-scout');
   if(!G.scout){el.innerHTML='<div class="xp xempty">Cargando Scout…</div>';await gLoadScout();}
-  const tabs=[['radar','Radar ML'],['amazon','Amazon'],['oport','Oportunidades'],['seg','Seguimiento'],['pedir','Pedir análisis'],['eval','Evaluar producto'],['marcas','Mis marcas']];
+  const tabs=[['radar','Radar ML'],['amazon','Amazon'],['oport','Oportunidades'],['seg','Seguimiento'],['pedir','Pedir análisis'],['eval','Evaluar producto'],['marcas','Mis marcas'],['bench','Benchmark']];
   const head=`<section class="xp glass" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><div class="xchips" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" aria-selected="${G.scoutTab===k}" class="xchip${G.scoutTab===k?' on':''}" onclick="G.scoutTab='${k}';xScout()">${l}</button>`).join('')}</div><span class="xsmall" style="margin-left:auto">Qué se busca en Chile, si hay espacio para entrar y cuánto dejaría cada unidad</span></section>`;
   if(G.scoutTab==='eval'){el.innerHTML=head+gEvalHtml();gEvalCalc();return;}
   if(G.scoutTab==='amazon'){if(!G.amz){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadAmazon();}el.innerHTML=head+gScoutAmazon();return;}
+  if(G.scoutTab==='bench'){if(!G.bench){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadBench();}el.innerHTML=head+gScoutBench();return;}
   if(G.scoutTab==='pedir'){if(!G.solic){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadSolic();}el.innerHTML=head+gScoutPedir();return;}
   if(G.scoutTab==='oport'||G.scoutTab==='seg'){if(!G.ideas){el.innerHTML=head+'<div class="xp xempty">Cargando…</div>';await gLoadIdeas();}el.innerHTML=head+(G.scoutTab==='oport'?gScoutOpor():gScoutSeg());return;}
   const S=G.scout||[];
@@ -3415,6 +3416,29 @@ async function gMktActualizar(btn){
   catch(e){msg.textContent='No se pudo actualizar: '+e.message;btn.disabled=false;}
 }
 
+// ── Scout: benchmark de creadores de marcas (Builder, UnionX) ──
+async function gLoadBench(force){
+  G.benchErr='';let f=[];
+  try{f=await gCsv('/erp/api/bench'+(force?'?x='+Date.now():''));}catch(e){G.benchErr=e.message||'error';}
+  G.bench=f.slice(1).filter(r=>r[2]).map(r=>({fecha:r[0],emp:r[1],marca:r[2],propia:r[3],prod:pn(r[4]),vars:pn(r[5]),precio:pn(r[6]),nuevos:pn(r[7]),cats:r[8]}));
+}
+function gScoutBench(){
+  const B=G.bench||[];
+  if(G.benchErr)return`<section class="xp"><div class="xal r"><b>No se pudo cargar el benchmark</b><span>${escH(G.benchErr)}</span></div><button type="button" class="xbtn" onclick="G.bench=null;xScout()">Reintentar</button></section>`;
+  if(!B.length)return'<section class="xp xempty">Sin datos todavía. La tarea programada toma una foto del catálogo de Builder y UnionX el primer lunes de cada mes.</section>';
+  const emps=[...new Set(B.map(r=>r.emp))];if(!G.benchEmp||!emps.includes(G.benchEmp))G.benchEmp=emps[0];
+  const R=B.filter(r=>r.emp===G.benchEmp);const fechas=[...new Set(R.map(r=>r.fecha))].sort();const ult=fechas[fechas.length-1],ant=fechas[fechas.length-2];
+  if(G.benchPropias===undefined)G.benchPropias=true;
+  const U=R.filter(r=>r.fecha===ult&&(!G.benchPropias||r.propia==='Sí')).sort((a,b)=>b.prod-a.prod);
+  const prev={};if(ant)R.filter(r=>r.fecha===ant).forEach(r=>prev[r.marca.toLowerCase()]=r.prod);
+  const mx=Math.max(1,...U.map(r=>r.prod));const tot=U.reduce((s,r)=>s+r.prod,0);
+  const chip=(v,k,l)=>`<button type="button" class="xchip${v?' on':''}" onclick="${k};xScout()">${l}</button>`;
+  return`<section class="xp"><div class="xp-h"><h2>Qué marcas les funcionan a los creadores de marcas</h2><span class="note">foto del ${gF(ult)}${ant?' · comparada con '+gF(ant):''}</span></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"><div class="xchips">${emps.map(e=>chip(e===G.benchEmp,`G.benchEmp='${e}'`,escH(e))).join('')}</div><div class="xchips">${chip(G.benchPropias,'G.benchPropias=true','Solo marcas propias')}${chip(!G.benchPropias,'G.benchPropias=false','Incluir distribuidas')}</div></div>
+    <div class="xtw"><table class="xt"><thead><tr><th>Marca</th><th>Qué vende</th><th>Productos activos</th><th class="r">Cambio</th><th class="r">Nuevos en 6 meses</th><th class="r">Precio mediano</th></tr></thead><tbody>
+    ${U.map(r=>{const p=prev[r.marca.toLowerCase()];const d=p===undefined?(ant?'<span class="xtag b">Nueva</span>':'–'):r.prod-p===0?'=':(r.prod>p?'+':'')+(r.prod-p);return`<tr><td><b>${escH(r.marca)}</b>${r.propia==='No'?' <span class="xtag n">distribuida</span>':''}</td><td class="xsmall">${escH(r.cats||'–')}</td><td style="min-width:160px">${xHb('',r.prod,mx,String(r.prod))}</td><td class="r">${d}</td><td class="r">${r.nuevos?`<span class="xtag ${r.nuevos/r.prod>=0.15?'g':'n'}">${r.nuevos}</span>`:'0'}</td><td class="r">${r.precio?xM(r.precio):'–'}</td></tr>`;}).join('')}</tbody></table></div>
+    <p class="xsmall" style="margin-top:10px">${U.length} marcas · ${xN(tot)} productos. Más productos = la empresa amplió esa marca porque le funcionó; muchos productos nuevos en 6 meses = sigue apostando por ella. Una marca que se queda en 2 a 5 productos sin novedades probablemente no prendió. Ojo: la cantidad de productos mide la apuesta, no las ventas.</p></section>`;
+}
 // ── Scout: Amazon y pedidos de análisis ──
 async function gLoadAmazon(force){
   const f=await gCsv('/erp/api/amazon'+(force?'?x='+Date.now():'')).catch(()=>[]);
@@ -3616,7 +3640,8 @@ scout:{t:'Cómo leer el Scout',p:[
  ['Oportunidades','Búsquedas en tendencia 2 semanas seguidas en otro país y que no aparecen en Chile, con la competencia que hoy tienen en el catálogo chileno. Pocas marcas en Chile = espacio para entrar antes de que llegue la tendencia.'],
  ['Seguimiento','Cada oportunidad, y cada idea que agregues a mano (de Amazon, TikTok o una feria), queda con una hipótesis y un plazo. Todos los lunes se mide en Chile: si entra a las tendencias o su catálogo crece 30%, se cumplió; si vence el plazo, no se cumplió. La tasa de acierto dice cuánto confiar en cada fuente.'],
  ['Evaluar producto','Calcula el costo internado, el margen bruto y el margen antes de publicidad de un producto que estás pensando traer. Sobre 55% después de ABEE y comisión deja espacio para publicidad.'],
- ['Mis marcas','Competencia en las búsquedas de MemoKoala y Montana: productos en catálogo, marcas distintas y las marcas que más aparecen.']]}
+ ['Mis marcas','Competencia en las búsquedas de MemoKoala y Montana: productos en catálogo, marcas distintas y las marcas que más aparecen.'],
+ ['Benchmark','Foto mensual del catálogo de Builder y UnionX, las dos empresas chilenas que crean marcas como Housebrands. Muestra cuántos productos tiene cada marca y cuántos agregaron en los últimos 6 meses: las marcas que crecen son categorías donde una marca propia funcionó en Chile.']]}
 };
 function gAyuda(v){
   const a=AYUDA[v],el=document.getElementById('view-'+v);if(!a||!el||el.querySelector(':scope > .xhelp'))return;

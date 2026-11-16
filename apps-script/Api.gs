@@ -17,7 +17,7 @@
 // POST {key, action:'metas_set', filas}           → proyección del flujo (hoja Metas)
 // =============================================================
 
-const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades', amazon: 'Scout_Amazon', solic: 'Scout_Solicitudes', mktd: 'Mkt_Diario', mktq: 'Mkt_Consultas', mktp: 'Mkt_Paginas', mktc: 'Mkt_Canales', mkts: 'Mkt_Shopping', mkti: 'Mkt_Indexacion', mktv: 'Mkt_Velocidad' };
+const API_HOJAS = { ventas: 'Libro_Ventas', pnl: 'P&L', conv: 'Conversion', inv: 'Inventario_Diario', imp: 'Importaciones', scout: 'Scout_Tendencias', estado: 'Estado_Sync', gastos: 'Gastos_Variables', config: 'Config', gdet: 'Gastos_Detalle', metas: 'Metas', prefs: 'Preferencias', ideas: 'Scout_Ideas', seg: 'Scout_Seguimiento', opor: 'Scout_Oportunidades', amazon: 'Scout_Amazon', solic: 'Scout_Solicitudes', mktd: 'Mkt_Diario', mktq: 'Mkt_Consultas', mktp: 'Mkt_Paginas', mktc: 'Mkt_Canales', mkts: 'Mkt_Shopping', mkti: 'Mkt_Indexacion', mktv: 'Mkt_Velocidad', bench: 'Scout_Benchmark' };
 const CANALES_MANUALES = ['Venta Directa', 'HigoKids', 'Venta Corporativa', 'B2B', 'Otro'];
 
 // Encabezado de cada hoja que se crea a demanda (null = la hoja debe existir siempre)
@@ -25,6 +25,7 @@ function encabezadoADemanda_(clave) {
   const mkt = typeof MKT_ENC !== 'undefined' ? MKT_ENC : {};
   const mapa = {
     solic: typeof SOL_ENC !== 'undefined' ? SOL_ENC : null,
+    bench: typeof BENCH_ENC !== 'undefined' ? BENCH_ENC : null,
     amazon: typeof AMZ_ENC !== 'undefined' ? AMZ_ENC : null,
     ideas: typeof IDEAS_ENC !== 'undefined' ? IDEAS_ENC : null,
     seg: typeof SEG_ENC !== 'undefined' ? SEG_ENC : null,
@@ -87,6 +88,7 @@ function doPost(e) {
     if (body.action === 'amazon_clasificar') return json_(amazonClasificar_(body.items || []));
     if (body.action === 'solicitud_add') return json_(solicitudAgregar_(body.solicitud || {}));
     if (body.action === 'solicitud_set') return json_(solicitudActualizar_(body.solicitud || {}));
+    if (body.action === 'benchmark_add') return json_(benchmarkAgregar_(body.filas || [], body.fecha));
     if (body.action === 'metas_set') return json_(metasGuardar_(body.filas || []));
     if (body.action === 'gasto_add' || body.action === 'gasto_del') {
       const r = body.action === 'gasto_add' ? gastoDocAgregar_(body.doc || {}) : gastoDocBorrar_(body.id);

@@ -152,3 +152,37 @@ function amazonLimpiarInvalidos(fechas) {
   console.log(msg);
   return { ok: true, precios: precios, resenas: resenas, recuperados: recuperados };
 }
+
+// =============================================================
+// Benchmark de creadores de marcas (Builder, UnionX): una foto mensual del catálogo de cada marca.
+// Productos activos por marca = cuánto apostó la empresa por esa marca; los nuevos en 6 meses = si sigue invirtiendo.
+// Hoja Scout_Benchmark: Fecha | Empresa | Marca | Propia | Productos | Variantes | Precio mediano | Nuevos 6 meses | Categorías
+// La carga la hace la tarea programada (lee /products.json de cada tienda en Chrome) con la acción benchmark_add.
+// =============================================================
+const H_BENCH = 'Scout_Benchmark';
+const BENCH_ENC = ['Fecha', 'Empresa', 'Marca', 'Propia', 'Productos', 'Variantes', 'Precio mediano', 'Nuevos 6 meses', 'Categorías'];
+
+// filas = [{empresa, marca, propia ('Sí'|'No'), productos, variantes, precio, nuevos, categorias}], fecha 'yyyy-mm-dd' (opcional)
+function benchmarkAgregar_(filas, fecha) {
+  if (!Array.isArray(filas) || !filas.length) throw new Error('sin filas');
+  if (filas.length > 500) throw new Error('demasiadas filas');
+  fecha = /^\d{4}-\d{2}-\d{2}$/.test(String(fecha || '')) ? fecha : _smFecha_();
+  const h = _smHoja_(H_BENCH, BENCH_ENC);
+  const empresas = new Set(filas.map(f => String(f.empresa || '').trim()));
+  // Reintento del mismo día y empresa: se reemplaza
+  const resto = _smDatos_(h, BENCH_ENC.length).filter(r => !(_amzFecha_(r[0]) === fecha && empresas.has(String(r[1]))));
+  const nuevas = filas.map(f => {
+    const marca = String(f.marca || '').trim().slice(0, 60);
+    if (!marca || !f.empresa) return null;
+    return [fecha, String(f.empresa).trim().slice(0, 40), marca, f.propia === 'No' ? 'No' : 'Sí',
+      Math.round(Number(f.productos) || 0), Math.round(Number(f.variantes) || 0), Math.round(Number(f.precio) || 0) || '',
+      Math.round(Number(f.nuevos) || 0), String(f.categorias || '').slice(0, 120)];
+  }).filter(Boolean);
+  const todas = resto.map(r => { r[0] = _amzFecha_(r[0]); return r; }).concat(nuevas);
+  if (h.getLastRow() > 1) h.getRange(2, 1, h.getLastRow() - 1, BENCH_ENC.length).clearContent();
+  if (todas.length) {
+    h.getRange(2, 1, todas.length, 1).setNumberFormat('@');
+    h.getRange(2, 1, todas.length, BENCH_ENC.length).setValues(todas);
+  }
+  return { ok: true, filas: nuevas.length };
+}
