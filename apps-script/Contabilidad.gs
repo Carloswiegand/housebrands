@@ -46,7 +46,7 @@ const CONTAB_CORREO = [
 ];
 
 const CONTAB_MANUAL = [
-  ['Banco', 'Cartola Excel BCI', 'Descargar desde Bci Empresas y subir a la carpeta del mes.'],
+  ['Banco', 'Cartola Excel BCI', 'Descargar desde Bci Pyme (www.bci.cl/pyme) con el botón Abrir Bci Pyme de HB Control.'],
   ['Banco', 'Estados de cuenta tarjeta nacional e internacional', 'Llegan por correo con clave: abrir, guardar sin clave en la carpeta del mes. Sandra saca de aquí los cargos de Meta y Google Ads.'],
   ['MercadoLibre', 'Estado de cuenta Mercado Pago', 'Descargar desde Mercado Pago → Reportes.'],
   ['MercadoLibre', 'Reporte de pagos de facturas ML', 'Descargar desde Facturación de MercadoLibre.'],
