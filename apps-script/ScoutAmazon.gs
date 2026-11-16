@@ -26,8 +26,9 @@ const SOL_ENC = ['ID', 'Fecha', 'Tipo', 'Pedido', 'Estado', 'Resultado', 'Actual
 function _amzFecha_(v) { return v instanceof Date ? Utilities.formatDate(v, 'America/Santiago', 'yyyy-MM-dd') : String(v).slice(0, 10); }
 
 // Defensa contra lecturas pegadas de Amazon (ej. "3.79434,99 €" = 3.794 reseñas + 34,99 €):
-// un precio que no calza con el formato de moneda o más de 2.000.000 de reseñas se guarda vacío.
-const AMZ_PRECIO_OK = /^(CLP|US\$|MX\$|\$|€)?\s?\d{1,3}([.,]\d{3})*([.,]\d{2})?\s?€?$/;
+// un precio sin moneda o que no calza con el formato, o más de 2.000.000 de reseñas, se guarda vacío.
+// La moneda es obligatoria: un número suelto ("900") es casi siempre un trozo de las reseñas.
+const AMZ_PRECIO_OK = /^(?:(?:CLP|US\$|MX\$|\$|€)\s?\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?|\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?\s?€)$/;
 const AMZ_MAX_RESENAS = 2000000;
 function _amzPrecio_(v) { const p = String(v || '').replace(/\s+/g, ' ').trim().slice(0, 30); return AMZ_PRECIO_OK.test(p) ? p : ''; }
 function _amzResenas_(v) { const n = Math.round(Number(v) || 0); return n > 0 && n <= AMZ_MAX_RESENAS ? n : ''; }
@@ -73,6 +74,7 @@ function amazonAgregar_(filas, fecha) {
   if (h.getLastRow() > 1) h.getRange(2, 1, h.getLastRow() - 1, AMZ_ENC.length).clearContent();
   if (quedan.length) {
     h.getRange(2, 1, quedan.length, 1).setNumberFormat('@');
+    h.getRange(2, 8, quedan.length, 1).setNumberFormat('@');   // precio como texto: Sheets convertiría "$453.96" en número
     h.getRange(2, 1, quedan.length, AMZ_ENC.length).setValues(quedan.map(r => { r[0] = _amzFecha_(r[0]); return r; }));
   }
   return { ok: true, filas: nuevas.length, comparadaCon: fPrev || null };
@@ -124,23 +126,29 @@ function solicitudActualizar_(d) {
 
 // Ejecutar una vez desde el editor: vacía precio y reseñas inválidos ya guardados (lecturas pegadas
 // del snippet anterior). Por defecto revisa las cargas del 14 y del 16 de noviembre de 2026.
+// Si el precio no es confiable (inválido o vacío), las reseñas tampoco lo son: salieron pegadas al precio.
 function amazonLimpiarInvalidos(fechas) {
   fechas = Array.isArray(fechas) && fechas.length ? fechas : ['2026-11-14', '2026-11-16'];
   const h = _smHoja_(H_AMZ, AMZ_ENC);
   const datos = _smDatos_(h, AMZ_ENC.length);
-  let precios = 0, resenas = 0;
+  // El precio se lee como se ve en la hoja: si Sheets lo guardó como número, el texto conserva la moneda
+  const vistos = datos.length ? h.getRange(2, 8, datos.length, 1).getDisplayValues() : [];
+  datos.forEach((r, i) => { r[7] = vistos[i][0]; });
+  let precios = 0, resenas = 0, recuperados = 0;
   const salida = datos.map(r => {
     if (fechas.indexOf(_amzFecha_(r[0])) === -1) return [r[7], r[9]];
-    let p = r[7], n = r[9];
+    let p = String(r[7]).trim(), n = r[9];
+    // México: Sheets guardó "$453.96" como número y perdió el signo; ese número sí es el precio
+    if (r[1] === 'México' && /^\d+(\.\d+)?$/.test(p)) { p = '$' + Number(p).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); recuperados++; }
     if (p !== '' && !_amzPrecio_(p)) { p = ''; precios++; }
-    if (n !== '' && _amzResenas_(n) === '') { n = ''; resenas++; }
+    if (n !== '' && (p === '' || _amzResenas_(n) === '')) { n = ''; resenas++; }
     return [p, n];
   });
   if (datos.length) {
     h.getRange(2, 8, datos.length, 1).setNumberFormat('@').setValues(salida.map(x => [x[0]]));
     h.getRange(2, 10, datos.length, 1).setValues(salida.map(x => [x[1]]));
   }
-  const msg = 'Scout_Amazon: ' + precios + ' precios y ' + resenas + ' reseñas inválidos vaciados (' + fechas.join(', ') + ')';
+  const msg = 'Scout_Amazon: ' + precios + ' precios y ' + resenas + ' reseñas inválidos vaciados; ' + recuperados + ' precios de México recuperados con su signo (' + fechas.join(', ') + ')';
   console.log(msg);
-  return { ok: true, precios: precios, resenas: resenas };
+  return { ok: true, precios: precios, resenas: resenas, recuperados: recuperados };
 }
