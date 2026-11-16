@@ -52,6 +52,14 @@ const CONTAB_MANUAL = [
   ['MercadoLibre', 'Reporte de pagos de facturas ML', 'Descargar desde Facturación de MercadoLibre.'],
 ];
 
+// Nombre de archivo → ítem manual del checklist (para lo que se sube a la carpeta del mes).
+const CONTAB_PATRONES = [
+  ['Cartola Excel BCI', /cartola.*\.xlsx?$/i],
+  ['Estados de cuenta tarjeta nacional e internacional', /estado.?de.?cuenta.?(nacional|internacional)|tarjeta/i],
+  ['Estado de cuenta Mercado Pago', /mercado.?pago|account.?(statement|money)|release|liquidaci/i],
+  ['Reporte de pagos de facturas ML', /pagos.?(de.?)?facturas/i],
+];
+
 // ── Utilidades ──────────────────────────────────────────────
 
 function _cMes_(mes) {
@@ -493,6 +501,17 @@ function contabBorrador_(mes) {
     archivos: String(r[4] || '').split(' | ').filter(n => n && ids[n]).map(n => ({ nombre: n, id: ids[n], protegido: /\.xml$/i.test(n) || r[3] === 'Protegido' })),
   }));
   if (!filas.length) throw new Error('el mes ' + mes + ' no se ha preparado');
+  // Archivos que se agregaron a la carpeta a mano (o bajados del banco / Mercado Pago): se asignan a su ítem por nombre.
+  const usados = new Set([].concat.apply([], filas.map(f => f.archivos.map(x => x.nombre))));
+  Object.keys(ids).filter(n => !usados.has(n) && !/\.xml$/i.test(n) && !/^Cierre /.test(n)).forEach(n => {
+    const regla = CONTAB_PATRONES.filter(p => p[1].test(n))[0];
+    const item = regla ? regla[0] : 'Otros documentos';
+    let f = filas.filter(x => x.item === item)[0];
+    if (!f) { f = { grupo: 'Otros', item: item, estado: 'Listo', nota: '', enlace: carpeta.getUrl(), adjuntar: true, archivos: [] }; filas.push(f); }
+    f.archivos.push({ nombre: n, id: ids[n], protegido: false });
+    f.estado = 'Listo'; f.nota = 'Agregado a la carpeta del mes.';
+    f.enlace = f.archivos.length === 1 ? 'https://drive.google.com/file/d/' + ids[n] + '/view' : carpeta.getUrl();
+  });
   const b = _cBorrador_(mes, filas, PropertiesService.getScriptProperties().getProperty('CONTAB_NOTA_' + mes) || '');
   filas.push({ grupo: 'Correo', item: 'Borrador para Sandra y Ambrosio', estado: 'Listo', archivos: [], adjuntar: false,
     enlace: 'https://mail.google.com/mail/u/0/#drafts', nota: b.adjuntos + ' adjuntos · ' + b.mb + ' MB' + (b.omitidos.length ? ' · no cupieron: ' + b.omitidos.join(', ') : '') + '. Revisar y enviar.' });
