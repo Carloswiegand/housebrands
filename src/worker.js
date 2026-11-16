@@ -12,7 +12,7 @@
 // Configuración (wrangler.jsonc → vars):  ACCESS_TEAM_DOMAIN, ACCESS_AUD, ALLOWED_EMAILS, SHEETS_API_URL
 // Secreto (dashboard / wrangler secret):   SHEETS_API_KEY
 
-const SHEETS = new Set(['ventas', 'pnl', 'conv', 'inv', 'imp', 'scout', 'estado', 'gastos', 'config', 'gdet', 'metas', 'prefs', 'ideas', 'seg', 'opor', 'amazon', 'solic', 'mktd', 'mktq', 'mktp', 'mktc', 'mkts', 'mkti', 'mktv', 'bench']);
+const SHEETS = new Set(['ventas', 'pnl', 'conv', 'inv', 'imp', 'scout', 'estado', 'gastos', 'config', 'gdet', 'metas', 'prefs', 'ideas', 'seg', 'opor', 'amazon', 'solic', 'mktd', 'mktq', 'mktp', 'mktc', 'mkts', 'mkti', 'mktv', 'bench', 'contab']);
 const CACHE_SECONDS = 60;
 
 export default {

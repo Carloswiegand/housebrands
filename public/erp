@@ -3171,6 +3171,7 @@ async function gSincronizar(btn){
 async function xSistema(){
   const el=document.getElementById('view-sis');
   if(G.estado===null||!G.gastos){el.innerHTML='<div class="xp xempty">Revisando el sistema…</div>';await Promise.all([gLoadEstado(),gLoadImp(),loadInvSnap().catch(()=>{}),gLoadGastos()]);}
+  if(!G.contab)await gLoadContab();
   const hoy=gHoy(),ahora=Date.now();
   const est={};(G.estado||[]).forEach(c=>{est[c[0]]={ok:c[1],err:c[2],det:c[3]};});
   const hace=s=>{if(!s)return'nunca';const t=new Date(s.replace(' ','T')+':00-03:00').getTime();const m=Math.max(0,Math.round((ahora-t)/6e4));return m<2?'hace un momento':m<60?'hace '+m+' min':m<2880?'hace '+Math.round(m/60)+' h':'hace '+Math.round(m/1440)+' días';};
@@ -3208,7 +3209,29 @@ async function xSistema(){
     <p class="xsmall" style="margin-top:10px">Las ventas aparecen en el dashboard hasta 15 minutos después de la compra. "Sincronizar ahora" las trae al momento.</p></section>
   <section class="xp" style="flex:1 1 420px"><h2>Requiere atención</h2>${al.map(([c,t,x])=>`<div class="xrw"><span class="xtag ${c}">${t}</span><div style="flex:1">${escH(x)}</div></div>`).join('')}</section></div>
   <section class="xp"><div class="xp-h"><h2>Gastos del mes</h2><button type="button" class="xbtn" onclick="goTab('gas')">Ir a Gastos</button></div><p class="xsmall">Las facturas y comprobantes de cada mes, y los gastos fijos, se cargan en el módulo Gastos.</p></section>
-  <section class="xp"><div class="xp-h"><h2>Cierre de ${escH(nomC)}</h2><span class="note">marca cada paso al terminarlo</span></div>${cl}</section>`;
+  <section class="xp"><div class="xp-h"><h2>Cierre de ${escH(nomC)}</h2><span class="note">marca cada paso al terminarlo</span></div>${cl}</section>
+  ${gContabSec()}`;
+}
+// ── Documentos para la contadora (hoja Contab_Checklist, la llena Contabilidad.gs) ──
+async function gLoadContab(force){
+  G.contabErr='';let f=[];
+  try{f=await gCsv('/erp/api/contab'+(force?'?x='+Date.now():''));}catch(e){G.contabErr=e.message||'error';}
+  G.contab=f.slice(1).filter(r=>r[0]&&r[2]).map(r=>({mes:r[0],grupo:r[1],item:r[2],estado:r[3],archivos:r[4],enlace:r[5],nota:r[6],act:r[7]}));
+}
+function gContabSec(){
+  if(G.contabErr)return`<section class="xp"><div class="xal r"><b>No se pudo cargar el checklist contable</b><span>${escH(G.contabErr)}</span></div><button type="button" class="xbtn" onclick="G.contab=null;xSistema()">Reintentar</button></section>`;
+  const C=G.contab||[];
+  const meses=[...new Set(C.map(r=>r.mes))].sort().reverse();
+  if(!meses.length)return`<section class="xp"><div class="xp-h"><h2>Documentos para la contadora</h2></div><p class="xsmall">Todavía no se prepara ningún mes. Se arma solo el día 19 de cada mes; también se puede correr contabPreparar en Apps Script.</p></section>`;
+  const mes=G.contabMes&&meses.includes(G.contabMes)?G.contabMes:meses[0];
+  const filas=C.filter(r=>r.mes===mes);
+  const tag={Listo:'g','No aplica':'n',Pendiente:'y',Manual:'y',Protegido:'y',Falta:'r',Error:'r'};
+  const listos=filas.filter(r=>r.estado==='Listo'||r.estado==='No aplica').length;
+  const [a,m]=mes.split('-').map(Number);const nom=new Date(a,m-1,1).toLocaleDateString('es-CL',{month:'long',year:'numeric'});
+  const sel=meses.length>1?`<select class="fsel" aria-label="Mes contable" onchange="G.contabMes=this.value;xSistema()">${meses.map(x=>`<option value="${x}"${x===mes?' selected':''}>${x}</option>`).join('')}</select>`:'';
+  const rows=filas.map(r=>`<div class="xrw"><span class="xtag ${tag[r.estado]||'n'}">${escH(r.estado)}</span><div style="flex:1"><b>${escH(r.item)}</b><div class="xsmall">${escH(r.nota||'')}${r.archivos?' · '+escH(r.archivos):''}</div></div>${r.enlace?`<a class="xbtn" href="${escH(r.enlace)}" target="_blank" rel="noopener">Abrir</a>`:''}</div>`).join('');
+  return`<section class="xp"><div class="xp-h"><h2>Documentos para la contadora · ${escH(nom)}</h2>${sel}<span class="note">${listos} de ${filas.length} listos · actualizado ${escH((filas[0]||{}).act||'–')}</span></div>
+  <p class="xsmall">Se arma solo el día 19: busca las facturas en el correo, baja las de MercadoLibre y Mercado Pago, genera el Excel del cierre y deja un borrador para Sandra y Ambrosio. El correo no se envía solo.</p>${rows}</section>`;
 }
 function gCierre(mes,k){const m=gOpt('cierre_'+mes,{});m[k]=!m[k];gSet('cierre_'+mes,m);xSistema();}
 
