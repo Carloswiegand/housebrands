@@ -1076,6 +1076,28 @@ function goTab(t){
 // ── DATOS ─────────────────────────────────────────────
 let DATA=[], PNL={meses:[],rows:[]}, fMarca='Todas', fCanal='Todos';
 
+// Recarga automática: la página no se refrescaba sola y, abierta por horas, mostraba ventas y
+// "última corrida hace X h" de cuando se abrió. Cada 15 min (o al volver a la pestaña tras 10 min)
+// se vuelven a leer ventas y estado. No redibuja si se está escribiendo en un campo.
+let X_CARGA=Date.now();
+const X_VISTAS_DATOS=['res','prod','cli','canal','geo','ventas','sis'];
+async function xRecargar(){
+  if(document.hidden)return;
+  const a=document.activeElement;
+  if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!a.closest('header'))return;
+  if(!X_VISTAS_DATOS.includes(X_VISTA))return;
+  X_CARGA=Date.now();
+  try{
+    const r=await fetch(CSV_V);if(!r.ok)return;
+    const d=parseVentas(await r.text());if(!d.length)return;
+    DATA=d;G.estado=null;
+    document.getElementById('tc-act').textContent='act. '+new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+    render();xRender();
+  }catch(e){}
+}
+setInterval(()=>{if(Date.now()-X_CARGA>=15*6e4)xRecargar();},6e4);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-X_CARGA>=10*6e4)xRecargar();});
+
 function initApp(){
   fetchTC();
   loadVentas();
