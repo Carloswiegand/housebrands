@@ -553,7 +553,8 @@ function contabBorrador_(mes) {
   while (it.hasNext()) { const f = it.next(); ids[f.getName()] = f.getId(); }
   const h = _cHoja_(H_CONTAB, CONTAB_ENC);
   const v = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, CONTAB_ENC.length).getDisplayValues() : [];
-  const filas = v.filter(r => r[0] === mes && r[1] !== 'Correo').map(r => ({
+  // 'Otros documentos' se recalcula en cada corrida (así un archivo nuevo puede caer en su ítem correcto).
+  const filas = v.filter(r => r[0] === mes && r[1] !== 'Correo' && r[2] !== 'Otros documentos').map(r => ({
     grupo: r[1], item: r[2], estado: r[3], nota: r[6], enlace: r[5], adjuntar: true,
     archivos: String(r[4] || '').split(' | ').filter(n => n && ids[n]).map(n => ({ nombre: n, id: ids[n], protegido: /\.xml$/i.test(n) || r[3] === 'Protegido' })),
   }));
