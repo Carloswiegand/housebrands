@@ -24,13 +24,17 @@ const SHOPIFY_TIENDAS = [
 // Corrida automática (la llama el activador horario). No muestra alertas.
 function syncShopify() {
   const lock = LockService.getScriptLock();
-  if (!lock.tryLock(30000)) return;
+  // Si otra corrida tiene el candado, se informa como error: antes volvía en silencio y Estado_Sync lo marcaba OK.
+  if (!lock.tryLock(30000)) throw new Error('otra sincronización en curso, no se pudo correr');
   try {
     const res = SHOPIFY_TIENDAS.map(t => _syncTienda_(t));
     const txt = res.map(r => r.tienda + ': ' + r.msg).join(' | ');
     PropertiesService.getScriptProperties().setProperty('SHOPIFY_ULTIMA_SYNC',
       Utilities.formatDate(new Date(), 'America/Santiago', 'yyyy-MM-dd HH:mm') + ' — ' + txt);
     console.log(txt);
+    // Un error en una tienda se propaga para que Estado_Sync lo registre (antes quedaba como OK).
+    const malas = res.filter(r => /^ERROR/.test(r.msg));
+    if (malas.length) throw new Error(malas.map(r => r.tienda + ': ' + r.msg).join(' | '));
     return res;
   } finally {
     lock.releaseLock();
@@ -39,8 +43,10 @@ function syncShopify() {
 
 // Para ejecutar a mano desde el menú: muestra el resultado.
 function syncShopifyManual() {
-  const res = syncShopify() || [];
-  SpreadsheetApp.getUi().alert('Sincronización Shopify', res.map(r => r.tienda + ': ' + r.msg).join('\n'), SpreadsheetApp.getUi().ButtonSet.OK);
+  let txt;
+  try { txt = (syncShopify() || []).map(r => r.tienda + ': ' + r.msg).join('\n'); }
+  catch (e) { txt = e.message; }
+  SpreadsheetApp.getUi().alert('Sincronización Shopify', txt, SpreadsheetApp.getUi().ButtonSet.OK);
 }
 
 // Prueba de conexión: no escribe nada, solo cuenta pedidos recientes por tienda.
@@ -101,7 +107,10 @@ function _syncTienda_(t) {
       const fecha = new Date(o.processedAt || o.createdAt);
       const mes = Number(Utilities.formatDate(fecha, 'America/Santiago', 'M'));
       const anio = Number(Utilities.formatDate(fecha, 'America/Santiago', 'yyyy'));
-      const envioTotal = _monto_(o.totalShippingPriceSet);
+      // Envío realmente cobrado al cliente (después de descuentos de envío y devoluciones),
+      // igual a "Cargos de envío" en los informes de Shopify. totalShippingPriceSet es el precio
+      // de lista del envío y queda inflado cuando hay envío gratis por descuento.
+      const envioTotal = _envioCobrado_(o);
       const dir = o.billingAddress || o.shippingAddress || {};
       const extra = _shopifyExtra_(o, fecha);
 
@@ -183,7 +192,7 @@ function _shopifyPedidos_(t, token, dias) {
   const desde = Utilities.formatDate(new Date(Date.now() - dias * 864e5), 'UTC', "yyyy-MM-dd'T'HH:mm:ss'Z'");
   const query = 'query($c:String,$q:String){orders(first:100,after:$c,query:$q,sortKey:CREATED_AT){' +
     'pageInfo{hasNextPage endCursor} nodes{name createdAt processedAt cancelledAt test displayFinancialStatus discountCode ' +
-    'totalShippingPriceSet{shopMoney{amount}} billingAddress{city province countryCodeV2} shippingAddress{city province provinceCode countryCodeV2} ' +
+    'totalShippingPriceSet{shopMoney{amount}} currentShippingPriceSet{shopMoney{amount}} billingAddress{city province countryCodeV2} shippingAddress{city province provinceCode countryCodeV2} ' +
     'email sourceName paymentGatewayNames shippingLine{title} ' +
     'customerJourneySummary{customerOrderIndex firstVisit{source utmParameters{source medium campaign}} lastVisit{source utmParameters{source medium campaign}}} ' +
     'lineItems(first:50){nodes{sku name vendor quantity originalUnitPriceSet{shopMoney{amount}} totalDiscountSet{shopMoney{amount}}}}}}}';
@@ -224,6 +233,43 @@ function _shopifyExtra_(o, fecha) {
     String((o.shippingLine || {}).title || ''),
     _regionCod_((o.shippingAddress || {}).provinceCode),
   ];
+}
+
+function _envioCobrado_(o) {
+  return o.currentShippingPriceSet ? _monto_(o.currentShippingPriceSet) : _monto_(o.totalShippingPriceSet);
+}
+
+// Ejecutar a mano UNA vez después de actualizar este archivo: corrige la columna Envío de las
+// ventas Shopify ya registradas (las que se cargaron con el precio de lista del envío).
+// Solo toca la columna Envío; no cambia ventas, márgenes ni comisiones. Devuelve el resumen.
+function corregirEnviosShopify(dias) {
+  dias = Number(dias) || 90;
+  const real = {};
+  SHOPIFY_TIENDAS.forEach(t => {
+    const token = _shopifyToken_(t);
+    if (!token) return;
+    _shopifyPedidos_(t, token, dias).forEach(o => { real[o.name] = _envioCobrado_(o); });
+  });
+  const hojaV = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(H_VENTAS);
+  const n = hojaV.getLastRow() - 1;
+  if (n < 1) return 'sin filas';
+  const datos = hojaV.getRange(2, 1, n, 13).getValues();   // hasta la columna Envío (13)
+  const visto = {};
+  let filas = 0, antes = 0, despues = 0;
+  datos.forEach((r, i) => {
+    const orden = String(r[6]);
+    if (r[5] !== 'Shopify' || !(orden in real)) return;
+    const nuevo = visto[orden] ? 0 : real[orden];   // el envío va solo en la primera línea del pedido
+    visto[orden] = true;
+    const viejo = Number(r[12]) || 0;
+    if (viejo !== nuevo) {
+      hojaV.getRange(i + 2, 13).setValue(nuevo);
+      filas++; antes += viejo; despues += nuevo;
+    }
+  });
+  const msg = 'Envío Shopify corregido en ' + filas + ' filas: $' + antes + ' → $' + despues + ' (últimos ' + dias + ' días)';
+  console.log(msg);
+  return msg;
 }
 
 function _monto_(set) {
