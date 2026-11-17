@@ -263,9 +263,9 @@ function _cAbee_(mes, archivosAbee) {
   const neto = Math.round(comision - reembolso + envios);
   const fila = [mes, pedidos, Math.round(envios), Math.round(comision), Math.round(reembolso), neto, Math.round(neto * 0.19), Math.round(neto * 1.19)];
   const h = _cHoja_(H_CONTAB_ABEE, CONTAB_ABEE_ENC);
-  const datos = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, 1).getDisplayValues() : [];
-  const i = datos.findIndex(r => r[0] === mes);
-  if (i >= 0) h.getRange(i + 2, 1, 1, fila.length).setValues([fila]); else h.appendRow(fila);
+  const datos = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, 1).getValues() : [];
+  const i = datos.findIndex(r => _cMesDe_(r[0]) === mes);
+  if (i >= 0) { h.getRange(i + 2, 1).setNumberFormat('@'); h.getRange(i + 2, 1, 1, fila.length).setValues([fila]); } else h.appendRow(fila);
   return fila;
 }
 
@@ -287,6 +287,12 @@ function _cFoto_(hasta) {   // { sku: {producto, abee} } de la última foto con 
   return { fecha: fecha, stock: stock };
 }
 
+// Mes 'AAAA-MM' de una celda que puede venir como texto o como fecha (filas antiguas).
+function _cMesDe_(x) {
+  if (x instanceof Date) return Utilities.formatDate(x, CONTAB_TZ, 'yyyy-MM');
+  return String(x || '').trim().slice(0, 7);
+}
+
 // Fecha de la hoja (Date o texto "2026-11-16" / "16-11-2026" / "16/11/2026") → "2026-11-16"
 function _cIso_(x) {
   if (x instanceof Date) return Utilities.formatDate(x, CONTAB_TZ, 'yyyy-MM-dd');
@@ -302,7 +308,7 @@ function _cInventario_(mes) {
   const h = _cHoja_(H_CONTAB_INV, CONTAB_INV_ENC);
   const datos = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, CONTAB_INV_ENC.length).getValues() : [];
   const previo = {};
-  datos.filter(r => String(r[0]) === ant).forEach(r => { previo[r[1]] = Number(r[7]) || 0; });
+  datos.filter(r => _cMesDe_(r[0]) === ant).forEach(r => { previo[r[1]] = Number(r[7]) || 0; });
 
   const ventas = {}, nombres = {};
   const lv = SpreadsheetApp.getActive().getSheetByName('Libro_Ventas');
@@ -327,7 +333,7 @@ function _cInventario_(mes) {
     return [mes, sku, prod, ini, v.ml, v.sh, v.otro, fin, costo, fin * costo, abee, abee === '' ? '' : abee - fin];
   });
   // reemplaza las filas del mes
-  for (let i = datos.length - 1; i >= 0; i--) if (String(datos[i][0]) === mes) h.deleteRow(i + 2);
+  for (let i = datos.length - 1; i >= 0; i--) if (_cMesDe_(datos[i][0]) === mes) h.deleteRow(i + 2);
   if (filas.length) h.getRange(h.getLastRow() + 1, 1, filas.length, CONTAB_INV_ENC.length).setValues(filas);
   return { filas: filas, fotoFin: fotoFin.fecha, inicialDesde: Object.keys(previo).length ? 'cierre de ' + ant : 'foto de inventario ' + (fotoIni.fecha || '–') };
 }
@@ -357,7 +363,8 @@ function _cExcel_(mes, carpeta, inv, abeeFila, ml) {
 
     const ha = tmp.insertSheet('ABEE');
     const abee = _cHoja_(H_CONTAB_ABEE, CONTAB_ABEE_ENC);
-    const hist = abee.getLastRow() > 1 ? abee.getRange(2, 1, abee.getLastRow() - 1, CONTAB_ABEE_ENC.length).getDisplayValues().filter(r => r[0] <= mes).sort((p, q) => p[0] < q[0] ? -1 : 1) : [];
+    const abeeMes = abee.getLastRow() > 1 ? abee.getRange(2, 1, abee.getLastRow() - 1, 1).getValues() : [];
+    const hist = abee.getLastRow() > 1 ? abee.getRange(2, 1, abee.getLastRow() - 1, CONTAB_ABEE_ENC.length).getDisplayValues().map((r, k, a) => [_cMesDe_(abeeMes[k][0])].concat(r.slice(1))).filter(r => r[0] <= mes).sort((p, q) => p[0] < q[0] ? -1 : 1) : [];
     ha.getRange('A:A').setNumberFormat('@');
     ha.getRange(1, 1, 1, CONTAB_ABEE_ENC.length).setValues([CONTAB_ABEE_ENC]).setFontWeight('bold');
     if (hist.length) {
@@ -572,7 +579,7 @@ function contabBorrador_(mes) {
 function contabGastosMes(mes) {
   mes = _cMes_(mes);
   const h = _cHoja_(H_CONTAB_ABEE, CONTAB_ABEE_ENC);
-  const abee = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, CONTAB_ABEE_ENC.length).getValues().find(r => String(r[0]) === mes) : null;
+  const abee = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, CONTAB_ABEE_ENC.length).getValues().find(r => _cMesDe_(r[0]) === mes) : null;
   const clave = Utilities.formatDate(_cFecha_(mes, 1, 1), CONTAB_TZ, 'yyyy-MM-dd');
   const s = _cMlGet_('/billing/integration/periods/key/' + clave + '/summary/details?group=ML&document_type=BILL');
   const b = s.bill_includes || {};
