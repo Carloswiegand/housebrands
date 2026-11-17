@@ -59,6 +59,7 @@ const CONTAB_PATRONES = [
   ['Estado de cuenta Mercado Pago', /mercado.?pago|account.?(statement|money)|release|liquidaci/i],
   ['Reporte de pagos de facturas ML', /pagos.?(de.?)?facturas/i],
   ['Reportes Excel de facturación ML (portal)', /reporte_(facturacion|notas)/i],
+  ['Facturas Shopify MemoKoala y Montana', /shopify/i],
 ];
 
 // ── Utilidades ──────────────────────────────────────────────
