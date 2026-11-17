@@ -155,6 +155,7 @@ function _cML_(mes, carpeta) {
   const clave = Utilities.formatDate(_cFecha_(mes, 1, 1), CONTAB_TZ, 'yyyy-MM-dd');
   const pref = clave.slice(0, 7) + '-';
   const filas = [], resumen = [];
+  let publicidad = null;
   [['ML', 'MercadoLibre'], ['MP', 'MercadoPago']].forEach(([g, nom]) => {
     ['BILL', 'CREDIT_NOTE'].forEach(tipo => {
       const item = (tipo === 'BILL' ? 'Factura ' : 'Notas de crédito ') + nom;
@@ -180,11 +181,16 @@ function _cML_(mes, carpeta) {
       const s = _cMlGet_('/billing/integration/periods/key/' + clave + '/summary/details?group=' + g + '&document_type=BILL');
       const b = s.bill_includes || {};
       (b.charges || []).forEach(c => resumen.push([nom, 'Cargo', c.group_description ? String(c.group_description).trim() : '', c.label, Number(c.amount) || 0]));
+      if (g === 'ML') {   // publicidad del período: cargos del grupo Publicidad menos sus anulaciones (BDLIT anula CDLIT)
+        const tipos = (b.charges || []).filter(c => /publicidad/i.test(String(c.group_description || ''))).map(c => String(c.type || ''));
+        publicidad = (b.charges || []).filter(c => tipos.indexOf(String(c.type || '')) >= 0).reduce((t, c) => t + (Number(c.amount) || 0), 0) +
+          (b.bonuses || []).filter(x => tipos.indexOf('C' + String(x.type || '').slice(1)) >= 0).reduce((t, x) => t + (Number(x.amount) || 0), 0);
+      }
       (b.bonuses || []).forEach(c => resumen.push([nom, 'Bonificación', c.group_description ? String(c.group_description).trim() : '', c.label, Number(c.amount) || 0]));
       if (b.total_amount !== undefined) resumen.push([nom, 'Total facturado', '', '', Number(b.total_amount) || 0]);
     } catch (e) { resumen.push([nom, 'Error', '', e.message, 0]); }
   });
-  return { filas: filas, resumen: resumen, clave: clave };
+  return { filas: filas, resumen: resumen, clave: clave, publicidad: publicidad };
 }
 
 function _cMlDetalle_(clave, g) {
@@ -387,6 +393,42 @@ function _cExcel_(mes, carpeta, inv, abeeFila, ml) {
   }
 }
 
+// ── 5b. Gastos del mes al P&L ───────────────────────────────
+// Solo lo que sale exacto del sistema: ABEE (desglose) y publicidad de MercadoLibre (API de facturación;
+// las facturas de ML incluyen IVA, se carga el neto). No pisa lo que ya esté cargado a mano: si el concepto
+// ya tiene valor ese mes en Gastos_Variables, no se toca. Meta Ads, Google Ads y The Link It quedan fuera.
+
+function _cGastosPnl_(mes, abeeFila, ml) {
+  const [a, m] = mes.split('-').map(Number);
+  const nomMes = MESES_NOMBRE[m - 1];
+  const fecha = Utilities.formatDate(_cFecha_(mes, 1, 0), CONTAB_TZ, 'yyyy-MM-dd');
+  const hv = SpreadsheetApp.getActive().getSheetByName(API_HOJAS.gastos);
+  const enc = hv ? hv.getRange(1, 1, 1, hv.getLastColumn()).getValues()[0].map(x => String(x).trim()) : [];
+  const fila = hv && hv.getLastRow() > 1 ? hv.getRange(2, 1, hv.getLastRow() - 1, hv.getLastColumn()).getValues()
+    .find(r => String(r[1]).trim().toLowerCase() === nomMes && Number(r[2]) === a) : null;
+  const yaTiene = c => { const i = enc.indexOf(c); return !!(fila && i >= 0 && fila[i] !== '' && fila[i] !== null && Number(fila[i]) !== 0); };
+  const cargas = [];
+  if (abeeFila) {
+    cargas.push({ concepto: 'ABEE Fulfillment', neto: abeeFila[3] - abeeFila[4], proveedor: 'ABEE SpA', documento: 'ABEE-' + mes + '-comision', nota: 'Comisión calculada del desglose ABEE (' + abeeFila[1] + ' pedidos).' });
+    cargas.push({ concepto: 'ABEE Envíos', neto: abeeFila[2], proveedor: 'ABEE SpA', documento: 'ABEE-' + mes + '-envios', nota: 'Suma de envíos del desglose ABEE.' });
+  }
+  if (ml && ml.publicidad > 0) {
+    const neto = Math.round(ml.publicidad / 1.19);
+    cargas.push({ concepto: 'ML Ads', neto: neto, iva: Math.round(ml.publicidad) - neto, proveedor: 'MercadoLibre', documento: 'ML-ADS-' + ml.clave, nota: 'Publicidad del período de facturación ' + ml.clave + ' (total con IVA $' + Math.round(ml.publicidad).toLocaleString('es-CL') + ').' });
+  }
+  const hechos = [], omitidos = [];
+  cargas.forEach(c => {
+    if (!(c.neto > 0)) return;
+    if (yaTiene(c.concepto)) { omitidos.push(c.concepto + ' (ya cargado)'); return; }
+    try {
+      gastoDocAgregar_({ concepto: c.concepto, fecha: fecha, mes: nomMes, anio: a, neto: c.neto, iva: c.iva !== undefined ? c.iva : Math.round(c.neto * 0.19),
+        proveedor: c.proveedor, documento: c.documento, origen: 'Contabilidad', nota: c.nota });
+      hechos.push(c.concepto + ' $' + Math.round(c.neto).toLocaleString('es-CL'));
+    } catch (e) { omitidos.push(c.concepto + ' (' + e.message + ')'); }
+  });
+  return { hechos: hechos, omitidos: omitidos };
+}
+
 // ── 6. Checklist y borrador ─────────────────────────────────
 
 function _cChecklist_(mes, filas, carpeta) {
@@ -450,6 +492,12 @@ function contabPreparar(mes, notaExtra) {
     filas.push({ grupo: 'Excel', item: 'Excel cierre (inventario, ABEE, cargos ML/MP)', estado: 'Listo', archivos: [x], adjuntar: true,
       nota: inv.filas.length + ' SKU · stock ABEE al ' + (inv.fotoFin || '–') + (abeeFila ? ' · ABEE neto $' + abeeFila[5].toLocaleString('es-CL') : ' · falta desglose ABEE') });
   } catch (e) { filas.push({ grupo: 'Excel', item: 'Excel cierre', estado: 'Error', archivos: [], nota: e.message }); }
+
+  try {
+    const gp = _cGastosPnl_(mes, abeeFila, ml);
+    filas.push({ grupo: 'P&L', item: 'Gastos cargados al P&L', estado: 'Listo', archivos: [], adjuntar: false, enlace: '',
+      nota: (gp.hechos.length ? 'Cargado: ' + gp.hechos.join(', ') : 'Nada nuevo') + (gp.omitidos.length ? ' · Sin tocar: ' + gp.omitidos.join(', ') : '') + '. Meta Ads, Google Ads y The Link It: los carga la tarea mensual o a mano.' });
+  } catch (e) { filas.push({ grupo: 'P&L', item: 'Gastos cargados al P&L', estado: 'Error', archivos: [], nota: e.message }); }
 
   CONTAB_MANUAL.forEach(([g, it, n]) => filas.push({ grupo: g, item: it, estado: 'Manual', archivos: [], nota: n }));
 
@@ -518,6 +566,22 @@ function contabBorrador_(mes) {
     enlace: 'https://mail.google.com/mail/u/0/#drafts', nota: b.adjuntos + ' adjuntos · ' + b.mb + ' MB' + (b.omitidos.length ? ' · no cupieron: ' + b.omitidos.join(', ') : '') + '. Revisar y enviar.' });
   _cChecklist_(mes, filas, carpeta);
   return { ok: true, adjuntos: b.adjuntos, mb: b.mb };
+}
+
+// Carga al P&L los gastos de un mes ya preparado (ABEE desde Contab_ABEE; ML Ads re-consultando el resumen de la API).
+function contabGastosMes(mes) {
+  mes = _cMes_(mes);
+  const h = _cHoja_(H_CONTAB_ABEE, CONTAB_ABEE_ENC);
+  const abee = h.getLastRow() > 1 ? h.getRange(2, 1, h.getLastRow() - 1, CONTAB_ABEE_ENC.length).getValues().find(r => String(r[0]) === mes) : null;
+  const clave = Utilities.formatDate(_cFecha_(mes, 1, 1), CONTAB_TZ, 'yyyy-MM-dd');
+  const s = _cMlGet_('/billing/integration/periods/key/' + clave + '/summary/details?group=ML&document_type=BILL');
+  const b = s.bill_includes || {};
+  const tipos = (b.charges || []).filter(c => /publicidad/i.test(String(c.group_description || ''))).map(c => String(c.type || ''));
+  const publicidad = (b.charges || []).filter(c => tipos.indexOf(String(c.type || '')) >= 0).reduce((t, c) => t + (Number(c.amount) || 0), 0) +
+    (b.bonuses || []).filter(x => tipos.indexOf('C' + String(x.type || '').slice(1)) >= 0).reduce((t, x) => t + (Number(x.amount) || 0), 0);
+  const r = _cGastosPnl_(mes, abee ? abee.map((v, i) => i === 0 ? v : Number(v) || 0) : null, { publicidad: publicidad, clave: clave });
+  console.log(mes + ': ' + JSON.stringify(r));
+  return r;
 }
 
 function contabProgramado() { correr_('Contabilidad', () => contabPreparar()); }
