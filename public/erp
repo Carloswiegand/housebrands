@@ -3333,14 +3333,19 @@ async function gLoadIdeas(force){
   G.seg=s.slice(1).filter(r=>r[1]).map(r=>({fecha:r[0],id:r[1],pos:pn(r[3])||null,prod:pn(r[4])||null,marcas:pn(r[5])||null}));
   G.opor=o.slice(1).filter(r=>r[2]).map(r=>({fecha:r[0],rubro:r[1],kw:r[2],donde:r[3],sem:pn(r[4]),prod:pn(r[5])||null,marcas:pn(r[6])||null,top:r[7]||''}));
 }
+// Enlaces a la búsqueda en MercadoLibre de cada país, para ver los productos reales detrás de una búsqueda.
+const ML_DOM={'Chile':'cl','Argentina':'com.ar','México':'com.mx','Mexico':'com.mx','Colombia':'com.co','Perú':'com.pe','Peru':'com.pe','Uruguay':'com.uy'};
+const gMlUrl=(kw,pais)=>'https://listado.mercadolibre.'+(ML_DOM[pais]||'cl')+'/'+encodeURIComponent(String(kw).trim().toLowerCase().replace(/\s+/g,'-'));
+// "Argentina #10, México #2" → países ordenados por su mejor puesto: [{p:'México',n:2},{p:'Argentina',n:10}]
+const gPaises=d=>{const m={};String(d||'').split(',').forEach(x=>{const k=Object.keys(ML_DOM).find(p=>p!=='Chile'&&new RegExp('^\\s*'+p,'i').test(x));if(!k)return;const n=+((x.match(/#(\d+)/)||[])[1])||999;if(!m[k]||n<m[k])m[k]=n;});return Object.entries(m).sort((a,b)=>a[1]-b[1]).map(([p,n])=>({p,n}));};
 function gScoutOpor(){
   const O=(G.opor||[]).slice().sort((a,b)=>b.fecha<a.fecha?-1:b.fecha>a.fecha?1:(a.prod||0)-(b.prod||0));
   if(!O.length)return`<section class="xp xempty">Todavía no hay brechas. El radar multipaís compara cada lunes las tendencias de Argentina, México y Colombia con las de Chile, rubro por rubro. Una búsqueda aparece aquí cuando lleva 2 semanas seguidas en tendencia afuera y no en Chile.</section>`;
   const est=kw=>{const i=(G.ideas||[]).find(x=>x.kw.toLowerCase()===kw.toLowerCase());return i?(i.ver||i.estado):'';};
   return`<section class="xp"><div class="xp-h"><h2>Oportunidades · en tendencia afuera, no en Chile</h2><span class="note">${O.length} detectadas</span></div>
   <div class="xtw"><table class="xt"><thead><tr><th>Búsqueda</th><th>Rubro</th><th>Dónde está en tendencia</th><th class="r">Productos en Chile</th><th class="r">Marcas en Chile</th><th>Marcas que lideran en Chile</th><th>Detectada</th><th>Seguimiento</th></tr></thead><tbody>
-  ${O.map(r=>`<tr><td><b>${escH(r.kw)}</b></td><td>${escH(r.rubro)}</td><td>${escH(r.donde)}</td><td class="r">${r.prod?xNcat(r.prod):'–'}</td><td class="r">${r.marcas||'–'}</td><td class="xsmall">${escH(r.top||'–')}</td><td>${gF(r.fecha)}</td><td><span class="xtag b">${escH(est(r.kw)||'–')}</span></td></tr>`).join('')}</tbody></table></div>
-  <p class="xsmall" style="margin-top:10px">Pocos productos y pocas marcas en Chile = espacio para entrar antes de que llegue la tendencia. Cada brecha queda en Seguimiento con una hipótesis a 12 semanas: así se mide si se cumplió.</p></section>`;
+  ${O.map(r=>{const ps=gPaises(r.donde),p0=ps.length?ps[0].p:'Chile';return`<tr><td><a href="${gMlUrl(r.kw,p0)}" target="_blank" rel="noopener" title="Ver los productos en MercadoLibre ${escH(p0)}"><b>${escH(r.kw)}</b></a><div class="xsmall"><a href="${gMlUrl(r.kw,'Chile')}" target="_blank" rel="noopener">ver en Chile</a></div></td><td>${escH(r.rubro)}</td><td>${ps.length?ps.map(x=>`<a href="${gMlUrl(r.kw,x.p)}" target="_blank" rel="noopener">${escH(x.p)}${x.n<999?' #'+x.n:''}</a>`).join(', '):escH(r.donde)}</td><td class="r">${r.prod?xNcat(r.prod):'–'}</td><td class="r">${r.marcas||'–'}</td><td class="xsmall">${escH(r.top||'–')}</td><td>${gF(r.fecha)}</td><td><span class="xtag b">${escH(est(r.kw)||'–')}</span></td></tr>`;}).join('')}</tbody></table></div>
+  <p class="xsmall" style="margin-top:10px">Haz clic en la búsqueda para ver los productos en MercadoLibre del país donde está en tendencia; "ver en Chile" muestra lo que hay hoy acá. Pocos productos y pocas marcas en Chile = espacio para entrar antes de que llegue la tendencia. Cada brecha queda en Seguimiento con una hipótesis a 12 semanas: así se mide si se cumplió.</p></section>`;
 }
 function gScoutSeg(){
   const I=G.ideas||[],S=G.seg||[];
@@ -3351,7 +3356,7 @@ function gScoutSeg(){
     const {h,u}=ult(i.id);const act=u&&u.prod?u.prod:null,cre=i.baseP&&act&&i.baseP<10000?act/i.baseP-1:null;
     const pts=h.filter(x=>x.prod).map(x=>x.prod);const sp=pts.length>1?(()=>{const mn=Math.min(...pts),mx=Math.max(...pts)||1;return`<svg viewBox="0 0 80 22" style="width:80px;height:22px"><polyline fill="none" stroke="#3355f0" stroke-width="2" points="${pts.map((p,k)=>(k/(pts.length-1)*78+1).toFixed(1)+','+(20-(mx===mn?9:(p-mn)/(mx-mn)*18)).toFixed(1)).join(' ')}"/></svg>`;})():'';
     const tag=i.ver==='Se cumplió'?'g':i.ver==='No se cumplió'?'r':'b';
-    return`<tr><td><b>${escH(i.kw)}</b><div class="xsmall">${escH(i.origen||'')}</div></td><td>${escH(i.rubro||'–')}</td><td>${escH(i.marca||'–')}</td><td>${gF(i.creada)}</td><td>${gF(i.plazo)}</td>
+    return`<tr><td><a href="${gMlUrl(i.kw,'Chile')}" target="_blank" rel="noopener" title="Ver en MercadoLibre Chile"><b>${escH(i.kw)}</b></a><div class="xsmall">${escH(i.origen||'')}</div></td><td>${escH(i.rubro||'–')}</td><td>${escH(i.marca||'–')}</td><td>${gF(i.creada)}</td><td>${gF(i.plazo)}</td>
       <td class="r">${i.baseP?xNcat(i.baseP):'–'} → ${act?xNcat(act):'–'}${cre!==null?`<div class="xsmall" style="color:${cre>=0.3?'var(--x-pos)':cre<0?'var(--x-neg)':'inherit'}">${cre>=0?'+':''}${xP(cre,0)}</div>`:''}</td><td>${sp}</td><td class="r">${u&&u.pos?'#'+u.pos:'–'}</td>
       <td><span class="xtag ${tag}">${escH(i.ver||'En curso')}</span></td>
       <td><select class="xinp" style="padding:4px 6px" onchange="gIdeaSet('${escH(i.id)}',{estado:this.value})">${opt(['En seguimiento','Evaluando','Descartada','Importada'],i.estado)}</select></td></tr>`;}).join('');
