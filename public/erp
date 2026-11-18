@@ -2892,7 +2892,10 @@ const gHoy=()=>xIso(new Date());
 const gC=n=>(n<0?'−':'')+clp(Math.abs(n));
 const gF=s=>s?xFmt(s):'–';
 const gK=(l,v,s,cls)=>`<article class="xp glass"><div class="xk-l">${l}</div><div class="xk-v"${cls?` style="color:${cls}"`:''}>${v}</div><div class="xk-f"><span>${s||''}</span></div></article>`;
-async function gCsv(url){const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);const t=await r.text();if(/^(missing sheet|unknown sheet|forbidden)/.test(t.trim()))return[];return t.split('\n').filter(l=>l.trim()).map(scsv);}
+async function gCsv(url){const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);const t=await r.text();if(/^(missing sheet|unknown sheet|forbidden)/.test(t.trim()))return[];return csvLineas(t).filter(l=>l.trim()).map(scsv);}
+// Separa el CSV en registros respetando los saltos de línea dentro de comillas (p. ej. el resultado
+// de un pedido de análisis del Scout, que viene en varias líneas). Partir por cada \n rompía esas filas.
+function csvLineas(t){const out=[];let ini=0,inQ=false;for(let i=0;i<t.length;i++){const c=t[i];if(c==='"')inQ=!inQ;else if(c==='\n'&&!inQ){out.push(t.slice(ini,i).replace(/\r$/,''));ini=i+1;}}if(ini<t.length)out.push(t.slice(ini).replace(/\r$/,''));return out;}
 
 // ── Importaciones: datos ──
 async function gLoadImp(force){
