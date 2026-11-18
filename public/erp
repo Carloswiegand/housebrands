@@ -3576,15 +3576,17 @@ function gScoutAmazon(){
     ${filas.map(r=>`<tr><td class="r">${r.pos}</td><td>${tag(r.cambio)}</td><td><a href="https://www.amazon.${r.mer==='EE.UU.'?'com':r.mer==='México'?'com.mx':'es'}/dp/${escH(r.asin)}" target="_blank" rel="noopener">${escH(r.tit.slice(0,100))}</a>${r.gen==='Sí'?' <span class="xtag r">genérico</span>':''}</td><td>${escH(r.marca||'–')}</td><td>${escH(r.precio||'–')}</td><td class="r">${r.rating||'–'}</td><td class="r">${r.res?xN(r.res):'–'}</td></tr>`).join('')}</tbody></table></div>
     <p class="xsmall" style="margin-top:10px">Precios como los muestra Amazon al navegar desde Chile. La marca y si es genérico los clasifica la tarea programada para lo que sube; el resto queda sin clasificar.</p></section>`;
 }
+// Tarea programada que responde los pedidos. "Analizar ahora" la abre en Claude, donde se presiona "Ejecutar ahora".
+const SCOUT_TAREA_URL='https://claude.ai/scheduled-task/trig_01VwFFAojL4SF4cKBdSwtwdo';
 function gScoutPedir(){
   const S=(G.solic||[]).slice().sort((a,b)=>b.id>a.id?1:-1);
   const tag=e=>e==='Listo'?'g':e==='En proceso'?'b':'n';
-  return`<section class="xp"><div class="xp-h"><h2>Pedir un análisis</h2><span class="note">se analiza en el momento (unos 10 minutos); si no se puede, en la corrida diaria de las 9:52</span></div>
+  return`<section class="xp"><div class="xp-h"><h2>Pedir un análisis</h2><span class="note">se responde en la corrida diaria de las 9:52, o al momento con "Analizar ahora"</span></div>
     <div class="xform"><label class="xlbl">Tipo<select class="xinp" id="sp-tipo"><option>Producto</option><option>Nicho</option><option>Categoría</option></select></label>
     <label class="xlbl" style="grid-column:1/-1">Qué quieres que analice<textarea class="xinp" id="sp-txt" rows="3" placeholder="ej. ¿Conviene traer una lonchera térmica para bebé? Comparar con Amazon EE.UU. y lo que hay en MercadoLibre Chile"></textarea></label></div>
     <div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button type="button" class="xbtn pri" onclick="gSolicitar(this)">Enviar pedido</button><span class="xsmall" id="sp-msg"></span></div>
     <p class="xsmall" style="margin-top:10px">El análisis cruza Amazon (EE.UU., México y España), MercadoLibre Chile y otros países, competencia, precios de referencia y margen estimado con tus costos, y termina con una recomendación. Si lo necesitas antes, pídelo directo en el chat.</p></section>
-  <section class="xp"><div class="xp-h"><h2>Pedidos</h2><div style="display:flex;gap:10px;align-items:center"><span class="note">${S.length}</span><button type="button" class="xbtn" onclick="G.solic=null;xScout()">Actualizar</button></div></div>
+  <section class="xp"><div class="xp-h"><h2>Pedidos</h2><div style="display:flex;gap:10px;align-items:center"><span class="note">${S.length}</span>${S.some(s=>s.estado==='Pendiente')?`<a class="xbtn pri" href="${SCOUT_TAREA_URL}" target="_blank" rel="noopener" title="Abre la tarea del Scout en Claude: presiona Ejecutar ahora">Analizar ahora</a>`:''}<button type="button" class="xbtn" onclick="G.solic=null;xScout()">Actualizar</button></div></div>
     ${S.length?S.map(s=>`<details class="xp" style="margin:8px 0;padding:12px"${s.estado==='Listo'&&s===S[0]?' open':''}><summary style="cursor:pointer"><span class="xtag ${tag(s.estado)}">${escH(s.estado)}</span> <b>${escH(s.tipo)}:</b> ${escH(s.pedido.slice(0,120))} <span class="xsmall">· ${gF(s.fecha)}</span></summary>
       ${s.res?`<div class="xsmall" style="white-space:pre-wrap;line-height:1.55;margin-top:10px">${escH(s.res)}</div>`:'<div class="xsmall" style="margin-top:8px">Todavía sin respuesta.</div>'}</details>`).join(''):(G.solicErr?`<div class="xal r"><b>No se pudo cargar pedidos</b><span>${escH(G.solicErr)}. Los pedidos ya enviados no se perdieron: están en la hoja Scout_Solicitudes.</span></div><button type="button" class="xbtn" onclick="G.solic=null;xScout()">Reintentar</button>`:'<div class="xempty">Sin pedidos.</div>')}</section>`;
 }
@@ -3620,7 +3622,7 @@ async function gSolicitar(btn){
   try{const r=await gPost({action:'solicitud_add',solicitud:{tipo,pedido}});await gLoadSolic(true);xScout();
     const a=r.analisis||{},m=document.getElementById('sp-msg');
     if(m)m.textContent=a.ok?'Pedido enviado. El análisis partió ahora: la respuesta aparece aquí en unos 10 minutos (presiona Actualizar). Necesita tu computador encendido con Chrome abierto.'
-      :'Pedido enviado. '+(a.motivo==='limite_por_hora'?'Se alcanzó el límite de análisis por hora: ':'No se pudo partir el análisis ahora: ')+'se responde en la corrida diaria de las 9:52.';}
+      :'Pedido enviado. Para tenerlo ahora presiona "Analizar ahora" y en Claude "Ejecutar ahora": la respuesta llega en unos 10 minutos (presiona Actualizar). Si no, se responde mañana a las 9:52.';}
   catch(e){msg.textContent='No se envió: '+e.message;btn.disabled=false;}
 }
 async function gIdeaAdd(btn){
