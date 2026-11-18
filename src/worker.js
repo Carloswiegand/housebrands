@@ -11,6 +11,8 @@
 //
 // Configuración (wrangler.jsonc → vars):  ACCESS_TEAM_DOMAIN, ACCESS_AUD, ALLOWED_EMAILS, SHEETS_API_URL
 // Secreto (dashboard / wrangler secret):   SHEETS_API_KEY
+// Opcional: SCOUT_ROUTINE_ID (var) + SCOUT_FIRE_TOKEN (secreto) → al pedir un análisis del Scout se dispara
+// en el momento la tarea programada "Scout de productos: Amazon y análisis" (API de rutinas de Claude Code).
 
 const SHEETS = new Set(['ventas', 'pnl', 'conv', 'inv', 'imp', 'scout', 'estado', 'gastos', 'config', 'gdet', 'metas', 'prefs', 'ideas', 'seg', 'opor', 'amazon', 'solic', 'mktd', 'mktq', 'mktp', 'mktc', 'mkts', 'mkti', 'mktv', 'bench', 'contab']);
 const CACHE_SECONDS = 60;
@@ -81,7 +83,25 @@ async function ventaManual(request, env) {
     const purgar = { imp_set: ['imp'], sync: ['ventas', 'inv', 'estado'], gastos_set: ['gastos'], config_set: ['config'], pnl_generar: ['pnl', 'estado'], gasto_add: ['gdet', 'gastos', 'pnl', 'estado'], gasto_del: ['gdet', 'gastos', 'pnl', 'estado'], metas_set: ['metas'], pref_set: ['prefs'], scout_idea_add: ['ideas'], scout_idea_set: ['ideas'], amazon_add: ['amazon'], amazon_clasificar: ['amazon'], solicitud_add: ['solic'], solicitud_set: ['solic'], benchmark_add: ['bench'], contab_subir: ['contab'], contab_borrador: ['contab'], mkt_sync: ['mktd', 'mktq', 'mktp', 'mktc', 'mkts', 'estado'] }[body.action] || ['ventas'];
     await Promise.all(purgar.map(s => caches.default.delete(new Request('https://cache.internal/erp/' + s))));
   }
+  if (out.ok && body.action === 'solicitud_add') out.analisis = await dispararScout(env, out.id);
   return json(out, out.ok ? 200 : 400);
+}
+
+// Dispara la tarea programada del Scout para responder un pedido de análisis en el momento.
+// Sin token configurado no hace nada: el pedido se responde en la corrida diaria.
+async function dispararScout(env, id) {
+  if (!env.SCOUT_ROUTINE_ID || !env.SCOUT_FIRE_TOKEN) return { ok: false, motivo: 'sin_configurar' };
+  try {
+    const r = await fetch(`https://api.anthropic.com/v1/claude_code/routines/${env.SCOUT_ROUTINE_ID}/fire`, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${env.SCOUT_FIRE_TOKEN}`, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+      body: JSON.stringify({ text: `Corrida disparada desde HB Control por el pedido de análisis ${id}. Haz solo el PASO 0, el PASO 2 y AL TERMINAR; no hagas el PASO 1 ni el PASO 1B aunque hoy sea lunes.` }),
+    });
+    if (r.ok) return { ok: true };
+    return { ok: false, motivo: r.status === 429 ? 'limite_por_hora' : 'error_' + r.status };
+  } catch (e) {
+    return { ok: false, motivo: 'error_red' };
+  }
 }
 
 function withPrivateHeaders(res) {

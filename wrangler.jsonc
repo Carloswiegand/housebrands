@@ -12,7 +12,9 @@
   // Valores no secretos. ACCESS_AUD, ACCESS_TEAM_DOMAIN y SHEETS_API_KEY son secretos del Worker (dashboard).
   "vars": {
     "ALLOWED_EMAILS": "carlosw@housebrands.cl",
-    "SHEETS_API_URL": "https://script.google.com/macros/s/AKfycbz5zXmoV2Rzd34UtEQNazWnc0SMH9Mopo3Rd3WJt9dSA59bsS1_i92PlfHqmtaP-2sU/exec"
+    "SHEETS_API_URL": "https://script.google.com/macros/s/AKfycbz5zXmoV2Rzd34UtEQNazWnc0SMH9Mopo3Rd3WJt9dSA59bsS1_i92PlfHqmtaP-2sU/exec",
+    // Tarea "Scout de productos: Amazon y análisis". Su token de disparo va como secreto SCOUT_FIRE_TOKEN.
+    "SCOUT_ROUTINE_ID": "trig_01VwFFAojL4SF4cKBdSwtwdo"
   },
   "observability": { "enabled": true }
 }
