@@ -1637,6 +1637,33 @@ function mvLeerLineas(){
   return ok&&lineas.length?lineas:null;
 }
 
+// Registrar venta: se había perdido al rediseñar el modal (12-nov) y el botón no hacía nada.
+async function saveMV(){
+  const fecha=document.getElementById('mv-fecha').value;
+  const canal=document.getElementById('mv-canal').value;
+  const envio=parseFloat(document.getElementById('mv-envio').value)||0;
+  const comisionPct=parseFloat(document.getElementById('mv-com-pct').value)||0;
+  const documento=document.getElementById('mv-doc').value.trim();
+  const cliente=document.getElementById('mv-cliente').value.trim();
+  const st=document.getElementById('mv-status');
+  const err=t=>{st.innerHTML=`<span style="color:var(--x-neg)">${t}</span>`;};
+  if(!fecha)return err('Indica la fecha de la venta.');
+  if(canal==='B2B'&&!documento)return err('Para B2B indica el N° de factura.');
+  const lineas=mvLeerLineas();
+  if(!lineas)return err('Completa producto, cantidad y precio en todas las líneas.');
+  const sinCosto=lineas.filter(l=>!COSTOS[l.sku]).map(l=>l.sku);
+  if(sinCosto.length)return err('Sin costo cargado: '+escH(sinCosto.join(', '))+'. Cárgalo antes de registrar la venta.');
+  const btn=document.getElementById('mv-submit');
+  btn.disabled=true;btn.textContent='Registrando…';st.textContent='';
+  try{
+    const out=await gPost({action:'venta_manual',venta:{fecha,canal,documento,cliente,comisionPct,envio,lineas}});
+    st.innerHTML=`<span style="color:var(--x-pos)">Venta registrada: ${escH(out.orden||'')} · ${out.lineas} línea${out.lineas!==1?'s':''} · ${clp(out.total||0)}</span>`;
+    mvReset();
+    await recargarVentas();
+  }catch(e){err('No se registró: '+escH(e.message));}
+  finally{btn.disabled=false;btn.textContent='Registrar venta';}
+}
+
 function mvComisionAuto(){
   const canal=document.getElementById('mv-canal').value, fecha=document.getElementById('mv-fecha').value||'';
   const reglas=(COMISION_CANAL[canal]||[]).filter(r=>r.desde<=fecha).sort((a,b)=>a.desde.localeCompare(b.desde));
