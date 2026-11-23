@@ -3953,7 +3953,7 @@ async function gMetaMes(){
     const mk=(v,c,l)=>v?`<span class="mm-k" style="left:${pos(v)}%;background:${c}" title="${l}: ${clp(v)}"></span>`:'';
     const ok=proy>=meta,okBe=proy>=Math.max(bePlan,beReal);
     el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
-      <div style="flex:1 1 230px"><div class="xk-l">Meta de venta del mes · escenario neutro</div><div class="xk-v">${clp(meta)}</div>
+      <div style="flex:1 1 230px"><div class="xk-l">Venta del mes / meta · escenario neutro</div><div class="xk-v">${clp(mtd)} <span style="opacity:.45;font-weight:400">/ ${clp(meta)}</span></div><div class="xsmall" style="margin-top:2px">${xP(meta?mtd/meta:0,0)} de la meta · día ${dia} de ${dias}</div>
         <div class="xsmall" style="margin-top:4px;line-height:1.5">Optimista ${O?clp(O.ventas):'–'} · Pesimista ${P?clp(P.ventas):'–'}</div></div>
       <div style="flex:1 1 230px"><div class="xk-l">Mínimo para no perder · punto de equilibrio</div><div class="xk-v">${clp(Math.max(bePlan,beReal))}</div>
         <div class="xsmall" style="margin-top:4px;line-height:1.5">Según el flujo: ${clp(bePlan)} (gastos ${clp(fijos)}${N.sueldo?' con sueldo':''}${N.cuota?' y cuota':''}). ${txtReal}</div></div>
