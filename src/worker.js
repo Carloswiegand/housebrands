@@ -96,19 +96,22 @@ async function preciosWeb(ctx) {
   const hit = await caches.default.match(cacheKey);
   if (hit) return hit;
   const precios = {};
+  const errores = [];
   await Promise.all(TIENDAS.map(async (base) => {
     try {
-      const r = await fetch(base + '/products.json?limit=250', { headers: { accept: 'application/json' } });
-      if (!r.ok) return;
+      const r = await fetch(base + '/products.json?limit=250', {
+        headers: { accept: 'application/json', 'user-agent': 'Mozilla/5.0 (compatible; HousebrandsCotizador/1.0; +https://housebrands.cl)' },
+      });
+      if (!r.ok) { errores.push(base + ' ' + r.status); return; }
       const d = await r.json();
       for (const p of d.products || []) for (const v of p.variants || []) {
         const sku = String(v.sku || '').trim();
         const precio = Math.round(parseFloat(v.price));
         if (sku && precio > 0) precios[sku] = precio;
       }
-    } catch (e) { /* una tienda caída no bloquea la otra */ }
+    } catch (e) { errores.push(base + ' ' + e.message); }
   }));
-  const res = new Response(JSON.stringify({ precios, actualizado: new Date().toISOString() }), {
+  const res = new Response(JSON.stringify({ precios, errores, actualizado: new Date().toISOString() }), {
     headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=600' },
   });
   if (Object.keys(precios).length) ctx.waitUntil(caches.default.put(cacheKey, res.clone()));
