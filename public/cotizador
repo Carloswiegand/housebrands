@@ -104,7 +104,8 @@ input.free-name{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;col
 @media print{
   body{background:white;padding:0;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .toolbar{display:none}
-  .cot{box-shadow:none;border:none;max-width:100%}
+  html,body{height:auto!important;min-height:0!important}
+  .cot{box-shadow:none;border:none;max-width:100%;zoom:var(--pz,1)}
   [contenteditable]:hover,[contenteditable]:focus{background:transparent}
   .del-btn,.add-btn,.add-row,.thumb-placeholder,.thumb-upload{display:none}
   .prod-thumb{width:36px;height:36px}
@@ -560,6 +561,32 @@ document.getElementById('btn-print').addEventListener('click',function(){
   window.print();
   setTimeout(function(){for(var i=0;i<hidden.length;i++)hidden[i].style.display='';},800);
 });
+
+// ── AJUSTE A UNA HOJA ─────────────────────────────────────────
+// Antes de imprimir mide la cotización con los estilos de impresión y, si no cabe en una hoja
+// (se usa el alto de una hoja carta, la más chica), la reduce lo justo para que quepa.
+var ALTO_UTIL_MM=250;
+function ajustarAUnaHoja(){
+  var cot=document.querySelector('.cot'); if(!cot) return;
+  cot.style.setProperty('--pz','1');
+  var css='';
+  for(var i=0;i<document.styleSheets.length;i++){
+    var rules; try{ rules=document.styleSheets[i].cssRules; }catch(e){ continue; }
+    for(var j=0;j<rules.length;j++){
+      var r=rules[j];
+      if(r.media&&/print/.test(r.media.mediaText)){ for(var k=0;k<r.cssRules.length;k++){ if(r.cssRules[k].type===1) css+=r.cssRules[k].cssText+'\n'; } }
+    }
+  }
+  var st=document.createElement('style');
+  st.textContent=css+'\n.cot{width:186mm!important;margin:0!important;zoom:1!important}';
+  document.head.appendChild(st);
+  var mm=cot.getBoundingClientRect().height*25.4/96;
+  st.remove();
+  var z=mm>ALTO_UTIL_MM?Math.floor(ALTO_UTIL_MM/mm*100)/100:1;
+  cot.style.setProperty('--pz',String(z));
+}
+window.addEventListener('beforeprint',ajustarAUnaHoja);
+window.addEventListener('afterprint',function(){ var c=document.querySelector('.cot'); if(c) c.style.setProperty('--pz','1'); });
 
 // ── RESET ─────────────────────────────────────────────────────
 document.getElementById('btn-reset').addEventListener('click',function(){
