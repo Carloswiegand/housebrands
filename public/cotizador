@@ -139,6 +139,7 @@ input.free-name{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;col
   <div class="tb-left">
     <span class="badge">Plantilla Cotización B2B</span>
     <span class="badge" id="badge-num">COT-001</span>
+    <span class="badge" id="badge-precios">Precios web: cargando…</span>
   </div>
   <div class="tb-right">
     <div class="tb-btns">
@@ -232,9 +233,9 @@ input.free-name{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;col
     <div>
       <div class="b-title">Condiciones comerciales</div>
       <table class="info-tbl">
-        <tr><td>Pago</td><td>Transferencia bancaria 100% anticipada contra orden de compra. Factura electrónica al acreditarse el pago.</td></tr>
-        <tr><td>Plazo entrega</td><td>3 a 5 días hábiles desde confirmación del pago.</td></tr>
-        <tr><td>Validez</td><td>10 días hábiles desde la fecha de emisión.</td></tr>
+        <tr><td>Pago</td><td class="ce" contenteditable>Transferencia bancaria 100% anticipada contra orden de compra. Factura electrónica al acreditarse el pago.</td></tr>
+        <tr><td>Plazo entrega</td><td class="ce" contenteditable>3 a 5 días hábiles desde confirmación del pago.</td></tr>
+        <tr><td>Validez</td><td class="ce" contenteditable>10 días hábiles desde la fecha de emisión.</td></tr>
       </table>
     </div>
     <div>
@@ -271,11 +272,11 @@ input.free-name{width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;col
 // Imágenes extraídas directamente de Shopify CDN
 var CATALOGO = [
   // MemoKoala
-  { id:'hookon-azul',  marca:'MK', nombre:'Silla de Comer Portátil HookOn — Azul',  sku:'MK-0001', precioB2B:53091, precioPub:58990, img:null },
-  { id:'hookon-negra', marca:'MK', nombre:'Silla de Comer Portátil HookOn — Negra', sku:'MK-0002', precioB2B:53091, precioPub:58990, img:null },
-  { id:'lazboy-gris',  marca:'MK', nombre:'Silla Mecedora para Bebé LazyBoy — Gris',  sku:'MK-0003', precioB2B:44991, precioPub:49990, img:null },
-  { id:'lazboy-negra', marca:'MK', nombre:'Silla Mecedora para Bebé LazyBoy — Negra', sku:'MK-0004', precioB2B:44991, precioPub:49990, img:null },
-  { id:'takego',       marca:'MK', nombre:'Organizador para Coche Take&Go',            sku:'TO04-4', precioB2B:17991, precioPub:19990, img:null },
+  { id:'hookon-azul',  marca:'MK', nombre:'Silla de Comer Portátil HookOn — Azul',  sku:'MK-0001', precioB2B:null, precioPub:59990, img:null },
+  { id:'hookon-negra', marca:'MK', nombre:'Silla de Comer Portátil HookOn — Negra', sku:'MK-0002', precioB2B:null, precioPub:59990, img:null },
+  { id:'lazboy-gris',  marca:'MK', nombre:'Silla Mecedora para Bebé LazyBoy — Gris',  sku:'MK-0003', precioB2B:null, precioPub:39990, img:null },
+  { id:'lazboy-negra', marca:'MK', nombre:'Silla Mecedora para Bebé LazyBoy — Negra', sku:'MK-0004', precioB2B:null, precioPub:39990, img:null },
+  { id:'takego',       marca:'MK', nombre:'Organizador para Coche Take&Go',            sku:'TO04-4', precioB2B:null, precioPub:14990, img:null },
   // Montana Grills
   { id:'kiritsuke', marca:'MT', nombre:'Cuchillo Kiritsuke Montana 20 cm — Acero 4Cr13',         sku:'SJ-JL802B', precioB2B:null, precioPub:29990, img:null },
   { id:'chef',      marca:'MT', nombre:'Cuchillo Chef Montana 21 cm — Acero 5Cr15MoV',            sku:'SJ-AH209A', precioB2B:null, precioPub:32990, img:null },
@@ -292,6 +293,37 @@ var MARCA_CLASS = { MK:'badge-mk', MT:'badge-mt', CORP:'badge-corp', LIBRE:'badg
 var lineas = [];
 
 function clp(n){ return '$ '+Math.round(n).toLocaleString('es-CL'); }
+
+// Descuento de la línea: compara el precio neto ingresado (+IVA) con el precio web (IVA incluido).
+function descLinea(ln){
+  if(!ln.precioPub||!ln.precio) return 0;
+  return Math.round((1-ln.precio*1.19/ln.precioPub)*100);
+}
+function textoSku(ln){
+  if(!ln.sku) return '';
+  var t='SKU: '+ln.sku;
+  if(ln.precioPub){ var d=descLinea(ln); t+=' &middot; Precio web '+clp(ln.precioPub)+(d>0?' &middot; '+d+'% dcto.':''); }
+  return t;
+}
+
+// Precios web vigentes (memokoala.com y montanagrills.cl), leídos al abrir el cotizador.
+function cargarPreciosWeb(){
+  var bd=document.getElementById('badge-precios');
+  fetch('/api/precios-web',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(d){
+    var p=d.precios||{}, n=0;
+    for(var i=0;i<CATALOGO.length;i++){ var v=p[CATALOGO[i].sku]; if(v>0){ CATALOGO[i].precioPub=v; n++; } }
+    for(var j=0;j<lineas.length;j++){ var v2=p[lineas[j].sku]; if(v2>0) lineas[j].precioPub=v2; }
+    bd.textContent=n?'Precios web al día':'Precios web: sin datos (respaldo)';
+    render();
+  }).catch(function(){ bd.textContent='Precios web: sin conexión (respaldo)'; });
+}
+
+// Correlativo de cotizaciones: se guarda en este navegador el último número emitido.
+var COT_KEY='hbCotUltimo';
+function leerUltimo(){ try{ return parseInt(localStorage.getItem(COT_KEY))||0; }catch(e){ return 0; } }
+function numActual(){ var m=document.getElementById('cot-num').textContent.trim().match(/(\d+)$/); return m?parseInt(m[1]):0; }
+function ponerNum(n){ var t='COT-'+String(n).padStart(3,'0'); document.getElementById('cot-num').textContent=t; document.getElementById('badge-num').textContent=t; }
+function guardarEmitida(){ var n=numActual(); if(n>leerUltimo()){ try{ localStorage.setItem(COT_KEY,String(n)); }catch(e){} } }
 
 // ── RENDER ────────────────────────────────────────────────────
 function render(){
@@ -343,7 +375,7 @@ function renderFila(i){
   var tdDesc=document.createElement('td');
   if(ln.confirmado){
     var badge='<span class="marca-badge '+MARCA_CLASS[ln.marca]+'">'+MARCA_LABEL[ln.marca]+'</span>';
-    var sub = ln.sku ? '<div class="prod-sku">SKU: '+ln.sku+(ln.precioPub?' &middot; Precio público '+clp(ln.precioPub):'')+'</div>' : '';
+    var sub = ln.sku ? '<div class="prod-sku">'+textoSku(ln)+'</div>' : '';
     tdDesc.innerHTML=badge+'<div class="prod-name">'+ln.nombre+'</div>'+sub;
   } else {
     // selector
@@ -383,7 +415,7 @@ function renderFila(i){
           var cat=null;
           for(var k=0;k<CATALOGO.length;k++){if(CATALOGO[k].id===val){cat=CATALOGO[k];break;}}
           if(!cat)return;
-          lineas[idx]={ id:cat.id, marca:cat.marca, nombre:cat.nombre, sku:cat.sku, precio:cat.precioB2B!=null?cat.precioB2B:cat.precioPub, precioPub:cat.precioPub, qty:0, img:cat.img, confirmado:true, libre:false };
+          lineas[idx]={ id:cat.id, marca:cat.marca, nombre:cat.nombre, sku:cat.sku, precio:Math.round(cat.precioPub/1.19), precioPub:cat.precioPub, qty:0, img:cat.img, confirmado:true, libre:false };
         }
         render();
         setTimeout(function(){
@@ -449,6 +481,8 @@ function renderFila(i){
     });
     inpPrice.addEventListener('input',function(){
       lineas[idx].precio=parseFloat(this.value)||0;
+      var skuEl=tdTotRef.parentNode&&tdTotRef.parentNode.querySelector('.prod-sku');
+      if(skuEl) skuEl.innerHTML=textoSku(lineas[idx]);
       var t=(lineas[idx].qty||0)*(lineas[idx].precio||0);
       tdTotRef.textContent=t>0?clp(t):'—'; tdTotRef.className='row-total'+(t?'':' dim'); recalc();
     });
@@ -506,6 +540,7 @@ document.getElementById('btn-print').addEventListener('click',function(){
     var idx=parseInt(rows[i].getAttribute('data-idx'));
     if(!lineas[idx]||(lineas[idx].qty||0)===0||!lineas[idx].confirmado){rows[i].style.display='none';hidden.push(rows[i]);}
   }
+  guardarEmitida();
   window.print();
   setTimeout(function(){for(var i=0;i<hidden.length;i++)hidden[i].style.display='';},800);
 });
@@ -513,9 +548,8 @@ document.getElementById('btn-print').addEventListener('click',function(){
 // ── RESET ─────────────────────────────────────────────────────
 document.getElementById('btn-reset').addEventListener('click',function(){
   if(!confirm('¿Limpiar esta cotización para una nueva?'))return;
-  var num=document.getElementById('cot-num').textContent.trim();
-  var m=num.match(/(\d+)$/);
-  if(m){var next='COT-'+String(parseInt(m[1])+1).padStart(3,'0');document.getElementById('cot-num').textContent=next;document.getElementById('badge-num').textContent=next;}
+  guardarEmitida();
+  ponerNum(Math.max(numActual(),leerUltimo())+1);
   document.getElementById('cli-nombre').textContent='[Razón social]';
   document.getElementById('cli-rut').textContent='RUT [XX.XXX.XXX-X]';
   document.getElementById('cli-contacto').textContent='Contacto: [nombre]';
@@ -535,6 +569,7 @@ document.getElementById('btn-copy').addEventListener('click',function(){
   var cli=document.getElementById('cli-nombre').textContent.trim();
   var tot=document.getElementById('t-total').textContent.trim();
   var btn=this;
+  guardarEmitida();
   navigator.clipboard.writeText(num+' \u00b7 '+cli+'\nTotal con IVA: '+tot+'\nValidez: 10 d\u00edas h\u00e1biles').then(function(){
     var p=btn.textContent;btn.textContent='\u2713 Copiado';setTimeout(function(){btn.textContent=p;},1800);
   });
@@ -550,8 +585,10 @@ function setFecha(){
 
 // ── INIT ─────────────────────────────────────────────────────
 // Precargado vacío — listo para usar
+ponerNum(leerUltimo()+1);
 setFecha();
 render();
+cargarPreciosWeb();
 </script>
 </body>
 </html>
