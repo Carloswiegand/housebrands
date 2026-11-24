@@ -92,7 +92,7 @@ async function pedidosPublicos(env, ctx) {
 // Precios vigentes (IVA incluido) por SKU, leídos de las tiendas Shopify públicas. Caché de 10 minutos.
 const TIENDAS = ['https://memokoala.com', 'https://montanagrills.cl'];
 async function preciosWeb(ctx) {
-  const cacheKey = new Request('https://cache.internal/public/precios-web');
+  const cacheKey = new Request('https://cache.internal/public/precios-web-v2');
   const hit = await caches.default.match(cacheKey);
   if (hit) return hit;
   const precios = {};
@@ -117,7 +117,7 @@ async function preciosWeb(ctx) {
     } catch (e) { errores.push(base + ' ' + e.message); }
   }));
   const res = new Response(JSON.stringify({ precios, errores, actualizado: new Date().toISOString() }), {
-    headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=600' },
+    headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
   });
   if (Object.keys(precios).length && !errores.length) ctx.waitUntil(caches.default.put(cacheKey, res.clone()));
   return res;
