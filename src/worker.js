@@ -20,6 +20,7 @@ const CACHE_SECONDS = 60;
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (url.pathname === '/api/pedidos') return pedidosPublicos(env, ctx);
     const m = url.pathname.match(/^\/erp\/api\/([a-z]+)\/?$/);
     if (m && m[1] === 'venta') return ventaManual(request, env);
     if (m) return api(m[1], request, env, ctx);
@@ -56,6 +57,57 @@ async function api(sheet, request, env, ctx) {
   });
   ctx.waitUntil(cache.put(cacheKey, res.clone()));
   return withPrivateHeaders(res);
+}
+
+// Contador público de la home (sin autenticación): solo entrega el total de pedidos únicos
+// (canal + N° de orden, mismas reglas que HB Control) redondeado hacia abajo a la centena.
+// Nunca expone filas de ventas. Caché de 6 horas.
+async function pedidosPublicos(env, ctx) {
+  if (!env.SHEETS_API_URL || !env.SHEETS_API_KEY) return json({ error: 'not_configured' }, 503);
+  const cacheKey = new Request('https://cache.internal/public/pedidos');
+  const hit = await caches.default.match(cacheKey);
+  if (hit) return hit;
+  const upstream = new URL(env.SHEETS_API_URL);
+  upstream.searchParams.set('sheet', 'ventas');
+  upstream.searchParams.set('key', env.SHEETS_API_KEY);
+  const r = await fetch(upstream, { redirect: 'follow' });
+  const body = await r.text();
+  if (!r.ok || body === 'forbidden' || body === 'unknown sheet' || body === 'missing sheet') return json({ error: 'upstream' }, 502);
+  const ordenes = new Set();
+  for (const line of body.split('\n').slice(1)) {
+    if (!line.trim()) continue;
+    const c = csvLinea(line);
+    if (c.length < 20 || !(c[4] || '').trim() || numero(c[11]) <= 0) continue;
+    ordenes.add((c[5] || '').trim() + '|' + (c[6] || ''));
+  }
+  const pedidos = Math.floor(ordenes.size / 100) * 100;
+  const res = new Response(JSON.stringify({ pedidos }), {
+    headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=21600' },
+  });
+  if (pedidos > 0) ctx.waitUntil(caches.default.put(cacheKey, res.clone()));
+  return res;
+}
+
+function csvLinea(line) {
+  const res = []; let f = '', q = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { if (q && line[i + 1] === '"') { f += '"'; i++; } else q = !q; }
+    else if (ch === ',' && !q) { res.push(f.trim()); f = ''; }
+    else f += ch;
+  }
+  res.push(f.trim());
+  return res;
+}
+
+function numero(v) {
+  let s = String(v ?? '').trim().replace(/[$\s%]/g, '');
+  if (!s) return 0;
+  const dots = (s.match(/\./g) || []).length, commas = (s.match(/,/g) || []).length;
+  if (commas >= 1 && dots === 0) s = s.replace(/,/g, '');
+  else if (commas === 1 && dots === 1) s = s.replace(',', '');
+  else if (commas === 0 && dots > 1) s = s.replace(/\./g, '');
+  return parseFloat(s) || 0;
 }
 
 // Ventas manuales: el navegador manda {action, venta|orden,canal}; el Worker agrega la clave

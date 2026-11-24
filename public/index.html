@@ -277,7 +277,7 @@ img{display:block;max-width:100%}
       <dl class="facts">
         <div><dt>año de inicio</dt><dd>2024</dd></div>
         <div><dt>marcas propias</dt><dd>2</dd></div>
-        <div><dt>pedidos despachados</dt><dd>+800</dd></div>
+        <div><dt>pedidos despachados</dt><dd id="ped-total">+900</dd></div>
         <div><dt>canales de venta</dt><dd>Shopify y ML</dd></div>
       </dl>
     </div>
@@ -372,6 +372,10 @@ img{display:block;max-width:100%}
 (function(){
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.getElementById('y').textContent = new Date().getFullYear();
+  /* Pedidos despachados: total real desde HB Control, redondeado a la centena (si falla, queda la cifra fija). */
+  fetch('/api/pedidos').then(r => r.ok ? r.json() : null).then(d => {
+    if (d && d.pedidos >= 100) document.getElementById('ped-total').textContent = '+' + d.pedidos.toLocaleString('es-CL');
+  }).catch(() => {});
   const top = document.getElementById('top');
 
   /* ── Wordmark HouseBrands → HB ───────────────────────── */
