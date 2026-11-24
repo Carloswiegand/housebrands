@@ -307,15 +307,24 @@ function textoSku(ln){
 }
 
 // Precios web vigentes (memokoala.com y montanagrills.cl), leídos al abrir el cotizador.
+var TIENDAS=['https://memokoala.com','https://montanagrills.cl'];
+var Q_PRECIOS='{products(first:100){nodes{variants(first:50){nodes{sku price{amount}}}}}}';
 function cargarPreciosWeb(){
   var bd=document.getElementById('badge-precios');
-  fetch('/api/precios-web',{cache:'no-store'}).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(d){
-    var p=d.precios||{}, n=0;
-    for(var i=0;i<CATALOGO.length;i++){ var v=p[CATALOGO[i].sku]; if(v>0){ CATALOGO[i].precioPub=v; n++; } }
+  Promise.all(TIENDAS.map(function(base){
+    return fetch(base+'/api/2025-07/graphql.json',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query:Q_PRECIOS})})
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(d){ var out={}; ((d.data&&d.data.products&&d.data.products.nodes)||[]).forEach(function(p){
+        p.variants.nodes.forEach(function(v){ var k=(v.sku||'').trim(), pr=Math.round(parseFloat(v.price.amount)); if(k&&pr>0) out[k]=pr; }); }); return out; })
+      .catch(function(){ return null; });
+  })).then(function(res){
+    var p={}, fallas=0;
+    res.forEach(function(r){ if(!r){ fallas++; return; } for(var k in r) p[k]=r[k]; });
+    for(var i=0;i<CATALOGO.length;i++){ var v=p[CATALOGO[i].sku]; if(v>0) CATALOGO[i].precioPub=v; }
     for(var j=0;j<lineas.length;j++){ var v2=p[lineas[j].sku]; if(v2>0) lineas[j].precioPub=v2; }
-    bd.textContent=n?'Precios web al día':'Precios web: sin datos (respaldo)';
+    bd.textContent=fallas?'Precios web: '+(fallas===2?'sin conexión (respaldo)':'una tienda sin respuesta'):'Precios web al día';
     render();
-  }).catch(function(){ bd.textContent='Precios web: sin conexión (respaldo)'; });
+  });
 }
 
 // Correlativo de cotizaciones: se guarda en este navegador el último número emitido.
