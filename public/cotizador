@@ -585,8 +585,16 @@ function ajustarAUnaHoja(){
   var z=mm>ALTO_UTIL_MM?Math.floor(ALTO_UTIL_MM/mm*100)/100:1;
   cot.style.setProperty('--pz',String(z));
 }
-window.addEventListener('beforeprint',ajustarAUnaHoja);
-window.addEventListener('afterprint',function(){ var c=document.querySelector('.cot'); if(c) c.style.setProperty('--pz','1'); });
+// Nombre del PDF al guardar: "COT-006 Comercial Steco SpA" (Chrome usa el título de la página).
+var TITULO_BASE=document.title;
+function nombreArchivo(){
+  var num=document.getElementById('cot-num').textContent.trim();
+  var cli=document.getElementById('cli-nombre').textContent.trim();
+  if(/^\[.*\]$/.test(cli)) cli='';
+  return (num+(cli?' '+cli:'')).replace(/[\\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim()||TITULO_BASE;
+}
+window.addEventListener('beforeprint',function(){ ajustarAUnaHoja(); document.title=nombreArchivo(); });
+window.addEventListener('afterprint',function(){ var c=document.querySelector('.cot'); if(c) c.style.setProperty('--pz','1'); document.title=TITULO_BASE; });
 
 // ── RESET ─────────────────────────────────────────────────────
 document.getElementById('btn-reset').addEventListener('click',function(){
