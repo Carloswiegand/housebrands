@@ -12,7 +12,8 @@ const H_GDET = 'Gastos_Detalle';
 const GDET_ENC = ['ID', 'Fecha', 'Mes', 'Año', 'Concepto', 'Proveedor', 'RUT', 'Documento', 'Neto', 'IVA', 'Total', 'Origen', 'Nota', 'Cargado'];
 const H_METAS = 'Metas';
 // Bodega ABEE y Envíos ABEE (desde nov-2026): plan en pesos de cada concepto de ABEE, para verlos por separado en Gastos.
-const METAS_ENC = ['Mes', 'Escenario', 'Ventas', 'Costo %', 'Logística %', 'Publicidad', 'Agencia', 'Contabilidad', 'Shopify', '3PL', 'Sueldo', 'Cuota', 'Bodega ABEE', 'Envíos ABEE'];
+// Publicidad = plan de Meta (MemoKoala + Montana); Google y ML Ads = presupuesto aparte de Google Ads y MercadoLibre Ads.
+const METAS_ENC = ['Mes', 'Escenario', 'Ventas', 'Costo %', 'Logística %', 'Publicidad', 'Agencia', 'Contabilidad', 'Shopify', '3PL', 'Sueldo', 'Cuota', 'Bodega ABEE', 'Envíos ABEE', 'Google y ML Ads'];
 
 function _hojaGdet_() {
   const ss = SpreadsheetApp.getActive();
@@ -72,8 +73,8 @@ function _gastoRecalcular_(mes, anio, concepto) {
 // Reemplaza la hoja Metas completa. filas = [[mes 'yyyy-mm', escenario, ventas, costo%, log%, publicidad, agencia, contab, shopify, 3pl, sueldo, cuota], ...]
 function metasGuardar_(filas) {
   if (!Array.isArray(filas) || !filas.length) throw new Error('sin filas');
-  // Filas antiguas de 12 columnas se completan con las 2 de ABEE vacías.
-  filas = filas.map(f => Array.isArray(f) && f.length === 12 ? f.concat(['', '']) : f);
+  // Filas con menos columnas (formatos antiguos) se completan con vacíos.
+  filas = filas.map(f => Array.isArray(f) && f.length < METAS_ENC.length && f.length >= 12 ? f.concat(Array(METAS_ENC.length - f.length).fill('')) : f);
   filas.forEach(f => {
     if (!/^\d{4}-\d{2}$/.test(String(f[0])) || ['Optimista', 'Neutro', 'Pesimista'].indexOf(f[1]) === -1 || f.length !== METAS_ENC.length) throw new Error('fila inválida: ' + JSON.stringify(f).slice(0, 80));
   });
