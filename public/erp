@@ -3997,7 +3997,7 @@ async function xGastos(){
   <section class="xg xg-k">
     ${gK('Gastos cargados del mes',clp(G_CONC.reduce((s,c)=>s+(tot(c[0])||0),0)),docs.length+' documento'+(docs.length!==1?'s':'')+' · los fijos se suman solos')}
     ${gK('Falta cargar',faltan.length?faltan.length+' concepto'+(faltan.length!==1?'s':''):'Nada',faltan.length?faltan.join(', '):'Mes completo',faltan.length?'#b37400':'var(--x-pos)')}
-    ${gK('Publicidad del mes',clp(sum(['Meta Ads','Google Ads','ML Ads'])),N?'plan del flujo: '+clp(N.pub):'sin plan')}
+    ${gK('Publicidad del mes',clp(sum(['Meta Ads','Google Ads','ML Ads'])),N?'plan del flujo: '+clp(N.pub+(N.gml||0))+(N.gml?' (Meta '+clp(N.pub)+' + Google/ML '+clp(N.gml)+')':' (solo Meta)'):'sin plan')}
   </section>
   <div class="xrow">
     <section class="xp" style="flex:1 1 440px" id="g-nuevo"><div class="xp-h"><h2>Agregar documento</h2><span class="note">factura, boleta o comprobante</span></div>
